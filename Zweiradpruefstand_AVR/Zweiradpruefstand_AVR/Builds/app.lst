@@ -1,0 +1,189 @@
+   1               		.file	"app.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   8               		.text
+   9               	.Ltext0:
+ 124               	.global	app_init
+ 126               	app_init:
+   1:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include "global.h"
+   2:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+   3:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include <stdio.h>
+   4:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include <string.h>
+   5:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+   6:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include <avr/io.h>
+   7:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include <avr/interrupt.h>
+   8:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include <util/delay.h>
+   9:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  10:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include "app.h"
+  11:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include "mon.h"
+  12:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** #include "sys.h"
+  13:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  14:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** // defines
+  15:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** // ...
+  16:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  17:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  18:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** // declarations and definations
+  19:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  20:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** volatile struct App app;
+  21:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  22:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  23:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** // functions
+  24:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  25:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_init (void)
+  26:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** {
+ 128               	.LM0:
+ 129               	.LFBB1:
+ 130               	/* prologue: function */
+ 131               	/* frame size = 0 */
+ 132               	/* stack size = 0 */
+ 133               	.L__stack_usage = 0
+  27:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     memset((void *)&app, 0, sizeof(app));
+ 135               	.LM1:
+ 136 0000 1092 0000 		sts app,__zero_reg__
+  28:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     DDRB = 0x20;
+ 138               	.LM2:
+ 139 0004 80E2      		ldi r24,lo8(32)
+ 140 0006 84B9      		out 0x4,r24
+ 141 0008 0895      		ret
+ 143               	.Lscope1:
+ 145               	.global	app_main
+ 147               	app_main:
+  29:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** }
+  30:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  31:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  32:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** //--------------------------------------------------------
+  33:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  34:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_main (void)
+  35:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** {
+ 149               	.LM3:
+ 150               	.LFBB2:
+ 151               	/* prologue: function */
+ 152               	/* frame size = 0 */
+ 153               	/* stack size = 0 */
+ 154               	.L__stack_usage = 0
+  36:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     sys_setLed(1);
+ 156               	.LM4:
+ 157 000a 81E0      		ldi r24,lo8(1)
+ 158 000c 0C94 0000 		jmp sys_setLed
+ 160               	.Lscope2:
+ 162               	.global	app_task_1ms
+ 164               	app_task_1ms:
+  37:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** }
+  38:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  39:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** //--------------------------------------------------------
+  40:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  41:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_1ms (void) {}
+ 166               	.LM5:
+ 167               	.LFBB3:
+ 168               	/* prologue: function */
+ 169               	/* frame size = 0 */
+ 170               	/* stack size = 0 */
+ 171               	.L__stack_usage = 0
+ 172 0010 0895      		ret
+ 174               	.Lscope3:
+ 176               	.global	app_task_2ms
+ 178               	app_task_2ms:
+  42:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_2ms (void) {}
+ 180               	.LM6:
+ 181               	.LFBB4:
+ 182               	/* prologue: function */
+ 183               	/* frame size = 0 */
+ 184               	/* stack size = 0 */
+ 185               	.L__stack_usage = 0
+ 186 0012 0895      		ret
+ 188               	.Lscope4:
+ 190               	.global	app_task_4ms
+ 192               	app_task_4ms:
+  43:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_4ms (void) {}
+ 194               	.LM7:
+ 195               	.LFBB5:
+ 196               	/* prologue: function */
+ 197               	/* frame size = 0 */
+ 198               	/* stack size = 0 */
+ 199               	.L__stack_usage = 0
+ 200 0014 0895      		ret
+ 202               	.Lscope5:
+ 204               	.global	app_task_8ms
+ 206               	app_task_8ms:
+  44:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_8ms (void) {}
+ 208               	.LM8:
+ 209               	.LFBB6:
+ 210               	/* prologue: function */
+ 211               	/* frame size = 0 */
+ 212               	/* stack size = 0 */
+ 213               	.L__stack_usage = 0
+ 214 0016 0895      		ret
+ 216               	.Lscope6:
+ 218               	.global	app_task_16ms
+ 220               	app_task_16ms:
+  45:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_16ms (void) {}
+ 222               	.LM9:
+ 223               	.LFBB7:
+ 224               	/* prologue: function */
+ 225               	/* frame size = 0 */
+ 226               	/* stack size = 0 */
+ 227               	.L__stack_usage = 0
+ 228 0018 0895      		ret
+ 230               	.Lscope7:
+ 232               	.global	app_task_32ms
+ 234               	app_task_32ms:
+  46:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_32ms (void) {}
+ 236               	.LM10:
+ 237               	.LFBB8:
+ 238               	/* prologue: function */
+ 239               	/* frame size = 0 */
+ 240               	/* stack size = 0 */
+ 241               	.L__stack_usage = 0
+ 242 001a 0895      		ret
+ 244               	.Lscope8:
+ 246               	.global	app_task_64ms
+ 248               	app_task_64ms:
+  47:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_64ms (void) {}
+ 250               	.LM11:
+ 251               	.LFBB9:
+ 252               	/* prologue: function */
+ 253               	/* frame size = 0 */
+ 254               	/* stack size = 0 */
+ 255               	.L__stack_usage = 0
+ 256 001c 0895      		ret
+ 258               	.Lscope9:
+ 260               	.global	app_task_128ms
+ 262               	app_task_128ms:
+  48:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_128ms (void) {}
+ 264               	.LM12:
+ 265               	.LFBB10:
+ 266               	/* prologue: function */
+ 267               	/* frame size = 0 */
+ 268               	/* stack size = 0 */
+ 269               	.L__stack_usage = 0
+ 270 001e 0895      		ret
+ 272               	.Lscope10:
+ 273               		.comm	app,1,1
+ 276               	.Letext0:
+ 277               		.ident	"GCC: (GNU) 4.8.1"
+ 278               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 app.c
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:2      *ABS*:0000003e __SP_H__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:3      *ABS*:0000003d __SP_L__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:4      *ABS*:0000003f __SREG__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:126    .text:00000000 app_init
+                            *COM*:00000001 app
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:147    .text:0000000a app_main
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:164    .text:00000010 app_task_1ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:178    .text:00000012 app_task_2ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:192    .text:00000014 app_task_4ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:206    .text:00000016 app_task_8ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:220    .text:00000018 app_task_16ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:234    .text:0000001a app_task_32ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:248    .text:0000001c app_task_64ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:262    .text:0000001e app_task_128ms
+
+UNDEFINED SYMBOLS
+sys_setLed
+__do_clear_bss

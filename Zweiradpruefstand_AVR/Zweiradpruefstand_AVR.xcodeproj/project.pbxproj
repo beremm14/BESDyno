@@ -1,0 +1,484 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		20B8DC0E20641F360000F498 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC0D20641F360000F498 /* main.c */; };
+		20B8DC2F2064200E0000F498 /* mon.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC2C2064200E0000F498 /* mon.c */; };
+		20B8DC302064200E0000F498 /* sys.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC2D2064200E0000F498 /* sys.c */; };
+		20B8DC312064200E0000F498 /* app.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC2E2064200E0000F498 /* app.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		20B8DC0A20641F360000F498 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
+		20B8DC0D20641F360000F498 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		20B8DC2C2064200E0000F498 /* mon.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mon.c; sourceTree = "<group>"; };
+		20B8DC2D2064200E0000F498 /* sys.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sys.c; sourceTree = "<group>"; };
+		20B8DC2E2064200E0000F498 /* app.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = app.c; sourceTree = "<group>"; };
+		20B8DC32206420150000F498 /* global.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
+		20B8DC33206420150000F498 /* sys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sys.h; sourceTree = "<group>"; };
+		20B8DC34206420150000F498 /* mon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mon.h; sourceTree = "<group>"; };
+		20B8DC35206420150000F498 /* app.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = app.h; sourceTree = "<group>"; };
+		20B8DC36206420170000F498 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		20B8DBFF20641F360000F498 = {
+			isa = PBXGroup;
+			children = (
+				20B8DC0C20641F360000F498 /* Zweiradpruefstand_AVR */,
+				20B8DC0B20641F360000F498 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		20B8DC0B20641F360000F498 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				20B8DC0A20641F360000F498 /* Index */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20B8DC0C20641F360000F498 /* Zweiradpruefstand_AVR */ = {
+			isa = PBXGroup;
+			children = (
+				20B8DC2320641F490000F498 /* Header */,
+				20B8DC2220641F420000F498 /* Source */,
+				20B8DC0F20641F360000F498 /* Makefiles */,
+			);
+			path = Zweiradpruefstand_AVR;
+			sourceTree = "<group>";
+		};
+		20B8DC0F20641F360000F498 /* Makefiles */ = {
+			isa = PBXGroup;
+			children = (
+				20B8DC36206420170000F498 /* Makefile */,
+			);
+			name = Makefiles;
+			sourceTree = "<group>";
+		};
+		20B8DC2220641F420000F498 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				20B8DC2E2064200E0000F498 /* app.c */,
+				20B8DC2C2064200E0000F498 /* mon.c */,
+				20B8DC2D2064200E0000F498 /* sys.c */,
+				20B8DC0D20641F360000F498 /* main.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		20B8DC2320641F490000F498 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				20B8DC35206420150000F498 /* app.h */,
+				20B8DC32206420150000F498 /* global.h */,
+				20B8DC34206420150000F498 /* mon.h */,
+				20B8DC33206420150000F498 /* sys.h */,
+			);
+			name = Header;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		20B8DC0420641F360000F498 /* All */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "all -C \"$(PROJECT)\"";
+			buildConfigurationList = 20B8DC1320641F360000F498 /* Build configuration list for PBXLegacyTarget "All" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = All;
+			passBuildSettingsInEnvironment = 1;
+			productName = All;
+		};
+		20B8DC0520641F360000F498 /* Build */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "build -C \"$(PROJECT)\"";
+			buildConfigurationList = 20B8DC1620641F360000F498 /* Build configuration list for PBXLegacyTarget "Build" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Build;
+			passBuildSettingsInEnvironment = 1;
+			productName = Build;
+		};
+		20B8DC0620641F360000F498 /* Upload */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "program -C \"$(PROJECT)\"";
+			buildConfigurationList = 20B8DC1920641F360000F498 /* Build configuration list for PBXLegacyTarget "Upload" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Upload;
+			passBuildSettingsInEnvironment = 1;
+			productName = Upload;
+		};
+		20B8DC0720641F360000F498 /* Clean */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "clean -C \"$(PROJECT)\"";
+			buildConfigurationList = 20B8DC1C20641F360000F498 /* Build configuration list for PBXLegacyTarget "Clean" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Clean;
+			passBuildSettingsInEnvironment = 1;
+			productName = Clean;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		20B8DC0920641F360000F498 /* Index */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20B8DC1F20641F360000F498 /* Build configuration list for PBXNativeTarget "Index" */;
+			buildPhases = (
+				20B8DC0820641F360000F498 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Index;
+			productName = Index;
+			productReference = 20B8DC0A20641F360000F498 /* Index */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		20B8DC0020641F360000F498 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Emil Berger";
+				TargetAttributes = {
+					20B8DC0420641F360000F498 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					20B8DC0520641F360000F498 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					20B8DC0620641F360000F498 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					20B8DC0720641F360000F498 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					20B8DC0920641F360000F498 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 20B8DC0320641F360000F498 /* Build configuration list for PBXProject "Zweiradpruefstand_AVR" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 20B8DBFF20641F360000F498;
+			productRefGroup = 20B8DC0B20641F360000F498 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				20B8DC0420641F360000F498 /* All */,
+				20B8DC0520641F360000F498 /* Build */,
+				20B8DC0620641F360000F498 /* Upload */,
+				20B8DC0720641F360000F498 /* Clean */,
+				20B8DC0920641F360000F498 /* Index */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		20B8DC0820641F360000F498 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				20B8DC302064200E0000F498 /* sys.c in Sources */,
+				20B8DC2F2064200E0000F498 /* mon.c in Sources */,
+				20B8DC0E20641F360000F498 /* main.c in Sources */,
+				20B8DC312064200E0000F498 /* app.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		20B8DC1120641F360000F498 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1,",
+					"__AVR_ATmega328P__,",
+					"F_CPU=16000000",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/include",
+					"/usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/include-fixed",
+					"/usr/local/CrossPack-AVR-20131216/avr/include",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PATH = "$(PATH):$(PROJECT_DIR)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		20B8DC1220641F360000F498 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__AVR_ATmega328P__,",
+					"F_CPU=16000000",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/include",
+					"/usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/include-fixed",
+					"/usr/local/CrossPack-AVR-20131216/avr/include",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PATH = "$(PATH):$(PROJECT_DIR)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		20B8DC1420641F360000F498 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		20B8DC1520641F360000F498 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		20B8DC1720641F360000F498 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Debug;
+		};
+		20B8DC1820641F360000F498 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Release;
+		};
+		20B8DC1A20641F360000F498 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Debug;
+		};
+		20B8DC1B20641F360000F498 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Release;
+		};
+		20B8DC1D20641F360000F498 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Debug;
+		};
+		20B8DC1E20641F360000F498 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Release;
+		};
+		20B8DC2020641F360000F498 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Debug;
+		};
+		20B8DC2120641F360000F498 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HQR3X5UVEH;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		20B8DC0320641F360000F498 /* Build configuration list for PBXProject "Zweiradpruefstand_AVR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20B8DC1120641F360000F498 /* Debug */,
+				20B8DC1220641F360000F498 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20B8DC1320641F360000F498 /* Build configuration list for PBXLegacyTarget "All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20B8DC1420641F360000F498 /* Debug */,
+				20B8DC1520641F360000F498 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20B8DC1620641F360000F498 /* Build configuration list for PBXLegacyTarget "Build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20B8DC1720641F360000F498 /* Debug */,
+				20B8DC1820641F360000F498 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20B8DC1920641F360000F498 /* Build configuration list for PBXLegacyTarget "Upload" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20B8DC1A20641F360000F498 /* Debug */,
+				20B8DC1B20641F360000F498 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20B8DC1C20641F360000F498 /* Build configuration list for PBXLegacyTarget "Clean" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20B8DC1D20641F360000F498 /* Debug */,
+				20B8DC1E20641F360000F498 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20B8DC1F20641F360000F498 /* Build configuration list for PBXNativeTarget "Index" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20B8DC2020641F360000F498 /* Debug */,
+				20B8DC2120641F360000F498 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 20B8DC0020641F360000F498 /* Project object */;
+}
