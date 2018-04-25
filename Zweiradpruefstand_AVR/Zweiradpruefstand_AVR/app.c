@@ -22,6 +22,7 @@ volatile struct App app;
 
 // functions
 
+
 void app_init (void)
 {
     memset((void *)&app, 0, sizeof(app));

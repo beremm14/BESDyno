@@ -32,25 +32,22 @@
   22:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
   23:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** // functions
   24:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
-  25:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_init (void)
-  26:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** {
+  25:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
+  26:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_init (void)
+  27:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** {
  128               	.LM0:
  129               	.LFBB1:
  130               	/* prologue: function */
  131               	/* frame size = 0 */
  132               	/* stack size = 0 */
  133               	.L__stack_usage = 0
-  27:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     memset((void *)&app, 0, sizeof(app));
+  28:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     memset((void *)&app, 0, sizeof(app));
  135               	.LM1:
  136 0000 1092 0000 		sts app,__zero_reg__
-  28:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     DDRB = 0x20;
- 138               	.LM2:
- 139 0004 80E2      		ldi r24,lo8(32)
- 140 0006 84B9      		out 0x4,r24
- 141 0008 0895      		ret
- 143               	.Lscope1:
- 145               	.global	app_main
- 147               	app_main:
+ 137 0004 0895      		ret
+ 139               	.Lscope1:
+ 141               	.global	app_main
+ 143               	app_main:
   29:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** }
   30:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
   31:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
@@ -58,132 +55,129 @@
   33:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
   34:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_main (void)
   35:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** {
- 149               	.LM3:
- 150               	.LFBB2:
- 151               	/* prologue: function */
- 152               	/* frame size = 0 */
- 153               	/* stack size = 0 */
- 154               	.L__stack_usage = 0
-  36:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     sys_setLed(1);
- 156               	.LM4:
- 157 000a 81E0      		ldi r24,lo8(1)
- 158 000c 0C94 0000 		jmp sys_setLed
- 160               	.Lscope2:
- 162               	.global	app_task_1ms
- 164               	app_task_1ms:
+ 145               	.LM2:
+ 146               	.LFBB2:
+ 147               	/* prologue: function */
+ 148               	/* frame size = 0 */
+ 149               	/* stack size = 0 */
+ 150               	.L__stack_usage = 0
+ 151 0006 0895      		ret
+ 153               	.Lscope2:
+ 155               	.global	app_task_1ms
+ 157               	app_task_1ms:
+  36:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c ****     
   37:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** }
   38:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
   39:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** //--------------------------------------------------------
   40:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** 
   41:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_1ms (void) {}
- 166               	.LM5:
- 167               	.LFBB3:
- 168               	/* prologue: function */
- 169               	/* frame size = 0 */
- 170               	/* stack size = 0 */
- 171               	.L__stack_usage = 0
- 172 0010 0895      		ret
- 174               	.Lscope3:
- 176               	.global	app_task_2ms
- 178               	app_task_2ms:
+ 159               	.LM3:
+ 160               	.LFBB3:
+ 161               	/* prologue: function */
+ 162               	/* frame size = 0 */
+ 163               	/* stack size = 0 */
+ 164               	.L__stack_usage = 0
+ 165 0008 0895      		ret
+ 167               	.Lscope3:
+ 169               	.global	app_task_2ms
+ 171               	app_task_2ms:
   42:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_2ms (void) {}
- 180               	.LM6:
- 181               	.LFBB4:
- 182               	/* prologue: function */
- 183               	/* frame size = 0 */
- 184               	/* stack size = 0 */
- 185               	.L__stack_usage = 0
- 186 0012 0895      		ret
- 188               	.Lscope4:
- 190               	.global	app_task_4ms
- 192               	app_task_4ms:
+ 173               	.LM4:
+ 174               	.LFBB4:
+ 175               	/* prologue: function */
+ 176               	/* frame size = 0 */
+ 177               	/* stack size = 0 */
+ 178               	.L__stack_usage = 0
+ 179 000a 0895      		ret
+ 181               	.Lscope4:
+ 183               	.global	app_task_4ms
+ 185               	app_task_4ms:
   43:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_4ms (void) {}
- 194               	.LM7:
- 195               	.LFBB5:
- 196               	/* prologue: function */
- 197               	/* frame size = 0 */
- 198               	/* stack size = 0 */
- 199               	.L__stack_usage = 0
- 200 0014 0895      		ret
- 202               	.Lscope5:
- 204               	.global	app_task_8ms
- 206               	app_task_8ms:
+ 187               	.LM5:
+ 188               	.LFBB5:
+ 189               	/* prologue: function */
+ 190               	/* frame size = 0 */
+ 191               	/* stack size = 0 */
+ 192               	.L__stack_usage = 0
+ 193 000c 0895      		ret
+ 195               	.Lscope5:
+ 197               	.global	app_task_8ms
+ 199               	app_task_8ms:
   44:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_8ms (void) {}
- 208               	.LM8:
- 209               	.LFBB6:
- 210               	/* prologue: function */
- 211               	/* frame size = 0 */
- 212               	/* stack size = 0 */
- 213               	.L__stack_usage = 0
- 214 0016 0895      		ret
- 216               	.Lscope6:
- 218               	.global	app_task_16ms
- 220               	app_task_16ms:
+ 201               	.LM6:
+ 202               	.LFBB6:
+ 203               	/* prologue: function */
+ 204               	/* frame size = 0 */
+ 205               	/* stack size = 0 */
+ 206               	.L__stack_usage = 0
+ 207 000e 0895      		ret
+ 209               	.Lscope6:
+ 211               	.global	app_task_16ms
+ 213               	app_task_16ms:
   45:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_16ms (void) {}
- 222               	.LM9:
- 223               	.LFBB7:
- 224               	/* prologue: function */
- 225               	/* frame size = 0 */
- 226               	/* stack size = 0 */
- 227               	.L__stack_usage = 0
- 228 0018 0895      		ret
- 230               	.Lscope7:
- 232               	.global	app_task_32ms
- 234               	app_task_32ms:
+ 215               	.LM7:
+ 216               	.LFBB7:
+ 217               	/* prologue: function */
+ 218               	/* frame size = 0 */
+ 219               	/* stack size = 0 */
+ 220               	.L__stack_usage = 0
+ 221 0010 0895      		ret
+ 223               	.Lscope7:
+ 225               	.global	app_task_32ms
+ 227               	app_task_32ms:
   46:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_32ms (void) {}
- 236               	.LM10:
- 237               	.LFBB8:
- 238               	/* prologue: function */
- 239               	/* frame size = 0 */
- 240               	/* stack size = 0 */
- 241               	.L__stack_usage = 0
- 242 001a 0895      		ret
- 244               	.Lscope8:
- 246               	.global	app_task_64ms
- 248               	app_task_64ms:
+ 229               	.LM8:
+ 230               	.LFBB8:
+ 231               	/* prologue: function */
+ 232               	/* frame size = 0 */
+ 233               	/* stack size = 0 */
+ 234               	.L__stack_usage = 0
+ 235 0012 0895      		ret
+ 237               	.Lscope8:
+ 239               	.global	app_task_64ms
+ 241               	app_task_64ms:
   47:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_64ms (void) {}
- 250               	.LM11:
- 251               	.LFBB9:
- 252               	/* prologue: function */
- 253               	/* frame size = 0 */
- 254               	/* stack size = 0 */
- 255               	.L__stack_usage = 0
- 256 001c 0895      		ret
- 258               	.Lscope9:
- 260               	.global	app_task_128ms
- 262               	app_task_128ms:
+ 243               	.LM9:
+ 244               	.LFBB9:
+ 245               	/* prologue: function */
+ 246               	/* frame size = 0 */
+ 247               	/* stack size = 0 */
+ 248               	.L__stack_usage = 0
+ 249 0014 0895      		ret
+ 251               	.Lscope9:
+ 253               	.global	app_task_128ms
+ 255               	app_task_128ms:
   48:/Users/emil/OneDrive - HTBLA Kaindorf/Zweiradprüfstand/Software/Zweiradpruefstand/Zweiradpruefstand_AVR/Zweiradpruefstand_AVR/app.c **** void app_task_128ms (void) {}
- 264               	.LM12:
- 265               	.LFBB10:
- 266               	/* prologue: function */
- 267               	/* frame size = 0 */
- 268               	/* stack size = 0 */
- 269               	.L__stack_usage = 0
- 270 001e 0895      		ret
- 272               	.Lscope10:
- 273               		.comm	app,1,1
- 276               	.Letext0:
- 277               		.ident	"GCC: (GNU) 4.8.1"
- 278               	.global __do_clear_bss
+ 257               	.LM10:
+ 258               	.LFBB10:
+ 259               	/* prologue: function */
+ 260               	/* frame size = 0 */
+ 261               	/* stack size = 0 */
+ 262               	.L__stack_usage = 0
+ 263 0016 0895      		ret
+ 265               	.Lscope10:
+ 266               		.comm	app,1,1
+ 269               	.Letext0:
+ 270               		.ident	"GCC: (GNU) 4.8.1"
+ 271               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 app.c
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:2      *ABS*:0000003e __SP_H__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:3      *ABS*:0000003d __SP_L__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:4      *ABS*:0000003f __SREG__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:126    .text:00000000 app_init
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:2      *ABS*:0000003e __SP_H__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:3      *ABS*:0000003d __SP_L__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:4      *ABS*:0000003f __SREG__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:126    .text:00000000 app_init
                             *COM*:00000001 app
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:147    .text:0000000a app_main
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:164    .text:00000010 app_task_1ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:178    .text:00000012 app_task_2ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:192    .text:00000014 app_task_4ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:206    .text:00000016 app_task_8ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:220    .text:00000018 app_task_16ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:234    .text:0000001a app_task_32ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:248    .text:0000001c app_task_64ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cciNcGm7.s:262    .text:0000001e app_task_128ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:143    .text:00000006 app_main
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:157    .text:00000008 app_task_1ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:171    .text:0000000a app_task_2ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:185    .text:0000000c app_task_4ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:199    .text:0000000e app_task_8ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:213    .text:00000010 app_task_16ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:227    .text:00000012 app_task_32ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:241    .text:00000014 app_task_64ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:255    .text:00000016 app_task_128ms
 
 UNDEFINED SYMBOLS
-sys_setLed
 __do_clear_bss
