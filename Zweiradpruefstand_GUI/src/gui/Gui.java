@@ -23,9 +23,11 @@ public class Gui extends javax.swing.JFrame {
         initComponents();
         setTitle("Zweiradprüfstand");
         setLocationRelativeTo(null);
-        setSize(new Dimension(1300, 900));
+        setSize(new Dimension(1000, 750));
         jtfStatus.setEditable(false);
+        jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
         updateSwingControls();
+        refreshPorts();
     }
     
     
@@ -34,13 +36,41 @@ public class Gui extends javax.swing.JFrame {
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
         jmiConnect.setEnabled(false);
+        jbutConnect.setEnabled(false);
         jmiDisconnect.setEnabled(false);
+        jbutDisconnect.setEnabled(false);
         jcbSerialDevices.setEnabled(false);
+        
+        jmiRefresh.setEnabled(true);
+        jbutRefresh.setEnabled(true);
+        
         
         if (jcbSerialDevices.getModel().getSize() > 0) {
             jcbSerialDevices.setEnabled(true);
             jmiConnect.setEnabled(true);
+            jbutConnect.setEnabled(true);
         }
+        
+        if (serialPort != null && serialPort.isOpened()) {
+            jbutDisconnect.setEnabled(true);
+            jmiDisconnect.setEnabled(true);
+            jcbSerialDevices.setEnabled(false);
+            jmiRefresh.setEnabled(false);
+            jbutRefresh.setEnabled(false);
+            jmiConnect.setEnabled(false);
+            jbutConnect.setEnabled(false);
+        }
+        
+    }
+    
+    
+    private void jtfThrowable (Throwable th) {
+        th.printStackTrace(System.err);
+        String msg = th.getMessage();
+        if (msg == null || msg.isEmpty()) {
+            msg = th.getClass().getSimpleName();
+        }
+        jtfStatus.setText(msg);
     }
     
     
@@ -57,11 +87,52 @@ public class Gui extends javax.swing.JFrame {
         
         jcbSerialDevices.setModel(new DefaultComboBoxModel<String>(ports));
         if (preferedPort != null) {
-            jcbSerialDevices.setSelectedIndex(preferedPort);
+            jcbSerialDevices.setSelectedItem(preferedPort);
         }
         
         updateSwingControls();
         
+    }
+    
+    
+    private void connectPort (String port) {
+        serialPort = new jssc.SerialPort(port);
+        
+        try {
+            if (serialPort.openPort() == false) {
+                throw new jssc.SerialPortException (port, "openPort", "return value false");
+            }
+            //Konfiguration einfügen: Baudrate, Databits, Stopbits, Parity
+            
+        } catch (Exception e) {
+            jtfThrowable(e);
+            
+        } finally {
+            updateSwingControls();
+            jtfStatus.setText("Gerät erfolgreich verbunden");
+        }
+    }
+    
+    
+    private void disconnectPort () {
+        if (serialPort == null || !serialPort.isOpened()) {
+            jtfThrowable( new Exception("Interner Fehler!"));
+        }
+        
+        try {
+            if (serialPort.closePort() == false) {
+                throw new jssc.SerialPortException(null, "closePort", "return value false");
+            }
+            
+            
+        } catch (Exception e) {
+            jtfThrowable(e);
+            
+        } finally {
+            serialPort = null;
+            updateSwingControls();
+            jtfStatus.setText("Gerät erfolgreich getrennt");
+        }
     }
     
 
@@ -77,11 +148,15 @@ public class Gui extends javax.swing.JFrame {
 
         jSlider1 = new javax.swing.JSlider();
         jPanChart = new javax.swing.JPanel();
-        jToolBar = new javax.swing.JToolBar();
-        jcbSerialDevices = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jtfStatus = new javax.swing.JTextField();
         jProgressBar1 = new javax.swing.JProgressBar();
+        jPanTools = new javax.swing.JPanel();
+        jLabelDevice = new javax.swing.JLabel();
+        jcbSerialDevices = new javax.swing.JComboBox<>();
+        jbutConnect = new javax.swing.JButton();
+        jbutDisconnect = new javax.swing.JButton();
+        jbutRefresh = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jmenuFile = new javax.swing.JMenu();
         jmiSave = new javax.swing.JMenuItem();
@@ -89,7 +164,7 @@ public class Gui extends javax.swing.JFrame {
         jmiPrint = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jmiSettings = new javax.swing.JMenuItem();
-        jmiClose = new javax.swing.JMenuItem();
+        jmiQuit = new javax.swing.JMenuItem();
         jmenuSimulation = new javax.swing.JMenu();
         jmiStartSim = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -105,21 +180,14 @@ public class Gui extends javax.swing.JFrame {
         jPanChart.setLayout(jPanChartLayout);
         jPanChartLayout.setHorizontalGroup(
             jPanChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
+            .addGap(0, 611, Short.MAX_VALUE)
         );
         jPanChartLayout.setVerticalGroup(
             jPanChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 297, Short.MAX_VALUE)
+            .addGap(0, 304, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanChart, java.awt.BorderLayout.CENTER);
-
-        jToolBar.setRollover(true);
-
-        jcbSerialDevices.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jToolBar.add(jcbSerialDevices);
-
-        getContentPane().add(jToolBar, java.awt.BorderLayout.PAGE_START);
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -131,7 +199,48 @@ public class Gui extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
-        jmenuFile.setText("File");
+        jPanTools.setLayout(new java.awt.GridBagLayout());
+
+        jLabelDevice.setText("Gerät wählen: ");
+        jLabelDevice.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanTools.add(jLabelDevice, new java.awt.GridBagConstraints());
+
+        jcbSerialDevices.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanTools.add(jcbSerialDevices, gridBagConstraints);
+
+        jbutConnect.setText("Verbinden");
+        jbutConnect.setPreferredSize(new java.awt.Dimension(127, 29));
+        jbutConnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutConnectActionPerformed(evt);
+            }
+        });
+        jPanTools.add(jbutConnect, new java.awt.GridBagConstraints());
+
+        jbutDisconnect.setText("Trennen");
+        jbutDisconnect.setPreferredSize(new java.awt.Dimension(127, 29));
+        jbutDisconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutDisconnectActionPerformed(evt);
+            }
+        });
+        jPanTools.add(jbutDisconnect, new java.awt.GridBagConstraints());
+
+        jbutRefresh.setText("Aktualisieren");
+        jbutRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutRefreshActionPerformed(evt);
+            }
+        });
+        jPanTools.add(jbutRefresh, new java.awt.GridBagConstraints());
+
+        getContentPane().add(jPanTools, java.awt.BorderLayout.PAGE_START);
+
+        jmenuFile.setText("Datei");
 
         jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.META_MASK));
         jmiSave.setText("Speichern");
@@ -162,14 +271,14 @@ public class Gui extends javax.swing.JFrame {
         });
         jmenuFile.add(jmiSettings);
 
-        jmiClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_MASK));
-        jmiClose.setText("Beenden");
-        jmiClose.addActionListener(new java.awt.event.ActionListener() {
+        jmiQuit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_MASK));
+        jmiQuit.setText("Beenden");
+        jmiQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiCloseActionPerformed(evt);
+                jmiQuitActionPerformed(evt);
             }
         });
-        jmenuFile.add(jmiClose);
+        jmenuFile.add(jmiQuit);
 
         jMenuBar.add(jmenuFile);
 
@@ -214,10 +323,10 @@ public class Gui extends javax.swing.JFrame {
 
         jMenuBar.add(jmenuSimulation);
 
-        jmenuAbout.setText("About");
+        jmenuAbout.setText("Über");
 
         jmiAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PERIOD, java.awt.event.InputEvent.META_MASK));
-        jmiAbout.setText("About");
+        jmiAbout.setText("Über");
         jmiAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmiAboutActionPerformed(evt);
@@ -244,30 +353,42 @@ public class Gui extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
-    private void jmiCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCloseActionPerformed
+    private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jmiCloseActionPerformed
+    }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jmiStartSimActionPerformed
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
-        // TODO add your handling code here:
+        refreshPorts();
     }//GEN-LAST:event_jmiRefreshActionPerformed
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
-        // TODO add your handling code here:
+        connectPort((String)jcbSerialDevices.getSelectedItem());
     }//GEN-LAST:event_jmiConnectActionPerformed
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
-        // TODO add your handling code here:
+        disconnectPort();
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
         AboutDialog about = new AboutDialog(this, false);
         about.setVisible(true);
     }//GEN-LAST:event_jmiAboutActionPerformed
+
+    private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
+        connectPort((String)jcbSerialDevices.getSelectedItem());
+    }//GEN-LAST:event_jbutConnectActionPerformed
+
+    private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
+        disconnectPort();
+    }//GEN-LAST:event_jbutDisconnectActionPerformed
+
+    private void jbutRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutRefreshActionPerformed
+        refreshPorts();
+    }//GEN-LAST:event_jbutRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -305,24 +426,28 @@ public class Gui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabelDevice;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JPanel jPanChart;
+    private javax.swing.JPanel jPanTools;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JSlider jSlider1;
-    private javax.swing.JToolBar jToolBar;
+    private javax.swing.JButton jbutConnect;
+    private javax.swing.JButton jbutDisconnect;
+    private javax.swing.JButton jbutRefresh;
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuFile;
     private javax.swing.JMenu jmenuSimulation;
     private javax.swing.JMenuItem jmiAbout;
-    private javax.swing.JMenuItem jmiClose;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiPrint;
+    private javax.swing.JMenuItem jmiQuit;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
