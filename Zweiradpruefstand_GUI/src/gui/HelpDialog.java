@@ -33,7 +33,8 @@ public class HelpDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanelHelp.setLayout(new java.awt.GridLayout());
+        jPanelHelp.setBackground(new java.awt.Color(255, 255, 255));
+        jPanelHelp.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabel1.setText("<html><h2>   1. Motorrad auf den Prüfstand stellen und befestigen <br><br> 2. Prüfstand via USB mit dem Rechner verbinden <br><br> 3. Klicken Sie auf <i>Start Simualtion (cmd+R)</i> <br><br>  4. Starten Sie das Motorrad <br><br> 5. Klicken Sie auf <i>Start</i> <br><br> 6. Beschleunigen Sie mit Vollgas bis die Höchstgeschwindigkeit erreicht ist. <br><br> 7. Programm stoppt automatisch <br> <br>  </h2>");
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));

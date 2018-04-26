@@ -12,14 +12,14 @@ import javax.swing.DefaultComboBoxModel;
  *
  * @author emil
  */
-public class Gui extends javax.swing.JFrame {
+public class Zweiradprüfstand extends javax.swing.JFrame {
     
     private jssc.SerialPort serialPort;
 
     /**
      * Creates new form Gui
      */
-    public Gui() {
+    public Zweiradprüfstand() {
         initComponents();
         setTitle("Zweiradprüfstand");
         setLocationRelativeTo(null);
@@ -28,6 +28,11 @@ public class Gui extends javax.swing.JFrame {
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
         updateSwingControls();
         refreshPorts();
+        
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        } catch(Exception e){}
+            
     }
     
     
@@ -180,6 +185,9 @@ public class Gui extends javax.swing.JFrame {
         jmiHelp = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanChart.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanChartLayout = new javax.swing.GroupLayout(jPanChart);
         jPanChart.setLayout(jPanChartLayout);
@@ -194,12 +202,15 @@ public class Gui extends javax.swing.JFrame {
 
         getContentPane().add(jPanChart, java.awt.BorderLayout.CENTER);
 
+        jPanStatus.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatus.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanStatus.add(jtfStatus, gridBagConstraints);
+
+        jpbStatus.setBorder(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -214,6 +225,7 @@ public class Gui extends javax.swing.JFrame {
 
         getContentPane().add(jPanStatus, java.awt.BorderLayout.PAGE_END);
 
+        jPanTools.setBackground(new java.awt.Color(255, 255, 255));
         jPanTools.setLayout(new java.awt.GridBagLayout());
 
         jLabelDevice.setText("Gerät wählen: ");
@@ -423,33 +435,34 @@ public class Gui extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+        /* Set the MAC OS X look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("MAC OS X".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Gui().setVisible(true);
+                new Zweiradprüfstand().setVisible(true);
             }
         });
     }

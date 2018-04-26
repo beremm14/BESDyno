@@ -24,6 +24,11 @@
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
     <Container class="javax.swing.JPanel" name="jPanHeader">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+      </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="First"/>
@@ -57,6 +62,11 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanInfo">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+      </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Center"/>
@@ -86,22 +96,32 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabelWarning">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;left&gt; Die Nutzung des Pr&#xfc;fstandes geschieht auf eigene Gefahr! &lt;br&gt; Die Diplomanden &#xfc;bernehmen keine Haftung f&#xfc;r eventuell entstandene Sach- oder Personensch&#xe4;den. &lt;br&gt; Der Nutzer des pr&#xfc;fstandes erh&#xe4;lt eine lebenslange Lizenz zur Benutzung der Software. &lt;br&gt; Alle Rechte an der Software verbleiben bei Berger Emil. &lt;br&gt; Alle Rechte der Elektronik verbleiben bei Ehmann Julian."/>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;left&gt; Die Nutzung des Pr&#xfc;fstandes geschieht auf eigene Gefahr! &lt;br&gt; Die Diplomanden &#xfc;bernehmen keine Haftung f&#xfc;r eventuell entstandene Sach- oder Personensch&#xe4;den. &lt;br&gt; Der Nutzer des Pr&#xfc;fstandes erh&#xe4;lt eine lebenslange Lizenz zur Benutzung der Software. &lt;br&gt; Alle Rechte an der Software verbleiben bei Berger Emil. &lt;br&gt; Alle Rechte der Elektronik verbleiben bei Ehmann Julian."/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Warnung"/>
+                <TitledBorder title="Warnung">
+                  <Font PropertyName="font" name="Lucida Grande" size="14" style="0"/>
+                </TitledBorder>
               </Border>
             </Property>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-              <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+              <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
             </Constraint>
           </Constraints>
         </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanAuthor">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+      </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Last"/>
@@ -111,6 +131,11 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jPanVersion">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="Center"/>
@@ -151,6 +176,11 @@
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanAuthor2">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="Last"/>

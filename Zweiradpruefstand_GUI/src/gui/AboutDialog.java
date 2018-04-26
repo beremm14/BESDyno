@@ -49,6 +49,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jPanHeader.setBackground(new java.awt.Color(255, 255, 255));
         jPanHeader.setLayout(new java.awt.BorderLayout());
 
         jLabelTitle.setFont(new java.awt.Font("Lucida Grande", 0, 48)); // NOI18N
@@ -60,6 +61,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         getContentPane().add(jPanHeader, java.awt.BorderLayout.PAGE_START);
 
+        jPanInfo.setBackground(new java.awt.Color(255, 255, 255));
         jPanInfo.setLayout(new java.awt.GridBagLayout());
 
         jLabelDevelopers.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
@@ -68,17 +70,22 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelDevelopers.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         jPanInfo.add(jLabelDevelopers, new java.awt.GridBagConstraints());
 
-        jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der Nutzer des prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
-        jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder("Warnung"));
+        jLabelWarning.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der Nutzer des Prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
+        jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Warnung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         jPanInfo.add(jLabelWarning, gridBagConstraints);
 
         getContentPane().add(jPanInfo, java.awt.BorderLayout.CENTER);
 
+        jPanAuthor.setBackground(new java.awt.Color(255, 255, 255));
         jPanAuthor.setLayout(new java.awt.BorderLayout());
 
+        jPanVersion.setBackground(new java.awt.Color(255, 255, 255));
         jPanVersion.setLayout(new java.awt.BorderLayout());
 
         jLabelVersionNumber.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -89,6 +96,8 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanVersion.add(jLabelVersionText, java.awt.BorderLayout.WEST);
 
         jPanAuthor.add(jPanVersion, java.awt.BorderLayout.CENTER);
+
+        jPanAuthor2.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabelAuthor.setText("© Emil Berger 2018-2019");
         jLabelAuthor.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
