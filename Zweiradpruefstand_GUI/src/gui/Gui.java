@@ -35,6 +35,7 @@ public class Gui extends javax.swing.JFrame {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
+        jbutStartSim.setEnabled(false);
         jmiConnect.setEnabled(false);
         jbutConnect.setEnabled(false);
         jmiDisconnect.setEnabled(false);
@@ -59,6 +60,8 @@ public class Gui extends javax.swing.JFrame {
             jbutRefresh.setEnabled(false);
             jmiConnect.setEnabled(false);
             jbutConnect.setEnabled(false);
+            jmiStartSim.setEnabled(true);
+            jbutStartSim.setEnabled(true);
         }
         
     }
@@ -148,9 +151,10 @@ public class Gui extends javax.swing.JFrame {
 
         jSlider1 = new javax.swing.JSlider();
         jPanChart = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        jPanStatus = new javax.swing.JPanel();
         jtfStatus = new javax.swing.JTextField();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        jpbStatus = new javax.swing.JProgressBar();
+        jbutStartSim = new javax.swing.JButton();
         jPanTools = new javax.swing.JPanel();
         jLabelDevice = new javax.swing.JLabel();
         jcbSerialDevices = new javax.swing.JComboBox<>();
@@ -173,6 +177,7 @@ public class Gui extends javax.swing.JFrame {
         jmiDisconnect = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
+        jmiHelp = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -184,20 +189,30 @@ public class Gui extends javax.swing.JFrame {
         );
         jPanChartLayout.setVerticalGroup(
             jPanChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 304, Short.MAX_VALUE)
+            .addGap(0, 281, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanChart, java.awt.BorderLayout.CENTER);
 
-        jPanel1.setLayout(new java.awt.GridBagLayout());
+        jPanStatus.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        jPanel1.add(jtfStatus, gridBagConstraints);
-        jPanel1.add(jProgressBar1, new java.awt.GridBagConstraints());
+        jPanStatus.add(jtfStatus, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanStatus.add(jpbStatus, gridBagConstraints);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_END);
+        jbutStartSim.setText("Start Simulation");
+        jPanStatus.add(jbutStartSim, new java.awt.GridBagConstraints());
+
+        getContentPane().add(jPanStatus, java.awt.BorderLayout.PAGE_END);
 
         jPanTools.setLayout(new java.awt.GridBagLayout());
 
@@ -334,6 +349,15 @@ public class Gui extends javax.swing.JFrame {
         });
         jmenuAbout.add(jmiAbout);
 
+        jmiHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        jmiHelp.setText("Hilfe");
+        jmiHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiHelpActionPerformed(evt);
+            }
+        });
+        jmenuAbout.add(jmiHelp);
+
         jMenuBar.add(jmenuAbout);
 
         setJMenuBar(jMenuBar);
@@ -390,6 +414,11 @@ public class Gui extends javax.swing.JFrame {
         refreshPorts();
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
+    private void jmiHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHelpActionPerformed
+        HelpDialog help = new HelpDialog(this, false);
+        help.setVisible(true);
+    }//GEN-LAST:event_jmiHelpActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -429,9 +458,8 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelDevice;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JPanel jPanChart;
+    private javax.swing.JPanel jPanStatus;
     private javax.swing.JPanel jPanTools;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -439,6 +467,7 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JButton jbutConnect;
     private javax.swing.JButton jbutDisconnect;
     private javax.swing.JButton jbutRefresh;
+    private javax.swing.JButton jbutStartSim;
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuFile;
@@ -446,12 +475,14 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JMenuItem jmiDisconnect;
+    private javax.swing.JMenuItem jmiHelp;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
     private javax.swing.JMenuItem jmiStartSim;
+    private javax.swing.JProgressBar jpbStatus;
     private javax.swing.JTextField jtfStatus;
     // End of variables declaration//GEN-END:variables
 }
