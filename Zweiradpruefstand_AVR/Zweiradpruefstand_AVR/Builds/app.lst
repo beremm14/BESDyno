@@ -162,22 +162,22 @@
  271               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 app.c
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:2      *ABS*:0000003e __SP_H__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:3      *ABS*:0000003d __SP_L__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:4      *ABS*:0000003f __SREG__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:126    .text:00000000 app_init
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:2      *ABS*:0000003e __SP_H__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:3      *ABS*:0000003d __SP_L__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:4      *ABS*:0000003f __SREG__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:126    .text:00000000 app_init
                             *COM*:00000001 app
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:143    .text:00000006 app_main
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:157    .text:00000008 app_task_1ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:171    .text:0000000a app_task_2ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:185    .text:0000000c app_task_4ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:199    .text:0000000e app_task_8ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:213    .text:00000010 app_task_16ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:227    .text:00000012 app_task_32ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:241    .text:00000014 app_task_64ms
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccBuloK4.s:255    .text:00000016 app_task_128ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:143    .text:00000006 app_main
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:157    .text:00000008 app_task_1ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:171    .text:0000000a app_task_2ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:185    .text:0000000c app_task_4ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:199    .text:0000000e app_task_8ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:213    .text:00000010 app_task_16ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:227    .text:00000012 app_task_32ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:241    .text:00000014 app_task_64ms
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccGIBV3G.s:255    .text:00000016 app_task_128ms
 
 UNDEFINED SYMBOLS
 __do_clear_bss

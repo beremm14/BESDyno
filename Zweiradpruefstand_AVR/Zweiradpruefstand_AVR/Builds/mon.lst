@@ -455,24 +455,24 @@
  485               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 mon.c
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:2      *ABS*:0000003e __SP_H__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:3      *ABS*:0000003d __SP_L__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:4      *ABS*:0000003f __SREG__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:132    .text:00000000 mon_cmd_test
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:210    .text:0000005e mon_cmd_info
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:245    .text:0000007e mon_init
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:2      *ABS*:0000003e __SP_H__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:3      *ABS*:0000003d __SP_L__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:4      *ABS*:0000003f __SREG__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:132    .text:00000000 mon_cmd_test
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:210    .text:0000005e mon_cmd_info
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:245    .text:0000007e mon_init
                             *COM*:00000001 mon
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:262    .text:00000084 mon_main
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:276    .text:00000086 mon_getCmdCount
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:300    .text:0000008a mon_printLineHeader
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:473    .progmem.data:00000040 MON_LINE_WELCOME
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:364    .text:000000c6 mon_printLine
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:262    .text:00000084 mon_main
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:276    .text:00000086 mon_getCmdCount
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:300    .text:0000008a mon_printLineHeader
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:473    .progmem.data:00000040 MON_LINE_WELCOME
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:364    .text:000000c6 mon_printLine
                              .bss:00000000 cnt.2178
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:451    .progmem.data:00000000 MON_PMEMSTR_CMDS
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:466    .progmem.data:00000024 MON_PMEM_CMD_INFO
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc12jOeO.s:459    .progmem.data:00000008 MON_PMEM_CMD_TEST
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:451    .progmem.data:00000000 MON_PMEMSTR_CMDS
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:466    .progmem.data:00000024 MON_PMEM_CMD_INFO
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cc6wQ8CO.s:459    .progmem.data:00000008 MON_PMEM_CMD_TEST
 
 UNDEFINED SYMBOLS
 printf

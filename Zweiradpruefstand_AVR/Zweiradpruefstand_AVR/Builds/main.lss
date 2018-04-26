@@ -55,10 +55,10 @@ Disassembly of section .text:
       64:	0c 94 dc 00 	jmp	0x1b8	; 0x1b8 <__bad_interrupt>
 
 00000068 <FLASHSTRING_TIME>:
-      68:	31 30 3a 31 35 3a 32 33 00                          10:15:23.
+      68:	31 31 3a 31 34 3a 31 31 00                          11:14:11.
 
 00000071 <FLASHSTRING_DATE>:
-      71:	41 70 72 20 32 35 20 32 30 31 38 00                 Apr 25 2018.
+      71:	41 70 72 20 32 36 20 32 30 31 38 00                 Apr 26 2018.
 
 0000007d <FLASHSTRING_WELCOME>:
       7d:	0a 0d 50 72 6f 67 72 61 6d 6d 20 3f 3f 20 00        ..Programm ?? .
