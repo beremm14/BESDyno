@@ -33,18 +33,27 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanStatus = new javax.swing.JPanel();
         jPanStatusText = new javax.swing.JPanel();
         jLabelCount = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        jpbMeasure = new javax.swing.JProgressBar();
         jLabel1 = new javax.swing.JLabel();
         jLabelStatus = new javax.swing.JLabel();
         jPanStatusColour = new javax.swing.JPanel();
+        jPanDial = new javax.swing.JPanel();
+        jFrameSpeed = new javax.swing.JInternalFrame();
+        jFrameRPM = new javax.swing.JInternalFrame();
         jPanControls = new javax.swing.JPanel();
+        jbutCancel = new javax.swing.JButton();
+        jbutFinish = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
+        jPanMain.setBackground(new java.awt.Color(255, 255, 255));
         jPanMain.setLayout(new java.awt.BorderLayout());
 
+        jPanStatus.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatus.setLayout(new java.awt.GridLayout(2, 1));
 
+        jPanStatusText.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatusText.setLayout(new java.awt.GridBagLayout());
 
         jLabelCount.setText("Anzahl der Messpunkte: ");
@@ -53,13 +62,13 @@ public class MeasureDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanStatusText.add(jLabelCount, gridBagConstraints);
 
-        jProgressBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jpbMeasure.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        jPanStatusText.add(jProgressBar1, gridBagConstraints);
+        jPanStatusText.add(jpbMeasure, gridBagConstraints);
 
         jLabel1.setText("Status: ");
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -75,33 +84,34 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         jPanStatus.add(jPanStatusText);
 
-        javax.swing.GroupLayout jPanStatusColourLayout = new javax.swing.GroupLayout(jPanStatusColour);
-        jPanStatusColour.setLayout(jPanStatusColourLayout);
-        jPanStatusColourLayout.setHorizontalGroup(
-            jPanStatusColourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 760, Short.MAX_VALUE)
-        );
-        jPanStatusColourLayout.setVerticalGroup(
-            jPanStatusColourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-
+        jPanStatusColour.setBackground(new java.awt.Color(255, 255, 255));
+        jPanStatusColour.setLayout(new java.awt.GridLayout());
         jPanStatus.add(jPanStatusColour);
 
         jPanMain.add(jPanStatus, java.awt.BorderLayout.NORTH);
 
+        jPanDial.setBackground(new java.awt.Color(255, 255, 255));
+        jPanDial.setLayout(new java.awt.GridLayout());
+
+        jFrameSpeed.setVisible(true);
+        jFrameSpeed.getContentPane().setLayout(new java.awt.GridLayout());
+        jPanDial.add(jFrameSpeed);
+
+        jFrameRPM.setVisible(true);
+        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout());
+        jPanDial.add(jFrameRPM);
+
+        jPanMain.add(jPanDial, java.awt.BorderLayout.CENTER);
+
         getContentPane().add(jPanMain, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout jPanControlsLayout = new javax.swing.GroupLayout(jPanControls);
-        jPanControls.setLayout(jPanControlsLayout);
-        jPanControlsLayout.setHorizontalGroup(
-            jPanControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 760, Short.MAX_VALUE)
-        );
-        jPanControlsLayout.setVerticalGroup(
-            jPanControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        jPanControls.setBackground(new java.awt.Color(255, 255, 255));
+
+        jbutCancel.setText("Abbrechen");
+        jPanControls.add(jbutCancel);
+
+        jbutFinish.setText("Fertigstellen");
+        jPanControls.add(jbutFinish);
 
         getContentPane().add(jPanControls, java.awt.BorderLayout.SOUTH);
 
@@ -151,14 +161,19 @@ public class MeasureDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JInternalFrame jFrameRPM;
+    private javax.swing.JInternalFrame jFrameSpeed;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelCount;
     private javax.swing.JLabel jLabelStatus;
     private javax.swing.JPanel jPanControls;
+    private javax.swing.JPanel jPanDial;
     private javax.swing.JPanel jPanMain;
     private javax.swing.JPanel jPanStatus;
     private javax.swing.JPanel jPanStatusColour;
     private javax.swing.JPanel jPanStatusText;
-    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JButton jbutCancel;
+    private javax.swing.JButton jbutFinish;
+    private javax.swing.JProgressBar jpbMeasure;
     // End of variables declaration//GEN-END:variables
 }

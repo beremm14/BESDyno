@@ -7,6 +7,7 @@ package gui;
 
 import java.awt.Dimension;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -26,7 +27,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         setSize(new Dimension(1000, 750));
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
-        updateSwingControls();
+        refreshGui();
         refreshPorts();
         
 //        try {
@@ -36,7 +37,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }
     
     
-    private void updateSwingControls () {
+    private void refreshGui () {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
@@ -82,6 +83,16 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }
     
     
+    private void showThrowable (Throwable th) {
+        th.printStackTrace(System.err);
+        String msg = th.getMessage();
+        if (msg == null || msg.isEmpty()) {
+            msg = th.getClass().getSimpleName();
+        }
+        JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
     private void refreshPorts () {
         final String [] ports = jssc.SerialPortList.getPortNames();
         
@@ -98,7 +109,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jcbSerialDevices.setSelectedItem(preferedPort);
         }
         
-        updateSwingControls();
+        refreshGui();
         
     }
     
@@ -116,7 +127,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jtfThrowable(e);
             
         } finally {
-            updateSwingControls();
+            refreshGui();
             jtfStatus.setText("Gerät erfolgreich verbunden");
         }
     }
@@ -138,7 +149,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             
         } finally {
             serialPort = null;
-            updateSwingControls();
+            refreshGui();
             jtfStatus.setText("Gerät erfolgreich getrennt");
         }
     }
@@ -221,6 +232,11 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jPanStatus.add(jpbStatus, gridBagConstraints);
 
         jbutStartSim.setText("Start Simulation");
+        jbutStartSim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutStartSimActionPerformed(evt);
+            }
+        });
         jPanStatus.add(jbutStartSim, new java.awt.GridBagConstraints());
 
         getContentPane().add(jPanStatus, java.awt.BorderLayout.PAGE_END);
@@ -394,7 +410,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jmiStartSimActionPerformed
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
@@ -430,6 +446,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         HelpDialog help = new HelpDialog(this, false);
         help.setVisible(true);
     }//GEN-LAST:event_jmiHelpActionPerformed
+
+    private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
+        
+    }//GEN-LAST:event_jbutStartSimActionPerformed
 
     /**
      * @param args the command line arguments
