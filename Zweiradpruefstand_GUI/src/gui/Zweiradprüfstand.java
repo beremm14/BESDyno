@@ -27,8 +27,9 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         setSize(new Dimension(1000, 750));
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
-        refreshGui();
         refreshPorts();
+        autoConnect();
+        refreshGui();
         
 //        try {
 //            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -110,7 +111,6 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         
         refreshGui();
-        
     }
     
     
@@ -129,6 +129,13 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         } finally {
             refreshGui();
             jtfStatus.setText("Gerät erfolgreich verbunden");
+        }
+    }
+    
+    
+    private void autoConnect () {
+        if (jcbSerialDevices.getSelectedItem().toString().contains("tty.usbmodem")) {
+            connectPort((String)jcbSerialDevices.getSelectedItem());
         }
     }
     
