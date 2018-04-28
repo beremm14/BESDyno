@@ -133,9 +133,12 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }
     
     
+    //Funktioniert nun durch die verschachteteln IFs...
     private void autoConnect () {
-        if (jcbSerialDevices.getSelectedItem().toString().contains("tty.usbmodem")) {
-            connectPort((String)jcbSerialDevices.getSelectedItem());
+        if (jcbSerialDevices.getItemCount() > 0) {
+            if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem1431")) {
+                connectPort((String)jcbSerialDevices.getSelectedItem());
+            }
         }
     }
     
@@ -435,6 +438,11 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
         AboutDialog about = new AboutDialog(this, false);
         about.setVisible(true);
+        if (serialPort.isOpened()) {
+            about.writeDevice((String)jcbSerialDevices.getSelectedItem());
+        } else {
+            about.writeDevice("Kein Prüfstand verbunden...");
+        }
     }//GEN-LAST:event_jmiAboutActionPerformed
 
     private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed

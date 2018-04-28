@@ -19,14 +19,14 @@ public class AboutDialog extends javax.swing.JDialog {
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setVersion();
+        writeVersion();
         setTitle("Zweiradprüfstand - About");
         setLocationRelativeTo(null);
-        setSize(new Dimension(1000, 700));
+        setSize(new Dimension(1100, 900));
     }
     
     
-    private void setVersion () {
+    private void writeVersion () {
         jLabelVersion.setText("1.0");
         jLabelOsName.setText(System.getProperty("os.name"));
         jLabelOsVersion.setText(System.getProperty("os.version"));
@@ -35,6 +35,10 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelVmVersion.setText(System.clearProperty("java.vm.version"));
         jLabelRtName.setText(System.getProperty("java.runtime.name"));
         jLabelRtVersion.setText(System.getProperty("java.runtime.version"));
+    }
+    
+    public void writeDevice (String dn) {
+        jLabelDevice.setText(dn);
     }
     
 
@@ -74,6 +78,9 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelRtName = new javax.swing.JLabel();
         jLabelRtVersionT = new javax.swing.JLabel();
         jLabelRtVersion = new javax.swing.JLabel();
+        jPanDevice = new javax.swing.JPanel();
+        jLabelDeviceT = new javax.swing.JLabel();
+        jLabelDevice = new javax.swing.JLabel();
         jPanAuthor2 = new javax.swing.JPanel();
         jLabelAuthor = new javax.swing.JLabel();
 
@@ -92,7 +99,7 @@ public class AboutDialog extends javax.swing.JDialog {
         getContentPane().add(jPanHeader, java.awt.BorderLayout.PAGE_START);
 
         jPanInfo.setBackground(new java.awt.Color(255, 255, 255));
-        jPanInfo.setLayout(new java.awt.GridLayout());
+        jPanInfo.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabelDevelopers.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
         jLabelDevelopers.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -113,7 +120,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanAuthor.setLayout(new java.awt.BorderLayout());
 
         jPanSysInfo.setBackground(new java.awt.Color(255, 255, 255));
-        jPanSysInfo.setLayout(new java.awt.GridLayout(4, 1));
+        jPanSysInfo.setLayout(new java.awt.GridLayout(5, 1));
 
         jPanVersion.setBackground(new java.awt.Color(255, 255, 255));
         jPanVersion.setBorder(javax.swing.BorderFactory.createTitledBorder("Software-Version"));
@@ -203,6 +210,20 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jPanSysInfo.add(jPanRuntime);
 
+        jPanDevice.setBackground(new java.awt.Color(255, 255, 255));
+        jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder("Endgerät"));
+        jPanDevice.setLayout(new java.awt.GridLayout());
+
+        jLabelDeviceT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelDeviceT.setText("Verbundener Prüfstand: ");
+        jPanDevice.add(jLabelDeviceT);
+
+        jLabelDevice.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelDevice.setText("Kein Prüfstand verbunden...");
+        jPanDevice.add(jLabelDevice);
+
+        jPanSysInfo.add(jPanDevice);
+
         jPanAuthor.add(jPanSysInfo, java.awt.BorderLayout.CENTER);
 
         jPanAuthor2.setBackground(new java.awt.Color(255, 255, 255));
@@ -264,6 +285,8 @@ public class AboutDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelAuthor;
     private javax.swing.JLabel jLabelDevelopers;
+    private javax.swing.JLabel jLabelDevice;
+    private javax.swing.JLabel jLabelDeviceT;
     private javax.swing.JLabel jLabelOsName;
     private javax.swing.JLabel jLabelOsNameT;
     private javax.swing.JLabel jLabelOsVersion;
@@ -284,6 +307,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelWarning;
     private javax.swing.JPanel jPanAuthor;
     private javax.swing.JPanel jPanAuthor2;
+    private javax.swing.JPanel jPanDevice;
     private javax.swing.JPanel jPanHeader;
     private javax.swing.JPanel jPanInfo;
     private javax.swing.JPanel jPanJava;
