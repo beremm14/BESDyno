@@ -25,8 +25,7 @@ const char MON_LINE_WELCOME[] PROGMEM = "Line-Mode: CTRL-X, CTRL-Y, CTRL-C, Retu
 const char MON_PMEM_CMD_INFO[] PROGMEM = "info\0Application infos\0info";
 const char MON_PMEM_CMD_TEST[] PROGMEM = "test\0commando for test\0test";
 
-const struct Sys_MonCmdInfo MON_PMEMSTR_CMDS[] PROGMEM =
-{
+const struct Sys_MonCmdInfo MON_PMEMSTR_CMDS[] PROGMEM = {
     { MON_PMEM_CMD_INFO, mon_cmd_info }
     , { MON_PMEM_CMD_TEST, mon_cmd_test }
 };
@@ -35,20 +34,17 @@ volatile struct Mon mon;
 
 // functions
 
-void mon_init (void)
-{
+void mon_init (void) {
     memset((void *)&mon, 0, sizeof(mon));
 }
 
 
 //--------------------------------------------------------
 
-inline void mon_main (void)
-{
+inline void mon_main (void) {
 }
 
-inline uint8_t mon_getCmdCount (void)
-{
+inline uint8_t mon_getCmdCount (void) {
     return sizeof(MON_PMEMSTR_CMDS)/sizeof(struct Sys_MonCmdInfo);
 }
 
@@ -57,8 +53,7 @@ inline uint8_t mon_getCmdCount (void)
 // Monitor commands of the application
 // --------------------------------------------------------
 
-int8_t mon_cmd_info (uint8_t argc, char *argv[])
-{
+int8_t mon_cmd_info (uint8_t argc, char *argv[]) {
     printf("app.flags_u8  : ");
     sys_printHexBin8(sys.flags_u8);
     sys_newline();
@@ -66,8 +61,7 @@ int8_t mon_cmd_info (uint8_t argc, char *argv[])
 }
 
 
-int8_t mon_cmd_test (uint8_t argc, char *argv[])
-{
+int8_t mon_cmd_test (uint8_t argc, char *argv[]) {
     uint8_t i;
     
     for (i = 0; i<argc; i++)
@@ -81,8 +75,7 @@ int8_t mon_cmd_test (uint8_t argc, char *argv[])
 // Monitor-Line for continues output
 // --------------------------------------------------------
 
-int8_t mon_printLineHeader (uint8_t lineIndex)
-{
+int8_t mon_printLineHeader (uint8_t lineIndex) {
     if (lineIndex==0)
         sys_printString_P(MON_LINE_WELCOME);
     
@@ -94,8 +87,7 @@ int8_t mon_printLineHeader (uint8_t lineIndex)
     }
 }
 
-int8_t mon_printLine   (uint8_t lineIndex, char keyPressed)
-{
+int8_t mon_printLine   (uint8_t lineIndex, char keyPressed) {
     
     switch (lineIndex)
     {

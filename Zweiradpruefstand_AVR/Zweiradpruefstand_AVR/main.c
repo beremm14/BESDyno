@@ -39,8 +39,7 @@ const char FLASHSTRING_DATE[] PROGMEM = __DATE__;
 const char FLASHSTRING_TIME[] PROGMEM = __TIME__;
 
 
-int main (void)
-{
+int main (void) {
     sys_init();
     app_init();
 #ifdef GLOBAL_MONITOR
@@ -53,8 +52,7 @@ int main (void)
     
 #ifdef GLOBAL_SURE_LCD
     printf("LCD ");
-    if (sys.lcd.status==1)
-    {
+    if (sys.lcd.status==1) {
         printf("detected and ready to use\n");
         sys_lcd_putString("?? - ");
         sys_lcd_putString(__TIME__);
@@ -71,8 +69,7 @@ int main (void)
     // enable interrupt system
     sei();
     
-    while (1)
-    {
+    while (1) {
         sys_main();
         app_main();
 #ifdef GLOBAL_MONITOR
