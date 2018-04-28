@@ -200,11 +200,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Abbrechen"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbutCancelActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jbutFinish">
           <Properties>
             <Property name="text" type="java.lang.String" value="Fertigstellen"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbutFinishActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -231,11 +231,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Abbrechen"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbutCancelActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jbutStart">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Messung starten"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbutStartActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

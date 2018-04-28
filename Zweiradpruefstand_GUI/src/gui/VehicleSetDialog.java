@@ -144,12 +144,22 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jPanControls.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanButtons.setBackground(new java.awt.Color(255, 255, 255));
-        jPanButtons.setLayout(new java.awt.GridLayout());
+        jPanButtons.setLayout(new java.awt.GridLayout(1, 0));
 
         jbutCancel.setText("Abbrechen");
+        jbutCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutCancelActionPerformed(evt);
+            }
+        });
         jPanButtons.add(jbutCancel);
 
         jbutStart.setText("Messung starten");
+        jbutStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutStartActionPerformed(evt);
+            }
+        });
         jPanButtons.add(jbutStart);
 
         jPanControls.add(jPanButtons);
@@ -159,18 +169,26 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jbutStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartActionPerformed
+        
+    }//GEN-LAST:event_jbutStartActionPerformed
+
+    private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
+        
+    }//GEN-LAST:event_jbutCancelActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+        /* Set the MAC OS X look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("MAC OS X".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }

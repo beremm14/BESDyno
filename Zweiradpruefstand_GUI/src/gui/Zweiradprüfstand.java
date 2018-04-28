@@ -394,19 +394,19 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPrintActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jmiPrintActionPerformed
 
     private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
     private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed

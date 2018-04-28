@@ -85,20 +85,20 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanStatus.add(jPanStatusText);
 
         jPanStatusColour.setBackground(new java.awt.Color(255, 255, 255));
-        jPanStatusColour.setLayout(new java.awt.GridLayout());
+        jPanStatusColour.setLayout(new java.awt.GridLayout(1, 0));
         jPanStatus.add(jPanStatusColour);
 
         jPanMain.add(jPanStatus, java.awt.BorderLayout.NORTH);
 
         jPanDial.setBackground(new java.awt.Color(255, 255, 255));
-        jPanDial.setLayout(new java.awt.GridLayout());
+        jPanDial.setLayout(new java.awt.GridLayout(1, 0));
 
         jFrameSpeed.setVisible(true);
-        jFrameSpeed.getContentPane().setLayout(new java.awt.GridLayout());
+        jFrameSpeed.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
         jPanDial.add(jFrameSpeed);
 
         jFrameRPM.setVisible(true);
-        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout());
+        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
         jPanDial.add(jFrameRPM);
 
         jPanMain.add(jPanDial, java.awt.BorderLayout.CENTER);
@@ -108,9 +108,19 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanControls.setBackground(new java.awt.Color(255, 255, 255));
 
         jbutCancel.setText("Abbrechen");
+        jbutCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutCancelActionPerformed(evt);
+            }
+        });
         jPanControls.add(jbutCancel);
 
         jbutFinish.setText("Fertigstellen");
+        jbutFinish.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutFinishActionPerformed(evt);
+            }
+        });
         jPanControls.add(jbutFinish);
 
         getContentPane().add(jPanControls, java.awt.BorderLayout.SOUTH);
@@ -118,18 +128,26 @@ public class MeasureDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jbutFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutFinishActionPerformed
+        
+    }//GEN-LAST:event_jbutFinishActionPerformed
+
+    private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
+        
+    }//GEN-LAST:event_jbutCancelActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+        /* Set the MAC OS X look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("MAC OS X".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
