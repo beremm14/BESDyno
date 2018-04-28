@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>src/app.h</itemPath>
+      <itemPath>src/global.h</itemPath>
+      <itemPath>src/mon.h</itemPath>
+      <itemPath>src/sys.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>src/app.c</itemPath>
+      <itemPath>src/main.c</itemPath>
+      <itemPath>src/mon.c</itemPath>
+      <itemPath>src/sys.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>/tmp/arduinouno3_4_atmega328p/src</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>GNU-AVR|GNU</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <standard>3</standard>
+          <commandLine>-Wall -Os -mmcu=atmega328p</commandLine>
+          <preprocessorList>
+            <Elem>ARDUINO_UNO_R3_ATMEGA328P</Elem>
+          </preprocessorList>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/arduino.elf</output>
+          <commandLine>-mmcu=atmega328p -Wl,-Map=${CND_DISTDIR}/arduino.map,--cref</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="src/app.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/app.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/global.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/mon.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/mon.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/sys.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sys.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
