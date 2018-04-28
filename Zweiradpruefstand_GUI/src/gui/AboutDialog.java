@@ -19,11 +19,24 @@ public class AboutDialog extends javax.swing.JDialog {
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        jLabelVersionNumber.setText("1.0");
+        setVersion();
         setTitle("Zweiradprüfstand - About");
         setLocationRelativeTo(null);
-        setSize(new Dimension(800, 600));
+        setSize(new Dimension(1000, 700));
     }
+    
+    
+    private void setVersion () {
+        jLabelVersion.setText("1.0");
+        jLabelOsName.setText(System.getProperty("os.name"));
+        jLabelOsVersion.setText(System.getProperty("os.version"));
+        jLabelVmName.setText(System.getProperty("java.vm.name"));
+        jLabelVmVendor.setText(System.getProperty("java.vm.vendor"));
+        jLabelVmVersion.setText(System.clearProperty("java.vm.version"));
+        jLabelRtName.setText(System.getProperty("java.runtime.name"));
+        jLabelRtVersion.setText(System.getProperty("java.runtime.version"));
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,7 +46,6 @@ public class AboutDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanHeader = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
@@ -41,9 +53,27 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelDevelopers = new javax.swing.JLabel();
         jLabelWarning = new javax.swing.JLabel();
         jPanAuthor = new javax.swing.JPanel();
+        jPanSysInfo = new javax.swing.JPanel();
         jPanVersion = new javax.swing.JPanel();
-        jLabelVersionNumber = new javax.swing.JLabel();
-        jLabelVersionText = new javax.swing.JLabel();
+        jLabelVersionT = new javax.swing.JLabel();
+        jLabelVersion = new javax.swing.JLabel();
+        jPanOS = new javax.swing.JPanel();
+        jLabelOsNameT = new javax.swing.JLabel();
+        jLabelOsName = new javax.swing.JLabel();
+        jLabelOsVersionT = new javax.swing.JLabel();
+        jLabelOsVersion = new javax.swing.JLabel();
+        jPanJava = new javax.swing.JPanel();
+        jLabelVmNameT = new javax.swing.JLabel();
+        jLabelVmName = new javax.swing.JLabel();
+        jLabelVmVendorT = new javax.swing.JLabel();
+        jLabelVmVendor = new javax.swing.JLabel();
+        jLabelVmVersionT = new javax.swing.JLabel();
+        jLabelVmVersion = new javax.swing.JLabel();
+        jPanRuntime = new javax.swing.JPanel();
+        jLabelRtNameT = new javax.swing.JLabel();
+        jLabelRtName = new javax.swing.JLabel();
+        jLabelRtVersionT = new javax.swing.JLabel();
+        jLabelRtVersion = new javax.swing.JLabel();
         jPanAuthor2 = new javax.swing.JPanel();
         jLabelAuthor = new javax.swing.JLabel();
 
@@ -62,40 +92,118 @@ public class AboutDialog extends javax.swing.JDialog {
         getContentPane().add(jPanHeader, java.awt.BorderLayout.PAGE_START);
 
         jPanInfo.setBackground(new java.awt.Color(255, 255, 255));
-        jPanInfo.setLayout(new java.awt.GridBagLayout());
+        jPanInfo.setLayout(new java.awt.GridLayout());
 
         jLabelDevelopers.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        jLabelDevelopers.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelDevelopers.setText("<html>  <center> <b>Diplomanden: </b> <br>  Berger Emil - Software<br>  Ehmann Julian - Elektronik<br>  Sammer Daniel - Mechanik<br>  </center>");
         jLabelDevelopers.setAutoscrolls(true);
         jLabelDevelopers.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanInfo.add(jLabelDevelopers, new java.awt.GridBagConstraints());
+        jPanInfo.add(jLabelDevelopers);
 
         jLabelWarning.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelWarning.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der Nutzer des Prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
         jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Warnung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14))); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanInfo.add(jLabelWarning, gridBagConstraints);
+        jPanInfo.add(jLabelWarning);
 
         getContentPane().add(jPanInfo, java.awt.BorderLayout.CENTER);
 
         jPanAuthor.setBackground(new java.awt.Color(255, 255, 255));
         jPanAuthor.setLayout(new java.awt.BorderLayout());
 
+        jPanSysInfo.setBackground(new java.awt.Color(255, 255, 255));
+        jPanSysInfo.setLayout(new java.awt.GridLayout(4, 1));
+
         jPanVersion.setBackground(new java.awt.Color(255, 255, 255));
-        jPanVersion.setLayout(new java.awt.BorderLayout());
+        jPanVersion.setBorder(javax.swing.BorderFactory.createTitledBorder("Software-Version"));
+        jPanVersion.setLayout(new java.awt.GridLayout(1, 0));
 
-        jLabelVersionNumber.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanVersion.add(jLabelVersionNumber, java.awt.BorderLayout.EAST);
+        jLabelVersionT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelVersionT.setText("Version:");
+        jPanVersion.add(jLabelVersionT);
 
-        jLabelVersionText.setText("Version:");
-        jLabelVersionText.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanVersion.add(jLabelVersionText, java.awt.BorderLayout.WEST);
+        jLabelVersion.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelVersion.setText("jLabel1");
+        jPanVersion.add(jLabelVersion);
 
-        jPanAuthor.add(jPanVersion, java.awt.BorderLayout.CENTER);
+        jPanSysInfo.add(jPanVersion);
+
+        jPanOS.setBackground(new java.awt.Color(255, 255, 255));
+        jPanOS.setBorder(javax.swing.BorderFactory.createTitledBorder("Betriebssystem"));
+        jPanOS.setLayout(new java.awt.GridLayout(2, 0));
+
+        jLabelOsNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelOsNameT.setText("Betriebssystem:");
+        jPanOS.add(jLabelOsNameT);
+
+        jLabelOsName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelOsName.setText("jLabel1");
+        jPanOS.add(jLabelOsName);
+
+        jLabelOsVersionT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelOsVersionT.setText("OS-Version:");
+        jPanOS.add(jLabelOsVersionT);
+
+        jLabelOsVersion.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelOsVersion.setText("jLabel1");
+        jPanOS.add(jLabelOsVersion);
+
+        jPanSysInfo.add(jPanOS);
+
+        jPanJava.setBackground(new java.awt.Color(255, 255, 255));
+        jPanJava.setBorder(javax.swing.BorderFactory.createTitledBorder("Java-VM"));
+        jPanJava.setLayout(new java.awt.GridLayout(3, 0));
+
+        jLabelVmNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelVmNameT.setText("Java-VM:");
+        jPanJava.add(jLabelVmNameT);
+
+        jLabelVmName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelVmName.setText("jLabel1");
+        jPanJava.add(jLabelVmName);
+
+        jLabelVmVendorT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelVmVendorT.setText("Hersteller:");
+        jPanJava.add(jLabelVmVendorT);
+
+        jLabelVmVendor.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelVmVendor.setText("jLabel1");
+        jPanJava.add(jLabelVmVendor);
+
+        jLabelVmVersionT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelVmVersionT.setText("VM-Version:");
+        jPanJava.add(jLabelVmVersionT);
+
+        jLabelVmVersion.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelVmVersion.setText("jLabel1");
+        jPanJava.add(jLabelVmVersion);
+
+        jPanSysInfo.add(jPanJava);
+
+        jPanRuntime.setBackground(new java.awt.Color(255, 255, 255));
+        jPanRuntime.setBorder(javax.swing.BorderFactory.createTitledBorder("Java-RE"));
+        jPanRuntime.setLayout(new java.awt.GridLayout(2, 0));
+
+        jLabelRtNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelRtNameT.setText("Runtime-Environment:");
+        jPanRuntime.add(jLabelRtNameT);
+
+        jLabelRtName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelRtName.setText("jLabel1");
+        jPanRuntime.add(jLabelRtName);
+
+        jLabelRtVersionT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelRtVersionT.setText("RE-Version:");
+        jPanRuntime.add(jLabelRtVersionT);
+
+        jLabelRtVersion.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelRtVersion.setText("jLabel1");
+        jPanRuntime.add(jLabelRtVersion);
+
+        jPanSysInfo.add(jPanRuntime);
+
+        jPanAuthor.add(jPanSysInfo, java.awt.BorderLayout.CENTER);
 
         jPanAuthor2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -156,14 +264,32 @@ public class AboutDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelAuthor;
     private javax.swing.JLabel jLabelDevelopers;
+    private javax.swing.JLabel jLabelOsName;
+    private javax.swing.JLabel jLabelOsNameT;
+    private javax.swing.JLabel jLabelOsVersion;
+    private javax.swing.JLabel jLabelOsVersionT;
+    private javax.swing.JLabel jLabelRtName;
+    private javax.swing.JLabel jLabelRtNameT;
+    private javax.swing.JLabel jLabelRtVersion;
+    private javax.swing.JLabel jLabelRtVersionT;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelVersionNumber;
-    private javax.swing.JLabel jLabelVersionText;
+    private javax.swing.JLabel jLabelVersion;
+    private javax.swing.JLabel jLabelVersionT;
+    private javax.swing.JLabel jLabelVmName;
+    private javax.swing.JLabel jLabelVmNameT;
+    private javax.swing.JLabel jLabelVmVendor;
+    private javax.swing.JLabel jLabelVmVendorT;
+    private javax.swing.JLabel jLabelVmVersion;
+    private javax.swing.JLabel jLabelVmVersionT;
     private javax.swing.JLabel jLabelWarning;
     private javax.swing.JPanel jPanAuthor;
     private javax.swing.JPanel jPanAuthor2;
     private javax.swing.JPanel jPanHeader;
     private javax.swing.JPanel jPanInfo;
+    private javax.swing.JPanel jPanJava;
+    private javax.swing.JPanel jPanOS;
+    private javax.swing.JPanel jPanRuntime;
+    private javax.swing.JPanel jPanSysInfo;
     private javax.swing.JPanel jPanVersion;
     // End of variables declaration//GEN-END:variables
 }
