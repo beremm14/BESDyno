@@ -478,20 +478,16 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         if (System.getProperty("os.name").contains("Mac OS X")) {
             try {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
-                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            }
-            catch(ClassNotFoundException e) {
-                System.out.println("ClassNotFoundException: " + e.getMessage());
-            }
-            catch(InstantiationException e) {
-                System.out.println("InstantiationException: " + e.getMessage());
-            }
-            catch(IllegalAccessException e) {
-                System.out.println("IllegalAccessException: " + e.getMessage());
-            }
-            catch(UnsupportedLookAndFeelException e) {
-                System.out.println("UnsupportedLookAndFeelException: " + e.getMessage());
+            } catch (ClassNotFoundException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
             new Zweiradprüfstand().setVisible(true);
