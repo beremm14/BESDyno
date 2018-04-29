@@ -18,6 +18,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Zweiradprüfstand extends javax.swing.JFrame {
     
     private jssc.SerialPort serialPort;
+    
+    AboutDialog about = new AboutDialog(this, false);
+    HelpDialog help = new HelpDialog(this, false);
+    VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
+    MeasureDialog measure = new MeasureDialog(this, true);
 
     /**
      * Creates new form Gui
@@ -34,11 +39,6 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             autoConnect();
         }
         refreshGui();
-        
-//        try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        } catch(Exception e){}
-            
     }
     
     
@@ -440,7 +440,6 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
-        AboutDialog about = new AboutDialog(this, false);
         about.setVisible(true);
         if (serialPort.isOpened()) {
             about.writeDevice((String)jcbSerialDevices.getSelectedItem());
@@ -462,7 +461,6 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
     private void jmiHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHelpActionPerformed
-        HelpDialog help = new HelpDialog(this, false);
         help.setVisible(true);
     }//GEN-LAST:event_jmiHelpActionPerformed
 
