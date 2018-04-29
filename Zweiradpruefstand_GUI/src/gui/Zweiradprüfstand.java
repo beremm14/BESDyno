@@ -31,13 +31,11 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         initComponents();
         setTitle("Zweiradprüfstand");
         setLocationRelativeTo(null);
-        setSize(new Dimension(1000, 750));
+        setSize(new Dimension(1200, 750));
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
         refreshPorts();
-        if (System.getProperty("os.name").contains("Mac OS X") || System.getProperty("os.name").contains("Linux")) {
-            autoConnect();
-        }
+        autoConnect();
         refreshGui();
     }
     
@@ -140,8 +138,20 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     //Funktioniert nun durch die verschachteteln IFs...
     private void autoConnect () {
         if (jcbSerialDevices.getItemCount() > 0) {
-            if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem1431")) {
-                connectPort((String)jcbSerialDevices.getSelectedItem());
+            if (System.getProperty("os.name").contains("Mac OS X")) {
+                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
+                    connectPort((String)jcbSerialDevices.getSelectedItem());
+                }
+            } else if (System.getProperty("os.name").contains("Linux")) {
+                //Not supported yet
+//                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
+//                    connectPort((String)jcbSerialDevices.getSelectedItem());
+//                }
+            } else if (System.getProperty("os.name").contains("Windows")) {
+                //Not supported yet
+//                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
+//                    connectPort((String)jcbSerialDevices.getSelectedItem());
+//                }
             }
         }
     }
