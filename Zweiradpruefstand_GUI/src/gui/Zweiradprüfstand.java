@@ -8,6 +8,8 @@ package gui;
 import java.awt.Dimension;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -28,7 +30,9 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
         refreshPorts();
-        autoConnect();
+        if (System.getProperty("os.name").contains("Mac OS X") || System.getProperty("os.name").contains("Linux")) {
+            autoConnect();
+        }
         refreshGui();
         
 //        try {
@@ -164,7 +168,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
     }
     
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -469,37 +473,52 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the MAC OS X look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("MAC OS X".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+    public static void main(String args[]) throws UnsupportedLookAndFeelException {
+        //Menu-Bar support for macOS
+        if (System.getProperty("os.name").contains("Mac OS X")) {
+            try {
+                System.setProperty("apple.laf.useScreenMenuBar", "true");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+            catch(ClassNotFoundException e) {
+                System.out.println("ClassNotFoundException: " + e.getMessage());
+            }
+            catch(InstantiationException e) {
+                System.out.println("InstantiationException: " + e.getMessage());
+            }
+            catch(IllegalAccessException e) {
+                System.out.println("IllegalAccessException: " + e.getMessage());
+            }
+            catch(UnsupportedLookAndFeelException e) {
+                System.out.println("UnsupportedLookAndFeelException: " + e.getMessage());
+            }
+            javax.swing.SwingUtilities.invokeLater(() -> {
+            new Zweiradprüfstand().setVisible(true);
+            });
+        //Other OS
+        } else {
+            try {
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("MAC OS X".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
                 }
+            } catch (ClassNotFoundException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            
+            java.awt.EventQueue.invokeLater(() -> {
                 new Zweiradprüfstand().setVisible(true);
-            }
-        });
+            });
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
