@@ -127,7 +127,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
             //Konfiguration einfügen: Baudrate, Databits, Stopbits, Parity
             
-        } catch (Exception e) {
+        } catch (Throwable e) {
             jtfThrowable(e);
             
         } finally {
@@ -158,7 +158,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
             
             
-        } catch (Exception e) {
+        } catch (Throwable e) {
             jtfThrowable(e);
             
         } finally {
