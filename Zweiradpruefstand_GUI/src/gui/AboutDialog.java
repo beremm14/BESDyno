@@ -22,7 +22,7 @@ public class AboutDialog extends javax.swing.JDialog {
         writeVersion();
         setTitle("Zweiradprüfstand - About");
         setLocationRelativeTo(null);
-        setSize(new Dimension(1100, 900));
+        setSize(new Dimension(1300, 750));
     }
     
     
