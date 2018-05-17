@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import java.awt.Dimension;
@@ -110,7 +105,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jLabelWarning.setBackground(new java.awt.Color(255, 255, 255));
         jLabelWarning.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der Nutzer des Prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
+        jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der/Die Nutzer/in des Prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
         jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Warnung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14))); // NOI18N
         jPanInfo.add(jLabelWarning);
 
@@ -212,7 +207,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jPanDevice.setBackground(new java.awt.Color(255, 255, 255));
         jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder("Endgerät"));
-        jPanDevice.setLayout(new java.awt.GridLayout());
+        jPanDevice.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabelDeviceT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelDeviceT.setText("Verbundener Prüfstand: ");

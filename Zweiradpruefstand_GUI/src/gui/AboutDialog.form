@@ -99,7 +99,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;left&gt; Die Nutzung des Pr&#xfc;fstandes geschieht auf eigene Gefahr! &lt;br&gt; Die Diplomanden &#xfc;bernehmen keine Haftung f&#xfc;r eventuell entstandene Sach- oder Personensch&#xe4;den. &lt;br&gt; Der Nutzer des Pr&#xfc;fstandes erh&#xe4;lt eine lebenslange Lizenz zur Benutzung der Software. &lt;br&gt; Alle Rechte an der Software verbleiben bei Berger Emil. &lt;br&gt; Alle Rechte der Elektronik verbleiben bei Ehmann Julian."/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;left&gt; Die Nutzung des Pr&#xfc;fstandes geschieht auf eigene Gefahr! &lt;br&gt; Die Diplomanden &#xfc;bernehmen keine Haftung f&#xfc;r eventuell entstandene Sach- oder Personensch&#xe4;den. &lt;br&gt; Der/Die Nutzer/in des Pr&#xfc;fstandes erh&#xe4;lt eine lebenslange Lizenz zur Benutzung der Software. &lt;br&gt; Alle Rechte an der Software verbleiben bei Berger Emil. &lt;br&gt; Alle Rechte der Elektronik verbleiben bei Ehmann Julian."/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
                 <TitledBorder title="Warnung">
