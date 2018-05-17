@@ -138,10 +138,9 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                     connectPort((String)jcbSerialDevices.getSelectedItem());
                 }
             } else if (System.getProperty("os.name").contains("Linux")) {
-                //Not supported yet
-//                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
-//                    connectPort((String)jcbSerialDevices.getSelectedItem());
-//                }
+                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/ttyACM0")) {
+                    connectPort((String)jcbSerialDevices.getSelectedItem());
+                }
             } else if (System.getProperty("os.name").contains("Windows")) {
                 //Not supported yet
 //                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
