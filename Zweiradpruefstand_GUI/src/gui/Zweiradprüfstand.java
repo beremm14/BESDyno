@@ -11,9 +11,9 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author emil
  */
 public class Zweiradprüfstand extends javax.swing.JFrame {
-    
+
     private jssc.SerialPort serialPort;
-    
+
     AboutDialog about = new AboutDialog(this, false);
     HelpDialog help = new HelpDialog(this, false);
     VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
@@ -30,12 +30,15 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
         refreshPorts();
-        autoConnect();
+        try {
+            autoConnect();
+        } catch (Exception ex) {
+            writeOutThrowable(ex);
+        }
         refreshGui();
     }
-    
-    
-    private void refreshGui () {
+
+    private void refreshGui() {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
@@ -45,17 +48,16 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jmiDisconnect.setEnabled(false);
         jbutDisconnect.setEnabled(false);
         jcbSerialDevices.setEnabled(false);
-        
+
         jmiRefresh.setEnabled(true);
         jbutRefresh.setEnabled(true);
-        
-        
+
         if (jcbSerialDevices.getModel().getSize() > 0) {
             jcbSerialDevices.setEnabled(true);
             jmiConnect.setEnabled(true);
             jbutConnect.setEnabled(true);
         }
-        
+
         if (serialPort != null && serialPort.isOpened()) {
             jbutDisconnect.setEnabled(true);
             jmiDisconnect.setEnabled(true);
@@ -67,11 +69,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jmiStartSim.setEnabled(true);
             jbutStartSim.setEnabled(true);
         }
-        
+
     }
-    
-    
-    private void jtfThrowable (Throwable th) {
+
+    private void writeOutThrowable(Throwable th) {
         th.printStackTrace(System.err);
         String msg = th.getMessage();
         if (msg == null || msg.isEmpty()) {
@@ -79,9 +80,8 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         jtfStatus.setText(msg);
     }
-    
-    
-    private void showThrowable (Throwable th) {
+
+    private void showThrowable(Throwable th) {
         th.printStackTrace(System.err);
         String msg = th.getMessage();
         if (msg == null || msg.isEmpty()) {
@@ -89,11 +89,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
     }
-    
-    
-    private void refreshPorts () {
-        final String [] ports = jssc.SerialPortList.getPortNames();
-        
+
+    private void refreshPorts() {
+        final String[] ports = jssc.SerialPortList.getPortNames();
+
         String preferedPort = null;
         for (String p : ports) {
             if (p.contains("USB")) {
@@ -101,78 +100,70 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 break;
             }
         }
-        
+
         jcbSerialDevices.setModel(new DefaultComboBoxModel<String>(ports));
         if (preferedPort != null) {
             jcbSerialDevices.setSelectedItem(preferedPort);
         }
-        
+
         refreshGui();
     }
-    
-    
-    private void connectPort (String port) {
+
+    private void connectPort(String port) {
         serialPort = new jssc.SerialPort(port);
-        
+
         try {
             if (serialPort.openPort() == false) {
-                throw new jssc.SerialPortException (port, "openPort", "return value false");
+                throw new jssc.SerialPortException(port, "openPort", "return value false");
             }
             //Konfiguration einfügen: Baudrate, Databits, Stopbits, Parity
-            
+
         } catch (Throwable e) {
-            jtfThrowable(e);
-            
+            writeOutThrowable(e);
+
         } finally {
             refreshGui();
-            jtfStatus.setText("Gerät erfolgreich verbunden");
+            jtfStatus.setText("Prüfstand erfolgreich verbunden");
         }
     }
-    
-    
+
     //Funktioniert nun durch die verschachteteln IFs...
-    private void autoConnect () {
+    private void autoConnect() throws Exception {
         if (jcbSerialDevices.getItemCount() > 0) {
             if (System.getProperty("os.name").contains("Mac OS X")) {
                 if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
-                    connectPort((String)jcbSerialDevices.getSelectedItem());
+                    connectPort((String) jcbSerialDevices.getSelectedItem());
                 }
             } else if (System.getProperty("os.name").contains("Linux")) {
                 if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/ttyACM0")) {
-                    connectPort((String)jcbSerialDevices.getSelectedItem());
+                    connectPort((String) jcbSerialDevices.getSelectedItem());
                 }
             } else if (System.getProperty("os.name").contains("Windows")) {
-                //Not supported yet
-//                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
-//                    connectPort((String)jcbSerialDevices.getSelectedItem());
-//                }
+                throw new Exception("Windows does not support autoconnect...");
             }
         }
     }
-    
-    
-    private void disconnectPort () {
+
+    private void disconnectPort() {
         if (serialPort == null || !serialPort.isOpened()) {
-            jtfThrowable( new Exception("Interner Fehler!"));
+            writeOutThrowable(new Exception("Interner Fehler!"));
         }
-        
+
         try {
             if (serialPort.closePort() == false) {
                 throw new jssc.SerialPortException(null, "closePort", "return value false");
             }
-            
-            
+
         } catch (Throwable e) {
-            jtfThrowable(e);
-            
+            writeOutThrowable(e);
+
         } finally {
             serialPort = null;
             refreshGui();
             jtfStatus.setText("Gerät erfolgreich getrennt");
         }
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -412,23 +403,23 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
-        
+
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPrintActionPerformed
-        
+
     }//GEN-LAST:event_jmiPrintActionPerformed
 
     private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
-        
+
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
     private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
-        
+
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
-        
+
     }//GEN-LAST:event_jmiStartSimActionPerformed
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
@@ -436,7 +427,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiRefreshActionPerformed
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
-        connectPort((String)jcbSerialDevices.getSelectedItem());
+        connectPort((String) jcbSerialDevices.getSelectedItem());
     }//GEN-LAST:event_jmiConnectActionPerformed
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
@@ -446,14 +437,14 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
         about.setVisible(true);
         if (serialPort.isOpened()) {
-            about.writeDevice((String)jcbSerialDevices.getSelectedItem());
+            about.writeDevice((String) jcbSerialDevices.getSelectedItem());
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");
         }
     }//GEN-LAST:event_jmiAboutActionPerformed
 
     private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
-        connectPort((String)jcbSerialDevices.getSelectedItem());
+        connectPort((String) jcbSerialDevices.getSelectedItem());
     }//GEN-LAST:event_jbutConnectActionPerformed
 
     private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
@@ -469,11 +460,12 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiHelpActionPerformed
 
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
-        
+
     }//GEN-LAST:event_jbutStartSimActionPerformed
 
     /**
      * @param args the command line arguments
+     * @throws javax.swing.UnsupportedLookAndFeelException
      */
     public static void main(String args[]) throws UnsupportedLookAndFeelException {
         //Menu-Bar support for macOS
@@ -482,19 +474,13 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
-            new Zweiradprüfstand().setVisible(true);
+                new Zweiradprüfstand().setVisible(true);
             });
-        //Other OS
+            //Other OS
         } else {
             try {
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -503,16 +489,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                         break;
                     }
                 }
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-            
+
             java.awt.EventQueue.invokeLater(() -> {
                 new Zweiradprüfstand().setVisible(true);
             });
