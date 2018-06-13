@@ -1,12 +1,21 @@
 package gui;
 
 import java.awt.Color;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author emil
  */
 public class VehicleSetDialog extends javax.swing.JDialog {
+    
+    private boolean measRpm;
+    private boolean twoStroke;
+    private boolean automatic;
+    private boolean schleppEnable;
+    private String vehicleName;
+    
+    private boolean confirmed;
 
     /**
      * Creates new form VehicleSetDialog
@@ -15,7 +24,54 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
+
+    //Getter & Setter
     
+    public boolean isMeasRpm() {
+        return measRpm;
+    }
+
+    public void setMeasRpm(boolean measRpm) {
+        this.measRpm = measRpm;
+    }
+
+    public boolean isTwoStroke() {
+        return twoStroke;
+    }
+
+    public void setTwoStroke(boolean twoStroke) {
+        this.twoStroke = twoStroke;
+    }
+
+    public boolean isAutomatic() {
+        return automatic;
+    }
+
+    public void setAutomatic(boolean automatic) {
+        this.automatic = automatic;
+    }
+
+    public boolean isSchleppEnable() {
+        return schleppEnable;
+    }
+
+    public void setSchleppEnable(boolean schleppEnable) {
+        this.schleppEnable = schleppEnable;
+    }
+
+    public String getVehicleName() {
+        return vehicleName;
+    }
+
+    public void setVehicleName(String vehicleName) {
+        this.vehicleName = vehicleName;
+    }
+    
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+    
+    //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
         if (dark == true) {
             jPanButtons.setBackground(Color.darkGray);
@@ -58,6 +114,35 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         }
     }
 
+    //writeOut data
+    private void confirm() {
+        boolean error = false;
+        
+        measRpm = jcbEnableRPM.isSelected();
+        twoStroke = jrb2Stroke.isSelected();
+        automatic = jrbAutomatic.isSelected();
+        schleppEnable = jcbEnableSchlepp.isSelected();
+        
+        if (jtfVehicleName.getText().length() > 25) {
+            error = true;
+            JOptionPane.showMessageDialog(this,
+                                          "Fahrzeugname darf nur maximal 25 Zeichen lang sein\n"
+                                          + "Aktuelle Zeichenlänge: "
+                                          + jtfVehicleName.getName().length(),
+                                          "Fahrzeugname zu lang!",
+                                          JOptionPane.ERROR_MESSAGE);
+        } else {
+            vehicleName = jtfVehicleName.getText();
+        }
+        
+        if (!error) {
+            confirmed = true;
+            dispose();
+        } else {
+            confirmed = false;
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -209,11 +294,12 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbutStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartActionPerformed
-        
+        confirm();
     }//GEN-LAST:event_jbutStartActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
-        
+        confirmed = false;
+        dispose();
     }//GEN-LAST:event_jbutCancelActionPerformed
 
     /**

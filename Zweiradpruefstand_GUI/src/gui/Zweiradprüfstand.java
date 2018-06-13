@@ -464,7 +464,8 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
-
+        vehicle.setAppearance(jcbmiDarkMode.getState());
+        vehicle.setVisible(true);
     }//GEN-LAST:event_jmiStartSimActionPerformed
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
@@ -507,7 +508,8 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiHelpActionPerformed
 
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
-
+        vehicle.setAppearance(jcbmiDarkMode.getState());
+        vehicle.setVisible(true);
     }//GEN-LAST:event_jbutStartSimActionPerformed
 
     private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
