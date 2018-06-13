@@ -1,21 +1,46 @@
 package gui;
 
+import data.Data;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.JInternalFrame;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.dial.DialPlot;
+import org.jfree.chart.plot.dial.DialPointer;
+import org.jfree.chart.plot.dial.DialTextAnnotation;
+import org.jfree.chart.plot.dial.StandardDialFrame;
+import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.data.general.DefaultValueDataset;
 
 /**
  *
  * @author emil
  */
 public class MeasureDialog extends javax.swing.JDialog {
-
+    
+    private final Data data = new Data();
+    private final DefaultValueDataset kmh = new DefaultValueDataset(0);
+    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
+    
+    private Zweiradprüfstand gui;
+    //private Measure worker;
     /**
      * Creates new form MeasureDialog
      */
     public MeasureDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        setTitle("Messung läuft...");
+        setResizable(false);
+        setMinimumSize(new Dimension(620, 450));
+        
+        createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
     }
     
+    //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
         if (dark == true) {
             jPanControls.setBackground(Color.darkGray);
@@ -45,7 +70,28 @@ public class MeasureDialog extends javax.swing.JDialog {
             jLabelStatusT.setForeground(Color.black);
         }
     }
-
+    
+    //Creates Dial from Data
+    private void createDial (DefaultValueDataset set, String title, JInternalFrame frame, int min, int max, int tick) {
+        DialPlot plot = new DialPlot(set);
+        plot.setDialFrame(new StandardDialFrame());
+        plot.addLayer(new DialPointer.Pointer());
+        
+        DialTextAnnotation annotation = new DialTextAnnotation(title);
+        annotation.setFont(new Font(null, Font.BOLD, 17));
+        plot.addLayer(annotation);
+        
+        StandardDialScale scale = new StandardDialScale(min, max, -120, -300, tick, 4);
+        scale.setTickRadius(0.88);
+        scale.setTickLabelOffset(0.20);
+        plot.addScale(0, scale);
+        
+        frame.setUI(null);
+        frame.add(new ChartPanel(new JFreeChart(plot)));
+        frame.pack();
+        frame.setSize(new Dimension(500, 500));
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -174,9 +220,16 @@ public class MeasureDialog extends javax.swing.JDialog {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("MAC OS X".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+                if (System.getProperty("os.name").contains("Mac OS X")) {
+                    if ("MAC OS X".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                } else {
+                    if ("Nimbus".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
                 }
             }
         } catch (ClassNotFoundException ex) {
@@ -191,17 +244,15 @@ public class MeasureDialog extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                MeasureDialog dialog = new MeasureDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            MeasureDialog dialog = new MeasureDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
