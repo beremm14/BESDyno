@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Color;
+
 /**
  *
  * @author emil
@@ -13,6 +15,16 @@ public class HelpDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
+    
+    public void setAppearance (boolean dark) {
+        if (dark == true) {
+            jPanHelp.setBackground(Color.darkGray);
+            jLabel.setForeground(Color.white);
+        } else {
+            jPanHelp.setBackground(Color.white);
+            jLabel.setForeground(Color.black);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -23,19 +35,19 @@ public class HelpDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelHelp = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanHelp = new javax.swing.JPanel();
+        jLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanelHelp.setBackground(new java.awt.Color(255, 255, 255));
-        jPanelHelp.setLayout(new java.awt.GridLayout(1, 0));
+        jPanHelp.setBackground(new java.awt.Color(255, 255, 255));
+        jPanHelp.setLayout(new java.awt.GridLayout(1, 0));
 
-        jLabel1.setText("<html><h2>   1. Motorrad auf den Prüfstand stellen und befestigen <br><br> 2. Prüfstand via USB mit dem Rechner verbinden <br><br> 3. Klicken Sie auf <i>Start Simualtion (cmd+R)</i> <br><br>  4. Starten Sie das Motorrad <br><br> 5. Klicken Sie auf <i>Start</i> <br><br> 6. Beschleunigen Sie mit Vollgas bis die Höchstgeschwindigkeit erreicht ist. <br><br> 7. Programm stoppt automatisch <br> <br>  </h2>");
-        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanelHelp.add(jLabel1);
+        jLabel.setText("<html><h2>   1. Motorrad auf den Prüfstand stellen und befestigen <br><br> 2. Prüfstand via USB mit dem Rechner verbinden <br><br> 3. Klicken Sie auf <i>Start Simualtion (cmd+R)</i> <br><br>  4. Starten Sie das Motorrad <br><br> 5. Klicken Sie auf <i>Start</i> <br><br> 6. Beschleunigen Sie mit Vollgas bis die Höchstgeschwindigkeit erreicht ist. <br><br> 7. Programm stoppt automatisch <br> <br>  </h2>");
+        jLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanHelp.add(jLabel);
 
-        getContentPane().add(jPanelHelp, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanHelp, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -68,22 +80,20 @@ public class HelpDialog extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                HelpDialog dialog = new HelpDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            HelpDialog dialog = new HelpDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanelHelp;
+    private javax.swing.JLabel jLabel;
+    private javax.swing.JPanel jPanHelp;
     // End of variables declaration//GEN-END:variables
 }

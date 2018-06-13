@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Color;
+
 /**
  *
  * @author emil
@@ -12,6 +14,36 @@ public class MeasureDialog extends javax.swing.JDialog {
     public MeasureDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+    
+    public void setAppearance(boolean dark) {
+        if (dark == true) {
+            jPanControls.setBackground(Color.darkGray);
+            jPanDial.setBackground(Color.darkGray);
+            jPanMain.setBackground(Color.darkGray);
+            jPanStatus.setBackground(Color.darkGray);
+            jPanStatusColour.setBackground(Color.darkGray);
+            jPanStatusText.setBackground(Color.darkGray);
+            jFrameRPM.setBackground(Color.darkGray);
+            jFrameSpeed.setBackground(Color.darkGray);
+            
+            jLabelCount.setForeground(Color.white);
+            jLabelStatus.setForeground(Color.white);
+            jLabelStatusT.setForeground(Color.white);
+        } else {
+            jPanControls.setBackground(Color.white);
+            jPanDial.setBackground(Color.white);
+            jPanMain.setBackground(Color.white);
+            jPanStatus.setBackground(Color.white);
+            jPanStatusColour.setBackground(Color.white);
+            jPanStatusText.setBackground(Color.white);
+            jFrameRPM.setBackground(Color.white);
+            jFrameSpeed.setBackground(Color.white);
+            
+            jLabelCount.setForeground(Color.black);
+            jLabelStatus.setForeground(Color.black);
+            jLabelStatusT.setForeground(Color.black);
+        }
     }
 
     /**
@@ -29,7 +61,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanStatusText = new javax.swing.JPanel();
         jLabelCount = new javax.swing.JLabel();
         jpbMeasure = new javax.swing.JProgressBar();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelStatusT = new javax.swing.JLabel();
         jLabelStatus = new javax.swing.JLabel();
         jPanStatusColour = new javax.swing.JPanel();
         jPanDial = new javax.swing.JPanel();
@@ -65,11 +97,11 @@ public class MeasureDialog extends javax.swing.JDialog {
         gridBagConstraints.weighty = 1.0;
         jPanStatusText.add(jpbMeasure, gridBagConstraints);
 
-        jLabel1.setText("Status: ");
-        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jLabelStatusT.setText("Status: ");
+        jLabelStatusT.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        jPanStatusText.add(jLabel1, gridBagConstraints);
+        jPanStatusText.add(jLabelStatusT, gridBagConstraints);
 
         jLabelStatus.setText("HOCHSCHALTEN");
         jLabelStatus.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -176,9 +208,9 @@ public class MeasureDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JInternalFrame jFrameRPM;
     private javax.swing.JInternalFrame jFrameSpeed;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelCount;
     private javax.swing.JLabel jLabelStatus;
+    private javax.swing.JLabel jLabelStatusT;
     private javax.swing.JPanel jPanControls;
     private javax.swing.JPanel jPanDial;
     private javax.swing.JPanel jPanMain;

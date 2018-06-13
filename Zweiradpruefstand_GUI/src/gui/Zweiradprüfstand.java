@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -48,6 +49,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jmiDisconnect.setEnabled(false);
         jbutDisconnect.setEnabled(false);
         jcbSerialDevices.setEnabled(false);
+        jcbmiDarkMode.setState(false);
 
         jmiRefresh.setEnabled(true);
         jbutRefresh.setEnabled(true);
@@ -163,6 +165,33 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jtfStatus.setText("Gerät erfolgreich getrennt");
         }
     }
+    
+    //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
+    private void setAppearance(boolean dark) {
+        if (dark == true) {
+            setBackground(Color.darkGray);
+            jPanChart.setBackground(Color.darkGray);
+            jPanStatus.setBackground(Color.darkGray);
+            jPanTools.setBackground(Color.darkGray);
+            
+            jLabelDevice.setForeground(Color.white);
+            
+            jtfStatus.setBackground(Color.darkGray);
+            jtfStatus.setForeground(Color.white);
+        }
+        else {
+            setBackground(Color.white);
+            jPanChart.setBackground(Color.white);
+            jPanStatus.setBackground(Color.white);
+            jPanTools.setBackground(Color.white);
+            
+            jLabelDevice.setForeground(Color.black);
+            
+            jtfStatus.setBackground(Color.white);
+            jtfStatus.setForeground(Color.black);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -174,7 +203,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jSlider1 = new javax.swing.JSlider();
+        jSlider = new javax.swing.JSlider();
         jPanChart = new javax.swing.JPanel();
         jPanStatus = new javax.swing.JPanel();
         jtfStatus = new javax.swing.JTextField();
@@ -200,6 +229,8 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jmiRefresh = new javax.swing.JMenuItem();
         jmiConnect = new javax.swing.JMenuItem();
         jmiDisconnect = new javax.swing.JMenuItem();
+        jmenuSettings = new javax.swing.JMenu();
+        jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -375,6 +406,20 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
 
         jMenuBar.add(jmenuSimulation);
 
+        jmenuSettings.setText("Einstellungen");
+
+        jcbmiDarkMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+        jcbmiDarkMode.setSelected(true);
+        jcbmiDarkMode.setText("Dark Mode");
+        jcbmiDarkMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbmiDarkModeActionPerformed(evt);
+            }
+        });
+        jmenuSettings.add(jcbmiDarkMode);
+
+        jMenuBar.add(jmenuSettings);
+
         jmenuAbout.setText("Über");
 
         jmiAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PERIOD, java.awt.event.InputEvent.META_MASK));
@@ -435,6 +480,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
+        about.setAppearance(jcbmiDarkMode.getState());
         about.setVisible(true);
         if (serialPort.isOpened()) {
             about.writeDevice((String) jcbSerialDevices.getSelectedItem());
@@ -456,12 +502,17 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
     private void jmiHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHelpActionPerformed
+        help.setAppearance(jcbmiDarkMode.getState());
         help.setVisible(true);
     }//GEN-LAST:event_jmiHelpActionPerformed
 
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
 
     }//GEN-LAST:event_jbutStartSimActionPerformed
+
+    private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
+        setAppearance(jcbmiDarkMode.getState());
+    }//GEN-LAST:event_jcbmiDarkModeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -508,14 +559,16 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
-    private javax.swing.JSlider jSlider1;
+    private javax.swing.JSlider jSlider;
     private javax.swing.JButton jbutConnect;
     private javax.swing.JButton jbutDisconnect;
     private javax.swing.JButton jbutRefresh;
     private javax.swing.JButton jbutStartSim;
     private javax.swing.JComboBox<String> jcbSerialDevices;
+    private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuFile;
+    private javax.swing.JMenu jmenuSettings;
     private javax.swing.JMenu jmenuSimulation;
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;

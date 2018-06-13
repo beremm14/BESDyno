@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 /**
@@ -34,6 +35,78 @@ public class AboutDialog extends javax.swing.JDialog {
     
     public void writeDevice (String dn) {
         jLabelDevice.setText(dn);
+    }
+    
+    public void setAppearance(boolean dark) {
+        if (dark == true) {
+            jPanAuthor.setBackground(Color.darkGray);
+            jPanCopyright.setBackground(Color.darkGray);
+            jPanDevice.setBackground(Color.darkGray);
+            jPanHeader.setBackground(Color.darkGray);
+            jPanInfo.setBackground(Color.darkGray);
+            jPanJava.setBackground(Color.darkGray);
+            jPanOS.setBackground(Color.darkGray);
+            jPanRuntime.setBackground(Color.darkGray);
+            jPanSysInfo.setBackground(Color.darkGray);
+            jPanVersion.setBackground(Color.darkGray);
+            
+            jLabelAuthor.setForeground(Color.white);
+            jLabelDevelopers.setForeground(Color.white);
+            jLabelDevice.setForeground(Color.white);
+            jLabelDeviceT.setForeground(Color.white);
+            jLabelOsName.setForeground(Color.white);
+            jLabelOsNameT.setForeground(Color.white);
+            jLabelOsVersion.setForeground(Color.white);
+            jLabelOsVersionT.setForeground(Color.white);
+            jLabelRtName.setForeground(Color.white);
+            jLabelRtNameT.setForeground(Color.white);
+            jLabelRtVersion.setForeground(Color.white);
+            jLabelRtVersionT.setForeground(Color.white);
+            jLabelTitle.setForeground(Color.white);
+            jLabelVersion.setForeground(Color.white);
+            jLabelVersionT.setForeground(Color.white);
+            jLabelVmName.setForeground(Color.white);
+            jLabelVmNameT.setForeground(Color.white);
+            jLabelVmVendor.setForeground(Color.white);
+            jLabelVmVendorT.setForeground(Color.white);
+            jLabelVmVersion.setForeground(Color.white);
+            jLabelVmVersionT.setForeground(Color.white);
+            jLabelWarning.setForeground(Color.white);
+        } else {
+            jPanAuthor.setBackground(Color.white);
+            jPanCopyright.setBackground(Color.white);
+            jPanDevice.setBackground(Color.white);
+            jPanHeader.setBackground(Color.white);
+            jPanInfo.setBackground(Color.white);
+            jPanJava.setBackground(Color.white);
+            jPanOS.setBackground(Color.white);
+            jPanRuntime.setBackground(Color.white);
+            jPanSysInfo.setBackground(Color.white);
+            jPanVersion.setBackground(Color.white);
+            
+            jLabelAuthor.setForeground(Color.black);
+            jLabelDevelopers.setForeground(Color.black);
+            jLabelDevice.setForeground(Color.black);
+            jLabelDeviceT.setForeground(Color.black);
+            jLabelOsName.setForeground(Color.black);
+            jLabelOsNameT.setForeground(Color.black);
+            jLabelOsVersion.setForeground(Color.black);
+            jLabelOsVersionT.setForeground(Color.black);
+            jLabelRtName.setForeground(Color.black);
+            jLabelRtNameT.setForeground(Color.black);
+            jLabelRtVersion.setForeground(Color.black);
+            jLabelRtVersionT.setForeground(Color.black);
+            jLabelTitle.setForeground(Color.black);
+            jLabelVersion.setForeground(Color.black);
+            jLabelVersionT.setForeground(Color.black);
+            jLabelVmName.setForeground(Color.black);
+            jLabelVmNameT.setForeground(Color.black);
+            jLabelVmVendor.setForeground(Color.black);
+            jLabelVmVendorT.setForeground(Color.black);
+            jLabelVmVersion.setForeground(Color.black);
+            jLabelVmVersionT.setForeground(Color.black);
+            jLabelWarning.setForeground(Color.black);
+        }
     }
     
 
@@ -76,7 +149,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanDevice = new javax.swing.JPanel();
         jLabelDeviceT = new javax.swing.JLabel();
         jLabelDevice = new javax.swing.JLabel();
-        jPanAuthor2 = new javax.swing.JPanel();
+        jPanCopyright = new javax.swing.JPanel();
         jLabelAuthor = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,7 +179,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelWarning.setBackground(new java.awt.Color(255, 255, 255));
         jLabelWarning.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der/Die Nutzer/in des Prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
-        jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Warnung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14))); // NOI18N
+        jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Warnung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanInfo.add(jLabelWarning);
 
         getContentPane().add(jPanInfo, java.awt.BorderLayout.CENTER);
@@ -118,7 +191,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanSysInfo.setLayout(new java.awt.GridLayout(5, 1));
 
         jPanVersion.setBackground(new java.awt.Color(255, 255, 255));
-        jPanVersion.setBorder(javax.swing.BorderFactory.createTitledBorder("Software-Version"));
+        jPanVersion.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Software-Version", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanVersion.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabelVersionT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -132,7 +205,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanSysInfo.add(jPanVersion);
 
         jPanOS.setBackground(new java.awt.Color(255, 255, 255));
-        jPanOS.setBorder(javax.swing.BorderFactory.createTitledBorder("Betriebssystem"));
+        jPanOS.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Betriebssystem", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanOS.setLayout(new java.awt.GridLayout(2, 0));
 
         jLabelOsNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -154,7 +227,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanSysInfo.add(jPanOS);
 
         jPanJava.setBackground(new java.awt.Color(255, 255, 255));
-        jPanJava.setBorder(javax.swing.BorderFactory.createTitledBorder("Java-VM"));
+        jPanJava.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Java-VM", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanJava.setLayout(new java.awt.GridLayout(3, 0));
 
         jLabelVmNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -184,7 +257,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanSysInfo.add(jPanJava);
 
         jPanRuntime.setBackground(new java.awt.Color(255, 255, 255));
-        jPanRuntime.setBorder(javax.swing.BorderFactory.createTitledBorder("Java-RE"));
+        jPanRuntime.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Java-RE", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanRuntime.setLayout(new java.awt.GridLayout(2, 0));
 
         jLabelRtNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -206,7 +279,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanSysInfo.add(jPanRuntime);
 
         jPanDevice.setBackground(new java.awt.Color(255, 255, 255));
-        jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder("Endgerät"));
+        jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Endgerät", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanDevice.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabelDeviceT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -221,13 +294,13 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jPanAuthor.add(jPanSysInfo, java.awt.BorderLayout.CENTER);
 
-        jPanAuthor2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanCopyright.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabelAuthor.setText("© Emil Berger 2018-2019");
         jLabelAuthor.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanAuthor2.add(jLabelAuthor);
+        jPanCopyright.add(jLabelAuthor);
 
-        jPanAuthor.add(jPanAuthor2, java.awt.BorderLayout.PAGE_END);
+        jPanAuthor.add(jPanCopyright, java.awt.BorderLayout.PAGE_END);
 
         getContentPane().add(jPanAuthor, java.awt.BorderLayout.PAGE_END);
 
@@ -263,17 +336,15 @@ public class AboutDialog extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                AboutDialog dialog = new AboutDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            AboutDialog dialog = new AboutDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
@@ -301,7 +372,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelVmVersionT;
     private javax.swing.JLabel jLabelWarning;
     private javax.swing.JPanel jPanAuthor;
-    private javax.swing.JPanel jPanAuthor2;
+    private javax.swing.JPanel jPanCopyright;
     private javax.swing.JPanel jPanDevice;
     private javax.swing.JPanel jPanHeader;
     private javax.swing.JPanel jPanInfo;

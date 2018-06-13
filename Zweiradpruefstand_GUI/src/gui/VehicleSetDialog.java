@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Color;
+
 /**
  *
  * @author emil
@@ -12,6 +14,48 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     public VehicleSetDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+    
+    public void setAppearance(boolean dark) {
+        if (dark == true) {
+            jPanButtons.setBackground(Color.darkGray);
+            jPanControls.setBackground(Color.darkGray);
+            jPanMain.setBackground(Color.darkGray);
+            jPanName.setBackground(Color.darkGray);
+            jPanRPM.setBackground(Color.darkGray);
+            jPanStroke.setBackground(Color.darkGray);
+            jPanTransmission.setBackground(Color.darkGray);
+            
+            jLabelName.setForeground(Color.white);
+            jcbEnableRPM.setForeground(Color.white);
+            jcbEnableSchlepp.setForeground(Color.white);
+            jrb2Stroke.setForeground(Color.white);
+            jrb4Stroke.setForeground(Color.white);
+            jrbAutomatic.setForeground(Color.white);
+            jrbManual.setForeground(Color.white);
+            
+            jtfVehicleName.setBackground(Color.darkGray);
+            jtfVehicleName.setForeground(Color.white);
+        } else {
+            jPanButtons.setBackground(Color.white);
+            jPanControls.setBackground(Color.white);
+            jPanMain.setBackground(Color.white);
+            jPanName.setBackground(Color.white);
+            jPanRPM.setBackground(Color.white);
+            jPanStroke.setBackground(Color.white);
+            jPanTransmission.setBackground(Color.white);
+            
+            jLabelName.setForeground(Color.black);
+            jcbEnableRPM.setForeground(Color.black);
+            jcbEnableSchlepp.setForeground(Color.black);
+            jrb2Stroke.setForeground(Color.black);
+            jrb4Stroke.setForeground(Color.black);
+            jrbAutomatic.setForeground(Color.black);
+            jrbManual.setForeground(Color.black);
+            
+            jtfVehicleName.setBackground(Color.white);
+            jtfVehicleName.setForeground(Color.black);
+        }
     }
 
     /**
@@ -200,17 +244,15 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                VehicleSetDialog dialog = new VehicleSetDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            VehicleSetDialog dialog = new VehicleSetDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
