@@ -38,6 +38,11 @@ public class MeasureDialog extends javax.swing.JDialog {
         setMinimumSize(new Dimension(620, 450));
         
         createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
+        if (data.isMeasRPM()) {
+            createDial(rpm, "U/min*1000", jFrameRPM, 0, 13, 1);
+        } else {
+            jPanDial.remove(jFrameRPM);
+        }
     }
     
     //Sets Appearance like at the Main-GUI
