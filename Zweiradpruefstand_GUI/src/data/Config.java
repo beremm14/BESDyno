@@ -1,40 +1,41 @@
 package data;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  *
  * @author emil
  */
 public class Config {
-    
+
     private boolean ps;
-    
+
     private int pngHeight;
     private int pngWidth;
-    
+
     private int powerCorr;
     private int torqueCorr;
     private double inertiaCorr;
-    
+
     private boolean dark;
-    
+
     private int period;
     private int hysteresisTime;
-    
+
     private int idleKmh;
     private int hysteresisKmh;
     private int startKmh;
-    
+
     private int idleRpm;
     private int hysteresisRpm;
     private int startRpm;
 
-    
-    public Config() {}
+    public Config() {
+    }
 
-    
     //Getter
     public boolean isPs() {
         return ps;
@@ -96,71 +97,8 @@ public class Config {
         return startRpm;
     }
 
-    
-    //Setter
-    public void setPs(boolean ps) {
-        this.ps = ps;
-    }
-
-    public void setPngHeight(int pngHeight) {
-        this.pngHeight = pngHeight;
-    }
-
-    public void setPngWidth(int pngWidth) {
-        this.pngWidth = pngWidth;
-    }
-
-    public void setPowerCorr(int powerCorr) {
-        this.powerCorr = powerCorr;
-    }
-
-    public void setTorqueCorr(int torqueCorr) {
-        this.torqueCorr = torqueCorr;
-    }
-
-    public void setInertiaCorr(double inertiaCorr) {
-        this.inertiaCorr = inertiaCorr;
-    }
-
-    public void setDark(boolean dark) {
-        this.dark = dark;
-    }
-
-    public void setPeriod(int period) {
-        this.period = period;
-    }
-
-    public void setHysteresisTime(int hysteresisTime) {
-        this.hysteresisTime = hysteresisTime;
-    }
-
-    public void setIdleKmh(int idleKmh) {
-        this.idleKmh = idleKmh;
-    }
-
-    public void setHysteresisKmh(int hysteresisKmh) {
-        this.hysteresisKmh = hysteresisKmh;
-    }
-
-    public void setStartKmh(int startKmh) {
-        this.startKmh = startKmh;
-    }
-
-    public void setIdleRpm(int idleRpm) {
-        this.idleRpm = idleRpm;
-    }
-
-    public void setHysteresisRpm(int hysteresisRpm) {
-        this.hysteresisRpm = hysteresisRpm;
-    }
-
-    public void setStartRpm(int startRpm) {
-        this.startRpm = startRpm;
-    }
-
-    
     //Writeout
-    public void writeLine(BufferedWriter w) throws IOException {
+    public void writeConfig(BufferedWriter w) throws IOException {
         w.write(String.format("%b", dark));
         w.write("\t");
         w.write(String.format("%d", hysteresisKmh));
@@ -191,6 +129,29 @@ public class Config {
         w.write("\t");
         w.write(String.format("%d", torqueCorr));
     }
-    
-    
+
+    //Read
+    public void readConfig(BufferedReader r) throws IOException {
+        while (r.ready()) {
+            String line = r.readLine().trim();
+            String s[] = line.split("\t");
+
+            dark = new Scanner(s[0]).nextBoolean();
+            hysteresisKmh = new Scanner(s[1]).nextInt();
+            hysteresisRpm = new Scanner(s[2]).nextInt();
+            hysteresisTime = new Scanner(s[3]).nextInt();
+            idleKmh = new Scanner(s[4]).nextInt();
+            idleRpm = new Scanner(s[5]).nextInt();
+            inertiaCorr = new Scanner(s[6]).nextDouble();
+            period = new Scanner(s[7]).nextInt();
+            pngHeight = new Scanner(s[8]).nextInt();
+            pngWidth = new Scanner(s[9]).nextInt();
+            powerCorr = new Scanner(s[10]).nextInt();
+            ps = new Scanner(s[11]).nextBoolean();
+            startKmh = new Scanner(s[12]).nextInt();
+            startRpm = new Scanner(s[13]).nextInt();
+            torqueCorr = new Scanner(s[14]).nextInt();
+        }
+    }
+
 }

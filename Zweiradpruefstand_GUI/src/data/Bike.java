@@ -1,5 +1,6 @@
 package data;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -8,33 +9,32 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
  * @author emil
  */
 public class Bike {
-    
+
     private String vehicleName;
     private boolean twoStroke;
     private boolean automatic;
-    
-    private List<Datapoint> engineData = new LinkedList<>();
-    private List<Datapoint> schleppData = new LinkedList<>();
-    
+
+    private List<Datapoint> list = new LinkedList<>();
+
     private final Date date = Calendar.getInstance().getTime();
     private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
-    private String time = null;
+    private String timePoint = null;
 
-    
     public Bike(String vehicleName, boolean twoStroke, boolean automatic) {
         this.vehicleName = vehicleName;
         this.twoStroke = twoStroke;
         this.automatic = automatic;
     }
-    
-    public Bike() {}
-    
+
+    public Bike() {
+    }
 
     //Getter
     public String getVehicleName() {
@@ -50,69 +50,44 @@ public class Bike {
     }
 
     public List<Datapoint> getEngineData() {
-        return engineData;
+        return list;
     }
 
-    public List<Datapoint> getSchleppData() {
-        return schleppData;
-    }
-    
-
-    //Setter
-    public void setVehicleName(String vehicleName) {
-        this.vehicleName = vehicleName;
-    }
-
-    public void setTwoStroke(boolean twoStroke) {
-        this.twoStroke = twoStroke;
-    }
-
-    public void setAutomatic(boolean automatic) {
-        this.automatic = automatic;
-    }
-
-    public void setEngineData(List<Datapoint> engineData) {
-        this.engineData = engineData;
-    }
-
-    public void setSchleppData(List<Datapoint> schleppData) {
-        this.schleppData = schleppData;
-    }
-    
-    
     //ArrayList-Methods
-    public int size(List<Datapoint> list) {
+    public int size() {
         return list.size();
     }
 
-    public Datapoint get(List<Datapoint> list, int index) {
+    public Datapoint get(int index) {
         return list.get(index);
     }
 
-    public Datapoint set(List<Datapoint> list, int index, Datapoint element) {
+    public Datapoint set(int index, Datapoint element) {
         return list.set(index, element);
     }
 
-    public boolean add(List<Datapoint> list, Datapoint e) {
+    public boolean add(Datapoint e) {
         return list.add(e);
     }
 
-    public String toString(List<Datapoint> list) {
+    @Override
+    public String toString() {
         return list.toString();
     }
-    
-    
+
     //Writout
-    private void writeList(BufferedWriter w, List<Datapoint> list) throws IOException {
-        for (Datapoint d: list) {
+    private void writeList(BufferedWriter w) throws IOException {
+        //Time, RPM, WSS
+        for (Datapoint d : list) {
             d.writeLine(w);
             w.newLine();
         }
     }
-    
+
     private void writeHeader(BufferedWriter w) throws IOException {
-        time = df.format(date);
-        w.write(time);
+        w.write("BES-Data");
+        timePoint = df.format(date);
+        w.write(timePoint);
         w.newLine();
         w.write(vehicleName);
         w.newLine();
@@ -121,33 +96,40 @@ public class Bike {
         w.write(automatic + "");
         w.newLine();
     }
-    
-    public void writeFile(BufferedWriter w, boolean engine, boolean schlepp) throws IOException, IllegalArgumentException {
+
+    public void writeFile(BufferedWriter w) throws IOException, IllegalArgumentException {
         writeHeader(w);
-        
-        if (!engine && !schlepp) {
-            throw new IllegalArgumentException("Keine Messdaten aktiv!");
+        w.newLine();
+        writeList(w);
+        w.newLine();
+    }
+
+    //Read
+    public void readFile(BufferedReader r) throws IOException, Exception {
+        list.clear();
+
+        String line = r.readLine().trim();
+        if (!line.contains("BES-Data")) {
+            throw new Exception("Not supported file");
         }
-        
-        if (engine) {
-            w.write("---engine---");
-            w.newLine();
-            writeList(w, engineData);
-            w.newLine();
-        } else {
-            w.write("------------");
-            w.newLine();
-        }
-        
-        if (schlepp) {
-            w.write("---schlepp---");
-            w.newLine();
-            writeList(w, schleppData);
-            w.newLine();
-        } else {
-            w.write("-------------");
-            w.newLine();
+
+        timePoint = r.readLine().trim();
+        vehicleName = r.readLine().trim();
+        twoStroke = new Scanner(r.readLine().trim()).nextBoolean();
+        automatic = new Scanner(r.readLine().trim()).nextBoolean();
+
+        while (r.ready()) {
+            line = r.readLine().trim();
+            if (line.contains("#") || line.isEmpty()) {
+                continue;
+            }
+
+            String s[] = line.split("\t");
+            double time = new Scanner(s[0]).nextDouble();
+            double rpm = new Scanner(s[1]).nextDouble();
+            double wss = new Scanner(s[2]).nextDouble();
+            add(new Datapoint(wss, rpm, time));
         }
     }
-    
+
 }
