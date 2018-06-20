@@ -1,0 +1,15 @@
+
+Make sure the path to the sketchbook has been defined in the Arduino IDE:
+
+• Open the Arduino IDE.
+• Call the menu Arduino > Preferences.
+• Fill in the sketchbook location.
+• Click OK.
+
+Then, on embedXcode:
+
+• Create a new project.
+• Select a target and launch it.
+• Xcode populates the Sketchbook > Libraries group and index all the libraries.
+
+For more inforamtion, please refer to the User Manual.
