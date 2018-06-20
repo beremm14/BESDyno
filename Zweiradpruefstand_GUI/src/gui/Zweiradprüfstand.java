@@ -1,24 +1,34 @@
 package gui;
 
+import data.Bike;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author emil
  */
 public class Zweiradprüfstand extends javax.swing.JFrame {
-
+    
+    Bike bike = new Bike();
+    
     private jssc.SerialPort serialPort;
-
+    
     AboutDialog about = new AboutDialog(this, false);
     HelpDialog help = new HelpDialog(this, false);
     VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
     MeasureDialog measure = new MeasureDialog(this, true);
+    SettingsDialog settings = new SettingsDialog(this, true);
 
     /**
      * Creates new form Gui
@@ -38,7 +48,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         refreshGui();
     }
-
+    
     private void refreshGui() {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
@@ -50,16 +60,18 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jbutDisconnect.setEnabled(false);
         jcbSerialDevices.setEnabled(false);
         jcbmiDarkMode.setState(false);
-
         jmiRefresh.setEnabled(true);
         jbutRefresh.setEnabled(true);
 
+        //Wennn Ports gefunden werden
         if (jcbSerialDevices.getModel().getSize() > 0) {
             jcbSerialDevices.setEnabled(true);
             jmiConnect.setEnabled(true);
             jbutConnect.setEnabled(true);
+            return;
         }
 
+        //Wenn ein Port geöffnet wurde
         if (serialPort != null && serialPort.isOpened()) {
             jbutDisconnect.setEnabled(true);
             jmiDisconnect.setEnabled(true);
@@ -70,10 +82,12 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jbutConnect.setEnabled(false);
             jmiStartSim.setEnabled(true);
             jbutStartSim.setEnabled(true);
+            return;
         }
-
+        
     }
 
+    //Status-Textfeld
     private void writeOutThrowable(Throwable th) {
         th.printStackTrace(System.err);
         String msg = th.getMessage();
@@ -83,6 +97,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jtfStatus.setText(msg);
     }
 
+    //JOptionPane
     private void showThrowable(Throwable th) {
         th.printStackTrace(System.err);
         String msg = th.getMessage();
@@ -91,10 +106,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
     }
-
+    
     private void refreshPorts() {
         final String[] ports = jssc.SerialPortList.getPortNames();
-
+        
         String preferedPort = null;
         for (String p : ports) {
             if (p.contains("USB")) {
@@ -102,18 +117,18 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 break;
             }
         }
-
+        
         jcbSerialDevices.setModel(new DefaultComboBoxModel<String>(ports));
         if (preferedPort != null) {
             jcbSerialDevices.setSelectedItem(preferedPort);
         }
-
+        
         refreshGui();
     }
-
+    
     private void connectPort(String port) {
         serialPort = new jssc.SerialPort(port);
-
+        
         try {
             if (serialPort.openPort() == false) {
                 throw new jssc.SerialPortException(port, "openPort", "return value false");
@@ -122,7 +137,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
 
         } catch (Throwable e) {
             writeOutThrowable(e);
-
+            
         } finally {
             refreshGui();
             jtfStatus.setText("Prüfstand erfolgreich verbunden");
@@ -145,27 +160,27 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
         }
     }
-
+    
     private void disconnectPort() {
         if (serialPort == null || !serialPort.isOpened()) {
             writeOutThrowable(new Exception("Interner Fehler!"));
         }
-
+        
         try {
             if (serialPort.closePort() == false) {
                 throw new jssc.SerialPortException(null, "closePort", "return value false");
             }
-
+            
         } catch (Throwable e) {
             writeOutThrowable(e);
-
+            
         } finally {
             serialPort = null;
             refreshGui();
             jtfStatus.setText("Gerät erfolgreich getrennt");
         }
     }
-    
+
     //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
     private void setAppearance(boolean dark) {
         if (dark == true) {
@@ -178,8 +193,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             
             jtfStatus.setBackground(Color.darkGray);
             jtfStatus.setForeground(Color.white);
-        }
-        else {
+        } else {
             setBackground(Color.white);
             jPanChart.setBackground(Color.white);
             jPanStatus.setBackground(Color.white);
@@ -192,6 +206,31 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
     }
     
+    private void save() throws IOException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
+        
+        String stdFileName = bike.getVehicleName();
+        chooser.setSelectedFile(new File(stdFileName + ".bes"));
+        
+        int rv = chooser.showSaveDialog(this);
+        try {
+            if (rv == JFileChooser.APPROVE_OPTION) {
+                File f = chooser.getSelectedFile();
+                if (!f.getName().contains(".bes")) {
+                    showThrowable(new Exception("Das ist keine bes Datei"));
+                }
+                
+                try (BufferedWriter w = new BufferedWriter(new FileWriter(f))) {
+                    bike.writeFile(w, vehicle.isMeasRpm(), vehicle.isSchleppEnable());
+                } catch (Exception ex) {
+                    writeOutThrowable(ex);
+                }
+            }
+        } catch (Exception ex) {
+            writeOutThrowable(ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -218,6 +257,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jMenuBar = new javax.swing.JMenuBar();
         jmenuFile = new javax.swing.JMenu();
         jmiSave = new javax.swing.JMenuItem();
+        jmiExport = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiPrint = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -333,6 +373,15 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
         });
         jmenuFile.add(jmiSave);
+
+        jmiExport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.META_MASK));
+        jmiExport.setText("Exportieren");
+        jmiExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiExportActionPerformed(evt);
+            }
+        });
+        jmenuFile.add(jmiExport);
         jmenuFile.add(jSeparator1);
 
         jmiPrint.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.META_MASK));
@@ -448,15 +497,19 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
-
+        try {
+            save();
+        } catch (IOException ex) {
+            writeOutThrowable(ex);
+        }
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPrintActionPerformed
-
+        
     }//GEN-LAST:event_jmiPrintActionPerformed
 
     private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
-
+        settings.setVisible(true);
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
     private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
@@ -516,6 +569,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         setAppearance(jcbmiDarkMode.getState());
     }//GEN-LAST:event_jcbmiDarkModeActionPerformed
 
+    private void jmiExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExportActionPerformed
+
+    }//GEN-LAST:event_jmiExportActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws javax.swing.UnsupportedLookAndFeelException
@@ -545,7 +602,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-
+            
             java.awt.EventQueue.invokeLater(() -> {
                 new Zweiradprüfstand().setVisible(true);
             });
@@ -575,6 +632,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JMenuItem jmiDisconnect;
+    private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenuItem jmiHelp;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
