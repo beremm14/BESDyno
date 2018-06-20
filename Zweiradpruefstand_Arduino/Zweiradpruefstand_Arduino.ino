@@ -4,14 +4,14 @@
 // Software for Ehmann's Hardware
 // Developed with [embedXcode](http://embedXcode.weebly.com)
 //
-// Author 		Emil Berger
-// 				    DA-Team (BES)
+// Author     Emil Berger
+//            DA-Team (BES)
 //
-// Date			20.06.18 08:28
-// Version		0.1
+// Date     20.06.18 08:28
+// Version    0.1
 //
-// Copyright	© Emil Berger, 2018
-// Licence		GNU General Public Licence
+// Copyright  © Emil Berger, 2018
+// Licence    GNU General Public Licence
 //
 
 
