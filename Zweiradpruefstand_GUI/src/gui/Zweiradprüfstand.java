@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import jssc.SerialPort;
 
 /**
  *
@@ -51,7 +52,14 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         try {
             autoConnect();
         } catch (Exception ex) {
-            writeOutThrowable(ex);
+            ex.printStackTrace(System.err);
+        }
+        try {
+            loadConfig();
+        } catch (Exception ex) {
+            jtfStatus.setText("Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!");
+            showThrowable(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", JOptionPane.WARNING_MESSAGE);
+            ex.printStackTrace(System.err);
         }
         refreshGui();
     }
@@ -75,7 +83,6 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jcbSerialDevices.setEnabled(true);
             jmiConnect.setEnabled(true);
             jbutConnect.setEnabled(true);
-            return;
         }
 
         //Wenn ein Port geöffnet wurde
@@ -89,7 +96,6 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jbutConnect.setEnabled(false);
             jmiStartSim.setEnabled(true);
             jbutStartSim.setEnabled(true);
-            return;
         }
 
     }
@@ -112,6 +118,12 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             msg = th.getClass().getSimpleName();
         }
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    //JOptionPane + Message
+    private void showThrowable(Throwable th, String msg, int symbol) {
+        th.printStackTrace(System.err);
+        JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", symbol);
     }
 
     //Serial-Methods
@@ -297,6 +309,43 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
         }
     }
+    
+    //Config
+    private void loadConfig() throws FileNotFoundException, IOException, Exception {
+        File home;
+        File folder;
+        File ConfigFile;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + "/.Bike");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            ConfigFile = new File(folder + "/Bike.config");
+        } else {
+            ConfigFile = new File("Bike.config");
+        }
+
+        if (ConfigFile.exists()) {
+            try (BufferedReader r = new BufferedReader(new FileReader(ConfigFile))) {
+                config.readConfig(r);
+            }
+        }
+    }
+    
+    //Getter
+    public SerialPort getSerialPort() {
+        return serialPort;
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
