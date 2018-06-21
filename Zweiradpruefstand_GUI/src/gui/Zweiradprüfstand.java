@@ -4,8 +4,11 @@ import data.Bike;
 import data.Config;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
@@ -20,13 +23,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author emil
  */
 public class Zweiradprüfstand extends javax.swing.JFrame {
-    
+
     Bike bike = new Bike();
+    File file;
     Config config = new Config();
-    
+
     private jssc.SerialPort serialPort;
     private boolean dark = false;
-    
+
     AboutDialog about = new AboutDialog(this, false);
     HelpDialog help = new HelpDialog(this, false);
     VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
@@ -51,7 +55,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         refreshGui();
     }
-    
+
     private void refreshGui() {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
@@ -87,7 +91,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jbutStartSim.setEnabled(true);
             return;
         }
-        
+
     }
 
     //Status-Textfeld
@@ -109,10 +113,11 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         }
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
     }
-    
+
+    //Serial-Methods
     private void refreshPorts() {
         final String[] ports = jssc.SerialPortList.getPortNames();
-        
+
         String preferedPort = null;
         for (String p : ports) {
             if (p.contains("USB")) {
@@ -120,18 +125,18 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 break;
             }
         }
-        
+
         jcbSerialDevices.setModel(new DefaultComboBoxModel<String>(ports));
         if (preferedPort != null) {
             jcbSerialDevices.setSelectedItem(preferedPort);
         }
-        
+
         refreshGui();
     }
-    
+
     private void connectPort(String port) {
         serialPort = new jssc.SerialPort(port);
-        
+
         try {
             if (serialPort.openPort() == false) {
                 throw new jssc.SerialPortException(port, "openPort", "return value false");
@@ -140,7 +145,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
 
         } catch (Throwable e) {
             writeOutThrowable(e);
-            
+
         } finally {
             refreshGui();
             jtfStatus.setText("Prüfstand erfolgreich verbunden");
@@ -163,20 +168,20 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private void disconnectPort() {
         if (serialPort == null || !serialPort.isOpened()) {
             writeOutThrowable(new Exception("Interner Fehler!"));
         }
-        
+
         try {
             if (serialPort.closePort() == false) {
                 throw new jssc.SerialPortException(null, "closePort", "return value false");
             }
-            
+
         } catch (Throwable e) {
             writeOutThrowable(e);
-            
+
         } finally {
             serialPort = null;
             refreshGui();
@@ -187,14 +192,14 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
     private void setAppearance(boolean dark) {
         if (dark) {
-            
+
             setBackground(Color.darkGray);
             jPanChart.setBackground(Color.darkGray);
             jPanStatus.setBackground(Color.darkGray);
             jPanTools.setBackground(Color.darkGray);
-            
+
             jLabelDevice.setForeground(Color.white);
-            
+
             jtfStatus.setBackground(Color.darkGray);
             jtfStatus.setForeground(Color.white);
         } else {
@@ -202,37 +207,94 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             jPanChart.setBackground(Color.white);
             jPanStatus.setBackground(Color.white);
             jPanTools.setBackground(Color.white);
-            
+
             jLabelDevice.setForeground(Color.black);
-            
+
             jtfStatus.setBackground(Color.white);
             jtfStatus.setForeground(Color.black);
         }
     }
-    
-    private void save() throws IOException {
+
+    //File-Methods
+    private void save() throws IOException, Exception {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-        
-        String stdFileName = bike.getVehicleName();
-        chooser.setSelectedFile(new File(stdFileName + ".bes"));
-        
-        int rv = chooser.showSaveDialog(this);
+
+        File home;
+        File folder;
+
         try {
-            if (rv == JFileChooser.APPROVE_OPTION) {
-                File f = chooser.getSelectedFile();
-                if (!f.getName().contains(".bes")) {
-                    showThrowable(new Exception("Das ist keine bes Datei"));
-                }
-                
-                try (BufferedWriter w = new BufferedWriter(new FileWriter(f))) {
-                    bike.writeFile(w);
-                } catch (Exception ex) {
-                    writeOutThrowable(ex);
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + "/Bike-Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
                 }
             }
-        } catch (Exception ex) {
-            writeOutThrowable(ex);
+            file = new File(folder + bike.getVehicleName() + ".bes");
+        } else {
+            file = new File(bike.getVehicleName() + "bes");
+        }
+        chooser.setSelectedFile(file);
+        
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+            if (!file.getName().contains(".bes")) {
+                showThrowable(new Exception("Das ist keine bes-Datei"));
+            }
+
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+                bike.writeFile(w);
+            } catch (Exception ex) {
+                writeOutThrowable(ex);
+            }
+        }
+
+    }
+
+    private void open() throws FileNotFoundException, IOException, Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
+
+        File home;
+        File folder;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + "/Bike-Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            file = new File(folder + bike.getVehicleName() + ".bes");
+        } else {
+            file = new File(bike.getVehicleName() + "bes");
+        }
+        chooser.setSelectedFile(file);
+
+        int rv = chooser.showOpenDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+            if (!file.getName().contains(".bes")) {
+                showThrowable(new Exception("Das ist keine bes-Datei"));
+            }
+            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+                bike.readFile(r);
+            } catch (Exception ex) {
+                writeOutThrowable(ex);
+            }
         }
     }
 
@@ -260,6 +322,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jbutRefresh = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jmenuFile = new javax.swing.JMenu();
+        jmiOpen = new javax.swing.JMenuItem();
         jmiSave = new javax.swing.JMenuItem();
         jmiExport = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -368,6 +431,15 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         getContentPane().add(jPanTools, java.awt.BorderLayout.PAGE_START);
 
         jmenuFile.setText("Datei");
+
+        jmiOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.META_MASK));
+        jmiOpen.setText("Öffnen");
+        jmiOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiOpenActionPerformed(evt);
+            }
+        });
+        jmenuFile.add(jmiOpen);
 
         jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.META_MASK));
         jmiSave.setText("Speichern");
@@ -505,18 +577,20 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             save();
         } catch (IOException ex) {
             writeOutThrowable(ex);
+        } catch (Exception ex) {
+            writeOutThrowable(ex);
         }
     }//GEN-LAST:event_jmiSaveActionPerformed
 
     private void jmiPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPrintActionPerformed
-        
+
     }//GEN-LAST:event_jmiPrintActionPerformed
 
     private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
         settings.setAppearance(dark);
         settings.setVisible(true);
-        
-        if (settings.isPressedOK()) {        
+
+        if (settings.isPressedOK()) {
             dark = settings.isDark();
             setAppearance(dark);
             config = settings.getConfig();
@@ -524,7 +598,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
     private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
-        
+
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
@@ -585,6 +659,16 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jmiExportActionPerformed
 
+    private void jmiOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenActionPerformed
+        try {
+            open();
+        } catch (IOException ex) {
+            writeOutThrowable(ex);
+        } catch (Exception ex) {
+            writeOutThrowable(ex);
+        }
+    }//GEN-LAST:event_jmiOpenActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws javax.swing.UnsupportedLookAndFeelException
@@ -614,7 +698,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-            
+
             java.awt.EventQueue.invokeLater(() -> {
                 new Zweiradprüfstand().setVisible(true);
             });
@@ -646,6 +730,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenuItem jmiHelp;
+    private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
     private javax.swing.JMenuItem jmiRefresh;
