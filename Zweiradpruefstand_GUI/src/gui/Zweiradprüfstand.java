@@ -23,6 +23,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     Bike bike = new Bike();
     
     private jssc.SerialPort serialPort;
+    private boolean dark;
     
     AboutDialog about = new AboutDialog(this, false);
     HelpDialog help = new HelpDialog(this, false);
@@ -222,7 +223,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 }
                 
                 try (BufferedWriter w = new BufferedWriter(new FileWriter(f))) {
-                    bike.writeFile(w, vehicle.isMeasRpm(), vehicle.isSchleppEnable());
+                    bike.writeFile(w);
                 } catch (Exception ex) {
                     writeOutThrowable(ex);
                 }
@@ -509,7 +510,9 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiPrintActionPerformed
 
     private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
+        settings.setAppearance(dark);
         settings.setVisible(true);
+        
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
     private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
@@ -517,7 +520,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
-        vehicle.setAppearance(jcbmiDarkMode.getState());
+        vehicle.setAppearance(dark);
         vehicle.setVisible(true);
     }//GEN-LAST:event_jmiStartSimActionPerformed
 
@@ -556,17 +559,18 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
     private void jmiHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHelpActionPerformed
-        help.setAppearance(jcbmiDarkMode.getState());
+        help.setAppearance(dark);
         help.setVisible(true);
     }//GEN-LAST:event_jmiHelpActionPerformed
 
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
-        vehicle.setAppearance(jcbmiDarkMode.getState());
+        vehicle.setAppearance(dark);
         vehicle.setVisible(true);
     }//GEN-LAST:event_jbutStartSimActionPerformed
 
     private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
-        setAppearance(jcbmiDarkMode.getState());
+        dark = jcbmiDarkMode.getState();
+        setAppearance(dark);
     }//GEN-LAST:event_jcbmiDarkModeActionPerformed
 
     private void jmiExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExportActionPerformed

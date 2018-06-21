@@ -195,7 +195,11 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jPanName.setLayout(new java.awt.GridBagLayout());
 
         jLabelName.setText("Fahrzeugname");
-        jPanName.add(jLabelName, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanName.add(jLabelName, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -208,6 +212,8 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
         jPanMain.add(jPanName, gridBagConstraints);
 
         jPanRPM.setBackground(new java.awt.Color(255, 255, 255));

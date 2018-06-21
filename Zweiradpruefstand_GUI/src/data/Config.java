@@ -96,6 +96,67 @@ public class Config {
     public int getStartRpm() {
         return startRpm;
     }
+    
+    //Setter
+    public void setPs(boolean ps) {
+        this.ps = ps;
+    }
+
+    public void setPngHeight(int pngHeight) {
+        this.pngHeight = pngHeight;
+    }
+
+    public void setPngWidth(int pngWidth) {
+        this.pngWidth = pngWidth;
+    }
+
+    public void setPowerCorr(int powerCorr) {
+        this.powerCorr = powerCorr;
+    }
+
+    public void setTorqueCorr(int torqueCorr) {
+        this.torqueCorr = torqueCorr;
+    }
+
+    public void setInertiaCorr(double inertiaCorr) {
+        this.inertiaCorr = inertiaCorr;
+    }
+
+    public void setDark(boolean dark) {
+        this.dark = dark;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    public void setHysteresisTime(int hysteresisTime) {
+        this.hysteresisTime = hysteresisTime;
+    }
+
+    public void setIdleKmh(int idleKmh) {
+        this.idleKmh = idleKmh;
+    }
+
+    public void setHysteresisKmh(int hysteresisKmh) {
+        this.hysteresisKmh = hysteresisKmh;
+    }
+
+    public void setStartKmh(int startKmh) {
+        this.startKmh = startKmh;
+    }
+
+    public void setIdleRpm(int idleRpm) {
+        this.idleRpm = idleRpm;
+    }
+
+    public void setHysteresisRpm(int hysteresisRpm) {
+        this.hysteresisRpm = hysteresisRpm;
+    }
+
+    public void setStartRpm(int startRpm) {    
+        this.startRpm = startRpm;
+    }
 
     //Writeout
     public void writeConfig(BufferedWriter w) throws IOException {
@@ -131,9 +192,12 @@ public class Config {
     }
 
     //Read
-    public void readConfig(BufferedReader r) throws IOException {
+    public void readConfig(BufferedReader r) throws IOException, Exception {
         while (r.ready()) {
             String line = r.readLine().trim();
+            if (line.isEmpty())
+                throw new Exception("Config-File Error!");
+            
             String s[] = line.split("\t");
 
             dark = new Scanner(s[0]).nextBoolean();
