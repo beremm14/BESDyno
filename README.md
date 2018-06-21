@@ -2,7 +2,7 @@
 
 ## Team
 * **Berger Emil**: Software
-* **Ehmann Julian**: Electronik
+* **Ehmann Julian**: Elektronik
 * **Sammer Daniel**: Mechanik
 
 ## Projekt
