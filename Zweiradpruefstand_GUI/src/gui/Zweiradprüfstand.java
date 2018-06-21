@@ -336,7 +336,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         jmiRefresh = new javax.swing.JMenuItem();
         jmiConnect = new javax.swing.JMenuItem();
         jmiDisconnect = new javax.swing.JMenuItem();
-        jmenuSettings = new javax.swing.JMenu();
+        jmenuAppearance = new javax.swing.JMenu();
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
@@ -531,7 +531,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
 
         jMenuBar.add(jmenuSimulation);
 
-        jmenuSettings.setText("Einstellungen");
+        jmenuAppearance.setText("Darstellung");
 
         jcbmiDarkMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         jcbmiDarkMode.setSelected(true);
@@ -541,9 +541,9 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 jcbmiDarkModeActionPerformed(evt);
             }
         });
-        jmenuSettings.add(jcbmiDarkMode);
+        jmenuAppearance.add(jcbmiDarkMode);
 
-        jMenuBar.add(jmenuSettings);
+        jMenuBar.add(jmenuAppearance);
 
         jmenuAbout.setText("Über");
 
@@ -722,8 +722,8 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
     private javax.swing.JMenu jmenuAbout;
+    private javax.swing.JMenu jmenuAppearance;
     private javax.swing.JMenu jmenuFile;
-    private javax.swing.JMenu jmenuSettings;
     private javax.swing.JMenu jmenuSimulation;
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;

@@ -1,5 +1,6 @@
 package gui;
 
+import data.Bike;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 
@@ -8,6 +9,8 @@ import javax.swing.JOptionPane;
  * @author emil
  */
 public class VehicleSetDialog extends javax.swing.JDialog {
+    
+    Bike bike = new Bike();
 
     private boolean measRpm;
     private boolean twoStroke;
@@ -15,7 +18,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private boolean schleppEnable;
     private String vehicleName;
 
-    private boolean confirmed;
+    private boolean pressedOK;
 
     /**
      * Creates new form VehicleSetDialog
@@ -66,8 +69,8 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         this.vehicleName = vehicleName;
     }
 
-    public boolean isConfirmed() {
-        return confirmed;
+    public boolean isPressedOK() {
+        return pressedOK;
     }
 
     //Sets Appearance like at the Main-GUI
@@ -127,10 +130,10 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private void confirm() {
         boolean error = false;
 
-        measRpm = jcbEnableRPM.isSelected();
-        twoStroke = jrb2Stroke.isSelected();
-        automatic = jrbAutomatic.isSelected();
-        schleppEnable = jcbEnableSchlepp.isSelected();
+        bike.setMeasRpm(jcbEnableRPM.isSelected());
+        bike.setTwoStroke(jrb2Stroke.isSelected());
+        bike.setAutomatic(jrbAutomatic.isSelected());
+        bike.setSchleppEnable(jcbEnableSchlepp.isSelected());
 
         if (jtfVehicleName.getText().length() > 25) {
             error = true;
@@ -140,15 +143,16 @@ public class VehicleSetDialog extends javax.swing.JDialog {
                     + jtfVehicleName.getName().length(),
                     "Fahrzeugname zu lang!",
                     JOptionPane.ERROR_MESSAGE);
+            jtfVehicleName.requestFocusInWindow();
         } else {
-            vehicleName = jtfVehicleName.getText();
+            bike.setVehicleName(jtfVehicleName.getText());
         }
 
         if (!error) {
-            confirmed = true;
+            pressedOK = true;
             dispose();
         } else {
-            confirmed = false;
+            pressedOK = false;
         }
     }
 
@@ -340,7 +344,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jbutStartActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
-        confirmed = false;
+        pressedOK = false;
         dispose();
     }//GEN-LAST:event_jbutCancelActionPerformed
 

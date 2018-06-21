@@ -7,8 +7,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
@@ -186,22 +184,134 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     //Sets the Config-File
-    private void getSwingValues(Config c) throws NoSuchElementException {
+    private void confirm(Config c) {
+
+        boolean error = false;
+        
         c.setDark(jrbNightmode.isSelected());
-        c.setHysteresisKmh(new Scanner(jtfHysteresisKmh.getText()).nextInt());
-        c.setHysteresisRpm(new Scanner(jtfHysteresisKmh.getText()).nextInt());
-        c.setHysteresisTime(new Scanner(jtfHysteresisKmh.getText()).nextInt());
-        c.setIdleKmh(new Scanner(jtfIdleKmh.getText()).nextInt());
-        c.setIdleRpm(new Scanner(jtfIdleRpm.getText()).nextInt());
-        c.setInertiaCorr(new Scanner(jtfInertia.getText()).nextDouble());
-        c.setPeriod(new Scanner(jtfPeriod.getText()).nextInt());
-        c.setPngHeight(new Scanner(jtfPngY.getText()).nextInt());
-        c.setPngWidth(new Scanner(jtfPngX.getText()).nextInt());
-        c.setPowerCorr(new Scanner(jtfPower.getText()).nextInt());
         c.setPs(jrbPS.isSelected());
-        c.setStartKmh(new Scanner(jtfStartKmh.getText()).nextInt());
-        c.setStartRpm(new Scanner(jtfStartRpm.getText()).nextInt());
-        c.setTorqueCorr(new Scanner(jtfTorque.getText()).nextInt());
+        
+        try {
+            c.setHysteresisKmh(Integer.parseInt(jtfHysteresisKmh.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfHysteresisKmh.requestFocusInWindow();
+        }
+        try {
+            c.setHysteresisRpm(Integer.parseInt(jtfHysteresisRpm.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfHysteresisRpm.requestFocusInWindow();
+        }
+        try {
+            c.setHysteresisTime(Integer.parseInt(jtfHysteresisTime.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfHysteresisTime.requestFocusInWindow();
+        }
+        try {
+            c.setIdleKmh(Integer.parseInt(jtfIdleKmh.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfIdleKmh.requestFocusInWindow();
+        }
+        try {
+            c.setIdleRpm(Integer.parseInt(jtfIdleRpm.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfIdleRpm.requestFocusInWindow();
+        }
+        try {
+            c.setPeriod(Integer.parseInt(jtfPeriod.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfPeriod.requestFocusInWindow();
+        }
+        try {
+            c.setPngHeight(Integer.parseInt(jtfPngY.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfPngY.requestFocusInWindow();
+        }
+        try {
+            c.setPngWidth(Integer.parseInt(jtfPngX.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfPngX.requestFocusInWindow();
+        }
+        try {
+            c.setPowerCorr(Integer.parseInt(jtfPower.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfPower.requestFocusInWindow();
+        }
+        try {
+            c.setStartKmh(Integer.parseInt(jtfStartKmh.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfStartKmh.requestFocusInWindow();
+        }
+        try {
+            c.setStartRpm(Integer.parseInt(jtfStartRpm.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfStartRpm.requestFocusInWindow();
+        }
+        try {
+            c.setTorqueCorr(Integer.parseInt(jtfTorque.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfTorque.requestFocusInWindow();
+        }
+        
+        try {
+            c.setInertiaCorr(Double.parseDouble(jtfInertia.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfInertia.requestFocusInWindow();
+        }
+        
+        if(!error) {
+            try {
+                saveConfig();
+            } catch (Exception e) {
+                error = true;
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Interner Fehler", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace(System.err);
+            }
+        }
+        if(!error) {
+            pressedOK = true;
+            dispose();
+        } else {
+            pressedOK = false;
+        }
     }
 
     //Sets jTFs & jRBs from Config-File
@@ -756,17 +866,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jrbNightmodeActionPerformed
 
     private void jbutOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutOKActionPerformed
-        try {
-            getSwingValues(config);
-            saveConfig();
-            dispose();
-        } catch (NoSuchElementException ex) {
-            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen!", "Fehler!", JOptionPane.ERROR_MESSAGE);
-            
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler!", JOptionPane.ERROR_MESSAGE);
-        }
-        pressedOK = true;
+        confirm(config);
     }//GEN-LAST:event_jbutOKActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed

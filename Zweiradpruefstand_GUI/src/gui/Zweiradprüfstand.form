@@ -136,9 +136,9 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jmenuSettings">
+        <Menu class="javax.swing.JMenu" name="jmenuAppearance">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Einstellungen"/>
+            <Property name="text" type="java.lang.String" value="Darstellung"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jcbmiDarkMode">

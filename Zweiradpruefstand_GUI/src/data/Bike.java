@@ -72,6 +72,27 @@ public class Bike {
         return schleppEnable;
     }
 
+    //Setter
+    public void setVehicleName(String vehicleName) {
+        this.vehicleName = vehicleName;
+    }
+
+    public void setTwoStroke(boolean twoStroke) {
+        this.twoStroke = twoStroke;
+    }
+
+    public void setAutomatic(boolean automatic) {
+        this.automatic = automatic;
+    }
+
+    public void setMeasRpm(boolean measRpm) {
+        this.measRpm = measRpm;
+    }
+
+    public void setSchleppEnable(boolean schleppEnable) {
+        this.schleppEnable = schleppEnable;
+    }
+
     //ArrayList-Methods
     public int size() {
         return list.size();

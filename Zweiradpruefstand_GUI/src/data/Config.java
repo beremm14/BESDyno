@@ -3,7 +3,6 @@ package data;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  *
@@ -192,7 +191,7 @@ public class Config {
     }
 
     //Read
-    public void readConfig(BufferedReader r) throws IOException, Exception {
+    public void readConfig(BufferedReader r) throws IOException, NumberFormatException, Exception {
         while (r.ready()) {
             String line = r.readLine().trim();
             if (line.isEmpty())
@@ -200,21 +199,21 @@ public class Config {
             
             String s[] = line.split("\t");
 
-            dark = new Scanner(s[0]).nextBoolean();
-            hysteresisKmh = new Scanner(s[1]).nextInt();
-            hysteresisRpm = new Scanner(s[2]).nextInt();
-            hysteresisTime = new Scanner(s[3]).nextInt();
-            idleKmh = new Scanner(s[4]).nextInt();
-            idleRpm = new Scanner(s[5]).nextInt();
-            inertiaCorr = new Scanner(s[6]).nextDouble();
-            period = new Scanner(s[7]).nextInt();
-            pngHeight = new Scanner(s[8]).nextInt();
-            pngWidth = new Scanner(s[9]).nextInt();
-            powerCorr = new Scanner(s[10]).nextInt();
-            ps = new Scanner(s[11]).nextBoolean();
-            startKmh = new Scanner(s[12]).nextInt();
-            startRpm = new Scanner(s[13]).nextInt();
-            torqueCorr = new Scanner(s[14]).nextInt();
+            dark = Boolean.parseBoolean(s[0]);
+            hysteresisKmh = Integer.parseInt(s[1]);
+            hysteresisRpm = Integer.parseInt(s[2]);
+            hysteresisTime = Integer.parseInt(s[3]);
+            idleKmh = Integer.parseInt(s[4]);
+            idleRpm = Integer.parseInt(s[5]);
+            inertiaCorr = Double.parseDouble(s[6]);
+            period = Integer.parseInt(s[7]);
+            pngHeight = Integer.parseInt(s[8]);
+            pngWidth = Integer.parseInt(s[9]);
+            powerCorr = Integer.parseInt(s[10]);
+            ps = Boolean.parseBoolean(s[11]);
+            startKmh = Integer.parseInt(s[12]);
+            startRpm = Integer.parseInt(s[13]);
+            torqueCorr = Integer.parseInt(s[14]);
         }
     }
 
