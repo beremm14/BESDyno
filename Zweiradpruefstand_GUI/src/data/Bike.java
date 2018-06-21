@@ -18,8 +18,12 @@ import java.util.Scanner;
 public class Bike {
 
     private String vehicleName;
+    
     private boolean twoStroke;
     private boolean automatic;
+    
+    private boolean measRpm;
+    private boolean schleppEnable;
 
     private List<Datapoint> list = new LinkedList<>();
 
@@ -27,14 +31,21 @@ public class Bike {
     private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
     private String timePoint = null;
 
+    public Bike(String vehicleName, boolean twoStroke, boolean automatic, boolean measRpm, boolean schleppEnable) {
+        this.vehicleName = vehicleName;
+        this.twoStroke = twoStroke;
+        this.automatic = automatic;
+        this.measRpm = measRpm;
+        this.schleppEnable = schleppEnable;
+    }
+    
     public Bike(String vehicleName, boolean twoStroke, boolean automatic) {
         this.vehicleName = vehicleName;
         this.twoStroke = twoStroke;
         this.automatic = automatic;
     }
 
-    public Bike() {
-    }
+    public Bike() {}
 
     //Getter
     public String getVehicleName() {
@@ -51,6 +62,14 @@ public class Bike {
 
     public List<Datapoint> getEngineData() {
         return list;
+    }
+    
+    public boolean isMeasRpm() {
+        return measRpm;
+    }
+    
+    public boolean isSchleppEnable() {
+        return schleppEnable;
     }
 
     //ArrayList-Methods
@@ -91,9 +110,13 @@ public class Bike {
         w.newLine();
         w.write(vehicleName);
         w.newLine();
-        w.write(twoStroke + "");
+        w.write(String.format("%b", twoStroke));
         w.newLine();
-        w.write(automatic + "");
+        w.write(String.format("%b", automatic));
+        w.newLine();
+        w.write(String.format("%b", measRpm));
+        w.newLine();
+        w.write(String.format("%b", schleppEnable));
         w.newLine();
     }
 
@@ -117,6 +140,8 @@ public class Bike {
         vehicleName = r.readLine().trim();
         twoStroke = new Scanner(r.readLine().trim()).nextBoolean();
         automatic = new Scanner(r.readLine().trim()).nextBoolean();
+        measRpm = new Scanner(r.readLine().trim()).nextBoolean();
+        schleppEnable = new Scanner(r.readLine().trim()).nextBoolean();
 
         while (r.ready()) {
             line = r.readLine().trim();

@@ -7,15 +7,19 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author emil
  */
 public class SettingsDialog extends javax.swing.JDialog {
-    
+
     Config config = new Config();
+
+    private boolean pressedOK;
 
     /**
      * Creates new form SettingsDialog
@@ -29,7 +33,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             ex.printStackTrace(System.err);
         }
     }
-    
+
     public void setAppearance(boolean dark) {
         if (dark) {
             jPanAppearance.setBackground(Color.darkGray);
@@ -41,7 +45,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanPower.setBackground(Color.darkGray);
             jPanSerial.setBackground(Color.darkGray);
             jPanWest.setBackground(Color.darkGray);
-            
+
             jtfHysteresisKmh.setBackground(Color.darkGray);
             jtfHysteresisRpm.setBackground(Color.darkGray);
             jtfHysteresisTime.setBackground(Color.darkGray);
@@ -55,7 +59,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setBackground(Color.darkGray);
             jtfStartRpm.setBackground(Color.darkGray);
             jtfTorque.setBackground(Color.darkGray);
-            
+
             jtfHysteresisKmh.setForeground(Color.white);
             jtfHysteresisRpm.setForeground(Color.white);
             jtfHysteresisTime.setForeground(Color.white);
@@ -69,12 +73,12 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setForeground(Color.white);
             jtfStartRpm.setForeground(Color.white);
             jtfTorque.setForeground(Color.white);
-            
+
             jrbDaymode.setForeground(Color.white);
             jrbNightmode.setForeground(Color.white);
             jrbKW.setForeground(Color.white);
             jrbPS.setForeground(Color.white);
-            
+
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
             jLabelHysteresisRpm.setForeground(Color.white);
@@ -107,10 +111,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanPower.setBackground(Color.white);
             jPanSerial.setBackground(Color.white);
             jPanWest.setBackground(Color.white);
-            
+
             jtfInertia.setBackground(Color.white);
             jtfInertia.setForeground(Color.black);
-            
+
             jtfHysteresisKmh.setBackground(Color.white);
             jtfHysteresisRpm.setBackground(Color.white);
             jtfHysteresisTime.setBackground(Color.white);
@@ -124,7 +128,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setBackground(Color.white);
             jtfStartRpm.setBackground(Color.white);
             jtfTorque.setBackground(Color.white);
-            
+
             jtfHysteresisKmh.setForeground(Color.black);
             jtfHysteresisRpm.setForeground(Color.black);
             jtfHysteresisTime.setForeground(Color.black);
@@ -138,12 +142,12 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setForeground(Color.black);
             jtfStartRpm.setForeground(Color.black);
             jtfTorque.setForeground(Color.black);
-            
+
             jrbDaymode.setForeground(Color.black);
             jrbNightmode.setForeground(Color.black);
             jrbKW.setForeground(Color.black);
             jrbPS.setForeground(Color.black);
-            
+
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);
             jLabelHysteresisRpm.setForeground(Color.black);
@@ -169,8 +173,20 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
     }
 
+    public boolean isPressedOK() {
+        return pressedOK;
+    }
+
+    public boolean isDark() {
+        return jrbNightmode.isSelected();
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
     //Sets the Config-File
-    private void getSwingValues(Config c) {
+    private void getSwingValues(Config c) throws NoSuchElementException {
         c.setDark(jrbNightmode.isSelected());
         c.setHysteresisKmh(new Scanner(jtfHysteresisKmh.getText()).nextInt());
         c.setHysteresisRpm(new Scanner(jtfHysteresisKmh.getText()).nextInt());
@@ -193,8 +209,9 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfHysteresisKmh.setText(String.format("%d", c.getHysteresisKmh()));
         jtfHysteresisRpm.setText(String.format("%d", c.getHysteresisRpm()));
         jtfHysteresisTime.setText(String.format("%d", c.getHysteresisTime()));
-        jtfIdleKmh.setText(String.format("d", c.getIdleKmh()));
+        jtfIdleKmh.setText(String.format("%d", c.getIdleKmh()));
         jtfIdleRpm.setText(String.format("%d", c.getIdleRpm()));
+        jtfInertia.setText(String.format("%f", c.getInertiaCorr()));
         jtfPeriod.setText(String.format("%d", c.getPeriod()));
         jtfPngX.setText(String.format("%d", c.getPngWidth()));
         jtfPngY.setText(String.format("%d", c.getPngHeight()));
@@ -202,7 +219,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfStartKmh.setText(String.format("%d", c.getStartKmh()));
         jtfStartRpm.setText(String.format("%d", c.getStartRpm()));
         jtfTorque.setText(String.format("%d", c.getTorqueCorr()));
-        
+
         jrbDaymode.setSelected(!c.isDark());
         jrbNightmode.setSelected(c.isDark());
         jrbKW.setSelected(!c.isPs());
@@ -214,13 +231,13 @@ public class SettingsDialog extends javax.swing.JDialog {
         File home;
         File folder;
         File file;
-        
+
         try {
             home = new File(System.getProperty("user.home"));
         } catch (Exception e) {
             home = null;
         }
-        
+
         if (home != null && home.exists()) {
             folder = new File(home + "/.Bike");
             if (!folder.exists()) {
@@ -232,7 +249,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         } else {
             file = new File("Bike.config");
         }
-        
+
         if (file.exists()) {
             try (BufferedReader r = new BufferedReader(new FileReader(file))) {
                 config.readConfig(r);
@@ -246,13 +263,13 @@ public class SettingsDialog extends javax.swing.JDialog {
         File home;
         File folder;
         File file;
-        
+
         try {
             home = new File(System.getProperty("user.home"));
         } catch (Exception e) {
             home = null;
         }
-        
+
         if (home != null && home.exists()) {
             folder = new File(home + "/.Bike");
             if (!folder.exists()) {
@@ -264,7 +281,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         } else {
             file = new File("Bike.config");
         }
-        
+
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             config.writeConfig(w);
         }
@@ -704,6 +721,11 @@ public class SettingsDialog extends javax.swing.JDialog {
         jbutCancel.setText("Abbrechen");
         jbutCancel.setAlignmentX(1.0F);
         jbutCancel.setPreferredSize(new java.awt.Dimension(125, 29));
+        jbutCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutCancelActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         jPanButtons.add(jbutCancel, gridBagConstraints);
@@ -734,13 +756,23 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jrbNightmodeActionPerformed
 
     private void jbutOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutOKActionPerformed
-        getSwingValues(config);
         try {
+            getSwingValues(config);
             saveConfig();
+            dispose();
+        } catch (NoSuchElementException ex) {
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen!", "Fehler!", JOptionPane.ERROR_MESSAGE);
+            
         } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler!", JOptionPane.ERROR_MESSAGE);
         }
+        pressedOK = true;
     }//GEN-LAST:event_jbutOKActionPerformed
+
+    private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
+        pressedOK = false;
+        dispose();
+    }//GEN-LAST:event_jbutCancelActionPerformed
 
     /**
      * @param args the command line arguments

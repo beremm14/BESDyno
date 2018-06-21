@@ -1,6 +1,7 @@
 package gui;
 
 import data.Bike;
+import data.Config;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedWriter;
@@ -21,9 +22,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Zweiradprüfstand extends javax.swing.JFrame {
     
     Bike bike = new Bike();
+    Config config = new Config();
     
     private jssc.SerialPort serialPort;
-    private boolean dark;
+    private boolean dark = false;
     
     AboutDialog about = new AboutDialog(this, false);
     HelpDialog help = new HelpDialog(this, false);
@@ -184,7 +186,8 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
 
     //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
     private void setAppearance(boolean dark) {
-        if (dark == true) {
+        if (dark) {
+            
             setBackground(Color.darkGray);
             jPanChart.setBackground(Color.darkGray);
             jPanStatus.setBackground(Color.darkGray);
@@ -513,10 +516,15 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
         settings.setAppearance(dark);
         settings.setVisible(true);
         
+        if (settings.isPressedOK()) {        
+            dark = settings.isDark();
+            setAppearance(dark);
+            config = settings.getConfig();
+        }
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
     private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
-
+        
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
