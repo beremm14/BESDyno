@@ -25,7 +25,8 @@ public class Bike {
     private boolean measRpm;
     private boolean schleppEnable;
 
-    private List<Datapoint> list = new LinkedList<>();
+    private List<Datapoint> measureList = new LinkedList<>();
+    private List<RawDatapoint> rawList = new LinkedList<>();
 
     private final Date date = Calendar.getInstance().getTime();
     private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
@@ -60,8 +61,12 @@ public class Bike {
         return automatic;
     }
 
-    public List<Datapoint> getEngineData() {
-        return list;
+    public List<Datapoint> getMeasureData() {
+        return measureList;
+    }
+    
+    public List<RawDatapoint> getRawData() {
+        return rawList;
     }
     
     public boolean isMeasRpm() {
@@ -93,32 +98,32 @@ public class Bike {
         this.schleppEnable = schleppEnable;
     }
 
-    //ArrayList-Methods
+    //LinkedList-Methods
     public int size() {
-        return list.size();
+        return measureList.size();
     }
 
     public Datapoint get(int index) {
-        return list.get(index);
+        return measureList.get(index);
     }
 
     public Datapoint set(int index, Datapoint element) {
-        return list.set(index, element);
+        return measureList.set(index, element);
     }
 
     public boolean add(Datapoint e) {
-        return list.add(e);
+        return measureList.add(e);
     }
 
     @Override
     public String toString() {
-        return list.toString();
+        return measureList.toString();
     }
 
     //Writout
     private void writeList(BufferedWriter w) throws IOException {
         //Time, RPM, WSS
-        for (Datapoint d : list) {
+        for (Datapoint d : measureList) {
             d.writeLine(w);
             w.newLine();
         }
@@ -150,7 +155,7 @@ public class Bike {
 
     //Read
     public void readFile(BufferedReader r) throws IOException, Exception {
-        list.clear();
+        measureList.clear();
 
         String line = r.readLine().trim();
         if (!line.contains("BES-Data")) {
