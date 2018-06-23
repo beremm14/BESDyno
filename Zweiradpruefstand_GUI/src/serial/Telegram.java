@@ -2,7 +2,6 @@ package serial;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
-import measure.Environment;
 
 /**
  *
@@ -17,8 +16,15 @@ public class Telegram {
      * Answer: OK ? continue : try again  *
      * Request: MEASURE                   *
      * Response: * Drehzahlen und Zeit    *
+     * Request: ENGINE                    *
+     * Response: Motortemperatur          *
      **************************************/
+    
     private final jssc.SerialPort port;
+    
+    private double engTemp;
+    private double envTemp;
+    private int airPress;
 
     public Telegram(SerialPort port) {
         this.port = port;
@@ -29,39 +35,36 @@ public class Telegram {
         }
     }
 
-    public Environment getEnvData() throws Exception {
-        //EnvTemp, EngTemp, Airpress
-        boolean error = false;
-        double envTemp = 0;
-        double engTemp = 0;
-        int airPress = 0;
+    public void getEnvData() throws Exception {
+        //EnvTemp, Airpress
 
         try {
             port.writeString("START");
             String response = port.readString().trim();
             if (response.contains("NO DATA") || response.isEmpty()) {
-                error = true;
                 throw new Exception("No response");
             } else {
-                try {
-                    String s[] = response.split("#");
-                    envTemp = Double.parseDouble(s[0]);
-                    engTemp = Double.parseDouble(s[1]);
-                    airPress = Integer.parseInt(s[2]);
-                } catch (NumberFormatException e) {
-                    error = true;
-                    e.printStackTrace(System.err);
-                }
+                String s[] = response.split("#");
+                envTemp = Double.parseDouble(s[0]);
+                airPress = Integer.parseInt(s[1]);
             }
         } catch (Exception e) {
-            error = true;
             e.printStackTrace(System.err);
         }
-            if (!error) {
-                return new Environment(envTemp, engTemp, airPress);
+    }
+    
+    public void getEngTemp() {
+        try {
+            port.writeString("ENGINE");
+            String response = port.readString().trim();
+            if (response.contains("NO DATA") || response.isEmpty()) {
+                throw new Exception("No response");
             } else {
-                throw new Exception("Error: Environment Data");
+                engTemp = Double.parseDouble(response);
             }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
     }
 
 }

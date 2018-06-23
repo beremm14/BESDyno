@@ -40,43 +40,13 @@ public class Environment {
     public int getAltitude() {
         return altitude;
     }
-
     
-    private int calcAltitude(int p) {
-        int rv = 0;
-         if (p>735) {
-             rv = 2500;
-         } else if(p>759) {
-             rv = 2240;
-         } else if(p>783) {
-             rv = 2000;
-         } else if(p>835) {
-             rv = 1500;
-         } else if(p>891) {
-             rv = 1000;
-         } else if(p>902) {
-             rv = 900;
-         } else if(p>914) {
-             rv = 800;
-         } else if(p>926) {
-             rv = 700;
-         } else if(p>938) {
-             rv = 600;
-         } else if(p>950) {
-             rv = 500;
-         } else if(p>962) {
-             rv = 400;
-         } else if(p>975) {
-             rv = 300;
-         } else if(p>987) {
-             rv = 200;
-         } else if(p>1000) {
-             rv = 100;
-         } else if(p>1013) {
-             rv = 0;
-         }
-         return rv;
+    private int calcAltitude(int airpress) {
+        double p = (double)airpress;
+        
+        //Internationale Höhenformel nach h umgeformt
+        double result =  (1-Math.pow((p/1013.25), (1/5.255))) * (288150/6.5);
+        return Math.round((float)result);
     }
-    
     
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import data.Bike;
+import data.BikePower;
 import data.Config;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -340,12 +341,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
             }
         }
     }
-    
-    //Getter
-    public SerialPort getSerialPort() {
-        return serialPort;
+
+    private void createChart(BikePower bp) {
+        
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
