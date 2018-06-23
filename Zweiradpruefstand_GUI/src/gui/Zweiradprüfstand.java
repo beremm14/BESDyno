@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import jssc.SerialPort;
+import measure.Environment;
 
 /**
  *
@@ -27,9 +27,12 @@ import jssc.SerialPort;
 public class Zweiradprüfstand extends javax.swing.JFrame {
 
     Bike bike = new Bike();
-    File file;
+    BikePower power = new BikePower();
     Config config = new Config();
-
+    Environment env = new Environment();
+    
+    private File file;
+    
     private jssc.SerialPort serialPort;
     private boolean dark = false;
 

@@ -6,10 +6,10 @@ package measure;
  */
 public class Environment {
     
-    private final double envTemp; //°C
-    private final double engTemp; //°C
-    private final int airPress;   //hPa
-    private final int altitude;   //m, wenn nicht eingegeben: Näherungswert
+    private double envTemp; //°C
+    private double engTemp; //°C
+    private int airPress;   //hPa
+    private int altitude;   //m, wenn nicht eingegeben: Näherungswert
 
     public Environment(double envTemp, double engTemp, int airPress, int altitude) {
         this.envTemp = envTemp;
@@ -25,6 +25,9 @@ public class Environment {
         this.altitude = calcAltitude(airPress);
     }
 
+    public Environment() {}
+    
+    //Getter
     public double getEnvTemp() {
         return envTemp;
     }
@@ -40,7 +43,29 @@ public class Environment {
     public int getAltitude() {
         return altitude;
     }
+
+    //Setter
+    public void setEnvTemp(double envTemp) {
+        this.envTemp = envTemp;
+    }
+
+    public void setEngTemp(double engTemp) {
+        this.engTemp = engTemp;
+    }
+
+    public void setAirPress(int airPress) {
+        this.airPress = airPress;
+    }
+
+    public void setAltitude(int altitude) {
+        this.altitude = altitude;
+    }
     
+    public void setAltitude() {
+        this.altitude = calcAltitude(airPress);
+    }
+    
+    //Calculates h(p) without temperature
     private int calcAltitude(int airpress) {
         double p = (double)airpress;
         
