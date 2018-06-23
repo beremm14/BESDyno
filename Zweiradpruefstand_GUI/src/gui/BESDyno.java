@@ -24,7 +24,7 @@ import measure.Environment;
  *
  * @author emil
  */
-public class Zweiradprüfstand extends javax.swing.JFrame {
+public class BESDyno extends javax.swing.JFrame {
 
     Bike bike = new Bike();
     BikePower power = new BikePower();
@@ -45,7 +45,7 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
     /**
      * Creates new form Gui
      */
-    public Zweiradprüfstand() {
+    public BESDyno() {
         initComponents();
         setTitle("Zweiradprüfstand");
         setLocationRelativeTo(null);
@@ -732,10 +732,10 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
-                new Zweiradprüfstand().setVisible(true);
+                new BESDyno().setVisible(true);
             });
             //Other OS
         } else {
@@ -747,11 +747,11 @@ public class Zweiradprüfstand extends javax.swing.JFrame {
                     }
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(Zweiradprüfstand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
 
             java.awt.EventQueue.invokeLater(() -> {
-                new Zweiradprüfstand().setVisible(true);
+                new BESDyno().setVisible(true);
             });
         }
     }

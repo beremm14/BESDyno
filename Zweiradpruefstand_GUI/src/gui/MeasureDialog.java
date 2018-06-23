@@ -24,7 +24,7 @@ public class MeasureDialog extends javax.swing.JDialog {
     private final DefaultValueDataset kmh = new DefaultValueDataset(0);
     private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
-    private Zweiradprüfstand gui;
+    private BESDyno gui;
     //private Measure worker;
     /**
      * Creates new form MeasureDialog
