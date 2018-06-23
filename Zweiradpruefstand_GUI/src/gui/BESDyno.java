@@ -19,6 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import measure.Environment;
+import measure.MeasurementWorker;
 
 /**
  *
@@ -26,21 +27,23 @@ import measure.Environment;
  */
 public class BESDyno extends javax.swing.JFrame {
 
-    Bike bike = new Bike();
-    BikePower power = new BikePower();
-    Config config = new Config();
-    Environment env = new Environment();
+    private Bike bike = new Bike();
+    private BikePower power = new BikePower();
+    private Config config = new Config();
+    private Environment env = new Environment();
+    
+    private CalculationWorker worker;
     
     private File file;
     
     private jssc.SerialPort serialPort;
     private boolean dark = false;
 
-    AboutDialog about = new AboutDialog(this, false);
-    HelpDialog help = new HelpDialog(this, false);
-    VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
-    MeasureDialog measure = new MeasureDialog(this, true);
-    SettingsDialog settings = new SettingsDialog(this, true);
+    private AboutDialog about = new AboutDialog(this, false);
+    private HelpDialog help = new HelpDialog(this, false);
+    private VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
+    private MeasureDialog measure = new MeasureDialog(this, true);
+    private SettingsDialog settings = new SettingsDialog(this, true);
 
     /**
      * Creates new form Gui
@@ -754,6 +757,15 @@ public class BESDyno extends javax.swing.JFrame {
                 new BESDyno().setVisible(true);
             });
         }
+    }
+    
+    private class CalculationWorker extends MeasurementWorker {
+
+        @Override
+        protected void done() {
+            
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
