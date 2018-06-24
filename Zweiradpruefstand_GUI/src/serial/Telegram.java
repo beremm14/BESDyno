@@ -1,5 +1,6 @@
 package serial;
 
+import data.Config;
 import data.Datapoint;
 import data.RawDatapoint;
 import jssc.SerialPort;
@@ -17,15 +18,17 @@ public class Telegram {
      * Response: Temperaturen             *
      * Answer: OK ? continue : try again  *
      * Request: MEASURE                   *
-     * Response: * Drehzahlen und Zeit    *
+     * Response: Drehzahlen und Zeit      *
      * Request: ENGINE                    *
-     * Response: Motortemperatur          *
+     * Response: Motor-/Abgastemperatur   *
      **************************************/
+    
     
     private final jssc.SerialPort port;
     
     private RawDatapoint rawData;
     private Datapoint data;
+    private Config config = new Config();
     
     private double engPower;
     private double wheelPower;
@@ -34,6 +37,7 @@ public class Telegram {
     
     private double engTemp;
     private double envTemp;
+    private double fumeTemp;
     private int airPress;
 
     public Telegram(SerialPort port) {
@@ -46,8 +50,8 @@ public class Telegram {
     }
 
     //Communication
-    public void readEnvData() throws Exception {
-        //EnvTemp, Airpress
+    public void readEnvData() {
+        //"EnvTemp#Airpress"
 
         try {
             port.writeString("START");
@@ -64,14 +68,18 @@ public class Telegram {
         }
     }
     
-    public void readEngTemp() {
+    public void readBikeTemp() {
+        //"EngTemp#FumeTemp"
+        
         try {
             port.writeString("ENGINE");
             String response = port.readString().trim();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
-                engTemp = Double.parseDouble(response);
+                String s[] = response.split("#");
+                envTemp = Double.parseDouble(s[0]);
+                fumeTemp = Double.parseDouble(s[1]);
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);

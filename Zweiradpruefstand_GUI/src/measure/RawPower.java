@@ -4,7 +4,7 @@ package measure;
  *
  * @author emil
  */
-public class Power {
+public class RawPower {
     
     private double engPower;
     private double wheelPower;

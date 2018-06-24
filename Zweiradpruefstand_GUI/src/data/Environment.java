@@ -1,4 +1,4 @@
-package measure;
+package data;
 
 /**
  *
@@ -8,19 +8,22 @@ public class Environment {
     
     private double envTemp; //°C
     private double engTemp; //°C
+    private double fumeTemp; //°C
     private int airPress;   //hPa
     private int altitude;   //m, wenn nicht eingegeben: Näherungswert
 
-    public Environment(double envTemp, double engTemp, int airPress, int altitude) {
+    public Environment(double envTemp, double engTemp, double fumeTemp, int airPress, int altitude) {
         this.envTemp = envTemp;
         this.engTemp = engTemp;
+        this.fumeTemp = fumeTemp;
         this.airPress = airPress;
         this.altitude = altitude;
     }
 
-    public Environment(double envTemp, double engTemp, int airPress) {
+    public Environment(double envTemp, double engTemp, double fumeTemp, int airPress) {
         this.envTemp = envTemp;
         this.engTemp = engTemp;
+        this.fumeTemp = fumeTemp;
         this.airPress = airPress;
         this.altitude = calcAltitude(airPress);
     }
@@ -34,6 +37,10 @@ public class Environment {
 
     public double getEngTemp() {
         return engTemp;
+    }
+    
+    public double getFumeTemp() {
+        return fumeTemp;
     }
 
     public int getAirPress() {
@@ -52,6 +59,10 @@ public class Environment {
     public void setEngTemp(double engTemp) {
         this.engTemp = engTemp;
     }
+    
+    public void setFumeTemp(double fumeTemp) {
+        this.fumeTemp = fumeTemp;
+    } 
 
     public void setAirPress(int airPress) {
         this.airPress = airPress;
@@ -70,7 +81,7 @@ public class Environment {
         double p = (double)airpress;
         
         //Internationale Höhenformel nach h umgeformt
-        double result =  (1-Math.pow((p/1013.25), (1/5.255))) * (288150/6.5);
+        double result =  (1 - Math.pow((p/1013.25), (1/5.255)) ) * (288150/6.5);
         return Math.round((float)result);
     }
     

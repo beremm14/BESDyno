@@ -299,7 +299,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         
         if(!error) {
             try {
-                saveConfig();
+                saveConfig(config);
             } catch (Exception e) {
                 error = true;
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Interner Fehler", JOptionPane.ERROR_MESSAGE);
@@ -337,7 +337,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     //Loads Config-File from hidden Folder
-    private void loadConfig() throws Exception {
+    public void loadConfig() throws Exception {
         File home;
         File folder;
         File file;
@@ -369,7 +369,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     //Saves Config-File after changing the settings
-    private void saveConfig() throws Exception {
+    public void saveConfig(Config config) throws Exception {
         File home;
         File folder;
         File file;
@@ -593,7 +593,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jPanAppearance.setBackground(new java.awt.Color(255, 255, 255));
         jPanAppearance.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Erscheinungsbild", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
-        jPanAppearance.setPreferredSize(new java.awt.Dimension(312, 70));
+        jPanAppearance.setPreferredSize(new java.awt.Dimension(330, 70));
         jPanAppearance.setLayout(new java.awt.GridBagLayout());
 
         jbgAppearance.add(jrbDaymode);
@@ -630,7 +630,8 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jPanSerial.setBackground(new java.awt.Color(255, 255, 255));
         jPanSerial.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kommunikation", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
-        jPanSerial.setPreferredSize(new java.awt.Dimension(312, 232));
+        jPanSerial.setMinimumSize(new java.awt.Dimension(350, 232));
+        jPanSerial.setPreferredSize(new java.awt.Dimension(330, 232));
         jPanSerial.setLayout(new java.awt.GridBagLayout());
 
         jLabelPeriod.setText("Zeitintervall");

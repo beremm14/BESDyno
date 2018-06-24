@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import measure.Environment;
+import data.Environment;
 import measure.MeasurementWorker;
 
 /**
@@ -27,23 +27,26 @@ import measure.MeasurementWorker;
  */
 public class BESDyno extends javax.swing.JFrame {
 
+    //Data-Objects
     private Bike bike = new Bike();
     private BikePower power = new BikePower();
     private Config config = new Config();
     private Environment env = new Environment();
     
-    private CalculationWorker worker;
-    
-    private File file;
-    
-    private jssc.SerialPort serialPort;
-    private boolean dark = false;
-
+    //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
     private HelpDialog help = new HelpDialog(this, false);
     private VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
     private MeasureDialog measure = new MeasureDialog(this, true);
     private SettingsDialog settings = new SettingsDialog(this, true);
+    
+    //Object-Variables
+    private File file;
+    private jssc.SerialPort serialPort;
+    private CalculationWorker worker;
+    
+    //Variables
+    private boolean dark = false;
 
     /**
      * Creates new form Gui
@@ -68,7 +71,14 @@ public class BESDyno extends javax.swing.JFrame {
             showThrowable(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", JOptionPane.WARNING_MESSAGE);
             ex.printStackTrace(System.err);
         }
+        
         refreshGui();
+        
+        if(config.isDark()) {
+            dark = config.isDark();
+            setAppearance(dark);
+        }
+        jcbmiDarkMode.setState(dark);
     }
 
     private void refreshGui() {
@@ -587,7 +597,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmenuAppearance.setText("Darstellung");
 
-        jcbmiDarkMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+        jcbmiDarkMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.META_MASK));
         jcbmiDarkMode.setSelected(true);
         jcbmiDarkMode.setText("Dark Mode");
         jcbmiDarkMode.addActionListener(new java.awt.event.ActionListener() {
@@ -673,7 +683,7 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
-        about.setAppearance(jcbmiDarkMode.getState());
+        about.setAppearance(dark);
         about.setVisible(true);
         if (serialPort.isOpened()) {
             about.writeDevice((String) jcbSerialDevices.getSelectedItem());
@@ -707,6 +717,13 @@ public class BESDyno extends javax.swing.JFrame {
     private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
         dark = jcbmiDarkMode.getState();
         setAppearance(dark);
+        config.setDark(dark);
+        try {
+            settings.saveConfig(config);
+        } catch (Exception e) {
+            writeOutThrowable(new Exception("Fehler beim Speichern der Config-Datei!"));
+            e.printStackTrace(System.err);
+        }
     }//GEN-LAST:event_jcbmiDarkModeActionPerformed
 
     private void jmiExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExportActionPerformed
