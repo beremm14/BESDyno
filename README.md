@@ -10,7 +10,7 @@ Dieses Repository beinhaltet die Software für einen [Arduino](https://www.ardui
 
 ## Installation
 ### PC-Interface
-Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) installiert werden. Wenn dies geschehen ist, kann das Programm einfach über Zweiradpruefstand.jar gestartet werden, es sind keine weiteren Installationsschritte erforderlich.
+Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) installiert werden. Wenn dies geschehen ist, kann das Programm einfach über BESDyno.jar gestartet werden, es sind keine weiteren Installationsschritte erforderlich.
 
 ### Arduino-Software
   Um den AVR-Code auf einen Arduino zu programmieren, wird [Xcode](https://developer.apple.com/xcode/) (macOS) benötigt.
