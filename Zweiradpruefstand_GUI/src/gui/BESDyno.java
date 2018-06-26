@@ -642,11 +642,19 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiAboutActionPerformed
 
     private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
-        connectPort((String) jcbSerialDevices.getSelectedItem());
+        try {
+            port.connectPort((String)jcbSerialDevices.getSelectedItem());
+        } catch (Throwable ex) {
+            writeOutThrowable(ex);
+        }
     }//GEN-LAST:event_jbutConnectActionPerformed
 
     private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
-        disconnectPort();
+        try {
+            port.disconnectPort();
+        } catch (Throwable ex) {
+            writeOutThrowable(ex);
+        }
     }//GEN-LAST:event_jbutDisconnectActionPerformed
 
     private void jbutRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutRefreshActionPerformed
