@@ -28,14 +28,7 @@ volatile struct App app;
 // functions
 
 void app_init (void) {
-    engCounts = 0;
-    wheelCounts = 0;
-    measureTime = 0;
-    
     memset((void *)&app, 0, sizeof(app));
-    
-    PORTD |= (1<<PD2);
-    PORTD |= (1<<PD3);
 }
 
 
@@ -47,15 +40,7 @@ void app_main (void) {
 
 //--------------------------------------------------------
 
-void app_task_1ms (void) {
-    measureTime++;
-    if (PIND & (1<<PD2)) {
-        engCounts++;
-    }
-    if (PIND & (1<<PD3)) {
-        wheelCounts++;
-    }
-}
+void app_task_1ms (void) {}
 void app_task_2ms (void) {}
 void app_task_4ms (void) {}
 void app_task_8ms (void) {}
