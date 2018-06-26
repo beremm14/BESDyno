@@ -1,8 +1,9 @@
 package serial;
 
-import data.Config;
-import data.Datapoint;
+import data.Environment;
 import data.RawDatapoint;
+import java.util.LinkedList;
+import java.util.List;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
@@ -26,19 +27,9 @@ public class Telegram {
     
     private final jssc.SerialPort port;
     
-    private RawDatapoint rawData;
-    private Datapoint data;
-    private Config config = new Config();
+    private Environment env = new Environment();
     
-    private double engPower;
-    private double wheelPower;
-    private int engRpm;
-    private int wheelRpm;
-    
-    private double engTemp;
-    private double envTemp;
-    private double fumeTemp;
-    private int airPress;
+    private List<RawDatapoint> list = new LinkedList<>();
 
     public Telegram(SerialPort port) {
         this.port = port;
@@ -60,8 +51,8 @@ public class Telegram {
                 throw new Exception("No response");
             } else {
                 String s[] = response.split("#");
-                envTemp = Double.parseDouble(s[0]);
-                airPress = Integer.parseInt(s[1]);
+                env.setEnvTemp(Double.parseDouble(s[0]));
+                env.setAirPress(Integer.parseInt(s[1]));
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -78,8 +69,24 @@ public class Telegram {
                 throw new Exception("No response");
             } else {
                 String s[] = response.split("#");
-                envTemp = Double.parseDouble(s[0]);
-                fumeTemp = Double.parseDouble(s[1]);
+                env.setEngTemp(Double.parseDouble(s[0]));
+                env.setFumeTemp(Double.parseDouble(s[1]));
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    }
+    
+    public void readRpmData() {
+        //"engCount#wheelCount#time
+        try {
+            port.writeString("MEASURE");
+            String response = port.readString().trim();
+            if (response.contains("NO DATA") || response.isEmpty()) {
+                throw new Exception("No response");
+            } else {
+                String s[] = response.split("#");
+                list.add(new RawDatapoint(s[0], s[1], s[2]));
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -87,40 +94,13 @@ public class Telegram {
     }
 
     //Getter
-    public double getEngTemp() {
-        return engTemp;
-    }
 
-    public double getEnvTemp() {
-        return envTemp;
-    }
-
-    public int getAirPress() {
-        return airPress;
-    }
-
-    public RawDatapoint getRawData() {
-        return rawData;
+    public Environment getEnvironment() {
+        return env;
     }
     
-    public Datapoint getData() {
-        return data;
-    }
-
-    public double getEngPower() {
-        return engPower;
-    }
-
-    public double getWheelPower() {
-        return wheelPower;
-    }
-
-    public int getEngRpm() {
-        return engRpm;
-    }
-
-    public int getWheelRpm() {
-        return wheelRpm;
+    public List<RawDatapoint> getRawDataList() {
+        return list;
     }
 
 }
