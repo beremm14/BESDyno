@@ -20,6 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import data.Environment;
 import measure.MeasurementWorker;
+import serial.Port;
 
 /**
  *
@@ -32,6 +33,7 @@ public class BESDyno extends javax.swing.JFrame {
     private BikePower power = new BikePower();
     private Config config = new Config();
     private Environment env = new Environment();
+    private Port port = new Port();
     
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
@@ -42,7 +44,6 @@ public class BESDyno extends javax.swing.JFrame {
     
     //Object-Variables
     private File file;
-    private jssc.SerialPort serialPort;
     private CalculationWorker worker;
     
     //Variables
@@ -59,11 +60,6 @@ public class BESDyno extends javax.swing.JFrame {
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
         refreshPorts();
-        try {
-            autoConnect();
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-        }
         try {
             loadConfig();
         } catch (Exception ex) {
@@ -103,7 +99,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         //Wenn ein Port geöffnet wurde
-        if (serialPort != null && serialPort.isOpened()) {
+        if (port.getPort() != null && port.getPort().isOpened()) {
             jbutDisconnect.setEnabled(true);
             jmiDisconnect.setEnabled(true);
             jcbSerialDevices.setEnabled(false);
@@ -161,61 +157,6 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         refreshGui();
-    }
-
-    private void connectPort(String port) {
-        serialPort = new jssc.SerialPort(port);
-
-        try {
-            if (serialPort.openPort() == false) {
-                throw new jssc.SerialPortException(port, "openPort", "return value false");
-            }
-            //Konfiguration einfügen: Baudrate, Databits, Stopbits, Parity
-
-        } catch (Throwable e) {
-            writeOutThrowable(e);
-
-        } finally {
-            refreshGui();
-            jtfStatus.setText("Prüfstand erfolgreich verbunden");
-        }
-    }
-
-    //Funktioniert nun durch die verschachteteln IFs...
-    private void autoConnect() throws Exception {
-        if (jcbSerialDevices.getItemCount() > 0) {
-            if (System.getProperty("os.name").contains("Mac OS X")) {
-                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/tty.usbmodem")) {
-                    connectPort((String) jcbSerialDevices.getSelectedItem());
-                }
-            } else if (System.getProperty("os.name").contains("Linux")) {
-                if (jcbSerialDevices.getSelectedItem().toString().contains("/dev/ttyACM0")) {
-                    connectPort((String) jcbSerialDevices.getSelectedItem());
-                }
-            } else if (System.getProperty("os.name").contains("Windows")) {
-                throw new Exception("Windows does not support autoconnect...");
-            }
-        }
-    }
-
-    private void disconnectPort() {
-        if (serialPort == null || !serialPort.isOpened()) {
-            writeOutThrowable(new Exception("Interner Fehler!"));
-        }
-
-        try {
-            if (serialPort.closePort() == false) {
-                throw new jssc.SerialPortException(null, "closePort", "return value false");
-            }
-
-        } catch (Throwable e) {
-            writeOutThrowable(e);
-
-        } finally {
-            serialPort = null;
-            refreshGui();
-            jtfStatus.setText("Gerät erfolgreich getrennt");
-        }
     }
 
     //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
@@ -675,17 +616,25 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiRefreshActionPerformed
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
-        connectPort((String) jcbSerialDevices.getSelectedItem());
+        try {
+            port.connectPort((String) jcbSerialDevices.getSelectedItem());
+        } catch (Throwable ex) {
+            writeOutThrowable(ex);
+        }
     }//GEN-LAST:event_jmiConnectActionPerformed
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
-        disconnectPort();
+        try {
+            port.disconnectPort();
+        } catch (Throwable ex) {
+            writeOutThrowable(ex);
+        }
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
         about.setAppearance(dark);
         about.setVisible(true);
-        if (serialPort.isOpened()) {
+        if (port.getPort().isOpened()) {
             about.writeDevice((String) jcbSerialDevices.getSelectedItem());
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");

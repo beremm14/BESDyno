@@ -49,7 +49,13 @@ public class BikePower {
     }
     
     public void setBikePower() {
-        this.bikePower = engPower.get(engPower.size()-1);
+        double power = engPower.get(0);
+        for (int i=0; i<engPower.size(); i++) {
+            if (engPower.get(i) > power) {
+                power = engPower.get(i);
+            }
+        }
+        this.bikePower = power;
     }
 
     //LinkedList-Methods

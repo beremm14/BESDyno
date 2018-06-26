@@ -170,11 +170,17 @@ public class Bike {
                 continue;
             }
 
+//            String s[] = line.split("\t");
+//            double time = new Scanner(s[0]).nextDouble();
+//            double engRpm = new Scanner(s[1]).nextDouble();
+//            double wheelRpm = new Scanner(s[2]).nextDouble();
+//            add(new Datapoint(wheelRpm, engRpm, time));
+
             String s[] = line.split("\t");
-            double time = new Scanner(s[0]).nextDouble();
-            double engRpm = new Scanner(s[1]).nextDouble();
-            double wheelRpm = new Scanner(s[2]).nextDouble();
-            add(new Datapoint(wheelRpm, engRpm, time));
+            int time = Integer.parseInt(s[0]);
+            int engRpm = Integer.parseInt(s[1]);
+            int wheelRpm = Integer.parseInt(s[2]);
+            add(new Datapoint(engRpm, wheelRpm, time));
         }
     }
 

@@ -1,16 +1,28 @@
 package measure;
 
+import data.Bike;
 import javax.swing.SwingWorker;
+import serial.Telegram;
 
 /**
  *
  * @author emil
  */
 public class MeasurementWorker extends SwingWorker<Void, String> {
+    
+    private Bike bike = new Bike();
+    private Telegram telegram = new Telegram();    
 
     @Override
     protected Void doInBackground() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        telegram.readEnvData();
+        //do {
+            telegram.readRpmData();
+            
+        //}
+        
+        return null;
     }
     
 }
