@@ -177,9 +177,9 @@ public class Bike {
 
             String s[] = line.split("\t");
             double time = new Scanner(s[0]).nextDouble();
-            double rpm = new Scanner(s[1]).nextDouble();
-            double wss = new Scanner(s[2]).nextDouble();
-            add(new Datapoint(wss, rpm, time));
+            double engRpm = new Scanner(s[1]).nextDouble();
+            double wheelRpm = new Scanner(s[2]).nextDouble();
+            add(new Datapoint(wheelRpm, engRpm, time));
         }
     }
 

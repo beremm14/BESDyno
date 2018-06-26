@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package data;
 
 /**
@@ -11,41 +6,44 @@ package data;
  */
 public class RawDatapoint {
     
-    private String wss; //µs
-    private String rpm; //µs
-    private String time; //µs
+    private int engCount;   //Counts/time
+    private int wheelCount; //Counts/time
+    private int time;       //ms
 
-    
-    public RawDatapoint(String wss, String rpm, String time) {
-        this.wss = wss;
-        this.rpm = rpm;
+    public RawDatapoint(String engCount, String wheelCount, String time) {
+        this.engCount = Integer.parseInt(engCount);
+        this.wheelCount = Integer.parseInt(wheelCount);
+        this.time = Integer.parseInt(time);
+    }
+
+    public RawDatapoint(int engCount, int wheelCount, int time) {
+        this.engCount = engCount;
+        this.wheelCount = wheelCount;
         this.time = time;
     }
 
-    
-    public String getWss() {
-        return wss;
+    public int getEngCount() {
+        return engCount;
     }
 
-    public String getRpm() {
-        return rpm;
+    public int getWheelCount() {
+        return wheelCount;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    
-    public void setWss(String wss) {
-        this.wss = wss;
+    public void setEngCount(int engCount) {
+        this.engCount = engCount;
     }
 
-    public void setRpm(String rpm) {
-        this.rpm = rpm;
+    public void setWheelCount(int wheelCount) {
+        this.wheelCount = wheelCount;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
-    
+
 }

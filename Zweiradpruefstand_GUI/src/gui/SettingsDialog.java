@@ -190,7 +190,6 @@ public class SettingsDialog extends javax.swing.JDialog {
         
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
-        
         try {
             c.setHysteresisKmh(Integer.parseInt(jtfHysteresisKmh.getText()));
         } catch (NumberFormatException e) {
@@ -337,7 +336,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     //Loads Config-File from hidden Folder
-    public void loadConfig() throws Exception {
+    private void loadConfig() throws Exception {
         File home;
         File folder;
         File file;

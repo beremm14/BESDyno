@@ -9,46 +9,48 @@ import java.io.IOException;
  */
 public class Datapoint {
     
-    private double wss; //rad/s
-    private double rpm; //U/min
-    private double time; //time
+    private double engRpm;   //U/min
+    private double wheelRpm; //U/min
+    private double time;     //ms
 
-    public Datapoint(double wss, double rpm, double time) {
-        this.wss = wss;
-        this.rpm = rpm;
+    public Datapoint(double engRpm, double wheelRpm, double time) {
+        this.engRpm = engRpm;
+        this.wheelRpm = wheelRpm;
         this.time = time;
     }
-    
-    public double getWss() {
-        return wss;
+
+    public double getEngRpm() {
+        return engRpm;
     }
-    
-    public double getRpm() {
-        return rpm;
+
+    public double getWheelRpm() {
+        return wheelRpm;
     }
-    
+
     public double getTime() {
         return time;
     }
-    
-    public void setWss(double wss) {
-        this.wss = wss;
+
+    public void setEngRpm(double engRpm) {
+        this.engRpm = engRpm;
     }
-    
-    public void setRpm(double rpm) {
-        this.rpm = rpm;
+
+    public void setWheelRpm(double wheelRpm) {
+        this.wheelRpm = wheelRpm;
     }
-    
+
     public void setTime(double time) {
         this.time = time;
     }
+
+
     
     public void writeLine(BufferedWriter w) throws IOException {
         w.write(time + "");
         w.write("\t");
-        w.write(rpm + "");
+        w.write(engRpm + "");
         w.write("\t");
-        w.write(wss + "");
+        w.write(wheelRpm + "");
     }
     
 }
