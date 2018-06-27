@@ -30,6 +30,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
         }
+        setTitle("Einstellungen - Konfiguration");
+        setLocationRelativeTo(null);
     }
 
     public void setAppearance(boolean dark) {

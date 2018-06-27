@@ -24,7 +24,6 @@ public class MeasureDialog extends javax.swing.JDialog {
     private final DefaultValueDataset kmh = new DefaultValueDataset(0);
     private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
-    private BESDyno gui;
     //private Measure worker;
     /**
      * Creates new form MeasureDialog
@@ -34,6 +33,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         initComponents();
         
         setTitle("Messung läuft...");
+        setLocationRelativeTo(null);
         setResizable(false);
         setMinimumSize(new Dimension(620, 450));
         

@@ -8,7 +8,7 @@ public class RawDatapoint {
     
     private int engCount;   //Counts/time
     private int wheelCount; //Counts/time
-    private int time;       //ms
+    private int time;       //ms (dt)
 
     public RawDatapoint(String engCount, String wheelCount, String time) {
         this.engCount = Integer.parseInt(engCount);

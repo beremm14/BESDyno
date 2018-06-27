@@ -10,13 +10,7 @@ import javax.swing.JOptionPane;
  */
 public class VehicleSetDialog extends javax.swing.JDialog {
     
-    Bike bike = new Bike();
-
-    private boolean measRpm;
-    private boolean twoStroke;
-    private boolean automatic;
-    private boolean schleppEnable;
-    private String vehicleName;
+    private Bike bike = new Bike();
 
     private boolean pressedOK;
 
@@ -26,51 +20,18 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     public VehicleSetDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setTitle("Zweirad registrieren...");
+        setLocationRelativeTo(null);
+        setResizable(false);
     }
 
-    //Getter & Setter
-    public boolean isMeasRpm() {
-        return measRpm;
-    }
-
-    public void setMeasRpm(boolean measRpm) {
-        this.measRpm = measRpm;
-    }
-
-    public boolean isTwoStroke() {
-        return twoStroke;
-    }
-
-    public void setTwoStroke(boolean twoStroke) {
-        this.twoStroke = twoStroke;
-    }
-
-    public boolean isAutomatic() {
-        return automatic;
-    }
-
-    public void setAutomatic(boolean automatic) {
-        this.automatic = automatic;
-    }
-
-    public boolean isSchleppEnable() {
-        return schleppEnable;
-    }
-
-    public void setSchleppEnable(boolean schleppEnable) {
-        this.schleppEnable = schleppEnable;
-    }
-
-    public String getVehicleName() {
-        return vehicleName;
-    }
-
-    public void setVehicleName(String vehicleName) {
-        this.vehicleName = vehicleName;
-    }
-
+    //Getter
     public boolean isPressedOK() {
         return pressedOK;
+    }
+    
+    public Bike getBike() {
+        return bike;
     }
 
     //Sets Appearance like at the Main-GUI
@@ -145,7 +106,16 @@ public class VehicleSetDialog extends javax.swing.JDialog {
                     JOptionPane.ERROR_MESSAGE);
             jtfVehicleName.requestFocusInWindow();
         } else {
-            bike.setVehicleName(jtfVehicleName.getText());
+            if (jtfVehicleName.getText().isEmpty()) {
+                error = true;
+                JOptionPane.showMessageDialog(this,
+                    "Bitte Fahrzeugnamen eingeben!",
+                    "Kein Fahrzeugname eingegeben",
+                    JOptionPane.ERROR_MESSAGE);
+            jtfVehicleName.requestFocusInWindow();
+            } else {
+                bike.setVehicleName(jtfVehicleName.getText());
+            }
         }
 
         if (!error) {

@@ -29,11 +29,11 @@ import serial.Port;
 public class BESDyno extends javax.swing.JFrame {
 
     //Data-Objects
-    private Bike bike = new Bike();
-    private BikePower power = new BikePower();
-    private Config config = new Config();
-    private Environment env = new Environment();
-    private Port port = new Port();
+    private Bike bike;
+    private BikePower power;
+    private Config config;
+    private Environment env;
+    private Port port;
     
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
@@ -54,7 +54,7 @@ public class BESDyno extends javax.swing.JFrame {
      */
     public BESDyno() {
         initComponents();
-        setTitle("Zweiradprüfstand");
+        setTitle("BESDyno - Zweiradprüfstand");
         setLocationRelativeTo(null);
         setSize(new Dimension(1200, 750));
         jtfStatus.setEditable(false);
@@ -609,6 +609,12 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
+        
+        if(vehicle.isPressedOK()) {
+            bike = vehicle.getBike();
+            measure.setAppearance(dark);
+            measure.setVisible(true);
+        }
     }//GEN-LAST:event_jmiStartSimActionPerformed
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
@@ -635,7 +641,7 @@ public class BESDyno extends javax.swing.JFrame {
         about.setAppearance(dark);
         about.setVisible(true);
         if (port.getPort().isOpened()) {
-            about.writeDevice((String) jcbSerialDevices.getSelectedItem());
+            about.writeDevice((String)jcbSerialDevices.getSelectedItem());
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");
         }
