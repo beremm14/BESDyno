@@ -17,6 +17,9 @@ public class BikePower {
     private List<Integer> engRpm = new LinkedList<>();
     private List<Integer> wheelRpm = new LinkedList<>();
     
+    //Time
+    private List<Integer> dTime = new LinkedList<>();
+    
     //"Absolute" Power
     private double bikePower;
 
@@ -37,6 +40,10 @@ public class BikePower {
 
     public List<Integer> getWheelRpm() {
         return wheelRpm;
+    }
+
+    public List<Integer> getDTime() {
+        return dTime;
     }
 
     public double getBikePower() {
@@ -73,6 +80,10 @@ public class BikePower {
     
     public boolean addWR(Integer e) {
         return wheelRpm.add(e);
+    }
+    
+    public boolean addDTime(Integer e) {
+        return dTime.add(e);
     }
     
 }

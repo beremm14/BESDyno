@@ -56,7 +56,7 @@ public class Config {
         return torqueCorr;
     }
 
-    public double getInertiaCorr() {
+    public double getInertia() {
         return inertiaCorr;
     }
 

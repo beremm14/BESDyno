@@ -1,10 +1,9 @@
 package measure;
 
 import data.Bike;
+import data.BikePower;
 import data.Config;
-import data.Datapoint;
 import data.RawDatapoint;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,13 +15,18 @@ public class Calculate {
     private List<RawDatapoint> rawList;
     
     private Bike bike = new Bike();
+    private BikePower power = new BikePower();
+    private Config config = new Config();
 
     public Calculate(List<RawDatapoint> rawList) {
         this.rawList = rawList;
     }
+
+    public BikePower getBikePower() {
+        return power;
+    }
     
-    public List<Datapoint> calcRpm() {
-        List<Datapoint> bikeList = new LinkedList<>();
+    public void calcRpm() {
         
         int totalImpulse = 20; //???
         int wheelRpm;
@@ -36,11 +40,20 @@ public class Calculate {
             } else {
                 engRpm = (rawList.get(i).getEngCount() * 2 ) /rawList.get(i).getTime();
             }
-            totalTime+= rawList.get(i).getTime();
-            
-            bikeList.add(new Datapoint(engRpm, wheelRpm, totalTime));
+            power.addER(engRpm);
+            power.addWR(wheelRpm);
+            power.addDTime(rawList.get(i).getTime());
         }
-        return bikeList;
+    }
+    
+    public void calcPower() {
+        //Wheel-Power
+        for (int i=0; i<power.getWheelRpm().size(); i++) {
+            double dOmega = (Math.PI*power.getWheelRpm().get(i))/30;
+            double alpha = dOmega/(power.getDTime().get(i)*1000);
+            double torque = (config.getInertia()*alpha)/dOmega;
+            double power = torque * dOmega; //?????????
+        }
     }
     
 }
