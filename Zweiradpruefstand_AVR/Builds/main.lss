@@ -7,21 +7,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         0000178a  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000052  008001c6  008001c6  000018e4  2**0
+  2 .bss          00000055  008001c6  008001c6  000018e4  2**0
                   ALLOC
-  3 .stab         00002b50  00000000  00000000  000018e4  2**2
+  3 .stab         00002b74  00000000  00000000  000018e4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      00001ec5  00000000  00000000  00004434  2**0
+  4 .stabstr      00001e62  00000000  00000000  00004458  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .comment      00000011  00000000  00000000  000062f9  2**0
+  5 .comment      00000011  00000000  00000000  000062ba  2**0
                   CONTENTS, READONLY
-  6 .debug_aranges 00000120  00000000  00000000  00006310  2**3
+  6 .debug_aranges 00000120  00000000  00000000  000062d0  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   000006ae  00000000  00000000  00006430  2**0
+  7 .debug_info   000006ae  00000000  00000000  000063f0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 000000b4  00000000  00000000  00006ade  2**0
+  8 .debug_abbrev 000000b4  00000000  00000000  00006a9e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   000003a0  00000000  00000000  00006b92  2**0
+  9 .debug_line   000003a0  00000000  00000000  00006b52  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -55,10 +55,10 @@ Disassembly of section .text:
       64:	0c 94 dc 00 	jmp	0x1b8	; 0x1b8 <__bad_interrupt>
 
 00000068 <FLASHSTRING_TIME>:
-      68:	31 31 3a 31 34 3a 31 31 00                          11:14:11.
+      68:	32 30 3a 31 39 3a 32 35 00                          20:19:25.
 
 00000071 <FLASHSTRING_DATE>:
-      71:	41 70 72 20 32 36 20 32 30 31 38 00                 Apr 26 2018.
+      71:	4a 75 6e 20 32 38 20 32 30 31 38 00                 Jun 28 2018.
 
 0000007d <FLASHSTRING_WELCOME>:
       7d:	0a 0d 50 72 6f 67 72 61 6d 6d 20 3f 3f 20 00        ..Programm ?? .
@@ -135,7 +135,7 @@ Disassembly of section .text:
      1a8:	1d 92       	st	X+, r1
 
 000001aa <.do_clear_bss_start>:
-     1aa:	a8 31       	cpi	r26, 0x18	; 24
+     1aa:	ab 31       	cpi	r26, 0x1B	; 27
      1ac:	b2 07       	cpc	r27, r18
      1ae:	e1 f7       	brne	.-8      	; 0x1a8 <.do_clear_bss_loop>
      1b0:	0e 94 f1 06 	call	0xde2	; 0xde2 <main>
@@ -145,22 +145,22 @@ Disassembly of section .text:
      1b8:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000001bc <app_init>:
+
+
 // functions
 
-
-void app_init (void)
-{
+void app_init (void) {
     memset((void *)&app, 0, sizeof(app));
-     1bc:	10 92 cd 01 	sts	0x01CD, r1
+     1bc:	10 92 ce 01 	sts	0x01CE, r1
      1c0:	08 95       	ret
 
 000001c2 <app_main>:
+}
 
 
 //--------------------------------------------------------
 
-void app_main (void)
-{
+void app_main (void) {
      1c2:	08 95       	ret
 
 000001c4 <app_task_1ms>:
@@ -201,12 +201,12 @@ void app_task_128ms (void) {}
      1d2:	08 95       	ret
 
 000001d4 <mon_cmd_test>:
+    sys_newline();
     return 0;
 }
 
 
-int8_t mon_cmd_test (uint8_t argc, char *argv[])
-{
+int8_t mon_cmd_test (uint8_t argc, char *argv[]) {
      1d4:	df 92       	push	r13
      1d6:	ef 92       	push	r14
      1d8:	ff 92       	push	r15
@@ -227,8 +227,8 @@ int8_t mon_cmd_test (uint8_t argc, char *argv[])
      1ee:	81 e0       	ldi	r24, 0x01	; 1
      1f0:	f8 2e       	mov	r15, r24
 
-int8_t mon_cmd_test (uint8_t argc, char *argv[])
-{
+
+int8_t mon_cmd_test (uint8_t argc, char *argv[]) {
     uint8_t i;
     
     for (i = 0; i<argc; i++)
@@ -269,11 +269,11 @@ int8_t mon_cmd_test (uint8_t argc, char *argv[])
      230:	08 95       	ret
 
 00000232 <mon_cmd_info>:
+// --------------------------------------------------------
 // Monitor commands of the application
 // --------------------------------------------------------
 
-int8_t mon_cmd_info (uint8_t argc, char *argv[])
-{
+int8_t mon_cmd_info (uint8_t argc, char *argv[]) {
     printf("app.flags_u8  : ");
      232:	85 e2       	ldi	r24, 0x25	; 37
      234:	91 e0       	ldi	r25, 0x01	; 1
@@ -281,7 +281,7 @@ int8_t mon_cmd_info (uint8_t argc, char *argv[])
      238:	8f 93       	push	r24
      23a:	0e 94 dc 08 	call	0x11b8	; 0x11b8 <printf>
     sys_printHexBin8(sys.flags_u8);
-     23e:	80 91 fa 01 	lds	r24, 0x01FA
+     23e:	80 91 fd 01 	lds	r24, 0x01FD
      242:	0e 94 9c 02 	call	0x538	; 0x538 <sys_printHexBin8>
     sys_newline();
      246:	0e 94 08 02 	call	0x410	; 0x410 <sys_newline>
@@ -293,40 +293,39 @@ int8_t mon_cmd_info (uint8_t argc, char *argv[])
      250:	08 95       	ret
 
 00000252 <mon_init>:
+volatile struct Mon mon;
 
 // functions
 
-void mon_init (void)
-{
+void mon_init (void) {
     memset((void *)&mon, 0, sizeof(mon));
-     252:	10 92 ce 01 	sts	0x01CE, r1
+     252:	10 92 d1 01 	sts	0x01D1, r1
      256:	08 95       	ret
 
 00000258 <mon_main>:
+}
 
 
 //--------------------------------------------------------
 
-inline void mon_main (void)
-{
+inline void mon_main (void) {
      258:	08 95       	ret
 
 0000025a <mon_getCmdCount>:
 }
 
-inline uint8_t mon_getCmdCount (void)
-{
+inline uint8_t mon_getCmdCount (void) {
     return sizeof(MON_PMEMSTR_CMDS)/sizeof(struct Sys_MonCmdInfo);
 }
      25a:	82 e0       	ldi	r24, 0x02	; 2
      25c:	08 95       	ret
 
 0000025e <mon_printLineHeader>:
+// --------------------------------------------------------
 // Monitor-Line for continues output
 // --------------------------------------------------------
 
-int8_t mon_printLineHeader (uint8_t lineIndex)
-{
+int8_t mon_printLineHeader (uint8_t lineIndex) {
     if (lineIndex==0)
      25e:	81 11       	cpse	r24, r1
      260:	0e c0       	rjmp	.+28     	; 0x27e <mon_printLineHeader+0x20>
@@ -347,8 +346,8 @@ int8_t mon_printLineHeader (uint8_t lineIndex)
      278:	0f 90       	pop	r0
      27a:	84 e1       	ldi	r24, 0x14	; 20
      27c:	08 95       	ret
-int8_t mon_printLineHeader (uint8_t lineIndex)
-{
+
+int8_t mon_printLineHeader (uint8_t lineIndex) {
     if (lineIndex==0)
         sys_printString_P(MON_LINE_WELCOME);
     
@@ -375,8 +374,7 @@ int8_t mon_printLineHeader (uint8_t lineIndex)
 
 0000029a <mon_printLine>:
 
-int8_t mon_printLine   (uint8_t lineIndex, char keyPressed)
-{
+int8_t mon_printLine   (uint8_t lineIndex, char keyPressed) {
     
     switch (lineIndex)
      29a:	88 23       	and	r24, r24
@@ -392,7 +390,7 @@ int8_t mon_printLine   (uint8_t lineIndex, char keyPressed)
      2a8:	9f 93       	push	r25
      2aa:	8f 93       	push	r24
      2ac:	0e 94 dc 08 	call	0x11b8	; 0x11b8 <printf>
-     2b0:	80 91 cd 01 	lds	r24, 0x01CD
+     2b0:	80 91 ce 01 	lds	r24, 0x01CE
      2b4:	60 e0       	ldi	r22, 0x00	; 0
      2b6:	0e 94 62 02 	call	0x4c4	; 0x4c4 <sys_printBin>
             return 2;
@@ -440,45 +438,45 @@ int8_t mon_printLine   (uint8_t lineIndex, char keyPressed)
      300:	08 95       	ret
 
 00000302 <sys_uart_getch>:
+#endif
 
 //----------------------------------------------------------------------------
 
-int sys_uart_getch (FILE *f)
-{
+int sys_uart_getch (FILE *f) {
     if (f != stdin)
-     302:	20 91 10 02 	lds	r18, 0x0210
-     306:	30 91 11 02 	lds	r19, 0x0211
+     302:	20 91 13 02 	lds	r18, 0x0213
+     306:	30 91 14 02 	lds	r19, 0x0214
      30a:	28 17       	cp	r18, r24
      30c:	39 07       	cpc	r19, r25
      30e:	c1 f4       	brne	.+48     	; 0x340 <sys_uart_getch+0x3e>
         return _FDEV_EOF;
     if (sys.uart.wpos_u8 == sys.uart.rpos_u8) return _FDEV_EOF;
-     310:	90 91 fe 01 	lds	r25, 0x01FE
-     314:	80 91 fd 01 	lds	r24, 0x01FD
+     310:	90 91 01 02 	lds	r25, 0x0201
+     314:	80 91 00 02 	lds	r24, 0x0200
      318:	98 17       	cp	r25, r24
      31a:	91 f0       	breq	.+36     	; 0x340 <sys_uart_getch+0x3e>
     uint8_t c = sys.uart.rbuffer_u8[sys.uart.rpos_u8++];
-     31c:	e0 91 fd 01 	lds	r30, 0x01FD
+     31c:	e0 91 00 02 	lds	r30, 0x0200
      320:	81 e0       	ldi	r24, 0x01	; 1
      322:	8e 0f       	add	r24, r30
-     324:	80 93 fd 01 	sts	0x01FD, r24
+     324:	80 93 00 02 	sts	0x0200, r24
      328:	f0 e0       	ldi	r31, 0x00	; 0
-     32a:	e6 50       	subi	r30, 0x06	; 6
+     32a:	e3 50       	subi	r30, 0x03	; 3
      32c:	fe 4f       	sbci	r31, 0xFE	; 254
      32e:	86 81       	ldd	r24, Z+6	; 0x06
     if (sys.uart.rpos_u8>=GLOBAL_UART_RECBUFSIZE)
-     330:	90 91 fd 01 	lds	r25, 0x01FD
+     330:	90 91 00 02 	lds	r25, 0x0200
      334:	90 31       	cpi	r25, 0x10	; 16
      336:	10 f0       	brcs	.+4      	; 0x33c <sys_uart_getch+0x3a>
         sys.uart.rpos_u8 = 0;
-     338:	10 92 fd 01 	sts	0x01FD, r1
+     338:	10 92 00 02 	sts	0x0200, r1
     return (int) c;
      33c:	90 e0       	ldi	r25, 0x00	; 0
      33e:	08 95       	ret
+
 //----------------------------------------------------------------------------
 
-int sys_uart_getch (FILE *f)
-{
+int sys_uart_getch (FILE *f) {
     if (f != stdin)
         return _FDEV_EOF;
      340:	8e ef       	ldi	r24, 0xFE	; 254
@@ -494,11 +492,10 @@ int sys_uart_getch (FILE *f)
 00000346 <sys_uart_putch>:
 
 
-int sys_uart_putch (char c, FILE *f)
-{
+int sys_uart_putch (char c, FILE *f) {
     if (f != stdout)
-     346:	20 91 12 02 	lds	r18, 0x0212
-     34a:	30 91 13 02 	lds	r19, 0x0213
+     346:	20 91 15 02 	lds	r18, 0x0215
+     34a:	30 91 16 02 	lds	r19, 0x0216
      34e:	62 17       	cp	r22, r18
      350:	73 07       	cpc	r23, r19
      352:	41 f4       	brne	.+16     	; 0x364 <sys_uart_putch+0x1e>
@@ -512,10 +509,10 @@ int sys_uart_putch (char c, FILE *f)
     return (int)c;
      360:	90 e0       	ldi	r25, 0x00	; 0
      362:	08 95       	ret
+}
 
 
-int sys_uart_putch (char c, FILE *f)
-{
+int sys_uart_putch (char c, FILE *f) {
     if (f != stdout)
         return _FDEV_EOF;
      364:	8e ef       	ldi	r24, 0xFE	; 254
@@ -527,14 +524,14 @@ int sys_uart_putch (char c, FILE *f)
      368:	08 95       	ret
 
 0000036a <sys_init>:
+
 static FILE mystdout = FDEV_SETUP_STREAM(sys_uart_putch, NULL, _FDEV_SETUP_WRITE);
 static FILE mystdin  = FDEV_SETUP_STREAM(NULL, sys_uart_getch, _FDEV_SETUP_READ);
 
-void sys_init (void)
-{
+void sys_init (void) {
     memset((void *)&sys, 0, sizeof(sys));
      36a:	86 e1       	ldi	r24, 0x16	; 22
-     36c:	ea ef       	ldi	r30, 0xFA	; 250
+     36c:	ed ef       	ldi	r30, 0xFD	; 253
      36e:	f1 e0       	ldi	r31, 0x01	; 1
      370:	df 01       	movw	r26, r30
      372:	1d 92       	st	X+, r1
@@ -603,21 +600,21 @@ void sys_init (void)
     stdout = &mystdout;
      3ba:	8e e0       	ldi	r24, 0x0E	; 14
      3bc:	91 e0       	ldi	r25, 0x01	; 1
-     3be:	90 93 13 02 	sts	0x0213, r25
-     3c2:	80 93 12 02 	sts	0x0212, r24
+     3be:	90 93 16 02 	sts	0x0216, r25
+     3c2:	80 93 15 02 	sts	0x0215, r24
     stdin  = &mystdin;
      3c6:	80 e0       	ldi	r24, 0x00	; 0
      3c8:	91 e0       	ldi	r25, 0x01	; 1
-     3ca:	90 93 11 02 	sts	0x0211, r25
-     3ce:	80 93 10 02 	sts	0x0210, r24
+     3ca:	90 93 14 02 	sts	0x0214, r25
+     3ce:	80 93 13 02 	sts	0x0213, r24
      3d2:	08 95       	ret
 
 000003d4 <sys_inc8BitCnt>:
+}
 
 //----------------------------------------------------------------------------
 
-uint8_t sys_inc8BitCnt (uint8_t count)
-{
+uint8_t sys_inc8BitCnt (uint8_t count) {
     return count<0xff ? count+1 : count;
      3d4:	8f 3f       	cpi	r24, 0xFF	; 255
      3d6:	11 f0       	breq	.+4      	; 0x3dc <sys_inc8BitCnt+0x8>
@@ -630,8 +627,7 @@ uint8_t sys_inc8BitCnt (uint8_t count)
 000003e0 <sys_inc16BitCnt>:
 
 
-uint16_t sys_inc16BitCnt (uint16_t count)
-{
+uint16_t sys_inc16BitCnt (uint16_t count) {
     return count<0xffff ? count+1 : count;
      3e0:	8f 3f       	cpi	r24, 0xFF	; 255
      3e2:	2f ef       	ldi	r18, 0xFF	; 255
@@ -647,10 +643,9 @@ uint16_t sys_inc16BitCnt (uint16_t count)
 000003f2 <sys_sei>:
 
 
-void sys_sei (void)
-{
+void sys_sei (void) {
     if (sys.flags_u8 & SYS_FLAG_SREG_I)
-     3f2:	80 91 fa 01 	lds	r24, 0x01FA
+     3f2:	80 91 fd 01 	lds	r24, 0x01FD
      3f6:	87 ff       	sbrs	r24, 7
      3f8:	01 c0       	rjmp	.+2      	; 0x3fc <sys_sei+0xa>
         sei();
@@ -661,10 +656,9 @@ void sys_sei (void)
 }
 
 
-void sys_cli (void)
-{
+void sys_cli (void) {
     sys.flags_u8 |= (SREG & 0x80);
-     3fe:	ea ef       	ldi	r30, 0xFA	; 250
+     3fe:	ed ef       	ldi	r30, 0xFD	; 253
      400:	f1 e0       	ldi	r31, 0x01	; 1
      402:	90 81       	ld	r25, Z
      404:	8f b7       	in	r24, 0x3f	; 63
@@ -679,8 +673,7 @@ void sys_cli (void)
 }
 
 
-void sys_newline (void)
-{
+void sys_newline (void) {
     printf("\n\r");
      410:	83 ec       	ldi	r24, 0xC3	; 195
      412:	91 e0       	ldi	r25, 0x01	; 1
@@ -695,8 +688,7 @@ void sys_newline (void)
 }
 
 
-void sys_printString_P (PGM_P str)
-{
+void sys_printString_P (PGM_P str) {
      422:	0f 93       	push	r16
      424:	1f 93       	push	r17
      426:	cf 93       	push	r28
@@ -723,11 +715,11 @@ void sys_printString_P (PGM_P str)
      446:	88 23       	and	r24, r24
      448:	49 f0       	breq	.+18     	; 0x45c <sys_printString_P+0x3a>
         putchar(c);
-     44a:	60 91 12 02 	lds	r22, 0x0212
-     44e:	70 91 13 02 	lds	r23, 0x0213
+     44a:	60 91 15 02 	lds	r22, 0x0215
+     44e:	70 91 16 02 	lds	r23, 0x0216
      452:	90 e0       	ldi	r25, 0x00	; 0
      454:	0e 94 aa 08 	call	0x1154	; 0x1154 <fputc>
-{
+void sys_printString_P (PGM_P str) {
     char c;
     
     while (1)
@@ -749,8 +741,7 @@ void sys_printString_P (PGM_P str)
 00000468 <sys_puts_P>:
 
 
-void sys_puts_P (PGM_P str)
-{
+void sys_puts_P (PGM_P str) {
     sys_printString_P(str);
      468:	0e 94 11 02 	call	0x422	; 0x422 <sys_printString_P>
     sys_newline();
@@ -761,8 +752,7 @@ void sys_puts_P (PGM_P str)
 
 #ifdef GLOBAL_MONITOR
 
-int16_t sys_getByte (char typ, uint16_t add)
-{
+int16_t sys_getByte (char typ, uint16_t add) {
      470:	cf 93       	push	r28
      472:	df 93       	push	r29
      474:	1f 92       	push	r1
@@ -771,7 +761,7 @@ int16_t sys_getByte (char typ, uint16_t add)
     uint8_t value = 0;
      47a:	19 82       	std	Y+1, r1	; 0x01
     
-    switch (typ)
+    switch (typ) {
      47c:	86 36       	cpi	r24, 0x66	; 102
      47e:	29 f0       	breq	.+10     	; 0x48a <sys_getByte+0x1a>
      480:	83 37       	cpi	r24, 0x73	; 115
@@ -779,7 +769,6 @@ int16_t sys_getByte (char typ, uint16_t add)
      484:	85 36       	cpi	r24, 0x65	; 101
      486:	c1 f4       	brne	.+48     	; 0x4b8 <sys_getByte+0x48>
      488:	11 c0       	rjmp	.+34     	; 0x4ac <sys_getByte+0x3c>
-    {
         case 'f': // flash
             if (add>FLASHEND) return -1;
      48a:	77 fd       	sbrc	r23, 7
@@ -820,10 +809,10 @@ int16_t sys_getByte (char typ, uint16_t add)
      4b2:	89 81       	ldd	r24, Y+1	; 0x01
      4b4:	90 e0       	ldi	r25, 0x00	; 0
      4b6:	02 c0       	rjmp	.+4      	; 0x4bc <sys_getByte+0x4c>
+int16_t sys_getByte (char typ, uint16_t add) {
     uint8_t value = 0;
     
-    switch (typ)
-    {
+    switch (typ) {
         case 'f': // flash
             if (add>FLASHEND) return -1;
      4b8:	8f ef       	ldi	r24, 0xFF	; 255
@@ -842,8 +831,7 @@ int16_t sys_getByte (char typ, uint16_t add)
 000004c4 <sys_printBin>:
 
 
-void sys_printBin (uint8_t value, char sep)
-{
+void sys_printBin (uint8_t value, char sep) {
      4c4:	df 92       	push	r13
      4c6:	ef 92       	push	r14
      4c8:	ff 92       	push	r15
@@ -855,23 +843,22 @@ void sys_printBin (uint8_t value, char sep)
      4d4:	d6 2e       	mov	r13, r22
     uint8_t i;
     
-    for (i=0; i<8; i++,value<<=1)
+    for (i=0; i<8; i++,value<<=1) {
      4d6:	f1 2c       	mov	r15, r1
-    {
         putchar(value&0x80 ? '1' : '0');
      4d8:	c1 e3       	ldi	r28, 0x31	; 49
      4da:	d0 e0       	ldi	r29, 0x00	; 0
         if (i==3 && sep) putchar(sep);
      4dc:	06 2f       	mov	r16, r22
      4de:	10 e0       	ldi	r17, 0x00	; 0
-{
+
+void sys_printBin (uint8_t value, char sep) {
     uint8_t i;
     
-    for (i=0; i<8; i++,value<<=1)
-    {
+    for (i=0; i<8; i++,value<<=1) {
         putchar(value&0x80 ? '1' : '0');
-     4e0:	60 91 12 02 	lds	r22, 0x0212
-     4e4:	70 91 13 02 	lds	r23, 0x0213
+     4e0:	60 91 15 02 	lds	r22, 0x0215
+     4e4:	70 91 16 02 	lds	r23, 0x0216
      4e8:	2e 2d       	mov	r18, r14
      4ea:	33 27       	eor	r19, r19
      4ec:	27 fd       	sbrc	r18, 7
@@ -892,22 +879,21 @@ void sys_printBin (uint8_t value, char sep)
      50a:	09 c0       	rjmp	.+18     	; 0x51e <sys_printBin+0x5a>
      50c:	dd 20       	and	r13, r13
      50e:	39 f0       	breq	.+14     	; 0x51e <sys_printBin+0x5a>
-     510:	60 91 12 02 	lds	r22, 0x0212
-     514:	70 91 13 02 	lds	r23, 0x0213
+     510:	60 91 15 02 	lds	r22, 0x0215
+     514:	70 91 16 02 	lds	r23, 0x0216
      518:	c8 01       	movw	r24, r16
      51a:	0e 94 aa 08 	call	0x1154	; 0x1154 <fputc>
 
-void sys_printBin (uint8_t value, char sep)
-{
+
+void sys_printBin (uint8_t value, char sep) {
     uint8_t i;
     
-    for (i=0; i<8; i++,value<<=1)
+    for (i=0; i<8; i++,value<<=1) {
      51e:	f3 94       	inc	r15
      520:	ee 0c       	add	r14, r14
      522:	88 e0       	ldi	r24, 0x08	; 8
      524:	f8 12       	cpse	r15, r24
      526:	dc cf       	rjmp	.-72     	; 0x4e0 <sys_printBin+0x1c>
-    {
         putchar(value&0x80 ? '1' : '0');
         if (i==3 && sep) putchar(sep);
     }
@@ -924,8 +910,7 @@ void sys_printBin (uint8_t value, char sep)
 00000538 <sys_printHexBin8>:
 
 
-void sys_printHexBin8 (uint8_t value)
-{
+void sys_printHexBin8 (uint8_t value) {
      538:	cf 93       	push	r28
      53a:	c8 2f       	mov	r28, r24
     printf("0x%02x (", value);
@@ -945,26 +930,26 @@ void sys_printHexBin8 (uint8_t value)
      556:	0f 90       	pop	r0
      558:	0f 90       	pop	r0
      55a:	0f 90       	pop	r0
-     55c:	60 91 12 02 	lds	r22, 0x0212
-     560:	70 91 13 02 	lds	r23, 0x0213
+     55c:	60 91 15 02 	lds	r22, 0x0215
+     560:	70 91 16 02 	lds	r23, 0x0216
      564:	89 e2       	ldi	r24, 0x29	; 41
      566:	90 e0       	ldi	r25, 0x00	; 0
 }
      568:	cf 91       	pop	r28
 
-void sys_printHexBin8 (uint8_t value)
-{
+
+void sys_printHexBin8 (uint8_t value) {
     printf("0x%02x (", value);
     sys_printBin(value, ' ');
     putchar(')');
      56a:	0c 94 aa 08 	jmp	0x1154	; 0x1154 <fputc>
 
 0000056e <sys_cmd_sinfo>:
+    putchar(')');
 }
 
 
-int8_t sys_cmd_sinfo (uint8_t argc, char *argv[])
-{
+int8_t sys_cmd_sinfo (uint8_t argc, char *argv[]) {
     printf("sys.flags_u8  : ");
      56e:	8b e8       	ldi	r24, 0x8B	; 139
      570:	91 e0       	ldi	r25, 0x01	; 1
@@ -972,7 +957,7 @@ int8_t sys_cmd_sinfo (uint8_t argc, char *argv[])
      574:	8f 93       	push	r24
      576:	0e 94 dc 08 	call	0x11b8	; 0x11b8 <printf>
     sys_printHexBin8(sys.flags_u8);
-     57a:	80 91 fa 01 	lds	r24, 0x01FA
+     57a:	80 91 fd 01 	lds	r24, 0x01FD
      57e:	0e 94 9c 02 	call	0x538	; 0x538 <sys_printHexBin8>
     sys_newline();
      582:	0e 94 08 02 	call	0x410	; 0x410 <sys_newline>
@@ -983,7 +968,7 @@ int8_t sys_cmd_sinfo (uint8_t argc, char *argv[])
      58c:	8f 93       	push	r24
      58e:	0e 94 dc 08 	call	0x11b8	; 0x11b8 <printf>
     sys_printHexBin8(sys.taskErr_u8);
-     592:	80 91 fb 01 	lds	r24, 0x01FB
+     592:	80 91 fe 01 	lds	r24, 0x01FE
      596:	0e 94 9c 02 	call	0x538	; 0x538 <sys_printHexBin8>
     sys_newline();
      59a:	0e 94 08 02 	call	0x410	; 0x410 <sys_newline>
@@ -997,12 +982,12 @@ int8_t sys_cmd_sinfo (uint8_t argc, char *argv[])
      5a8:	08 95       	ret
 
 000005aa <sys_printHexBin16>:
+    sys_printBin(value, ' ');
     putchar(')');
 }
 
 
-void sys_printHexBin16 (uint16_t value)
-{
+void sys_printHexBin16 (uint16_t value) {
      5aa:	1f 93       	push	r17
      5ac:	cf 93       	push	r28
      5ae:	df 93       	push	r29
@@ -1021,7 +1006,7 @@ void sys_printHexBin16 (uint16_t value)
      5c6:	8c 2f       	mov	r24, r28
      5c8:	0e 94 62 02 	call	0x4c4	; 0x4c4 <sys_printBin>
     putchar(' ');
-     5cc:	c2 e1       	ldi	r28, 0x12	; 18
+     5cc:	c5 e1       	ldi	r28, 0x15	; 21
      5ce:	d2 e0       	ldi	r29, 0x02	; 2
      5d0:	68 81       	ld	r22, Y
      5d2:	79 81       	ldd	r23, Y+1	; 0x01
@@ -1045,7 +1030,7 @@ void sys_printHexBin16 (uint16_t value)
      5f4:	df 91       	pop	r29
      5f6:	cf 91       	pop	r28
      5f8:	1f 91       	pop	r17
-{
+void sys_printHexBin16 (uint16_t value) {
     printf("0x%04x (", value);
     sys_printBin(value>>8, ' ');
     putchar(' ');
@@ -1054,12 +1039,12 @@ void sys_printHexBin16 (uint16_t value)
      5fa:	0c 94 aa 08 	jmp	0x1154	; 0x1154 <fputc>
 
 000005fe <sys_readArgument>:
+    sys_newline();
     return 0;
 }
 
 
-int16_t sys_readArgument (char *str, int16_t max)
-{
+int16_t sys_readArgument (char *str, int16_t max) {
      5fe:	cf 93       	push	r28
      600:	df 93       	push	r29
      602:	eb 01       	movw	r28, r22
@@ -1102,28 +1087,28 @@ int16_t sys_readArgument (char *str, int16_t max)
      636:	08 95       	ret
 
 00000638 <sys_uart_available>:
+    return (int)c;
 }
 
 
-uint8_t sys_uart_available (void)
-{
+uint8_t sys_uart_available (void) {
     return sys.uart.wpos_u8 >= sys.uart.rpos_u8
-     638:	90 91 fe 01 	lds	r25, 0x01FE
-     63c:	80 91 fd 01 	lds	r24, 0x01FD
+     638:	90 91 01 02 	lds	r25, 0x0201
+     63c:	80 91 00 02 	lds	r24, 0x0200
      640:	98 17       	cp	r25, r24
      642:	28 f0       	brcs	.+10     	; 0x64e <sys_uart_available+0x16>
     ? sys.uart.wpos_u8 - sys.uart.rpos_u8
-     644:	80 91 fe 01 	lds	r24, 0x01FE
-     648:	90 91 fd 01 	lds	r25, 0x01FD
+     644:	80 91 01 02 	lds	r24, 0x0201
+     648:	90 91 00 02 	lds	r25, 0x0200
      64c:	05 c0       	rjmp	.+10     	; 0x658 <sys_uart_available+0x20>
     : ((int16_t)sys.uart.wpos_u8) + GLOBAL_UART_RECBUFSIZE - sys.uart.rpos_u8;
-     64e:	80 91 fe 01 	lds	r24, 0x01FE
-     652:	90 91 fd 01 	lds	r25, 0x01FD
+     64e:	80 91 01 02 	lds	r24, 0x0201
+     652:	90 91 00 02 	lds	r25, 0x0200
+    return (int)c;
 }
 
 
-uint8_t sys_uart_available (void)
-{
+uint8_t sys_uart_available (void) {
     return sys.uart.wpos_u8 >= sys.uart.rpos_u8
      656:	80 5f       	subi	r24, 0xF0	; 240
      658:	89 1b       	sub	r24, r25
@@ -1137,8 +1122,7 @@ uint8_t sys_uart_available (void)
 
 //----------------------------------------------------------------------------
 
-int16_t sys_uart_getBufferByte (uint8_t pos)
-{
+int16_t sys_uart_getBufferByte (uint8_t pos) {
      65c:	cf 93       	push	r28
      65e:	df 93       	push	r29
      660:	c8 2f       	mov	r28, r24
@@ -1151,10 +1135,9 @@ int16_t sys_uart_getBufferByte (uint8_t pos)
      66a:	c8 17       	cp	r28, r24
      66c:	60 f4       	brcc	.+24     	; 0x686 <sys_uart_getBufferByte+0x2a>
         value = -1;
-    else
-    {
+    else {
         uint8_t bufpos = sys.uart.rpos_u8 + pos;
-     66e:	e0 91 fd 01 	lds	r30, 0x01FD
+     66e:	e0 91 00 02 	lds	r30, 0x0200
      672:	ec 0f       	add	r30, r28
         if (bufpos >= GLOBAL_UART_RECBUFSIZE)
      674:	e0 31       	cpi	r30, 0x10	; 16
@@ -1163,12 +1146,12 @@ int16_t sys_uart_getBufferByte (uint8_t pos)
      678:	e0 51       	subi	r30, 0x10	; 16
         value = sys.uart.rbuffer_u8[bufpos];
      67a:	f0 e0       	ldi	r31, 0x00	; 0
-     67c:	e6 50       	subi	r30, 0x06	; 6
+     67c:	e3 50       	subi	r30, 0x03	; 3
      67e:	fe 4f       	sbci	r31, 0xFE	; 254
      680:	c6 81       	ldd	r28, Z+6	; 0x06
      682:	d0 e0       	ldi	r29, 0x00	; 0
      684:	02 c0       	rjmp	.+4      	; 0x68a <sys_uart_getBufferByte+0x2e>
-{
+int16_t sys_uart_getBufferByte (uint8_t pos) {
     int16_t value;
     sys_cli();
     
@@ -1193,8 +1176,7 @@ int16_t sys_uart_getBufferByte (uint8_t pos)
 00000696 <sys_uart_flush>:
 
 
-void sys_uart_flush (void)
-{
+void sys_uart_flush (void) {
     sys_cli();
      696:	0e 94 ff 01 	call	0x3fe	; 0x3fe <sys_cli>
     while (SYS_UART_BYTE_RECEIVED)
@@ -1203,25 +1185,25 @@ void sys_uart_flush (void)
      6a0:	05 c0       	rjmp	.+10     	; 0x6ac <sys_uart_flush+0x16>
         sys.uart.rbuffer_u8[0] = SYS_UDR;
      6a2:	80 91 c6 00 	lds	r24, 0x00C6
-     6a6:	80 93 00 02 	sts	0x0200, r24
+     6a6:	80 93 03 02 	sts	0x0203, r24
      6aa:	f7 cf       	rjmp	.-18     	; 0x69a <sys_uart_flush+0x4>
     
     sys.uart.rpos_u8 = 0;
-     6ac:	10 92 fd 01 	sts	0x01FD, r1
+     6ac:	10 92 00 02 	sts	0x0200, r1
     sys.uart.wpos_u8 = 0;
-     6b0:	10 92 fe 01 	sts	0x01FE, r1
+     6b0:	10 92 01 02 	sts	0x0201, r1
     sys.uart.errcnt_u8 = 0;
-     6b4:	10 92 ff 01 	sts	0x01FF, r1
+     6b4:	10 92 02 02 	sts	0x0202, r1
     sys_sei();
      6b8:	0c 94 f9 01 	jmp	0x3f2	; 0x3f2 <sys_sei>
 
 000006bc <sys_setEvent>:
+
 //****************************************************************************
 // Event Handling
 //****************************************************************************
 
-Sys_Event sys_setEvent (Sys_Event event)
-{
+Sys_Event sys_setEvent (Sys_Event event) {
      6bc:	cf 93       	push	r28
      6be:	df 93       	push	r29
      6c0:	c8 2f       	mov	r28, r24
@@ -1229,17 +1211,17 @@ Sys_Event sys_setEvent (Sys_Event event)
     sys_cli();
      6c2:	0e 94 ff 01 	call	0x3fe	; 0x3fe <sys_cli>
     if (sys.eventFlag & event)
-     6c6:	d0 91 fc 01 	lds	r29, 0x01FC
+     6c6:	d0 91 ff 01 	lds	r29, 0x01FF
         eventIsPending = 1;
     sys.eventFlag |= event;
-     6ca:	90 91 fc 01 	lds	r25, 0x01FC
+     6ca:	90 91 ff 01 	lds	r25, 0x01FF
      6ce:	9c 2b       	or	r25, r28
-     6d0:	90 93 fc 01 	sts	0x01FC, r25
+     6d0:	90 93 ff 01 	sts	0x01FF, r25
     sys_sei();
      6d4:	0e 94 f9 01 	call	0x3f2	; 0x3f2 <sys_sei>
+//****************************************************************************
 
-Sys_Event sys_setEvent (Sys_Event event)
-{
+Sys_Event sys_setEvent (Sys_Event event) {
     uint8_t eventIsPending = 0;
     sys_cli();
     if (sys.eventFlag & event)
@@ -1260,8 +1242,7 @@ Sys_Event sys_setEvent (Sys_Event event)
 000006e6 <sys_clearEvent>:
 
 
-Sys_Event sys_clearEvent (Sys_Event event)
-{
+Sys_Event sys_clearEvent (Sys_Event event) {
      6e6:	cf 93       	push	r28
      6e8:	df 93       	push	r29
      6ea:	c8 2f       	mov	r28, r24
@@ -1269,19 +1250,19 @@ Sys_Event sys_clearEvent (Sys_Event event)
     sys_cli();
      6ec:	0e 94 ff 01 	call	0x3fe	; 0x3fe <sys_cli>
     if (sys.eventFlag & event)
-     6f0:	d0 91 fc 01 	lds	r29, 0x01FC
+     6f0:	d0 91 ff 01 	lds	r29, 0x01FF
         eventIsPending = 1;
     sys.eventFlag &= ~event;
-     6f4:	80 91 fc 01 	lds	r24, 0x01FC
+     6f4:	80 91 ff 01 	lds	r24, 0x01FF
      6f8:	9c 2f       	mov	r25, r28
      6fa:	90 95       	com	r25
      6fc:	98 23       	and	r25, r24
-     6fe:	90 93 fc 01 	sts	0x01FC, r25
+     6fe:	90 93 ff 01 	sts	0x01FF, r25
     sys_sei();
      702:	0e 94 f9 01 	call	0x3f2	; 0x3f2 <sys_sei>
 
-Sys_Event sys_clearEvent (Sys_Event event)
-{
+
+Sys_Event sys_clearEvent (Sys_Event event) {
     uint8_t eventIsPending = 0;
     sys_cli();
     if (sys.eventFlag & event)
@@ -1302,10 +1283,9 @@ Sys_Event sys_clearEvent (Sys_Event event)
 00000714 <sys_isEventPending>:
 
 
-Sys_Event sys_isEventPending (Sys_Event event)
-{
+Sys_Event sys_isEventPending (Sys_Event event) {
     return (sys.eventFlag & event) != 0;
-     714:	90 91 fc 01 	lds	r25, 0x01FC
+     714:	90 91 ff 01 	lds	r25, 0x01FF
      718:	98 23       	and	r25, r24
      71a:	81 e0       	ldi	r24, 0x01	; 1
      71c:	09 f4       	brne	.+2      	; 0x720 <sys_isEventPending+0xc>
@@ -1314,11 +1294,11 @@ Sys_Event sys_isEventPending (Sys_Event event)
      720:	08 95       	ret
 
 00000722 <sys_setLed>:
+#endif // SURE
 
 #ifdef ARDUINO
 
-void sys_setLed (uint8_t ledState)
-{
+void sys_setLed (uint8_t ledState) {
     if (ledState)
      722:	88 23       	and	r24, r24
      724:	11 f0       	breq	.+4      	; 0x72a <sys_setLed+0x8>
@@ -1333,8 +1313,7 @@ void sys_setLed (uint8_t ledState)
 0000072e <sys_toggleLed>:
 }
 
-void sys_toggleLed (void)
-{
+void sys_toggleLed (void) {
     PORTB ^= (1<<PB5);
      72e:	85 b1       	in	r24, 0x05	; 5
      730:	90 e2       	ldi	r25, 0x20	; 32
@@ -1343,12 +1322,12 @@ void sys_toggleLed (void)
      736:	08 95       	ret
 
 00000738 <sys_getMonCmdInfo>:
+
 //****************************************************************************
 // Monitor Handling
 //****************************************************************************
 
-struct Sys_MonCmdInfo sys_getMonCmdInfo (uint8_t index)
-{
+struct Sys_MonCmdInfo sys_getMonCmdInfo (uint8_t index) {
      738:	1f 93       	push	r17
      73a:	cf 93       	push	r28
      73c:	df 93       	push	r29
@@ -1374,8 +1353,7 @@ struct Sys_MonCmdInfo sys_getMonCmdInfo (uint8_t index)
      75a:	66 50       	subi	r22, 0x06	; 6
      75c:	7f 4f       	sbci	r23, 0xFF	; 255
      75e:	0c c0       	rjmp	.+24     	; 0x778 <sys_getMonCmdInfo+0x40>
-        else
-        {
+        else {
             index -= sizeof(SYS_PMEMSTR_CMDS)/sizeof(struct Sys_MonCmdInfo);
      760:	1e ef       	ldi	r17, 0xFE	; 254
      762:	18 0f       	add	r17, r24
@@ -1415,12 +1393,12 @@ struct Sys_MonCmdInfo sys_getMonCmdInfo (uint8_t index)
      79a:	08 95       	ret
 
 0000079c <sys_cmd_help>:
+
 //****************************************************************************
 // Monitor Commands
 //****************************************************************************
 
-int8_t sys_cmd_help (uint8_t argc, char *argv[])
-{
+int8_t sys_cmd_help (uint8_t argc, char *argv[]) {
      79c:	8f 92       	push	r8
      79e:	9f 92       	push	r9
      7a0:	af 92       	push	r10
@@ -1439,8 +1417,7 @@ int8_t sys_cmd_help (uint8_t argc, char *argv[])
     i = 0; max = 0;
      7b4:	c0 e0       	ldi	r28, 0x00	; 0
      7b6:	80 e0       	ldi	r24, 0x00	; 0
-    while (1)
-    {
+    while (1) {
         struct Sys_MonCmdInfo ci = sys_getMonCmdInfo(i++);
      7b8:	d1 e0       	ldi	r29, 0x01	; 1
      7ba:	d8 0f       	add	r29, r24
@@ -1462,11 +1439,11 @@ static inline size_t strlen_P(const char *s) {
      7ca:	c8 17       	cp	r28, r24
      7cc:	08 f4       	brcc	.+2      	; 0x7d0 <sys_cmd_help+0x34>
      7ce:	c8 2f       	mov	r28, r24
+    // struct Sys_Monitor *pmon = (struct Sys_Monitor *)&sys_mon;
     uint8_t i, j, max;
     
     i = 0; max = 0;
-    while (1)
-    {
+    while (1) {
         struct Sys_MonCmdInfo ci = sys_getMonCmdInfo(i++);
      7d0:	8d 2f       	mov	r24, r29
         if (ci.pFunction == NULL)
@@ -1486,11 +1463,11 @@ static inline size_t strlen_P(const char *s) {
         for (j=strlen_P(ci.pInfo); j<max+2; j++)
      7d6:	d0 e0       	ldi	r29, 0x00	; 0
      7d8:	21 96       	adiw	r28, 0x01	; 1
+        max = (len>max) ? len : max;
     }
     
     i = 0;
-    while (1)
-    {
+    while (1) {
         struct Sys_MonCmdInfo ci = sys_getMonCmdInfo(i++);
      7da:	99 24       	eor	r9, r9
      7dc:	93 94       	inc	r9
@@ -1522,8 +1499,8 @@ static inline size_t strlen_P(const char *s) {
      80c:	d9 07       	cpc	r29, r25
      80e:	4c f0       	brlt	.+18     	; 0x822 <sys_cmd_help+0x86>
             putchar(' ');
-     810:	60 91 12 02 	lds	r22, 0x0212
-     814:	70 91 13 02 	lds	r23, 0x0213
+     810:	60 91 15 02 	lds	r22, 0x0215
+     814:	70 91 16 02 	lds	r23, 0x0216
      818:	80 e2       	ldi	r24, 0x20	; 32
      81a:	90 e0       	ldi	r25, 0x00	; 0
      81c:	0e 94 aa 08 	call	0x1154	; 0x1154 <fputc>
@@ -1534,11 +1511,11 @@ static inline size_t strlen_P(const char *s) {
      826:	8c 0d       	add	r24, r12
      828:	9d 1d       	adc	r25, r13
      82a:	0e 94 34 02 	call	0x468	; 0x468 <sys_puts_P>
+        max = (len>max) ? len : max;
     }
     
     i = 0;
-    while (1)
-    {
+    while (1) {
         struct Sys_MonCmdInfo ci = sys_getMonCmdInfo(i++);
      82e:	89 2d       	mov	r24, r9
         
@@ -1567,12 +1544,12 @@ static inline size_t strlen_P(const char *s) {
      84c:	08 95       	ret
 
 0000084e <sys_mon_printUsageInfo>:
+    memcpy_P(&ci, p, sizeof(struct Sys_MonCmdInfo));
     return ci;
 }
 
 
-void sys_mon_printUsageInfo (struct Sys_MonCmdInfo *pCmdInfo)
-{
+void sys_mon_printUsageInfo (struct Sys_MonCmdInfo *pCmdInfo) {
      84e:	ef 92       	push	r14
      850:	ff 92       	push	r15
      852:	0f 93       	push	r16
@@ -1586,11 +1563,11 @@ void sys_mon_printUsageInfo (struct Sys_MonCmdInfo *pCmdInfo)
      860:	fc 01       	movw	r30, r24
      862:	60 81       	ld	r22, Z
      864:	71 81       	ldd	r23, Z+1	; 0x01
-    for (i=0; i<2; i++)
-    {
+    
+    uint8_t i;
+    for (i=0; i<2; i++) {
         char c;
-        do
-        {
+        do {
             memcpy_P(&c, p++, 1);
      866:	8b 01       	movw	r16, r22
      868:	0f 5f       	subi	r16, 0xFF	; 255
@@ -1605,11 +1582,11 @@ void sys_mon_printUsageInfo (struct Sys_MonCmdInfo *pCmdInfo)
      878:	89 81       	ldd	r24, Y+1	; 0x01
      87a:	88 23       	and	r24, r24
      87c:	11 f0       	breq	.+4      	; 0x882 <sys_mon_printUsageInfo+0x34>
-    for (i=0; i<2; i++)
-    {
+    
+    uint8_t i;
+    for (i=0; i<2; i++) {
         char c;
-        do
-        {
+        do {
             memcpy_P(&c, p++, 1);
      87e:	b8 01       	movw	r22, r16
      880:	f2 cf       	rjmp	.-28     	; 0x866 <sys_mon_printUsageInfo+0x18>
@@ -1628,11 +1605,11 @@ void sys_mon_printUsageInfo (struct Sys_MonCmdInfo *pCmdInfo)
      898:	89 81       	ldd	r24, Y+1	; 0x01
      89a:	88 23       	and	r24, r24
      89c:	11 f0       	breq	.+4      	; 0x8a2 <sys_mon_printUsageInfo+0x54>
-    for (i=0; i<2; i++)
-    {
+    
+    uint8_t i;
+    for (i=0; i<2; i++) {
         char c;
-        do
-        {
+        do {
             memcpy_P(&c, p++, 1);
      89e:	87 01       	movw	r16, r14
      8a0:	f0 cf       	rjmp	.-32     	; 0x882 <sys_mon_printUsageInfo+0x34>
@@ -1655,8 +1632,7 @@ void sys_mon_printUsageInfo (struct Sys_MonCmdInfo *pCmdInfo)
 000008b8 <sys_mon_ExecuteCmd>:
 
 
-void sys_mon_ExecuteCmd (void)
-{
+void sys_mon_ExecuteCmd (void) {
      8b8:	cf 92       	push	r12
      8ba:	df 92       	push	r13
      8bc:	ef 92       	push	r14
@@ -1685,7 +1661,7 @@ void sys_mon_ExecuteCmd (void)
     uint8_t argc;
     
     char *ps = pmon->cmdLine;
-     8e2:	e2 ed       	ldi	r30, 0xD2	; 210
+     8e2:	e5 ed       	ldi	r30, 0xD5	; 213
      8e4:	f1 e0       	ldi	r31, 0x01	; 1
     argc = 0;
      8e6:	d1 2c       	mov	r13, r1
@@ -1693,12 +1669,11 @@ void sys_mon_ExecuteCmd (void)
      8ea:	03 2f       	mov	r16, r19
     
     i = 0;
-    for (i=0; i<GLOBAL_MON_MAXARGV && *ps; i++)
+    for (i=0; i<GLOBAL_MON_MAXARGV && *ps; i++) {
      8ec:	80 81       	ld	r24, Z
      8ee:	88 23       	and	r24, r24
      8f0:	a9 f0       	breq	.+42     	; 0x91c <__stack+0x1d>
      8f2:	df 01       	movw	r26, r30
-    {
         while(*ps==' ') ps++; // ignore leading spaces
      8f4:	81 91       	ld	r24, Z+
      8f6:	80 32       	cpi	r24, 0x20	; 32
@@ -1726,7 +1701,7 @@ void sys_mon_ExecuteCmd (void)
     argc = 0;
     
     i = 0;
-    for (i=0; i<GLOBAL_MON_MAXARGV && *ps; i++)
+    for (i=0; i<GLOBAL_MON_MAXARGV && *ps; i++) {
      916:	84 e0       	ldi	r24, 0x04	; 4
      918:	d8 12       	cpse	r13, r24
      91a:	e8 cf       	rjmp	.-48     	; 0x8ec <sys_mon_ExecuteCmd+0x34>
@@ -1767,7 +1742,7 @@ void sys_mon_ExecuteCmd (void)
      }
      */
     
-    if (argc>0 && *argv[0])
+    if (argc>0 && *argv[0]) {
      936:	dd 20       	and	r13, r13
      938:	09 f4       	brne	.+2      	; 0x93c <__stack+0x3d>
      93a:	58 c0       	rjmp	.+176    	; 0x9ec <__stack+0xed>
@@ -1778,10 +1753,8 @@ void sys_mon_ExecuteCmd (void)
      944:	09 f4       	brne	.+2      	; 0x948 <__stack+0x49>
      946:	52 c0       	rjmp	.+164    	; 0x9ec <__stack+0xed>
      948:	80 e0       	ldi	r24, 0x00	; 0
-    {
         i = 0;
-        while (1)
-        {
+        while (1) {
             struct Sys_MonCmdInfo ci = sys_getMonCmdInfo(i++);
      94a:	cc 24       	eor	r12, r12
      94c:	c3 94       	inc	r12
@@ -1791,13 +1764,12 @@ void sys_mon_ExecuteCmd (void)
      956:	7a 87       	std	Y+10, r23	; 0x0a
      958:	8b 87       	std	Y+11, r24	; 0x0b
      95a:	9c 87       	std	Y+12, r25	; 0x0c
-            if (ci.pFunction == NULL)
+            if (ci.pFunction == NULL) {
      95c:	eb 84       	ldd	r14, Y+11	; 0x0b
      95e:	fc 84       	ldd	r15, Y+12	; 0x0c
      960:	e1 14       	cp	r14, r1
      962:	f1 04       	cpc	r15, r1
      964:	29 f4       	brne	.+10     	; 0x970 <__stack+0x71>
-            {
                 sys_printString_P(SYS_PMEM_ERR1);
      966:	89 e5       	ldi	r24, 0x59	; 89
      968:	91 e0       	ldi	r25, 0x01	; 1
@@ -1805,15 +1777,14 @@ void sys_mon_ExecuteCmd (void)
                 break;
      96e:	3e c0       	rjmp	.+124    	; 0x9ec <__stack+0xed>
             }
-            else if (strcmp_P(pmon->cmdLine, ci.pInfo)==0)
+            else if (strcmp_P(pmon->cmdLine, ci.pInfo)==0) {
      970:	69 85       	ldd	r22, Y+9	; 0x09
      972:	7a 85       	ldd	r23, Y+10	; 0x0a
-     974:	82 ed       	ldi	r24, 0xD2	; 210
+     974:	85 ed       	ldi	r24, 0xD5	; 213
      976:	91 e0       	ldi	r25, 0x01	; 1
      978:	0e 94 5a 08 	call	0x10b4	; 0x10b4 <strcmp_P>
      97c:	89 2b       	or	r24, r25
      97e:	a1 f5       	brne	.+104    	; 0x9e8 <__stack+0xe9>
-            {
                 if (argc==2 && strcmp_P(argv[1], SYS_PMEM_CMD_HELP)==0)
      980:	e2 e0       	ldi	r30, 0x02	; 2
      982:	de 12       	cpse	r13, r30
@@ -1826,8 +1797,7 @@ void sys_mon_ExecuteCmd (void)
      992:	89 2b       	or	r24, r25
      994:	11 f1       	breq	.+68     	; 0x9da <__stack+0xdb>
                     sys_mon_printUsageInfo(&ci);
-                else
-                {
+                else {
                     int8_t retCode = (*ci.pFunction)(argc, argv);
      996:	61 2f       	mov	r22, r17
      998:	70 2f       	mov	r23, r16
@@ -1835,10 +1805,9 @@ void sys_mon_ExecuteCmd (void)
      99c:	f7 01       	movw	r30, r14
      99e:	09 95       	icall
      9a0:	18 2f       	mov	r17, r24
-                    if (retCode)
+                    if (retCode) {
      9a2:	88 23       	and	r24, r24
      9a4:	f1 f0       	breq	.+60     	; 0x9e2 <__stack+0xe3>
-                    {
                         sys_printString_P(SYS_PMEM_ERR0);
      9a6:	82 e7       	ldi	r24, 0x72	; 114
      9a8:	91 e0       	ldi	r25, 0x01	; 1
@@ -1878,11 +1847,11 @@ void sys_mon_ExecuteCmd (void)
      9e2:	0e 94 08 02 	call	0x410	; 0x410 <sys_newline>
                 break;
      9e6:	02 c0       	rjmp	.+4      	; 0x9ec <__stack+0xed>
-    if (argc>0 && *argv[0])
-    {
+     */
+    
+    if (argc>0 && *argv[0]) {
         i = 0;
-        while (1)
-        {
+        while (1) {
             struct Sys_MonCmdInfo ci = sys_getMonCmdInfo(i++);
      9e8:	8c 2d       	mov	r24, r12
                     }
@@ -1899,9 +1868,9 @@ void sys_mon_ExecuteCmd (void)
      9ee:	91 e0       	ldi	r25, 0x01	; 1
      9f0:	0e 94 11 02 	call	0x422	; 0x422 <sys_printString_P>
     pmon->cursorPos = 0;
-     9f4:	10 92 d1 01 	sts	0x01D1, r1
+     9f4:	10 92 d4 01 	sts	0x01D4, r1
     pmon->cmdLine[0] = 0;
-     9f8:	10 92 d2 01 	sts	0x01D2, r1
+     9f8:	10 92 d5 01 	sts	0x01D5, r1
 }
      9fc:	2c 96       	adiw	r28, 0x0c	; 12
      9fe:	0f b6       	in	r0, 0x3f	; 63
@@ -1929,13 +1898,13 @@ void sys_mon_ExecuteCmd (void)
      a1e:	7b cf       	rjmp	.-266    	; 0x916 <__stack+0x17>
 
 00000a20 <sys_mon_CmdLineBack>:
+}
 
 
-void sys_mon_CmdLineBack (void)
-{
+void sys_mon_CmdLineBack (void) {
     struct Sys_Monitor *pmon = (struct Sys_Monitor *)&sys_mon;
     if (pmon->cursorPos==0) return;
-     a20:	80 91 d1 01 	lds	r24, 0x01D1
+     a20:	80 91 d4 01 	lds	r24, 0x01D4
      a24:	88 23       	and	r24, r24
      a26:	89 f0       	breq	.+34     	; 0xa4a <sys_mon_CmdLineBack+0x2a>
     printf("\b \b");
@@ -1945,11 +1914,11 @@ void sys_mon_CmdLineBack (void)
      a2e:	8f 93       	push	r24
      a30:	0e 94 dc 08 	call	0x11b8	; 0x11b8 <printf>
     pmon->cmdLine[--pmon->cursorPos] = 0;
-     a34:	e0 91 d1 01 	lds	r30, 0x01D1
+     a34:	e0 91 d4 01 	lds	r30, 0x01D4
      a38:	e1 50       	subi	r30, 0x01	; 1
-     a3a:	e0 93 d1 01 	sts	0x01D1, r30
+     a3a:	e0 93 d4 01 	sts	0x01D4, r30
      a3e:	f0 e0       	ldi	r31, 0x00	; 0
-     a40:	e1 53       	subi	r30, 0x31	; 49
+     a40:	ee 52       	subi	r30, 0x2E	; 46
      a42:	fe 4f       	sbci	r31, 0xFE	; 254
      a44:	13 82       	std	Z+3, r1	; 0x03
      a46:	0f 90       	pop	r0
@@ -1959,8 +1928,7 @@ void sys_mon_CmdLineBack (void)
 00000a4c <sys_putnchar>:
 }
 
-void sys_putnchar (char c, uint8_t count)
-{
+void sys_putnchar (char c, uint8_t count) {
      a4c:	1f 93       	push	r17
      a4e:	cf 93       	push	r28
      a50:	df 93       	push	r29
@@ -1969,24 +1937,24 @@ void sys_putnchar (char c, uint8_t count)
         putchar(c);
      a54:	c8 2f       	mov	r28, r24
      a56:	d0 e0       	ldi	r29, 0x00	; 0
+    printf("\b \b");
     pmon->cmdLine[--pmon->cursorPos] = 0;
 }
 
-void sys_putnchar (char c, uint8_t count)
-{
+void sys_putnchar (char c, uint8_t count) {
     for (; count>0; count--)
      a58:	11 23       	and	r17, r17
      a5a:	49 f0       	breq	.+18     	; 0xa6e <sys_putnchar+0x22>
         putchar(c);
-     a5c:	60 91 12 02 	lds	r22, 0x0212
-     a60:	70 91 13 02 	lds	r23, 0x0213
+     a5c:	60 91 15 02 	lds	r22, 0x0215
+     a60:	70 91 16 02 	lds	r23, 0x0216
      a64:	ce 01       	movw	r24, r28
      a66:	0e 94 aa 08 	call	0x1154	; 0x1154 <fputc>
+    printf("\b \b");
     pmon->cmdLine[--pmon->cursorPos] = 0;
 }
 
-void sys_putnchar (char c, uint8_t count)
-{
+void sys_putnchar (char c, uint8_t count) {
     for (; count>0; count--)
      a6a:	11 50       	subi	r17, 0x01	; 1
      a6c:	f5 cf       	rjmp	.-22     	; 0xa58 <sys_putnchar+0xc>
@@ -2000,8 +1968,7 @@ void sys_putnchar (char c, uint8_t count)
 00000a76 <sys_mon_main>:
 
 
-void sys_mon_main (void)
-{
+void sys_mon_main (void) {
      a76:	1f 93       	push	r17
      a78:	cf 93       	push	r28
      a7a:	df 93       	push	r29
@@ -2013,22 +1980,20 @@ void sys_mon_main (void)
     int8_t incLineIndex = 0;
     static uint8_t lastbyte = 0;
     
-    if (sys_mon.flags & SYS_MONITOR_FLAG_LINEMODE)
-     a82:	80 91 cf 01 	lds	r24, 0x01CF
+    if (sys_mon.flags & SYS_MONITOR_FLAG_LINEMODE) {
+     a82:	80 91 d2 01 	lds	r24, 0x01D2
      a86:	80 ff       	sbrs	r24, 0
      a88:	ab c0       	rjmp	.+342    	; 0xbe0 <sys_mon_main+0x16a>
      a8a:	60 e0       	ldi	r22, 0x00	; 0
-    {
-        while (sys_uart_available()>0)
+        while (sys_uart_available()>0) {
      a8c:	69 83       	std	Y+1, r22	; 0x01
      a8e:	0e 94 1c 03 	call	0x638	; 0x638 <sys_uart_available>
      a92:	69 81       	ldd	r22, Y+1	; 0x01
      a94:	88 23       	and	r24, r24
      a96:	01 f1       	breq	.+64     	; 0xad8 <sys_mon_main+0x62>
-        {
             c = getchar();
-     a98:	80 91 10 02 	lds	r24, 0x0210
-     a9c:	90 91 11 02 	lds	r25, 0x0211
+     a98:	80 91 13 02 	lds	r24, 0x0213
+     a9c:	90 91 14 02 	lds	r25, 0x0214
      aa0:	0e 94 6c 08 	call	0x10d8	; 0x10d8 <fgetc>
      aa4:	68 2f       	mov	r22, r24
             if (lastbyte != '\n' && c == '\r')
@@ -2040,12 +2005,11 @@ void sys_mon_main (void)
                 c = '\n';
             else
                 lastbyte = c;
-            if (c=='\n')
-            {
+            if (c=='\n') {
                 sys_mon.flags &= ~(SYS_MONITOR_FLAG_LINEMODE | SYS_MONITOR_FLAG_LINE);
-     ab2:	80 91 cf 01 	lds	r24, 0x01CF
+     ab2:	80 91 d2 01 	lds	r24, 0x01D2
      ab6:	8c 7f       	andi	r24, 0xFC	; 252
-     ab8:	80 93 cf 01 	sts	0x01CF, r24
+     ab8:	80 93 d2 01 	sts	0x01D2, r24
                 printf("\n\n\r>");
      abc:	8d eb       	ldi	r24, 0xBD	; 189
      abe:	91 e0       	ldi	r25, 0x01	; 1
@@ -2056,14 +2020,14 @@ void sys_mon_main (void)
      ac8:	0f 90       	pop	r0
      aca:	0f 90       	pop	r0
      acc:	bb c0       	rjmp	.+374    	; 0xc44 <sys_mon_main+0x1ce>
-        {
+        while (sys_uart_available()>0) {
             c = getchar();
             if (lastbyte != '\n' && c == '\r')
                 c = '\n';
             else
                 lastbyte = c;
      ace:	60 93 cc 01 	sts	0x01CC, r22
-            if (c=='\n')
+            if (c=='\n') {
      ad2:	6a 30       	cpi	r22, 0x0A	; 10
      ad4:	d9 f6       	brne	.-74     	; 0xa8c <sys_mon_main+0x16>
      ad6:	ed cf       	rjmp	.-38     	; 0xab2 <sys_mon_main+0x3c>
@@ -2072,64 +2036,61 @@ void sys_mon_main (void)
                 return;
             }
         }
-        if (c==SYS_MONITOR_CTRL_X)
+        if (c==SYS_MONITOR_CTRL_X) {
      ad8:	68 31       	cpi	r22, 0x18	; 24
      ada:	39 f4       	brne	.+14     	; 0xaea <sys_mon_main+0x74>
-        {
             incLineIndex = 1;
             sys_mon.flags &= ~SYS_MONITOR_FLAG_LINE;
-     adc:	80 91 cf 01 	lds	r24, 0x01CF
+     adc:	80 91 d2 01 	lds	r24, 0x01D2
      ae0:	8d 7f       	andi	r24, 0xFD	; 253
-     ae2:	80 93 cf 01 	sts	0x01CF, r24
+     ae2:	80 93 d2 01 	sts	0x01D2, r24
+                printf("\n\n\r>");
                 return;
             }
         }
-        if (c==SYS_MONITOR_CTRL_X)
-        {
+        if (c==SYS_MONITOR_CTRL_X) {
             incLineIndex = 1;
      ae6:	11 e0       	ldi	r17, 0x01	; 1
      ae8:	19 c0       	rjmp	.+50     	; 0xb1c <sys_mon_main+0xa6>
             sys_mon.flags &= ~SYS_MONITOR_FLAG_LINE;
         }
-        else if (c==SYS_MONITOR_CTRL_Y)
+        else if (c==SYS_MONITOR_CTRL_Y) {
      aea:	69 31       	cpi	r22, 0x19	; 25
      aec:	39 f4       	brne	.+14     	; 0xafc <sys_mon_main+0x86>
-        {
             incLineIndex = -1;
             sys_mon.flags &= ~SYS_MONITOR_FLAG_LINE;
-     aee:	80 91 cf 01 	lds	r24, 0x01CF
+     aee:	80 91 d2 01 	lds	r24, 0x01D2
      af2:	8d 7f       	andi	r24, 0xFD	; 253
-     af4:	80 93 cf 01 	sts	0x01CF, r24
+     af4:	80 93 d2 01 	sts	0x01D2, r24
+        if (c==SYS_MONITOR_CTRL_X) {
             incLineIndex = 1;
             sys_mon.flags &= ~SYS_MONITOR_FLAG_LINE;
         }
-        else if (c==SYS_MONITOR_CTRL_Y)
-        {
+        else if (c==SYS_MONITOR_CTRL_Y) {
             incLineIndex = -1;
      af8:	1f ef       	ldi	r17, 0xFF	; 255
      afa:	10 c0       	rjmp	.+32     	; 0xb1c <sys_mon_main+0xa6>
             sys_mon.flags &= ~SYS_MONITOR_FLAG_LINE;
         }
-        else if (c==SYS_MONITOR_CTRL_C)
+        else if (c==SYS_MONITOR_CTRL_C) {
      afc:	63 30       	cpi	r22, 0x03	; 3
      afe:	69 f4       	brne	.+26     	; 0xb1a <sys_mon_main+0xa4>
-        {
             if (sys_mon.flags & SYS_MONITOR_FLAG_CONT)
-     b00:	80 91 cf 01 	lds	r24, 0x01CF
+     b00:	80 91 d2 01 	lds	r24, 0x01D2
      b04:	82 ff       	sbrs	r24, 2
      b06:	04 c0       	rjmp	.+8      	; 0xb10 <sys_mon_main+0x9a>
                 sys_mon.flags &= ~(SYS_MONITOR_FLAG_CONT | SYS_MONITOR_FLAG_LINE);
-     b08:	80 91 cf 01 	lds	r24, 0x01CF
+     b08:	80 91 d2 01 	lds	r24, 0x01D2
      b0c:	89 7f       	andi	r24, 0xF9	; 249
      b0e:	03 c0       	rjmp	.+6      	; 0xb16 <sys_mon_main+0xa0>
             else
                 sys_mon.flags |= SYS_MONITOR_FLAG_CONT;
-     b10:	80 91 cf 01 	lds	r24, 0x01CF
+     b10:	80 91 d2 01 	lds	r24, 0x01D2
      b14:	84 60       	ori	r24, 0x04	; 4
-     b16:	80 93 cf 01 	sts	0x01CF, r24
+     b16:	80 93 d2 01 	sts	0x01D2, r24
 
-void sys_mon_main (void)
-{
+
+void sys_mon_main (void) {
     struct Sys_Monitor *pmon = (struct Sys_Monitor *)&sys_mon;
     char c = 0;
     int8_t incLineIndex = 0;
@@ -2139,13 +2100,12 @@ void sys_mon_main (void)
                 sys_mon.flags |= SYS_MONITOR_FLAG_CONT;
         }
         
-        if (sys_mon.flags & SYS_MONITOR_FLAG_LINE)
-     b1c:	80 91 cf 01 	lds	r24, 0x01CF
+        if (sys_mon.flags & SYS_MONITOR_FLAG_LINE) {
+     b1c:	80 91 d2 01 	lds	r24, 0x01D2
      b20:	81 ff       	sbrs	r24, 1
      b22:	18 c0       	rjmp	.+48     	; 0xb54 <sys_mon_main+0xde>
-        {
             int8_t lenSpaces = mon_printLine(sys_mon.lineIndex, c);
-     b24:	80 91 d0 01 	lds	r24, 0x01D0
+     b24:	80 91 d3 01 	lds	r24, 0x01D3
      b28:	0e 94 4d 01 	call	0x29a	; 0x29a <mon_printLine>
             sys_putnchar(' ', lenSpaces);
      b2c:	68 2f       	mov	r22, r24
@@ -2156,7 +2116,7 @@ void sys_mon_main (void)
      b36:	90 e0       	ldi	r25, 0x00	; 0
      b38:	0e 94 f0 08 	call	0x11e0	; 0x11e0 <putchar>
             if (sys_mon.flags & SYS_MONITOR_FLAG_CONT)
-     b3c:	80 91 cf 01 	lds	r24, 0x01CF
+     b3c:	80 91 d2 01 	lds	r24, 0x01D2
      b40:	82 ff       	sbrs	r24, 2
      b42:	80 c0       	rjmp	.+256    	; 0xc44 <sys_mon_main+0x1ce>
                 printf("\n");
@@ -2172,7 +2132,7 @@ void sys_mon_main (void)
      b4a:	df 91       	pop	r29
      b4c:	cf 91       	pop	r28
      b4e:	1f 91       	pop	r17
-        {
+        if (sys_mon.flags & SYS_MONITOR_FLAG_LINE) {
             int8_t lenSpaces = mon_printLine(sys_mon.lineIndex, c);
             sys_putnchar(' ', lenSpaces);
             printf("\r");
@@ -2180,8 +2140,7 @@ void sys_mon_main (void)
                 printf("\n");
      b50:	0c 94 f0 08 	jmp	0x11e0	; 0x11e0 <putchar>
         }
-        else
-        {
+        else {
             int8_t len;
             
             printf("\n\n\r");
@@ -2192,21 +2151,20 @@ void sys_mon_main (void)
      b5c:	0e 94 dc 08 	call	0x11b8	; 0x11b8 <printf>
      b60:	0f 90       	pop	r0
      b62:	0f 90       	pop	r0
-            do
-            {
+            do {
                 if (incLineIndex)
      b64:	11 23       	and	r17, r17
      b66:	49 f0       	breq	.+18     	; 0xb7a <sys_mon_main+0x104>
                     sys_mon.lineIndex = incLineIndex>0 ? sys_mon.lineIndex+1 : sys_mon.lineIndex-1;
-     b68:	80 91 d0 01 	lds	r24, 0x01D0
+     b68:	80 91 d3 01 	lds	r24, 0x01D3
      b6c:	11 30       	cpi	r17, 0x01	; 1
      b6e:	11 f4       	brne	.+4      	; 0xb74 <sys_mon_main+0xfe>
      b70:	8f 5f       	subi	r24, 0xFF	; 255
      b72:	01 c0       	rjmp	.+2      	; 0xb76 <sys_mon_main+0x100>
      b74:	81 50       	subi	r24, 0x01	; 1
-     b76:	80 93 d0 01 	sts	0x01D0, r24
+     b76:	80 93 d3 01 	sts	0x01D3, r24
                 len = mon_printLineHeader(sys_mon.lineIndex);
-     b7a:	80 91 d0 01 	lds	r24, 0x01D0
+     b7a:	80 91 d3 01 	lds	r24, 0x01D3
      b7e:	0e 94 2f 01 	call	0x25e	; 0x25e <mon_printLineHeader>
             }
             while (len<0 && sys_mon.lineIndex!=0);
@@ -2225,13 +2183,13 @@ void sys_mon_main (void)
      b94:	8d e2       	ldi	r24, 0x2D	; 45
      b96:	0e 94 26 05 	call	0xa4c	; 0xa4c <sys_putnchar>
      b9a:	05 c0       	rjmp	.+10     	; 0xba6 <sys_mon_main+0x130>
-            {
+            do {
                 if (incLineIndex)
                     sys_mon.lineIndex = incLineIndex>0 ? sys_mon.lineIndex+1 : sys_mon.lineIndex-1;
                 len = mon_printLineHeader(sys_mon.lineIndex);
             }
             while (len<0 && sys_mon.lineIndex!=0);
-     b9c:	90 91 d0 01 	lds	r25, 0x01D0
+     b9c:	90 91 d3 01 	lds	r25, 0x01D3
      ba0:	91 11       	cpse	r25, r1
      ba2:	e0 cf       	rjmp	.-64     	; 0xb64 <sys_mon_main+0xee>
      ba4:	f0 cf       	rjmp	.-32     	; 0xb86 <sys_mon_main+0x110>
@@ -2242,18 +2200,17 @@ void sys_mon_main (void)
             sys_newline();
      ba6:	0e 94 08 02 	call	0x410	; 0x410 <sys_newline>
             sys_mon.flags |= SYS_MONITOR_FLAG_LINE;
-     baa:	80 91 cf 01 	lds	r24, 0x01CF
+     baa:	80 91 d2 01 	lds	r24, 0x01D2
      bae:	82 60       	ori	r24, 0x02	; 2
-     bb0:	80 93 cf 01 	sts	0x01CF, r24
+     bb0:	80 93 d2 01 	sts	0x01D2, r24
      bb4:	47 c0       	rjmp	.+142    	; 0xc44 <sys_mon_main+0x1ce>
+        }
     }
-    else
-    {
-        while (sys_uart_available()>0)
-        {
+    else {
+        while (sys_uart_available()>0) {
             c = getchar();
-     bb6:	80 91 10 02 	lds	r24, 0x0210
-     bba:	90 91 11 02 	lds	r25, 0x0211
+     bb6:	80 91 13 02 	lds	r24, 0x0213
+     bba:	90 91 14 02 	lds	r25, 0x0214
      bbe:	0e 94 6c 08 	call	0x10d8	; 0x10d8 <fgetc>
             if (lastbyte != '\n' && c == '\r')
      bc2:	90 91 cc 01 	lds	r25, 0x01CC
@@ -2270,20 +2227,19 @@ void sys_mon_main (void)
      bd2:	92 30       	cpi	r25, 0x02	; 2
      bd4:	70 f4       	brcc	.+28     	; 0xbf2 <sys_mon_main+0x17c>
                 sys_mon.flags |= SYS_MONITOR_FLAG_LINEMODE;
-     bd6:	80 91 cf 01 	lds	r24, 0x01CF
+     bd6:	80 91 d2 01 	lds	r24, 0x01D2
      bda:	81 60       	ori	r24, 0x01	; 1
-     bdc:	80 93 cf 01 	sts	0x01CF, r24
+     bdc:	80 93 d2 01 	sts	0x01D2, r24
+            sys_newline();
             sys_mon.flags |= SYS_MONITOR_FLAG_LINE;
         }
     }
-    else
-    {
-        while (sys_uart_available()>0)
+    else {
+        while (sys_uart_available()>0) {
      be0:	0e 94 1c 03 	call	0x638	; 0x638 <sys_uart_available>
      be4:	81 11       	cpse	r24, r1
      be6:	e7 cf       	rjmp	.-50     	; 0xbb6 <sys_mon_main+0x140>
      be8:	2d c0       	rjmp	.+90     	; 0xc44 <sys_mon_main+0x1ce>
-        {
             c = getchar();
             if (lastbyte != '\n' && c == '\r')
      bea:	8d 30       	cpi	r24, 0x0D	; 13
@@ -2318,31 +2274,30 @@ void sys_mon_main (void)
      c0e:	9f 35       	cpi	r25, 0x5F	; 95
      c10:	38 f7       	brcc	.-50     	; 0xbe0 <sys_mon_main+0x16a>
                 ; // ignore control codes
-            else if (pmon->cursorPos<(sizeof(pmon->cmdLine)-1))
-     c12:	a0 91 d1 01 	lds	r26, 0x01D1
+            else if (pmon->cursorPos<(sizeof(pmon->cmdLine)-1)) {
+     c12:	a0 91 d4 01 	lds	r26, 0x01D4
      c16:	a7 32       	cpi	r26, 0x27	; 39
      c18:	18 f7       	brcc	.-58     	; 0xbe0 <sys_mon_main+0x16a>
-            {
 #ifdef GLOBAL_MON_ONLYLOCASE
                 c = tolower(c);
 #endif
                 pmon->cmdLine[pmon->cursorPos++] = c;
      c1a:	e1 e0       	ldi	r30, 0x01	; 1
      c1c:	ea 0f       	add	r30, r26
-     c1e:	e0 93 d1 01 	sts	0x01D1, r30
+     c1e:	e0 93 d4 01 	sts	0x01D4, r30
      c22:	b0 e0       	ldi	r27, 0x00	; 0
-     c24:	a1 53       	subi	r26, 0x31	; 49
+     c24:	ae 52       	subi	r26, 0x2E	; 46
      c26:	be 4f       	sbci	r27, 0xFE	; 254
      c28:	13 96       	adiw	r26, 0x03	; 3
      c2a:	8c 93       	st	X, r24
                 pmon->cmdLine[pmon->cursorPos] = 0;
      c2c:	f0 e0       	ldi	r31, 0x00	; 0
-     c2e:	e1 53       	subi	r30, 0x31	; 49
+     c2e:	ee 52       	subi	r30, 0x2E	; 46
      c30:	fe 4f       	sbci	r31, 0xFE	; 254
      c32:	13 82       	std	Z+3, r1	; 0x03
                 putchar(c);
-     c34:	60 91 12 02 	lds	r22, 0x0212
-     c38:	70 91 13 02 	lds	r23, 0x0213
+     c34:	60 91 15 02 	lds	r22, 0x0215
+     c38:	70 91 16 02 	lds	r23, 0x0216
      c3c:	90 e0       	ldi	r25, 0x00	; 0
      c3e:	0e 94 aa 08 	call	0x1154	; 0x1154 <fputc>
      c42:	ce cf       	rjmp	.-100    	; 0xbe0 <sys_mon_main+0x16a>
@@ -2357,21 +2312,21 @@ void sys_mon_main (void)
      c4c:	08 95       	ret
 
 00000c4e <sys_main>:
+}
 
 
-void sys_main (void)
-{
+void sys_main (void) {
 #ifdef GLOBAL_MONITOR
     sys_mon_main();
      c4e:	0c 94 3b 05 	jmp	0xa76	; 0xa76 <sys_mon_main>
 
 00000c52 <__vector_18>:
+
 // ------------------------------------
 // Interrupt Service Routinen
 // ------------------------------------
 
-ISR (SYS_UART_RECEIVE_VECTOR)
-{
+ISR (SYS_UART_RECEIVE_VECTOR) {
      c52:	1f 92       	push	r1
      c54:	0f 92       	push	r0
      c56:	0f b6       	in	r0, 0x3f	; 63
@@ -2386,13 +2341,12 @@ ISR (SYS_UART_RECEIVE_VECTOR)
     uint8_t c = SYS_UDR;
      c66:	80 91 c6 00 	lds	r24, 0x00C6
     
-    if (c=='R' && lastChar=='@')
+    if (c=='R' && lastChar=='@') {
      c6a:	82 35       	cpi	r24, 0x52	; 82
      c6c:	89 f4       	brne	.+34     	; 0xc90 <__vector_18+0x3e>
      c6e:	90 91 cb 01 	lds	r25, 0x01CB
      c72:	90 34       	cpi	r25, 0x40	; 64
      c74:	69 f4       	brne	.+26     	; 0xc90 <__vector_18+0x3e>
-    {
         wdt_enable(WDTO_15MS);
      c76:	28 e0       	ldi	r18, 0x08	; 8
      c78:	88 e1       	ldi	r24, 0x18	; 24
@@ -2412,60 +2366,59 @@ ISR (SYS_UART_RECEIVE_VECTOR)
      c90:	80 93 cb 01 	sts	0x01CB, r24
     
     sys.uart.rbuffer_u8[sys.uart.wpos_u8++] = c;
-     c94:	e0 91 fe 01 	lds	r30, 0x01FE
+     c94:	e0 91 01 02 	lds	r30, 0x0201
      c98:	91 e0       	ldi	r25, 0x01	; 1
      c9a:	9e 0f       	add	r25, r30
-     c9c:	90 93 fe 01 	sts	0x01FE, r25
+     c9c:	90 93 01 02 	sts	0x0201, r25
      ca0:	f0 e0       	ldi	r31, 0x00	; 0
-     ca2:	e6 50       	subi	r30, 0x06	; 6
+     ca2:	e3 50       	subi	r30, 0x03	; 3
      ca4:	fe 4f       	sbci	r31, 0xFE	; 254
      ca6:	86 83       	std	Z+6, r24	; 0x06
     if (sys.uart.wpos_u8 >= GLOBAL_UART_RECBUFSIZE)
-     ca8:	80 91 fe 01 	lds	r24, 0x01FE
+     ca8:	80 91 01 02 	lds	r24, 0x0201
      cac:	80 31       	cpi	r24, 0x10	; 16
      cae:	10 f0       	brcs	.+4      	; 0xcb4 <__vector_18+0x62>
         sys.uart.wpos_u8 = 0;
-     cb0:	10 92 fe 01 	sts	0x01FE, r1
-    if (sys.uart.wpos_u8 == sys.uart.rpos_u8)
-     cb4:	90 91 fe 01 	lds	r25, 0x01FE
-     cb8:	80 91 fd 01 	lds	r24, 0x01FD
+     cb0:	10 92 01 02 	sts	0x0201, r1
+    if (sys.uart.wpos_u8 == sys.uart.rpos_u8) {
+     cb4:	90 91 01 02 	lds	r25, 0x0201
+     cb8:	80 91 00 02 	lds	r24, 0x0200
      cbc:	98 13       	cpse	r25, r24
      cbe:	14 c0       	rjmp	.+40     	; 0xce8 <__vector_18+0x96>
-    {
         sys.uart.wpos_u8 == 0 ? sys.uart.wpos_u8 = GLOBAL_UART_RECBUFSIZE-1 : sys.uart.wpos_u8--;
-     cc0:	80 91 fe 01 	lds	r24, 0x01FE
+     cc0:	80 91 01 02 	lds	r24, 0x0201
      cc4:	81 11       	cpse	r24, r1
      cc6:	02 c0       	rjmp	.+4      	; 0xccc <__vector_18+0x7a>
      cc8:	8f e0       	ldi	r24, 0x0F	; 15
      cca:	03 c0       	rjmp	.+6      	; 0xcd2 <__vector_18+0x80>
-     ccc:	80 91 fe 01 	lds	r24, 0x01FE
+     ccc:	80 91 01 02 	lds	r24, 0x0201
      cd0:	81 50       	subi	r24, 0x01	; 1
-     cd2:	80 93 fe 01 	sts	0x01FE, r24
+     cd2:	80 93 01 02 	sts	0x0201, r24
         sys.uart.errcnt_u8 = sys_inc8BitCnt(sys.uart.errcnt_u8);
-     cd6:	80 91 ff 01 	lds	r24, 0x01FF
+     cd6:	80 91 02 02 	lds	r24, 0x0202
+}
 
 //----------------------------------------------------------------------------
 
-uint8_t sys_inc8BitCnt (uint8_t count)
-{
+uint8_t sys_inc8BitCnt (uint8_t count) {
     return count<0xff ? count+1 : count;
      cda:	8f 3f       	cpi	r24, 0xFF	; 255
      cdc:	11 f0       	breq	.+4      	; 0xce2 <__vector_18+0x90>
      cde:	8f 5f       	subi	r24, 0xFF	; 255
      ce0:	01 c0       	rjmp	.+2      	; 0xce4 <__vector_18+0x92>
      ce2:	8f ef       	ldi	r24, 0xFF	; 255
+    sys.uart.rbuffer_u8[sys.uart.wpos_u8++] = c;
     if (sys.uart.wpos_u8 >= GLOBAL_UART_RECBUFSIZE)
         sys.uart.wpos_u8 = 0;
-    if (sys.uart.wpos_u8 == sys.uart.rpos_u8)
-    {
+    if (sys.uart.wpos_u8 == sys.uart.rpos_u8) {
         sys.uart.wpos_u8 == 0 ? sys.uart.wpos_u8 = GLOBAL_UART_RECBUFSIZE-1 : sys.uart.wpos_u8--;
         sys.uart.errcnt_u8 = sys_inc8BitCnt(sys.uart.errcnt_u8);
-     ce4:	80 93 ff 01 	sts	0x01FF, r24
+     ce4:	80 93 02 02 	sts	0x0202, r24
     }
     sys.uart.rbuffer_u8[sys.uart.wpos_u8] = 0;
-     ce8:	e0 91 fe 01 	lds	r30, 0x01FE
+     ce8:	e0 91 01 02 	lds	r30, 0x0201
      cec:	f0 e0       	ldi	r31, 0x00	; 0
-     cee:	e6 50       	subi	r30, 0x06	; 6
+     cee:	e3 50       	subi	r30, 0x03	; 3
      cf0:	fe 4f       	sbci	r31, 0xFE	; 254
      cf2:	16 82       	std	Z+6, r1	; 0x06
 }
@@ -2511,13 +2464,13 @@ uint8_t sys_inc8BitCnt (uint8_t count)
      d48:	80 91 c8 01 	lds	r24, 0x01C8
      d4c:	88 23       	and	r24, r24
      d4e:	51 f0       	breq	.+20     	; 0xd64 <__vector_14+0x5c>
-     d50:	80 91 fb 01 	lds	r24, 0x01FB
+     d50:	80 91 fe 01 	lds	r24, 0x01FE
      d54:	8f 3f       	cpi	r24, 0xFF	; 255
      d56:	11 f0       	breq	.+4      	; 0xd5c <__vector_14+0x54>
      d58:	8f 5f       	subi	r24, 0xFF	; 255
      d5a:	01 c0       	rjmp	.+2      	; 0xd5e <__vector_14+0x56>
      d5c:	8f ef       	ldi	r24, 0xFF	; 255
-     d5e:	80 93 fb 01 	sts	0x01FB, r24
+     d5e:	80 93 fe 01 	sts	0x01FE, r24
      d62:	2e c0       	rjmp	.+92     	; 0xdc0 <__vector_14+0xb8>
      d64:	81 e0       	ldi	r24, 0x01	; 1
      d66:	80 93 c8 01 	sts	0x01C8, r24
@@ -2573,11 +2526,11 @@ uint8_t sys_inc8BitCnt (uint8_t count)
      de0:	18 95       	reti
 
 00000de2 <main>:
+const char FLASHSTRING_DATE[] PROGMEM = __DATE__;
 const char FLASHSTRING_TIME[] PROGMEM = __TIME__;
 
 
-int main (void)
-{
+int main (void) {
     sys_init();
      de2:	0e 94 b5 01 	call	0x36a	; 0x36a <sys_init>
     app_init();
@@ -2621,8 +2574,7 @@ int main (void)
     sei();
      e1a:	78 94       	sei
     
-    while (1)
-    {
+    while (1) {
         sys_main();
      e1c:	0e 94 27 06 	call	0xc4e	; 0xc4e <sys_main>
         app_main();
@@ -2886,8 +2838,8 @@ int main (void)
     1024:	5f e7       	ldi	r21, 0x7F	; 127
     1026:	82 e2       	ldi	r24, 0x22	; 34
     1028:	90 e0       	ldi	r25, 0x00	; 0
-    102a:	90 93 17 02 	sts	0x0217, r25
-    102e:	80 93 16 02 	sts	0x0216, r24
+    102a:	90 93 1a 02 	sts	0x021A, r25
+    102e:	80 93 19 02 	sts	0x0219, r24
     1032:	16 c0       	rjmp	.+44     	; 0x1060 <strtol+0x236>
     1034:	88 23       	and	r24, r24
     1036:	41 f0       	breq	.+16     	; 0x1048 <strtol+0x21e>
@@ -2903,8 +2855,8 @@ int main (void)
     104a:	0a c0       	rjmp	.+20     	; 0x1060 <strtol+0x236>
     104c:	82 e2       	ldi	r24, 0x22	; 34
     104e:	90 e0       	ldi	r25, 0x00	; 0
-    1050:	90 93 17 02 	sts	0x0217, r25
-    1054:	80 93 16 02 	sts	0x0216, r24
+    1050:	90 93 1a 02 	sts	0x021A, r25
+    1054:	80 93 19 02 	sts	0x0219, r24
     1058:	2f ef       	ldi	r18, 0xFF	; 255
     105a:	3f ef       	ldi	r19, 0xFF	; 255
     105c:	4f ef       	ldi	r20, 0xFF	; 255
@@ -3105,15 +3057,15 @@ int main (void)
     11c8:	61 91       	ld	r22, Z+
     11ca:	71 91       	ld	r23, Z+
     11cc:	af 01       	movw	r20, r30
-    11ce:	80 91 12 02 	lds	r24, 0x0212
-    11d2:	90 91 13 02 	lds	r25, 0x0213
+    11ce:	80 91 15 02 	lds	r24, 0x0215
+    11d2:	90 91 16 02 	lds	r25, 0x0216
     11d6:	0e 94 f7 08 	call	0x11ee	; 0x11ee <vfprintf>
     11da:	e2 e0       	ldi	r30, 0x02	; 2
     11dc:	0c 94 a9 0b 	jmp	0x1752	; 0x1752 <__epilogue_restores__+0x20>
 
 000011e0 <putchar>:
-    11e0:	60 91 12 02 	lds	r22, 0x0212
-    11e4:	70 91 13 02 	lds	r23, 0x0213
+    11e0:	60 91 15 02 	lds	r22, 0x0215
+    11e4:	70 91 16 02 	lds	r23, 0x0216
     11e8:	0e 94 aa 08 	call	0x1154	; 0x1154 <fputc>
     11ec:	08 95       	ret
 

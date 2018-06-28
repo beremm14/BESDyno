@@ -54,12 +54,15 @@ Archive member included because of file (symbol)
 Allocating common symbols
 Common symbol       size              file
 
+engCounts           0x1               Builds/app.o
 errno               0x2               /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(errno.o)
 sys_mon             0x2b              Builds/sys.o
 sys                 0x16              Builds/sys.o
 mon                 0x1               Builds/mon.o
 app                 0x1               Builds/app.o
+measureTime         0x1               Builds/app.o
 __iob               0x6               /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(iob.o)
+wheelCounts         0x1               Builds/app.o
 
 Memory Configuration
 
@@ -600,7 +603,7 @@ END GROUP
                 0x008001c6                _edata = .
                 0x008001c6                PROVIDE (__data_end, .)
 
-.bss            0x008001c6       0x52
+.bss            0x008001c6       0x55
                 0x008001c6                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x008001c6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
@@ -635,27 +638,30 @@ END GROUP
  .bss           0x008001cd        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_umulhisi3.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x008001cd        0x1 Builds/app.o
-                0x008001cd                app
- COMMON         0x008001ce        0x1 Builds/mon.o
-                0x008001ce                mon
- COMMON         0x008001cf       0x41 Builds/sys.o
-                0x008001cf                sys_mon
-                0x008001fa                sys
- COMMON         0x00800210        0x6 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(iob.o)
-                0x00800210                __iob
- COMMON         0x00800216        0x2 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(errno.o)
-                0x00800216                errno
-                0x00800218                PROVIDE (__bss_end, .)
+ COMMON         0x008001cd        0x4 Builds/app.o
+                0x008001cd                engCounts
+                0x008001ce                app
+                0x008001cf                measureTime
+                0x008001d0                wheelCounts
+ COMMON         0x008001d1        0x1 Builds/mon.o
+                0x008001d1                mon
+ COMMON         0x008001d2       0x41 Builds/sys.o
+                0x008001d2                sys_mon
+                0x008001fd                sys
+ COMMON         0x00800213        0x6 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(iob.o)
+                0x00800213                __iob
+ COMMON         0x00800219        0x2 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(errno.o)
+                0x00800219                errno
+                0x0080021b                PROVIDE (__bss_end, .)
                 0x0000178a                __data_load_start = LOADADDR (.data)
                 0x00001850                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800218        0x0
-                0x00800218                PROVIDE (__noinit_start, .)
+.noinit         0x0080021b        0x0
+                0x0080021b                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800218                PROVIDE (__noinit_end, .)
-                0x00800218                _end = .
-                0x00800218                PROVIDE (__heap_start, .)
+                0x0080021b                PROVIDE (__noinit_end, .)
+                0x0080021b                _end = .
+                0x0080021b                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -676,19 +682,19 @@ END GROUP
 .user_signatures
  *(.user_signatures*)
 
-.stab           0x00000000     0x2b50
+.stab           0x00000000     0x2b74
  *(.stab)
- .stab          0x00000000      0x678 Builds/app.o
- .stab          0x00000678      0x3b4 Builds/main.o
+ .stab          0x00000000      0x69c Builds/app.o
+ .stab          0x0000069c      0x3b4 Builds/main.o
                                 0x648 (size before relaxing)
- .stab          0x00000a2c      0x588 Builds/mon.o
+ .stab          0x00000a50      0x588 Builds/mon.o
                                 0x81c (size before relaxing)
- .stab          0x00000fb4     0x1b9c Builds/sys.o
+ .stab          0x00000fd8     0x1b9c Builds/sys.o
                                0x1e30 (size before relaxing)
 
-.stabstr        0x00000000     0x1ec5
+.stabstr        0x00000000     0x1e62
  *(.stabstr)
- .stabstr       0x00000000     0x1ec5 Builds/app.o
+ .stabstr       0x00000000     0x1e62 Builds/app.o
 
 .stab.excl
  *(.stab.excl)
@@ -927,6 +933,7 @@ app_task_64ms                                     Builds/app.o
                                                   Builds/sys.o
 app_task_8ms                                      Builds/app.o
                                                   Builds/sys.o
+engCounts                                         Builds/app.o
 errno                                             /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(errno.o)
                                                   /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(strtol.o)
 exit                                              /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
@@ -941,6 +948,7 @@ isspace                                           /usr/local/CrossPack-AVR-20131
                                                   /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(strtol.o)
 main                                              Builds/main.o
                                                   /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
+measureTime                                       Builds/app.o
 memcpy_P                                          /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(memcpy_P.o)
                                                   Builds/sys.o
 mon                                               Builds/mon.o
@@ -1016,3 +1024,4 @@ sys_uart_getch                                    Builds/sys.o
 sys_uart_putch                                    Builds/sys.o
 vfprintf                                          /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(vfprintf_std.o)
                                                   /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libc.a(printf.o)
+wheelCounts                                       Builds/app.o

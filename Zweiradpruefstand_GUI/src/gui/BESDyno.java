@@ -29,11 +29,11 @@ import serial.Port;
 public class BESDyno extends javax.swing.JFrame {
 
     //Data-Objects
-    private Bike bike;
-    private BikePower power;
-    private Config config;
-    private Environment env;
-    private Port port;
+    private Bike bike = new Bike();
+    private BikePower power = new BikePower();
+    private Config config = new Config();
+    private Environment env = new Environment();
+    private Port port = new Port();
     
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
@@ -612,6 +612,7 @@ public class BESDyno extends javax.swing.JFrame {
         
         if(vehicle.isPressedOK()) {
             bike = vehicle.getBike();
+            System.out.println(bike.getVehicleName());
             measure.setAppearance(dark);
             measure.setVisible(true);
         }
@@ -624,6 +625,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
         try {
             port.connectPort((String) jcbSerialDevices.getSelectedItem());
+            refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
         }
@@ -632,6 +634,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
             port.disconnectPort();
+            refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
         }
@@ -650,6 +653,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
         try {
             port.connectPort((String)jcbSerialDevices.getSelectedItem());
+            refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
         }
@@ -658,6 +662,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
         try {
             port.disconnectPort();
+            refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
         }
@@ -675,6 +680,12 @@ public class BESDyno extends javax.swing.JFrame {
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
+        
+        if (vehicle.isPressedOK()) {
+            bike = vehicle.getBike();
+            measure.setAppearance(dark);
+            measure.setVisible(true);
+        }
     }//GEN-LAST:event_jbutStartSimActionPerformed
 
     private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed

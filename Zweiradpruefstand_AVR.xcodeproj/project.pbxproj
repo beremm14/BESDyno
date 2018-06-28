@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2021D08C209475A000576EF4 /* t_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 2021D08B209475A000576EF4 /* t_app.c */; };
 		20B8DC0E20641F360000F498 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC0D20641F360000F498 /* main.c */; };
 		20B8DC2F2064200E0000F498 /* mon.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC2C2064200E0000F498 /* mon.c */; };
 		20B8DC302064200E0000F498 /* sys.c in Sources */ = {isa = PBXBuildFile; fileRef = 20B8DC2D2064200E0000F498 /* sys.c */; };
@@ -15,7 +14,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2021D08B209475A000576EF4 /* t_app.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = t_app.c; sourceTree = "<group>"; };
 		20B8DC0A20641F360000F498 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		20B8DC0D20641F360000F498 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		20B8DC2C2064200E0000F498 /* mon.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mon.c; sourceTree = "<group>"; };
@@ -32,7 +30,6 @@
 		2021D08A2094756900576EF4 /* Test Files */ = {
 			isa = PBXGroup;
 			children = (
-				2021D08B209475A000576EF4 /* t_app.c */,
 			);
 			name = "Test Files";
 			sourceTree = "<group>";
@@ -228,7 +225,6 @@
 				20B8DC2F2064200E0000F498 /* mon.c in Sources */,
 				20B8DC0E20641F360000F498 /* main.c in Sources */,
 				20B8DC312064200E0000F498 /* app.c in Sources */,
-				2021D08C209475A000576EF4 /* t_app.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
