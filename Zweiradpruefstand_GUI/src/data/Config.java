@@ -9,6 +9,8 @@ import java.io.IOException;
  * @author emil
  */
 public class Config {
+    
+    private static Config instance = null;
 
     private boolean ps;
 
@@ -31,6 +33,13 @@ public class Config {
     private int idleRpm;
     private int hysteresisRpm;
     private int startRpm;
+    
+    public static Config getInstance() {
+        if (instance == null) {
+            instance = new Config();
+        }
+        return instance;
+    }
 
     public Config() {
     }

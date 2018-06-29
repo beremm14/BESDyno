@@ -8,10 +8,16 @@ import jssc.SerialPortException;
  * @author emil
  */
 public class Port {
+    
+    private static Port instance = null;
 
     private jssc.SerialPort port;
-
-    public Port() {
+    
+    public static Port getInstance() {
+        if (instance == null) {
+            instance = new Port();
+        }
+        return instance;
     }
 
     public SerialPort getPort() {

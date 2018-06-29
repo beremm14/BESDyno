@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
  */
 public class VehicleSetDialog extends javax.swing.JDialog {
     
-    private Bike bike = new Bike();
+    private Bike bike = Bike.getInstance();
 
     private boolean pressedOK;
 

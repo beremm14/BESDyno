@@ -6,11 +6,20 @@ package data;
  */
 public class Environment {
     
+    private static Environment instance = null;
+    
     private double envTemp; //°C
     private double engTemp; //°C
     private double fumeTemp; //°C
     private int airPress;   //hPa
     private int altitude;   //m, wenn nicht eingegeben: Näherungswert
+    
+    public static Environment getInstance() {
+        if (instance == null) {
+            instance = new Environment();
+        }
+        return instance;
+    }
 
     public Environment(double envTemp, double engTemp, double fumeTemp, int airPress, int altitude) {
         this.envTemp = envTemp;

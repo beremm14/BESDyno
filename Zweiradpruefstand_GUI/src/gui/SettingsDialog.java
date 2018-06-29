@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  */
 public class SettingsDialog extends javax.swing.JDialog {
 
-    Config config = new Config();
+    Config config = Config.getInstance();
 
     private boolean pressedOK;
 

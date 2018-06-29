@@ -17,11 +17,13 @@ import java.util.Scanner;
  */
 public class Bike {
 
-    private String vehicleName;
+    private static Bike instance = null;
     
+    private String vehicleName;
+
     private boolean twoStroke;
     private boolean automatic;
-    
+
     private boolean measRpm;
     private boolean schleppEnable;
 
@@ -31,6 +33,13 @@ public class Bike {
     private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
     private String timePoint = null;
 
+    public static Bike getInstance() {
+        if (instance == null) {
+            instance = new Bike();
+        }
+        return instance;
+    }
+
     public Bike(String vehicleName, boolean twoStroke, boolean automatic, boolean measRpm, boolean schleppEnable) {
         this.vehicleName = vehicleName;
         this.twoStroke = twoStroke;
@@ -38,14 +47,15 @@ public class Bike {
         this.measRpm = measRpm;
         this.schleppEnable = schleppEnable;
     }
-    
+
     public Bike(String vehicleName, boolean twoStroke, boolean automatic) {
         this.vehicleName = vehicleName;
         this.twoStroke = twoStroke;
         this.automatic = automatic;
     }
 
-    public Bike() {}
+    public Bike() {
+    }
 
     //Getter
     public String getVehicleName() {
@@ -63,11 +73,11 @@ public class Bike {
     public List<Datapoint> getDatalist() {
         return list;
     }
-    
+
     public boolean isMeasRpm() {
         return measRpm;
     }
-    
+
     public boolean isSchleppEnable() {
         return schleppEnable;
     }
@@ -175,7 +185,6 @@ public class Bike {
 //            double engRpm = new Scanner(s[1]).nextDouble();
 //            double wheelRpm = new Scanner(s[2]).nextDouble();
 //            add(new Datapoint(wheelRpm, engRpm, time));
-
             String s[] = line.split("\t");
             int time = Integer.parseInt(s[0]);
             int engRpm = Integer.parseInt(s[1]);

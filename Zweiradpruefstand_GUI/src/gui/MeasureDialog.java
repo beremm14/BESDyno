@@ -1,6 +1,9 @@
 package gui;
 
 import data.Bike;
+import data.BikePower;
+import data.Config;
+import data.Environment;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +16,7 @@ import org.jfree.chart.plot.dial.DialTextAnnotation;
 import org.jfree.chart.plot.dial.StandardDialFrame;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.data.general.DefaultValueDataset;
+import serial.Port;
 
 /**
  *
@@ -20,7 +24,8 @@ import org.jfree.data.general.DefaultValueDataset;
  */
 public class MeasureDialog extends javax.swing.JDialog {
     
-    private final Bike bike = new Bike();
+    private Bike bike = Bike.getInstance();
+    
     private final DefaultValueDataset kmh = new DefaultValueDataset(0);
     private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
@@ -96,6 +101,8 @@ public class MeasureDialog extends javax.swing.JDialog {
         frame.pack();
         frame.setSize(new Dimension(500, 500));
     }
+    
+    
     
     /**
      * This method is called from within the constructor to initialize the form.

@@ -24,16 +24,24 @@ public class Telegram {
      * Response: Motor-/Abgastemperatur   *
      **************************************/
     
+    private static Telegram instance = null;
     
     private final jssc.SerialPort port;
-    private Port serialPort = new Port();
     
     private Environment env = new Environment();
+    private Port currPort = new Port();
     
     private List<RawDatapoint> list = new LinkedList<>();
 
+    public static Telegram getInstance() {
+        if (instance == null) {
+            instance = new Telegram();
+        }
+        return instance;
+    }
+    
     public Telegram() {
-        this.port = serialPort.getPort();
+        this.port = currPort.getPort();
         try {
             port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
         } catch (SerialPortException ex) {

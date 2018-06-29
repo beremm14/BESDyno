@@ -19,7 +19,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import data.Environment;
-import measure.MeasurementWorker;
 import serial.Port;
 
 /**
@@ -29,11 +28,11 @@ import serial.Port;
 public class BESDyno extends javax.swing.JFrame {
 
     //Data-Objects
-    private Bike bike = new Bike();
-    private BikePower power = new BikePower();
-    private Config config = new Config();
-    private Environment env = new Environment();
-    private Port port = new Port();
+    private Bike bike = Bike.getInstance();
+    private BikePower power = BikePower.getInstance();
+    private Config config = Config.getInstance();
+    private Environment env = Environment.getInstance();
+    private Port port = Port.getInstance();
     
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
@@ -44,11 +43,10 @@ public class BESDyno extends javax.swing.JFrame {
     
     //Object-Variables
     private File file;
-    private CalculationWorker worker;
     
     //Variables
     private boolean dark = false;
-
+    
     /**
      * Creates new form Gui
      */
@@ -81,7 +79,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
-        jbutStartSim.setEnabled(false);
+        jbutStartSim.setEnabled(true);
         jmiConnect.setEnabled(false);
         jbutConnect.setEnabled(false);
         jmiDisconnect.setEnabled(false);
@@ -611,8 +609,6 @@ public class BESDyno extends javax.swing.JFrame {
         vehicle.setVisible(true);
         
         if(vehicle.isPressedOK()) {
-            bike = vehicle.getBike();
-            System.out.println(bike.getVehicleName());
             measure.setAppearance(dark);
             measure.setVisible(true);
         }
@@ -682,7 +678,6 @@ public class BESDyno extends javax.swing.JFrame {
         vehicle.setVisible(true);
         
         if (vehicle.isPressedOK()) {
-            bike = vehicle.getBike();
             measure.setAppearance(dark);
             measure.setVisible(true);
         }
@@ -748,15 +743,6 @@ public class BESDyno extends javax.swing.JFrame {
                 new BESDyno().setVisible(true);
             });
         }
-    }
-    
-    private class CalculationWorker extends MeasurementWorker {
-
-        @Override
-        protected void done() {
-            
-        }
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

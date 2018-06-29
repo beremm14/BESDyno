@@ -8,13 +8,13 @@ import serial.Telegram;
  *
  * @author emil
  */
-public class MeasurementWorker extends SwingWorker<Void, String> {
+public class MeasurementWorker extends SwingWorker<Telegram, String> {
     
     private Bike bike = new Bike();
-    private Telegram telegram = new Telegram();    
+    private Telegram telegram = Telegram.getInstance();    
 
     @Override
-    protected Void doInBackground() throws Exception {
+    protected Telegram doInBackground() throws Exception {
         
         telegram.readEnvData();
         //do {
@@ -22,7 +22,7 @@ public class MeasurementWorker extends SwingWorker<Void, String> {
             
         //}
         
-        return null;
+        return telegram;
     }
     
 }

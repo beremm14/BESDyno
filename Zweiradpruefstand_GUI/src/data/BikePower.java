@@ -9,21 +9,24 @@ import java.util.List;
  */
 public class BikePower {
     
+    private static BikePower instance = null;
+
+    public static BikePower getInstance() {
+        if (instance == null) {
+            instance = new BikePower();
+        }
+        return instance;
+    }
+
     //Power
     private List<Double> engPower = new LinkedList<>();
     private List<Double> wheelPower = new LinkedList<>();
-    
-    //RPM
-    private List<Integer> engRpm = new LinkedList<>();
-    private List<Integer> wheelRpm = new LinkedList<>();
-    
-    //Time
-    private List<Integer> dTime = new LinkedList<>();
-    
+
     //"Absolute" Power
     private double bikePower;
 
-    public BikePower() {}
+    public BikePower() {
+    }
 
     //Getter
     public List<Double> getEngPower() {
@@ -34,18 +37,6 @@ public class BikePower {
         return wheelPower;
     }
 
-    public List<Integer> getEngRpm() {
-        return engRpm;
-    }
-
-    public List<Integer> getWheelRpm() {
-        return wheelRpm;
-    }
-
-    public List<Integer> getDTime() {
-        return dTime;
-    }
-
     public double getBikePower() {
         return bikePower;
     }
@@ -54,10 +45,10 @@ public class BikePower {
     public void setBikePower(double bikePower) {
         this.bikePower = bikePower;
     }
-    
+
     public void setBikePower() {
         double power = engPower.get(0);
-        for (int i=0; i<engPower.size(); i++) {
+        for (int i = 0; i < engPower.size(); i++) {
             if (engPower.get(i) > power) {
                 power = engPower.get(i);
             }
@@ -69,21 +60,9 @@ public class BikePower {
     public boolean addEP(Double e) {
         return engPower.add(e);
     }
-    
+
     public boolean addWP(Double e) {
         return wheelPower.add(e);
     }
-    
-    public boolean addER(Integer e) {
-        return engRpm.add(e);
-    }
-    
-    public boolean addWR(Integer e) {
-        return wheelRpm.add(e);
-    }
-    
-    public boolean addDTime(Integer e) {
-        return dTime.add(e);
-    }
-    
+
 }
