@@ -40,21 +40,7 @@ public class Bike {
         return instance;
     }
 
-    public Bike(String vehicleName, boolean twoStroke, boolean automatic, boolean measRpm, boolean schleppEnable) {
-        this.vehicleName = vehicleName;
-        this.twoStroke = twoStroke;
-        this.automatic = automatic;
-        this.measRpm = measRpm;
-        this.schleppEnable = schleppEnable;
-    }
-
-    public Bike(String vehicleName, boolean twoStroke, boolean automatic) {
-        this.vehicleName = vehicleName;
-        this.twoStroke = twoStroke;
-        this.automatic = automatic;
-    }
-
-    public Bike() {
+    private Bike() {
     }
 
     //Getter

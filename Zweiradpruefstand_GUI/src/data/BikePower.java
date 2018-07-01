@@ -25,7 +25,7 @@ public class BikePower {
     //"Absolute" Power
     private double bikePower;
 
-    public BikePower() {
+    private BikePower() {
     }
 
     //Getter

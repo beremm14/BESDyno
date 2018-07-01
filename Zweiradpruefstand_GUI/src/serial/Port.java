@@ -20,6 +20,9 @@ public class Port {
         return instance;
     }
 
+    private Port() {
+    }
+
     public SerialPort getPort() {
         return port;
     }

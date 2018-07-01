@@ -21,23 +21,8 @@ public class Environment {
         return instance;
     }
 
-    public Environment(double envTemp, double engTemp, double fumeTemp, int airPress, int altitude) {
-        this.envTemp = envTemp;
-        this.engTemp = engTemp;
-        this.fumeTemp = fumeTemp;
-        this.airPress = airPress;
-        this.altitude = altitude;
+    private Environment() {
     }
-
-    public Environment(double envTemp, double engTemp, double fumeTemp, int airPress) {
-        this.envTemp = envTemp;
-        this.engTemp = engTemp;
-        this.fumeTemp = fumeTemp;
-        this.airPress = airPress;
-        this.altitude = calcAltitude(airPress);
-    }
-
-    public Environment() {}
     
     //Getter
     public double getEnvTemp() {

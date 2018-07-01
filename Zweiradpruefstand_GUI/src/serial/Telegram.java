@@ -28,8 +28,8 @@ public class Telegram {
     
     private final jssc.SerialPort port;
     
-    private Environment env = new Environment();
-    private Port currPort = new Port();
+    private Environment env = Environment.getInstance();
+    private Port currPort = Port.getInstance();
     
     private List<RawDatapoint> list = new LinkedList<>();
 
@@ -40,7 +40,7 @@ public class Telegram {
         return instance;
     }
     
-    public Telegram() {
+    private Telegram() {
         this.port = currPort.getPort();
         try {
             port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);

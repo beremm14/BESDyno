@@ -14,16 +14,13 @@ import java.util.List;
 public class Calculate {
 
     private List<RawDatapoint> rawList;
-
-    private BikePower power = new BikePower();
     
-    private Bike bike;
-    private Config config;
+    private Bike bike = Bike.getInstance();
+    private BikePower power = BikePower.getInstance();
+    private Config config = Config.getInstance();
 
-    public Calculate(List<RawDatapoint> rawList, Bike bike, Config config) {
+    public Calculate(List<RawDatapoint> rawList) {
         this.rawList = rawList;
-        this.bike = bike;
-        this.config = config;
     }
 
     public BikePower getBikePower() {

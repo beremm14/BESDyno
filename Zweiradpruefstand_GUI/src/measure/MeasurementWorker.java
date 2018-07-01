@@ -10,7 +10,7 @@ import serial.Telegram;
  */
 public class MeasurementWorker extends SwingWorker<Telegram, String> {
     
-    private Bike bike = new Bike();
+    private Bike bike = Bike.getInstance();
     private Telegram telegram = Telegram.getInstance();    
 
     @Override
