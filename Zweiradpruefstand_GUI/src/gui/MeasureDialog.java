@@ -1,9 +1,6 @@
 package gui;
 
 import data.Bike;
-import data.BikePower;
-import data.Config;
-import data.Environment;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,7 +13,6 @@ import org.jfree.chart.plot.dial.DialTextAnnotation;
 import org.jfree.chart.plot.dial.StandardDialFrame;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.data.general.DefaultValueDataset;
-import serial.Port;
 
 /**
  *

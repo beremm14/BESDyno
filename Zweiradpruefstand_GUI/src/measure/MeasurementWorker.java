@@ -1,6 +1,8 @@
 package measure;
 
 import data.Bike;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.SwingWorker;
 import serial.Telegram;
 
@@ -8,21 +10,27 @@ import serial.Telegram;
  *
  * @author emil
  */
-public class MeasurementWorker extends SwingWorker<Telegram, String> {
+public class MeasurementWorker extends SwingWorker<Void, String> implements PropertyChangeListener {
     
     private Bike bike = Bike.getInstance();
-    private Telegram telegram = Telegram.getInstance();    
+    private Telegram telegram = Telegram.getInstance(); 
+    
+    private Calculate calc;
 
     @Override
-    protected Telegram doInBackground() throws Exception {
-        
+    protected Void doInBackground() throws Exception {
         telegram.readEnvData();
-        //do {
-            telegram.readRpmData();
-            
-        //}
+        telegram.readRpmData();
+        telegram.readBikeTemp();
         
-        return telegram;
+        
+        
+        return null;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

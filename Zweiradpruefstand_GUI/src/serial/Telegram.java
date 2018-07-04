@@ -28,6 +28,7 @@ public class Telegram {
     
     private final jssc.SerialPort port;
     
+    private Communication com = Communication.getInstance();
     private Environment env = Environment.getInstance();
     private Port currPort = Port.getInstance();
     
@@ -54,8 +55,8 @@ public class Telegram {
         //"EnvTemp#Airpress"
 
         try {
-            port.writeString("START");
-            String response = port.readString().trim();
+            com.sendRequest(Communication.Request.START);
+            String response = com.receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
@@ -72,8 +73,8 @@ public class Telegram {
         //"EngTemp#FumeTemp"
         
         try {
-            port.writeString("ENGINE");
-            String response = port.readString().trim();
+            com.sendRequest(Communication.Request.ENGINE);
+            String response = com.receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
@@ -89,8 +90,8 @@ public class Telegram {
     public void readRpmData() {
         //"engCount#wheelCount#time
         try {
-            port.writeString("MEASURE");
-            String response = port.readString().trim();
+            com.sendRequest(Communication.Request.MEASURE);
+            String response = com.receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
