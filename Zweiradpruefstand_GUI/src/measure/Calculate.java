@@ -14,7 +14,7 @@ import java.util.List;
 public class Calculate {
 
     private List<RawDatapoint> rawList;
-    
+
     private Bike bike = Bike.getInstance();
     private BikePower power = BikePower.getInstance();
     private Config config = Config.getInstance();
@@ -47,22 +47,26 @@ public class Calculate {
     public void calcPower() {
         //Wheel-Power
         for (int i = 0; i < bike.getDatalist().size(); i++) {
-            
             double dOmega = 2 * Math.PI * bike.getDatalist().get(i).getWheelRpm();
             double alpha = dOmega / (bike.getDatalist().get(i).getTime() / 1000);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
-            
+
             power.addWP(currPower);
         }
-    }
 
-    public BikePower getPower() {
-        return power;
-    }
+        //Engine-Power
+        for (int i = 0; i < rawList.size(); i++) {
+            double dOmega = 2 * Math.PI * bike.getDatalist().get(i).getEngRpm();
+            double alpha = dOmega / (bike.getDatalist().get(i).getTime() / 1000);
+            double torque = config.getInertia() * alpha;
+            double currPower = torque * dOmega;
 
-    public Bike getBike() {
-        return bike;
+            power.addEP(currPower);
+        }
+        
+        //Max-Engine-Power
+        power.setBikePower();
     }
 
 }

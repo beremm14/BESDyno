@@ -22,7 +22,7 @@ public class Port {
 
     private Port() {
     }
-
+    
     public SerialPort getPort() {
         return port;
     }

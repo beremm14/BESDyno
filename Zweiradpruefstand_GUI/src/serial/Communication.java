@@ -44,7 +44,7 @@ public class Communication {
             case RESET:
                 port.getPort().writeBytes("r".getBytes("UTF-8"));
                 break;
-            default: throw new Exception("Communication Problem...");
+            default: throw new CommunicationException("Communication Problem...");
         }
     }
     
