@@ -51,16 +51,28 @@ public class Calculate {
             double alpha = dOmega / (bike.getDatalist().get(i).getTime() / 1000);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
-
+            
+            if(config.isPs()) {
+                currPower = currPower * 1.359621617 / 1000;
+            } else {
+                currPower = currPower / 1000;
+            }
+            
             power.addWP(currPower);
         }
 
         //Engine-Power
-        for (int i = 0; i < rawList.size(); i++) {
+        for (int i = 0; i < bike.getDatalist().size(); i++) {
             double dOmega = 2 * Math.PI * bike.getDatalist().get(i).getEngRpm();
             double alpha = dOmega / (bike.getDatalist().get(i).getTime() / 1000);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
+            
+            if(config.isPs()) {
+                currPower = currPower * 1.359621617 / 1000;
+            } else {
+                currPower = currPower / 1000;
+            }
 
             power.addEP(currPower);
         }

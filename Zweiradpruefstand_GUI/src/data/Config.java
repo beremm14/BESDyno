@@ -48,6 +48,10 @@ public class Config {
     public boolean isPs() {
         return ps;
     }
+    
+    public String getPowerUnit() {
+        return ps ? "PS" : "kW";
+    }
 
     public int getPngHeight() {
         return pngHeight;
