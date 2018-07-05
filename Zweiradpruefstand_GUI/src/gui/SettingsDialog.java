@@ -301,6 +301,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         if(!error) {
             try {
                 saveConfig(config);
+                config.writeJson();
             } catch (Exception e) {
                 error = true;
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Interner Fehler", JOptionPane.ERROR_MESSAGE);

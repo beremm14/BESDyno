@@ -11,8 +11,10 @@ public class Arduino {
 
     private static Arduino instance = null;
 
-    private Port port = Port.getInstance();
-
+    public static enum Request {
+        START, ENGINE, MEASURE, MEASURENO, RESET;
+    }
+    
     public static Arduino getInstance() {
         if (instance == null) {
             instance = new Arduino();
@@ -20,17 +22,15 @@ public class Arduino {
         return instance;
     }
 
-    private Arduino() {
-    }
+    private final Port port = Port.getInstance();
     
-    public enum Request {
-        START, ENGINE, MEASURE, MEASURENO, RESET;
+    private Arduino() {
     }
 
     public void sendRequest(Request request) throws UnsupportedEncodingException, SerialPortException, Exception {
-        switch(request) {
+        switch (request) {
             case START:
-                port.getPort().writeBytes("s".getBytes("UTF-8"));
+                port.getPort().writeByte((byte)'s');
                 break;
             case ENGINE:
                 port.getPort().writeBytes("e".getBytes("UTF-8"));
@@ -44,10 +44,11 @@ public class Arduino {
             case RESET:
                 port.getPort().writeBytes("r".getBytes("UTF-8"));
                 break;
-            default: throw new CommunicationException("Communication Problem...");
+            default:
+                throw new CommunicationException("Communication Problem...");
         }
     }
-    
+
     public String receiveResponse() throws SerialPortException {
         return port.getPort().readString().trim();
     }

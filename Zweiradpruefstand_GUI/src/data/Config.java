@@ -2,15 +2,30 @@ package data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
+import javax.json.Json;
+import logging.Logger;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
  * @author emil
  */
 public class Config {
+
+    private static final Logger LOG = Logger.getLogger(Config.class.getName());
+    
+    
     
     private static Config instance = null;
+    
+    private File configFile;
 
     private boolean ps;
 
@@ -36,13 +51,24 @@ public class Config {
     
     public static Config getInstance() {
         if (instance == null) {
-            instance = new Config();
+            throw new RuntimeException("Instance not initialized");
         }
         return instance;
     }
-
-    private Config() {
+    
+    public static void initInstance(File configFile) {
+        if (instance != null) {
+            throw new RuntimeException("Instance already initialized");
+        }
+        LOG.severe(new Exception("Test"));
+        instance = new Config(configFile);
     }
+
+    private Config(File configFile) {
+        this.configFile = configFile;
+    }
+    
+    
 
     //Getter
     public boolean isPs() {
@@ -201,6 +227,36 @@ public class Config {
         w.write(String.format("%d", startRpm));
         w.write("\t");
         w.write(String.format("%d", torqueCorr));
+    }
+    
+    public void writeJson() throws IOException {
+        
+        final JsonObjectBuilder b = Json.createObjectBuilder();
+        
+        b
+                .add("Dark", dark)
+                .add("Hysteresis Km/h", hysteresisKmh)
+                .add("Hysteresis Rpm", hysteresisRpm)
+                .add("Hysteresis Time", hysteresisTime)
+                .add("Idle Km/h", idleKmh)
+                .add("Idle Rpm", idleRpm)
+                .add("Inertia", inertiaCorr)
+                .add("Period", period)
+                .add("PNG Height", pngHeight)
+                .add("PNG Width", pngWidth)
+                .add("Power Correction Factor", powerCorr)
+                .add("PS", ps)
+                .add("Start Km/h", startKmh)
+                .add("Start Rpm", startRpm)
+                .add("Torque Correction Factor", torqueCorr);
+        
+        JsonObject obj = b.build();
+                
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(configFile))) {
+            w.write(obj.toString());
+            System.out.println(obj.toString());
+        }
+        
     }
 
     //Read

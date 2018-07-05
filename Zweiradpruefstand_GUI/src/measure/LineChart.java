@@ -39,45 +39,45 @@ public class LineChart {
         return tmpDataset;
     }
     
-    public JFreeChart createEngineChart() {
-        XYDataset engineDataset = createDataset(power.getEngRpm(), power.getEngPower());
-        JFreeChart chart = ChartFactory.createXYAreaChart("Motorleistung " + bike.getVehicleName(),
-                                                          "Drehzahl (U/min)",
-                                                          "Motorleistung (" + config.getPowerUnit() + ")",
-                                                          engineDataset);
-        chart.setBackgroundPaint(Color.white);
-        
-        XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(Color.darkGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-        
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, true);
-        renderer.setSeriesLinesVisible(1, true);
-        
-        return chart;
-    }
-    
-    public JFreeChart createWheelChart() {
-        XYDataset engineDataset = createDataset(power.getWheelRpm(), power.getWheelPower());
-        JFreeChart chart = ChartFactory.createXYAreaChart("Hinterradleistung " + bike.getVehicleName(),
-                                                          "Drehzahl (U/min)",
-                                                          "Hinterradleistung (" + config.getPowerUnit() + ")",
-                                                          engineDataset);
-        chart.setBackgroundPaint(Color.white);
-        
-        XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(Color.darkGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-        
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, true);
-        renderer.setSeriesLinesVisible(1, true);
-        
-        return chart;
-    }
+//    public JFreeChart createEngineChart() {
+//        XYDataset engineDataset = createDataset(power.getEngRpm(), power.getEngPower());
+//        JFreeChart chart = ChartFactory.createXYAreaChart("Motorleistung " + bike.getVehicleName(),
+//                                                          "Drehzahl (U/min)",
+//                                                          "Motorleistung (" + config.getPowerUnit() + ")",
+//                                                          engineDataset);
+//        chart.setBackgroundPaint(Color.white);
+//        
+//        XYPlot plot = chart.getXYPlot();
+//        plot.setBackgroundPaint(Color.darkGray);
+//        plot.setDomainGridlinePaint(Color.white);
+//        plot.setRangeGridlinePaint(Color.white);
+//        
+//        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+//        renderer.setSeriesLinesVisible(0, true);
+//        renderer.setSeriesLinesVisible(1, true);
+//        
+//        return chart;
+//    }
+//    
+//    public JFreeChart createWheelChart() {
+//        XYDataset engineDataset = createDataset(power.getWheelRpm(), power.getWheelPower());
+//        JFreeChart chart = ChartFactory.createXYAreaChart("Hinterradleistung " + bike.getVehicleName(),
+//                                                          "Drehzahl (U/min)",
+//                                                          "Hinterradleistung (" + config.getPowerUnit() + ")",
+//                                                          engineDataset);
+//        chart.setBackgroundPaint(Color.white);
+//        
+//        XYPlot plot = chart.getXYPlot();
+//        plot.setBackgroundPaint(Color.darkGray);
+//        plot.setDomainGridlinePaint(Color.white);
+//        plot.setRangeGridlinePaint(Color.white);
+//        
+//        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+//        renderer.setSeriesLinesVisible(0, true);
+//        renderer.setSeriesLinesVisible(1, true);
+//        
+//        return chart;
+//    }
     
     
     

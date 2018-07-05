@@ -308,24 +308,7 @@ public class Logger
    */
   public static final Level DEBUG = new SpecialLevel("DEBUG", Integer.MAX_VALUE-1);
 
-  /**
-   * Resets the Logger to startup state.
-   * <p>
-   * Please note, that the previously Logger and Handler objects and are not
-   * shutdown by this call.
-   */
-  public static void reset ()
-  {
-    synchronized (LOGGERMAP)
-    {
-      LOGGERMAP.clear();
-      parentLogger = null;
-      shutdownExecuted = false;
-      shutdownNowExecuted = false;
-      cachedSystemProperties.clear();
-    }
-  }
-  
+
   /**
    * Find or create a logger for a named subsystem.<br>
    * If a logger has already been created with the given name it is returned.

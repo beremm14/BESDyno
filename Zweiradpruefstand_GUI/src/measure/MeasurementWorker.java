@@ -12,8 +12,8 @@ import serial.Telegram;
  */
 public class MeasurementWorker extends SwingWorker<Void, String> implements PropertyChangeListener {
     
-    private Bike bike = Bike.getInstance();
-    private Telegram telegram = Telegram.getInstance(); 
+    private final Bike bike = Bike.getInstance();
+    private final Telegram telegram = Telegram.getInstance(); 
     
     private Calculate calc;
 

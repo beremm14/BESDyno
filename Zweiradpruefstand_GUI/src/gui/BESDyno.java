@@ -19,6 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import data.Environment;
+import logging.Logger;
 import serial.Port;
 
 /**
@@ -26,6 +27,10 @@ import serial.Port;
  * @author emil
  */
 public class BESDyno extends javax.swing.JFrame {
+
+    private static final Logger LOG = Logger.getLogger(BESDyno.class.getName());
+    
+    
 
     //Data-Objects
     private Bike bike = Bike.getInstance();
@@ -63,7 +68,7 @@ public class BESDyno extends javax.swing.JFrame {
         } catch (Exception ex) {
             jtfStatus.setText("Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!");
             showThrowable(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", JOptionPane.WARNING_MESSAGE);
-            ex.printStackTrace(System.err);
+            LOG.warning(ex);
         }
         
         refreshGui();
@@ -79,7 +84,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
-        jbutStartSim.setEnabled(false);
+        jbutStartSim.setEnabled(true);
         jmiConnect.setEnabled(false);
         jbutConnect.setEnabled(false);
         jmiDisconnect.setEnabled(false);
@@ -220,7 +225,7 @@ public class BESDyno extends javax.swing.JFrame {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 bike.writeFile(w);
             } catch (Exception ex) {
-                writeOutThrowable(ex);
+                LOG.severe(ex);
             }
         }
 
@@ -243,7 +248,7 @@ public class BESDyno extends javax.swing.JFrame {
             folder = new File(home + "/Bike-Files");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
-                    throw new Exception("Internal Error");
+                    LOG.severe("Internal Error");
                 }
             }
             file = new File(folder + bike.getVehicleName() + ".bes");
@@ -262,6 +267,7 @@ public class BESDyno extends javax.swing.JFrame {
                 bike.readFile(r);
             } catch (Exception ex) {
                 writeOutThrowable(ex);
+                LOG.severe(ex);
             }
         }
     }
@@ -578,6 +584,7 @@ public class BESDyno extends javax.swing.JFrame {
             writeOutThrowable(ex);
         } catch (Exception ex) {
             writeOutThrowable(ex);
+            LOG.severe(ex);
         }
     }//GEN-LAST:event_jmiSaveActionPerformed
 
@@ -620,6 +627,7 @@ public class BESDyno extends javax.swing.JFrame {
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
+            LOG.severe(ex);
         }
     }//GEN-LAST:event_jmiConnectActionPerformed
 
@@ -629,6 +637,7 @@ public class BESDyno extends javax.swing.JFrame {
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
+            LOG.severe(ex);
         }
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
@@ -648,6 +657,7 @@ public class BESDyno extends javax.swing.JFrame {
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
+            LOG.severe(ex);
         }
     }//GEN-LAST:event_jbutConnectActionPerformed
 
@@ -657,6 +667,7 @@ public class BESDyno extends javax.swing.JFrame {
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
+            LOG.severe(ex);
         }
     }//GEN-LAST:event_jbutDisconnectActionPerformed
 
@@ -687,7 +698,7 @@ public class BESDyno extends javax.swing.JFrame {
             settings.saveConfig(config);
         } catch (Exception e) {
             writeOutThrowable(new Exception("Fehler beim Speichern der Config-Datei!"));
-            e.printStackTrace(System.err);
+            LOG.warning(e);
         }
     }//GEN-LAST:event_jcbmiDarkModeActionPerformed
 
@@ -702,6 +713,7 @@ public class BESDyno extends javax.swing.JFrame {
             writeOutThrowable(ex);
         } catch (Exception ex) {
             writeOutThrowable(ex);
+            LOG.warning(ex);
         }
     }//GEN-LAST:event_jmiOpenActionPerformed
 
@@ -710,6 +722,11 @@ public class BESDyno extends javax.swing.JFrame {
      * @throws javax.swing.UnsupportedLookAndFeelException
      */
     public static void main(String args[]) throws UnsupportedLookAndFeelException {
+        LOG.info("Start of BESDyno");
+        
+        Config.initInstance(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "config.json"));
+        Bike.getInstance();
+        
         //Menu-Bar support for macOS
         if (System.getProperty("os.name").contains("Mac OS X")) {
             try {
@@ -718,6 +735,7 @@ public class BESDyno extends javax.swing.JFrame {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                LOG.severe(ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
                 new BESDyno().setVisible(true);
@@ -734,7 +752,7 @@ public class BESDyno extends javax.swing.JFrame {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-
+            
             java.awt.EventQueue.invokeLater(() -> {
                 new BESDyno().setVisible(true);
             });
