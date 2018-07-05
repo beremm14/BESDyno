@@ -7,20 +7,20 @@ import jssc.SerialPortException;
  *
  * @author emil
  */
-public class Communication {
+public class Arduino {
 
-    private static Communication instance = null;
+    private static Arduino instance = null;
 
     private Port port = Port.getInstance();
 
-    public static Communication getInstance() {
+    public static Arduino getInstance() {
         if (instance == null) {
-            instance = new Communication();
+            instance = new Arduino();
         }
         return instance;
     }
 
-    private Communication() {
+    private Arduino() {
     }
     
     public enum Request {

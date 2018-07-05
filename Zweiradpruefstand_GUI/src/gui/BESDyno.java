@@ -79,7 +79,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
-        jbutStartSim.setEnabled(true);
+        jbutStartSim.setEnabled(false);
         jmiConnect.setEnabled(false);
         jbutConnect.setEnabled(false);
         jmiDisconnect.setEnabled(false);
@@ -295,10 +295,6 @@ public class BESDyno extends javax.swing.JFrame {
                 config.readConfig(r);
             }
         }
-    }
-
-    private void createChart(BikePower bp) {
-        
     }
 
     /**

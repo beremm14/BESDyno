@@ -45,6 +45,8 @@ public class Calculate {
     }
 
     public void calcPower() {
+        boolean ps = config.isPs();
+        
         //Wheel-Power
         for (int i = 0; i < bike.getDatalist().size(); i++) {
             double dOmega = 2 * Math.PI * bike.getDatalist().get(i).getWheelRpm();
@@ -52,7 +54,7 @@ public class Calculate {
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
             
-            if(config.isPs()) {
+            if(ps) {
                 currPower = currPower * 1.359621617 / 1000;
             } else {
                 currPower = currPower / 1000;
@@ -68,7 +70,7 @@ public class Calculate {
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
             
-            if(config.isPs()) {
+            if(ps) {
                 currPower = currPower * 1.359621617 / 1000;
             } else {
                 currPower = currPower / 1000;

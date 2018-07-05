@@ -13,7 +13,7 @@ import jssc.SerialPortException;
  */
 public class Telegram {
 
-     /*************************************
+    /**************************************
      * Aufbau der Datenübertragung:       *
      * Request: START                     *
      * Response: Temperaturen             *
@@ -28,7 +28,7 @@ public class Telegram {
     
     private final jssc.SerialPort port;
     
-    private Communication com = Communication.getInstance();
+    private Arduino arduino = Arduino.getInstance();
     private Environment env = Environment.getInstance();
     private Port currPort = Port.getInstance();
     
@@ -55,8 +55,8 @@ public class Telegram {
         //"EnvTemp#Airpress"
 
         try {
-            com.sendRequest(Communication.Request.START);
-            String response = com.receiveResponse();
+            arduino.sendRequest(Arduino.Request.START);
+            String response = arduino.receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
@@ -73,8 +73,8 @@ public class Telegram {
         //"EngTemp#FumeTemp"
         
         try {
-            com.sendRequest(Communication.Request.ENGINE);
-            String response = com.receiveResponse();
+            arduino.sendRequest(Arduino.Request.ENGINE);
+            String response = arduino.receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
@@ -90,8 +90,8 @@ public class Telegram {
     public void readRpmData() {
         //"engCount#wheelCount#time
         try {
-            com.sendRequest(Communication.Request.MEASURE);
-            String response = com.receiveResponse();
+            arduino.sendRequest(Arduino.Request.MEASURE);
+            String response = arduino.receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
@@ -101,16 +101,6 @@ public class Telegram {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    //Getter
-
-    public Environment getEnvironment() {
-        return env;
-    }
-    
-    public List<RawDatapoint> getRawDataList() {
-        return list;
     }
 
 }
