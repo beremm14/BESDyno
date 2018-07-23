@@ -30,15 +30,6 @@ public class BESDyno extends javax.swing.JFrame {
 
     private static final Logger LOG = Logger.getLogger(BESDyno.class.getName());
     
-    
-
-    //Data-Objects
-    private Bike bike = Bike.getInstance();
-    private BikePower power = BikePower.getInstance();
-    private Config config = Config.getInstance();
-    private Environment env = Environment.getInstance();
-    private Port port = Port.getInstance();
-    
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
     private HelpDialog help = new HelpDialog(this, false);
@@ -73,8 +64,8 @@ public class BESDyno extends javax.swing.JFrame {
         
         refreshGui();
         
-        if(config.isDark()) {
-            dark = config.isDark();
+        if(Config.getInstance().isDark()) {
+            dark = Config.getInstance().isDark();
             setAppearance(dark);
         }
         jcbmiDarkMode.setState(dark);
@@ -102,7 +93,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         //Wenn ein Port geöffnet wurde
-        if (port.getPort() != null && port.getPort().isOpened()) {
+        if (Port.getInstance().getPort() != null && Port.getInstance().getPort().isOpened()) {
             jbutDisconnect.setEnabled(true);
             jmiDisconnect.setEnabled(true);
             jcbSerialDevices.setEnabled(false);
@@ -209,9 +200,9 @@ public class BESDyno extends javax.swing.JFrame {
                     throw new Exception("Internal Error");
                 }
             }
-            file = new File(folder + bike.getVehicleName() + ".bes");
+            file = new File(folder + Bike.getInstance().getVehicleName() + ".bes");
         } else {
-            file = new File(bike.getVehicleName() + "bes");
+            file = new File(Bike.getInstance().getVehicleName() + "bes");
         }
         chooser.setSelectedFile(file);
         
@@ -223,7 +214,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                bike.writeFile(w);
+                Bike.getInstance().writeFile(w);
             } catch (Exception ex) {
                 LOG.severe(ex);
             }
@@ -251,9 +242,9 @@ public class BESDyno extends javax.swing.JFrame {
                     LOG.severe("Internal Error");
                 }
             }
-            file = new File(folder + bike.getVehicleName() + ".bes");
+            file = new File(folder + Bike.getInstance().getVehicleName() + ".bes");
         } else {
-            file = new File(bike.getVehicleName() + "bes");
+            file = new File(Bike.getInstance().getVehicleName() + "bes");
         }
         chooser.setSelectedFile(file);
 
@@ -264,7 +255,7 @@ public class BESDyno extends javax.swing.JFrame {
                 showThrowable(new Exception("Das ist keine bes-Datei"));
             }
             try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-                bike.readFile(r);
+                Bike.getInstance().readFile(r);
             } catch (Exception ex) {
                 writeOutThrowable(ex);
                 LOG.severe(ex);
@@ -298,7 +289,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         if (ConfigFile.exists()) {
             try (BufferedReader r = new BufferedReader(new FileReader(ConfigFile))) {
-                config.readConfig(r);
+                Config.getInstance().readConfig(r);
             }
         }
     }
@@ -599,7 +590,6 @@ public class BESDyno extends javax.swing.JFrame {
         if (settings.isPressedOK()) {
             dark = settings.isDark();
             setAppearance(dark);
-            config = settings.getConfig();
         }
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
@@ -623,7 +613,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
         try {
-            port.connectPort((String) jcbSerialDevices.getSelectedItem());
+            Port.getInstance().connectPort((String) jcbSerialDevices.getSelectedItem());
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
@@ -633,7 +623,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
-            port.disconnectPort();
+            Port.getInstance().disconnectPort();
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
@@ -644,7 +634,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
         about.setAppearance(dark);
         about.setVisible(true);
-        if (port.getPort().isOpened()) {
+        if (Port.getInstance().getPort().isOpened()) {
             about.writeDevice((String)jcbSerialDevices.getSelectedItem());
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");
@@ -653,7 +643,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
         try {
-            port.connectPort((String)jcbSerialDevices.getSelectedItem());
+            Port.getInstance().connectPort((String)jcbSerialDevices.getSelectedItem());
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
@@ -663,7 +653,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
         try {
-            port.disconnectPort();
+            Port.getInstance().disconnectPort();
             refreshGui();
         } catch (Throwable ex) {
             writeOutThrowable(ex);
@@ -693,9 +683,9 @@ public class BESDyno extends javax.swing.JFrame {
     private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
         dark = jcbmiDarkMode.getState();
         setAppearance(dark);
-        config.setDark(dark);
+        Config.getInstance().setDark(dark);
         try {
-            settings.saveConfig(config);
+            settings.saveConfig(Config.getInstance());
         } catch (Exception e) {
             writeOutThrowable(new Exception("Fehler beim Speichern der Config-Datei!"));
             LOG.warning(e);

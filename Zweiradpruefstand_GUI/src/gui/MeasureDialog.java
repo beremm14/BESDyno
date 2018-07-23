@@ -20,8 +20,6 @@ import org.jfree.data.general.DefaultValueDataset;
  */
 public class MeasureDialog extends javax.swing.JDialog {
     
-    private Bike bike = Bike.getInstance();
-    
     private final DefaultValueDataset kmh = new DefaultValueDataset(0);
     private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
@@ -39,7 +37,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         setMinimumSize(new Dimension(620, 450));
         
         createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
-        if (bike.isMeasRpm()) {
+        if (Bike.getInstance().isMeasRpm()) {
             createDial(rpm, "U/min*1000", jFrameRPM, 0, 13, 1);
         } else {
             jPanDial.remove(jFrameRPM);

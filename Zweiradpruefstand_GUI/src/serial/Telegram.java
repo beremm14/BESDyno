@@ -28,10 +28,6 @@ public class Telegram {
     
     private final jssc.SerialPort port;
     
-    private Arduino arduino = Arduino.getInstance();
-    private Environment env = Environment.getInstance();
-    private Port currPort = Port.getInstance();
-    
     private List<RawDatapoint> list = new LinkedList<>();
 
     public static Telegram getInstance() {
@@ -42,7 +38,7 @@ public class Telegram {
     }
     
     private Telegram() {
-        this.port = currPort.getPort();
+        this.port = Port.getInstance().getPort();
         try {
             port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
         } catch (SerialPortException ex) {
@@ -55,14 +51,14 @@ public class Telegram {
         //"EnvTemp#Airpress"
 
         try {
-            arduino.sendRequest(Arduino.Request.START);
-            String response = arduino.receiveResponse();
+            Arduino.getInstance().sendRequest(Arduino.Request.START);
+            String response = Arduino.getInstance().receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
                 String s[] = response.split("#");
-                env.setEnvTemp(Double.parseDouble(s[0]));
-                env.setAirPress(Integer.parseInt(s[1]));
+                Environment.getInstance().setEnvTemp(Double.parseDouble(s[0]));
+                Environment.getInstance().setAirPress(Integer.parseInt(s[1]));
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -73,14 +69,14 @@ public class Telegram {
         //"EngTemp#FumeTemp"
         
         try {
-            arduino.sendRequest(Arduino.Request.ENGINE);
-            String response = arduino.receiveResponse();
+            Arduino.getInstance().sendRequest(Arduino.Request.ENGINE);
+            String response = Arduino.getInstance().receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
                 String s[] = response.split("#");
-                env.setEngTemp(Double.parseDouble(s[0]));
-                env.setFumeTemp(Double.parseDouble(s[1]));
+                Environment.getInstance().setEngTemp(Double.parseDouble(s[0]));
+                Environment.getInstance().setFumeTemp(Double.parseDouble(s[1]));
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -90,8 +86,8 @@ public class Telegram {
     public void readRpmData() {
         //"engCount#wheelCount#time
         try {
-            arduino.sendRequest(Arduino.Request.MEASURE);
-            String response = arduino.receiveResponse();
+            Arduino.getInstance().sendRequest(Arduino.Request.MEASURE);
+            String response = Arduino.getInstance().receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {

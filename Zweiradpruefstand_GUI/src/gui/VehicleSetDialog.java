@@ -9,8 +9,6 @@ import javax.swing.JOptionPane;
  * @author emil
  */
 public class VehicleSetDialog extends javax.swing.JDialog {
-    
-    private Bike bike = Bike.getInstance();
 
     private boolean pressedOK;
 
@@ -28,10 +26,6 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     //Getter
     public boolean isPressedOK() {
         return pressedOK;
-    }
-    
-    public Bike getBike() {
-        return bike;
     }
 
     //Sets Appearance like at the Main-GUI
@@ -91,10 +85,10 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private void confirm() {
         boolean error = false;
 
-        bike.setMeasRpm(jcbEnableRPM.isSelected());
-        bike.setTwoStroke(jrb2Stroke.isSelected());
-        bike.setAutomatic(jrbAutomatic.isSelected());
-        bike.setSchleppEnable(jcbEnableSchlepp.isSelected());
+        Bike.getInstance().setMeasRpm(jcbEnableRPM.isSelected());
+        Bike.getInstance().setTwoStroke(jrb2Stroke.isSelected());
+        Bike.getInstance().setAutomatic(jrbAutomatic.isSelected());
+        Bike.getInstance().setSchleppEnable(jcbEnableSchlepp.isSelected());
 
         if (jtfVehicleName.getText().length() > 25) {
             error = true;
@@ -114,7 +108,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
                     JOptionPane.ERROR_MESSAGE);
             jtfVehicleName.requestFocusInWindow();
             } else {
-                bike.setVehicleName(jtfVehicleName.getText());
+                Bike.getInstance().setVehicleName(jtfVehicleName.getText());
             }
         }
 

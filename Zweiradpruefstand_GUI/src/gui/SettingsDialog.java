@@ -15,8 +15,6 @@ import javax.swing.JOptionPane;
  */
 public class SettingsDialog extends javax.swing.JDialog {
 
-    Config config = Config.getInstance();
-
     private boolean pressedOK;
 
     /**
@@ -181,10 +179,6 @@ public class SettingsDialog extends javax.swing.JDialog {
         return jrbNightmode.isSelected();
     }
 
-    public Config getConfig() {
-        return config;
-    }
-
     //Sets the Config-File
     private void confirm(Config c) {
 
@@ -300,8 +294,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         
         if(!error) {
             try {
-                saveConfig(config);
-                config.writeJson();
+                saveConfig(Config.getInstance());
+                Config.getInstance().writeJson();
             } catch (Exception e) {
                 error = true;
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Interner Fehler", JOptionPane.ERROR_MESSAGE);
@@ -364,8 +358,8 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         if (file.exists()) {
             try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-                config.readConfig(r);
-                setSwingValues(config);
+                Config.getInstance().readConfig(r);
+                setSwingValues(Config.getInstance());
             }
         }
     }
@@ -869,7 +863,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jrbNightmodeActionPerformed
 
     private void jbutOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutOKActionPerformed
-        confirm(config);
+        confirm(Config.getInstance());
     }//GEN-LAST:event_jbutOKActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
