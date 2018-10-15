@@ -137,13 +137,13 @@
  192               	.global	FLASHSTRING_TIME
  193               		.section	.progmem.data,"a",@progbits
  196               	FLASHSTRING_TIME:
- 197 0000 3230 3A31 		.string	"20:19:25"
- 197      393A 3235 
+ 197 0000 3030 3A32 		.string	"00:23:18"
+ 197      333A 3138 
  197      00
  198               	.global	FLASHSTRING_DATE
  201               	FLASHSTRING_DATE:
- 202 0009 4A75 6E20 		.string	"Jun 28 2018"
- 202      3238 2032 
+ 202 0009 5365 7020 		.string	"Sep 26 2018"
+ 202      3236 2032 
  202      3031 3800 
  203               	.global	FLASHSTRING_WELCOME
  206               	FLASHSTRING_WELCOME:
@@ -156,15 +156,15 @@
  214               		.ident	"GCC: (GNU) 4.8.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:2      *ABS*:0000003e __SP_H__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:3      *ABS*:0000003d __SP_L__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:4      *ABS*:0000003f __SREG__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:127    .text.startup:00000000 main
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:206    .progmem.data:00000015 FLASHSTRING_WELCOME
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:201    .progmem.data:00000009 FLASHSTRING_DATE
-/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//ccbnHt1b.s:196    .progmem.data:00000000 FLASHSTRING_TIME
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:2      *ABS*:0000003e __SP_H__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:3      *ABS*:0000003d __SP_L__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:4      *ABS*:0000003f __SREG__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:127    .text.startup:00000000 main
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:206    .progmem.data:00000015 FLASHSTRING_WELCOME
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:201    .progmem.data:00000009 FLASHSTRING_DATE
+/var/folders/n0/nrv0hhms1cx0j69_hx06fj7r0000gn/T//cci26xTB.s:196    .progmem.data:00000000 FLASHSTRING_TIME
 
 UNDEFINED SYMBOLS
 sys_init
