@@ -17,10 +17,7 @@ import javax.json.JsonObjectBuilder;
  *
  * @author emil
  */
-public class Config {
-
-    private static final Logger LOG = Logger.getLogger(Config.class.getName());
-    
+public class Config {    
     
     
     private static Config instance = null;
@@ -60,7 +57,6 @@ public class Config {
         if (instance != null) {
             throw new RuntimeException("Instance already initialized");
         }
-        LOG.severe(new Exception("Test"));
         instance = new Config(configFile);
     }
 
@@ -210,7 +206,7 @@ public class Config {
         w.write("\t");
         w.write(String.format("%d", idleRpm));
         w.write("\t");
-        w.write(String.format("%f", inertiaCorr));
+        w.write(Double.toString(inertiaCorr));
         w.write("\t");
         w.write(String.format("%d", period));
         w.write("\t");

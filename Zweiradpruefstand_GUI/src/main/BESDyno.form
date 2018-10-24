@@ -179,7 +179,7 @@
                 <Property name="text" type="java.lang.String" value="Hilfe"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiHelpActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onHelp"/>
               </Events>
             </MenuItem>
           </SubComponents>

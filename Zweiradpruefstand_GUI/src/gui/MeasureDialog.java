@@ -5,14 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JInternalFrame;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.dial.DialPlot;
-import org.jfree.chart.plot.dial.DialPointer;
-import org.jfree.chart.plot.dial.DialTextAnnotation;
-import org.jfree.chart.plot.dial.StandardDialFrame;
-import org.jfree.chart.plot.dial.StandardDialScale;
-import org.jfree.data.general.DefaultValueDataset;
 
 /**
  *
@@ -20,8 +12,8 @@ import org.jfree.data.general.DefaultValueDataset;
  */
 public class MeasureDialog extends javax.swing.JDialog {
     
-    private final DefaultValueDataset kmh = new DefaultValueDataset(0);
-    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
+//    private final DefaultValueDataset kmh = new DefaultValueDataset(0);
+//    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
     //private Measure worker;
     /**
@@ -36,9 +28,9 @@ public class MeasureDialog extends javax.swing.JDialog {
         setResizable(false);
         setMinimumSize(new Dimension(620, 450));
         
-        createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
+        //createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
         if (Bike.getInstance().isMeasRpm()) {
-            createDial(rpm, "U/min*1000", jFrameRPM, 0, 13, 1);
+            //createDial(rpm, "U/min*1000", jFrameRPM, 0, 13, 1);
         } else {
             jPanDial.remove(jFrameRPM);
         }
@@ -76,7 +68,7 @@ public class MeasureDialog extends javax.swing.JDialog {
     }
     
     //Creates Dial from Data
-    private void createDial (DefaultValueDataset set, String title, JInternalFrame frame, int min, int max, int tick) {
+    /*private void createDial (DefaultValueDataset set, String title, JInternalFrame frame, int min, int max, int tick) {
         DialPlot plot = new DialPlot(set);
         plot.setDialFrame(new StandardDialFrame());
         plot.addLayer(new DialPointer.Pointer());
@@ -94,7 +86,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         frame.add(new ChartPanel(new JFreeChart(plot)));
         frame.pack();
         frame.setSize(new Dimension(500, 500));
-    }
+    }*/
     
     
     

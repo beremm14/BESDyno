@@ -55,12 +55,12 @@ double envPress;
 
 //-Functions------------------------------------------------------------//
 void readEnvironment () {
-if (!bmp.begin()) {
-Serial.println("Error 180: Environment-Sensor not found");
-return;
-}
-envTemp = bmp.readTemperature();
-envPress = bmp.readPressure();
+    if (!bmp.begin()) {
+        Serial.println("Error 180: Environment-Sensor not found");
+        return;
+    }
+    envTemp = bmp.readTemperature();
+    envPress = bmp.readPressure();
 }
 
 void readSparkplug() {

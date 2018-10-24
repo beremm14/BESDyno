@@ -5,13 +5,6 @@ import data.BikePower;
 import data.Config;
 import java.awt.Color;
 import java.util.List;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -27,17 +20,17 @@ public class LineChart {
         
     }
     
-    private XYDataset createDataset (List<Integer> rpmList, List<Double> powerList) {
-        XYSeries series = new XYSeries("Position");
-        
-        for (int i=0; i<rpmList.size(); i++) {
-            series.add(rpmList.get(i), powerList.get(i));
-        }
-        XYSeriesCollection tmpDataset = new XYSeriesCollection();
-        tmpDataset.addSeries(series);
-        
-        return tmpDataset;
-    }
+//    private XYDataset createDataset (List<Integer> rpmList, List<Double> powerList) {
+//        XYSeries series = new XYSeries("Position");
+//        
+//        for (int i=0; i<rpmList.size(); i++) {
+//            series.add(rpmList.get(i), powerList.get(i));
+//        }
+//        XYSeriesCollection tmpDataset = new XYSeriesCollection();
+//        //tmpDataset.addSeries(series);
+//        
+//        return tmpDataset;
+//    }
     
 //    public JFreeChart createEngineChart() {
 //        XYDataset engineDataset = createDataset(power.getEngRpm(), power.getEngPower());

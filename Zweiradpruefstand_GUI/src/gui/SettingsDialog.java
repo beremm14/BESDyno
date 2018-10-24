@@ -317,7 +317,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfHysteresisTime.setText(String.format("%d", c.getHysteresisTime()));
         jtfIdleKmh.setText(String.format("%d", c.getIdleKmh()));
         jtfIdleRpm.setText(String.format("%d", c.getIdleRpm()));
-        jtfInertia.setText(String.format("%f", c.getInertia()));
+        jtfInertia.setText(Double.toString(c.getInertia()));
         jtfPeriod.setText(String.format("%d", c.getPeriod()));
         jtfPngX.setText(String.format("%d", c.getPngWidth()));
         jtfPngY.setText(String.format("%d", c.getPngHeight()));

@@ -1,8 +1,12 @@
-package gui;
+package main;
 
 import data.Bike;
-import data.BikePower;
 import data.Config;
+import gui.AboutDialog;
+import gui.HelpDialog;
+import gui.MeasureDialog;
+import gui.SettingsDialog;
+import gui.VehicleSetDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -18,7 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import data.Environment;
+import logging.LogBackgroundHandler;
+import logging.LogOutputStreamHandler;
 import logging.Logger;
 import serial.Port;
 
@@ -28,7 +33,8 @@ import serial.Port;
  */
 public class BESDyno extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(BESDyno.class.getName());
+    private static final Logger LOG;
+    private static final Logger LOGP;
     
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
@@ -47,6 +53,7 @@ public class BESDyno extends javax.swing.JFrame {
      * Creates new form Gui
      */
     public BESDyno() {
+        LOG.fine("Test");
         initComponents();
         setTitle("BESDyno - Zweiradprüfstand");
         setLocationRelativeTo(null);
@@ -556,7 +563,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiHelp.setText("Hilfe");
         jmiHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiHelpActionPerformed(evt);
+                onHelp(evt);
             }
         });
         jmenuAbout.add(jmiHelp);
@@ -571,6 +578,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
         try {
             save();
+            LOG.fine("File saved");
         } catch (IOException ex) {
             writeOutThrowable(ex);
         } catch (Exception ex) {
@@ -601,6 +609,8 @@ public class BESDyno extends javax.swing.JFrame {
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
         
+        LOG.info("Simulation started");
+        
         if(vehicle.isPressedOK()) {
             measure.setAppearance(dark);
             measure.setVisible(true);
@@ -609,12 +619,14 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
         refreshPorts();
+        LOG.info("Ports refreshed");
     }//GEN-LAST:event_jmiRefreshActionPerformed
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
         try {
             Port.getInstance().connectPort((String) jcbSerialDevices.getSelectedItem());
             refreshGui();
+            LOG.finest("Connected with " + jcbSerialDevices.getSelectedItem());
         } catch (Throwable ex) {
             writeOutThrowable(ex);
             LOG.severe(ex);
@@ -625,6 +637,7 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             Port.getInstance().disconnectPort();
             refreshGui();
+            LOG.info("Disconnected");
         } catch (Throwable ex) {
             writeOutThrowable(ex);
             LOG.severe(ex);
@@ -645,6 +658,7 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             Port.getInstance().connectPort((String)jcbSerialDevices.getSelectedItem());
             refreshGui();
+            LOG.fine("Connected with " + jcbSerialDevices.getSelectedItem());
         } catch (Throwable ex) {
             writeOutThrowable(ex);
             LOG.severe(ex);
@@ -655,6 +669,7 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             Port.getInstance().disconnectPort();
             refreshGui();
+            LOG.info("Disconnected");
         } catch (Throwable ex) {
             writeOutThrowable(ex);
             LOG.severe(ex);
@@ -663,16 +678,19 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jbutRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutRefreshActionPerformed
         refreshPorts();
+        LOG.info("Ports refreshed");
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
-    private void jmiHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHelpActionPerformed
+    private void onHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onHelp
         help.setAppearance(dark);
         help.setVisible(true);
-    }//GEN-LAST:event_jmiHelpActionPerformed
+    }//GEN-LAST:event_onHelp
 
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
+        
+        LOG.info("Simulation started");
         
         if (vehicle.isPressedOK()) {
             measure.setAppearance(dark);
@@ -699,6 +717,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenActionPerformed
         try {
             open();
+            LOG.fine("File opened");
         } catch (IOException ex) {
             writeOutThrowable(ex);
         } catch (Exception ex) {
@@ -712,6 +731,7 @@ public class BESDyno extends javax.swing.JFrame {
      * @throws javax.swing.UnsupportedLookAndFeelException
      */
     public static void main(String args[]) throws UnsupportedLookAndFeelException {
+        LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(System.out)));
         LOG.info("Start of BESDyno");
         
         Config.initInstance(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "config.json"));
@@ -725,7 +745,7 @@ public class BESDyno extends javax.swing.JFrame {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                LOG.severe(ex);
+                //LOG.severe(ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
                 new BESDyno().setVisible(true);
@@ -748,6 +768,24 @@ public class BESDyno extends javax.swing.JFrame {
             });
         }
     }
+    
+    static {
+         //System.setProperty("logging.Logger.printStackTrace", "");
+         System.setProperty("logging.LogOutputStreamHandler.showRecordHashcode", "false");
+         //System.setProperty("logging.Logger.printAll", "");
+         //System.setProperty("logging.LogRecordDataFormattedText.Terminal","NETBEANS");
+         System.setProperty("logging.LogRecordDataFormattedText.Terminal", "LINUX");
+         System.setProperty("logging.Logger.Level", "INFO");
+         //System.setProperty("Test1.Logger.Level", "ALL");
+         System.setProperty("test.Test.Logger.Level", "FINER");
+         System.setProperty("test.*.Logger.Level", "FINE");
+         //System.setProperty("test.*.Logger.Handlers", "test.MyHandler");
+         //System.setProperty("test.*.Logger.Filter", "test.MyFilter");
+         //System.setProperty("logging.LogOutputStreamHandler.colorize", "false");
+
+         LOG = Logger.getLogger(BESDyno.class.getName());
+         LOGP = Logger.getParentLogger();
+     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelDevice;

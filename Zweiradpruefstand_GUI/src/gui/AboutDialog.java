@@ -14,6 +14,10 @@ public class AboutDialog extends javax.swing.JDialog {
      */
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        //jLabelTitle.setIcon(
+        //new javax.swing.ImageIcon(
+        Object x = getClass();
+        Object y = getClass().getResource("/icons/logo128.png");
         initComponents();
         writeVersion();
         setTitle("Zweiradprüfstand - About");
