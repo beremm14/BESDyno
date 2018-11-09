@@ -20,6 +20,9 @@ Adafruit_BMP085 bmp;
 double envTemp;
 double envPress;
 
+//Thermos
+
+
 //-Functions------------------------------------------------------------//
 void readEnvironment () {
     if (!bmp.begin()) {
@@ -31,27 +34,26 @@ void readEnvironment () {
 }
 
 void readSparkplug() {
-
+                                                                                                     
 }
 
 void readRearWheel() {
 
 }
 
-void readEngineTemp() {
+void readThermos() {
+    // ENGINE
+    Serial.println(analogRead(engTempPin));
 
+    // EXHAUST
+    Serial.println(analogRead(exhTempPin));
 }
-
-void readExhaustTemp() {
-
-}
-
 
 void setup() {
     Serial.begin(57600);
 }
 
 void loop() {
-
-
+    Serial.println((analogRead(A0)*5.0)/1024);
+    delay(100);
 }
