@@ -1,4 +1,3 @@
-package serial;
 
 import data.Environment;
 import data.RawDatapoint;
