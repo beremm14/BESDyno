@@ -21,13 +21,13 @@ enum Protocol {
 Adafruit_BMP085 bmp;
 
 //Environment
-double envTemp;
-double envPress;
-double envAlt;
+float envTemp;
+float envPress;
+float envAlt;
 
 //Thermos
-double engTemp;
-double exhTemp;
+float engTemp;
+float exhTemp;
 
 //-Functions------------------------------------------------------------//
 enum Protocol convertIncomingString() {
@@ -69,11 +69,11 @@ void readRearWheel() {
 
 void readThermos() {
     //ENGINE
-    double u_eng = (analogRead(engTempPin)*5.0)/1024;
+    float u_eng = (analogRead(A0)*5.0)/1024;
     engTemp = (u_eng-1.248)/0.005 + 2;
 
     //EXHAUST
-    double u_exh = (analogRead(exhTempPin)*5.0)/1024;
+    float u_exh = (analogRead(A1)*5.0)/1024;
     exhTemp = (u_exh-1.248)/0.005;
 }
 
@@ -83,7 +83,7 @@ void setup() {
 }
 
 void loop() {
-  switch (convertIncomingString()) {
+  /*switch (convertIncomingString()) {
     case START:
       readEnvironment();
       Serial.print(envTemp);
@@ -105,5 +105,20 @@ void loop() {
       break;
     case PROBLEM:
       Serial.println("PROBLEM at Communication!");
-  }
+  }*/
+
+  readEnvironment();
+  readThermos();
+  Serial.print("BMP Temperatur: ");
+  Serial.println(envTemp);
+  Serial.print("BMP Luftdruck: ");
+  Serial.println(envPress);
+  Serial.print("BMP Höhenmeter: ");
+  Serial.println(envAlt);
+  Serial.print("Thermo Rot A0: ");
+  Serial.println(engTemp);
+  Serial.println(analogRead(A0));
+  Serial.print("Thermo Gruen A1: ");
+  Serial.println(exhTemp);
+  Serial.println(analogRead(A1));
 }
