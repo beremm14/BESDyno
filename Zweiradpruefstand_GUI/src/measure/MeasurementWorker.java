@@ -13,15 +13,14 @@ import serial.Telegram;
 public class MeasurementWorker extends SwingWorker<Void, String> implements PropertyChangeListener {
     
     private final Bike bike = Bike.getInstance();
-    private final Telegram telegram = Telegram.getInstance(); 
     
     private Calculate calc;
 
     @Override
     protected Void doInBackground() throws Exception {
-        telegram.readEnvData();
-        telegram.readRpmData();
-        telegram.readBikeTemp();
+        Telegram.getInstance().readEnvData();
+        Telegram.getInstance().readRpmData();
+        Telegram.getInstance().readBikeTemp();
         
         
         
