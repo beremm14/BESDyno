@@ -13,7 +13,7 @@ int resetPin = 2;
 
 //Protocol
 enum Protocol {
-  START, ENGINE, MEASURE, RESET, PROBLEM
+  INIT, START, ENGINE, MEASURE, RESET, PROBLEM
 };
 
 //-Declarations----------------------------------------------------------//
@@ -39,6 +39,8 @@ enum Protocol convertIncomingString() {
     return MEASURE;
   } else if (Serial.read() == 'r') {
     return RESET;
+  } else if (Serial.read() == 'i') {
+    return INIT;
   } else {
     return PROBLEM;
   }
@@ -80,18 +82,20 @@ void readThermos() {
 void setup() {
     Serial.begin(57600);
     pinMode(resetPin, OUTPUT);
+    analogReference(EXTERNAL);
 }
 
 void loop() {
-  /*switch (convertIncomingString()) {
+  switch (convertIncomingString()) {
+    case INIT:
+      Serial.println("I'm here!");
+      Serial.flush();
+      break;
     case START:
       readEnvironment();
-      Serial.print(envTemp);
-      Serial.print("\t");
-      Serial.print(envPress);
-      Serial.print("\t");
-      Serial.print(envAlt);
-      Serial.print("\n");
+      String environment = String(envTemp) + "#" + String(envPress) + "#" + String(envAlt);
+      Serial.println(environment);
+      Serial.flush();
       break;
     case ENGINE:
       readThermos();
@@ -104,21 +108,6 @@ void loop() {
       digitalWrite(resetPin, HIGH);
       break;
     case PROBLEM:
-      Serial.println("PROBLEM at Communication!");
-  }*/
-
-  readEnvironment();
-  readThermos();
-  Serial.print("BMP Temperatur: ");
-  Serial.println(envTemp);
-  Serial.print("BMP Luftdruck: ");
-  Serial.println(envPress);
-  Serial.print("BMP Höhenmeter: ");
-  Serial.println(envAlt);
-  Serial.print("Thermo Rot A0: ");
-  Serial.println(engTemp);
-  Serial.println(analogRead(A0));
-  Serial.print("Thermo Gruen A1: ");
-  Serial.println(exhTemp);
-  Serial.println(analogRead(A1));
+      break;
+  }
 }

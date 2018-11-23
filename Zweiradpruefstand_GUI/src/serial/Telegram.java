@@ -4,14 +4,18 @@ import data.Environment;
 import data.RawDatapoint;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JFrame;
+import logging.Logger;
 import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
 /**
  *
  * @author emil
  */
-public class Telegram {
+public class Telegram extends JFrame implements SerialPortEventListener {
 
     /**************************************
      * Aufbau der Datenübertragung:       *
@@ -26,8 +30,11 @@ public class Telegram {
     
     private static Telegram instance = null;
     
+    private static final Logger LOG = Logger.getLogger(Telegram.class.getName());
+    
     private final jssc.SerialPort port;
     
+    private String response = "";    
     private List<RawDatapoint> list = new LinkedList<>();
 
     public static Telegram getInstance() {
@@ -41,27 +48,45 @@ public class Telegram {
         this.port = Port.getInstance().getPort();
         try {
             port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            port.addEventListener((SerialPortEventListener) this);
         } catch (SerialPortException ex) {
             ex.printStackTrace(System.err);
+        }
+    }
+    
+    public void initializeCommunication(){
+        int count = 0;
+        try {
+            while (response.isEmpty()) {
+                count++;
+                Arduino.getInstance().sendRequest(Arduino.Request.INIT);
+                LOG.warning("Initialize: Try " + count);
+            }
+        } catch (Throwable th) {
+            LOG.severe(th);
         }
     }
 
     //Communication
     public void readEnvData() {
-        //"EnvTemp#Airpress"
+        //"EnvTemp#Airpress#Altitude"
 
         try {
             Arduino.getInstance().sendRequest(Arduino.Request.START);
-            String response = Arduino.getInstance().receiveResponse();
+            LOG.info("Telegram: 'START' sent");
+            if (!response.isEmpty()) {
+                LOG.fine("Telegram received: " + response);
+            }
             if (response.contains("NO DATA") || response.isEmpty()) {
-                throw new Exception("No response");
+                LOG.severe("No response");
             } else {
                 String s[] = response.split("#");
                 Environment.getInstance().setEnvTemp(Double.parseDouble(s[0]));
-                Environment.getInstance().setAirPress(Integer.parseInt(s[1]));
+                Environment.getInstance().setAirPress(Double.parseDouble(s[1]));
+                Environment.getInstance().setAltitude(Double.parseDouble(s[2]));
             }
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            LOG.warning(e);
         }
     }
     
@@ -70,9 +95,10 @@ public class Telegram {
         
         try {
             Arduino.getInstance().sendRequest(Arduino.Request.ENGINE);
-            String response = Arduino.getInstance().receiveResponse();
+            //String response = Arduino.getInstance().receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
+                
             } else {
                 String s[] = response.split("#");
                 Environment.getInstance().setEngTemp(Double.parseDouble(s[0]));
@@ -87,7 +113,7 @@ public class Telegram {
         //"engCount#wheelCount#time
         try {
             Arduino.getInstance().sendRequest(Arduino.Request.MEASURE);
-            String response = Arduino.getInstance().receiveResponse();
+            //String response = Arduino.getInstance().receiveResponse();
             if (response.contains("NO DATA") || response.isEmpty()) {
                 throw new Exception("No response");
             } else {
@@ -97,6 +123,16 @@ public class Telegram {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    @Override
+    public void serialEvent(SerialPortEvent spe) {
+        LOG.info("Serial Event happened");
+                try {
+                    response = Port.getInstance().getPort().readString().trim();
+                } catch (SerialPortException ex) {
+                    LOG.severe(ex);
+                }
     }
 
 }

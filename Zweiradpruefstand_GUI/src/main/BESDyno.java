@@ -341,6 +341,8 @@ public class BESDyno extends javax.swing.JFrame {
         jmiDisconnect = new javax.swing.JMenuItem();
         jmenuAppearance = new javax.swing.JMenu();
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
+        jmenuDeveloper = new javax.swing.JMenu();
+        jmiTestComm = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -548,6 +550,19 @@ public class BESDyno extends javax.swing.JFrame {
 
         jMenuBar.add(jmenuAppearance);
 
+        jmenuDeveloper.setText("Entwicklungstools");
+
+        jmiTestComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.META_MASK));
+        jmiTestComm.setText("Kommunikation testen");
+        jmiTestComm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiTestCommActionPerformed(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiTestComm);
+
+        jMenuBar.add(jmenuDeveloper);
+
         jmenuAbout.setText("Über");
 
         jmiAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PERIOD, java.awt.event.InputEvent.META_MASK));
@@ -726,6 +741,14 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmiOpenActionPerformed
 
+    private void jmiTestCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTestCommActionPerformed
+        try {
+            new test.TestComm();
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }//GEN-LAST:event_jmiTestCommActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws javax.swing.UnsupportedLookAndFeelException
@@ -805,6 +828,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuAppearance;
+    private javax.swing.JMenu jmenuDeveloper;
     private javax.swing.JMenu jmenuFile;
     private javax.swing.JMenu jmenuSimulation;
     private javax.swing.JMenuItem jmiAbout;
@@ -819,6 +843,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
     private javax.swing.JMenuItem jmiStartSim;
+    private javax.swing.JMenuItem jmiTestComm;
     private javax.swing.JProgressBar jpbStatus;
     private javax.swing.JTextField jtfStatus;
     // End of variables declaration//GEN-END:variables

@@ -11,8 +11,8 @@ public class Environment {
     private double envTemp; //°C
     private double engTemp; //°C
     private double fumeTemp; //°C
-    private int airPress;   //hPa
-    private int altitude;   //m, wenn nicht eingegeben: Näherungswert
+    private double airPress;   //hPa
+    private double altitude;   //m, wenn nicht eingegeben: Näherungswert
     
     public static Environment getInstance() {
         if (instance == null) {
@@ -37,11 +37,11 @@ public class Environment {
         return fumeTemp;
     }
 
-    public int getAirPress() {
+    public double getAirPress() {
         return airPress;
     }
 
-    public int getAltitude() {
+    public double getAltitude() {
         return altitude;
     }
 
@@ -58,25 +58,12 @@ public class Environment {
         this.fumeTemp = fumeTemp;
     } 
 
-    public void setAirPress(int airPress) {
+    public void setAirPress(double airPress) {
         this.airPress = airPress;
     }
 
-    public void setAltitude(int altitude) {
+    public void setAltitude(double altitude) {
         this.altitude = altitude;
-    }
-    
-    public void setAltitude() {
-        this.altitude = calcAltitude(airPress);
-    }
-    
-    //Calculates h(p) without temperature
-    private int calcAltitude(int airpress) {
-        double p = (double)airpress;
-        
-        //Internationale Höhenformel nach h umgeformt
-        double result =  (1 - Math.pow((p/1013.25), (1/5.255)) ) * (288150/6.5);
-        return Math.round((float)result);
     }
     
 }

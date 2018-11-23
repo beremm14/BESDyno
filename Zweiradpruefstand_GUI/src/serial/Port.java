@@ -1,5 +1,6 @@
 package serial;
 
+import logging.Logger;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
@@ -8,7 +9,8 @@ import jssc.SerialPortException;
  * @author emil
  */
 public class Port {
-    
+
+    private static final Logger LOG = Logger.getLogger(Port.class.getName());
     private static Port instance = null;
 
     private jssc.SerialPort port;
@@ -36,6 +38,7 @@ public class Port {
         if (port.openPort() == false) {
             throw new jssc.SerialPortException(serialPort, "openPort", "return value false");
         }
+        Telegram.getInstance().initializeCommunication();
     }
 
     public void disconnectPort() throws SerialPortException, Exception {
