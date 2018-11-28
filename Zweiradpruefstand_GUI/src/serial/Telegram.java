@@ -21,7 +21,6 @@ public class Telegram extends JFrame implements SerialPortEventListener {
      * Aufbau der Datenübertragung:       *
      * Request: START                     *
      * Response: Temperaturen             *
-     * Answer: OK ? continue : try again  *
      * Request: MEASURE                   *
      * Response: Drehzahlen und Zeit      *
      * Request: ENGINE                    *
