@@ -1,5 +1,6 @@
 package serial;
 
+import com.sun.corba.se.impl.orbutil.threadpool.TimeoutException;
 import data.Environment;
 import data.RawDatapoint;
 import java.util.LinkedList;
@@ -33,7 +34,10 @@ public class Telegram extends JFrame implements SerialPortEventListener {
     
     private final jssc.SerialPort port;
     
-    private String response = "";    
+    // private String response = "";    
+    private StringBuilder frame;
+    private final LinkedList<String>responses;
+        
     private List<RawDatapoint> list = new LinkedList<>();
 
     public static Telegram getInstance() {
@@ -72,6 +76,19 @@ public class Telegram extends JFrame implements SerialPortEventListener {
 
         try {
             Arduino.getInstance().sendRequest(Arduino.Request.START);
+            final String telegram;
+            try {
+                synchronized (responses) {
+                    responses.wait(1000);
+                    if (responses.isEmpty()) {
+                        
+                    } else {
+                        telegram = responses.remove();
+                        // ... verarbeiten
+                    }
+                }
+            }
+            
             LOG.info("Telegram: 'START' sent");
             if (!response.isEmpty()) {
                 LOG.fine("Telegram received: " + response);
@@ -127,11 +144,29 @@ public class Telegram extends JFrame implements SerialPortEventListener {
     @Override
     public void serialEvent(SerialPortEvent spe) {
         LOG.info("Serial Event happened");
-                try {
-                    response = Port.getInstance().getPort().readString().trim();
-                } catch (SerialPortException ex) {
-                    LOG.severe(ex);
+        try {
+            final SerialPort p = Port.getInstance().getPort();
+            final byte [] bytes = p.readBytes();
+            for (byte b : bytes) {
+                if (b == ':') { // start of frame
+                    frame = new StringBuilder();
+                    // Warnung falls response nicht leer
+
+                } else if (b == '\n') {
+                    synchronized (responses) {
+                        responses.add(frame.toString());
+                    }
+                    frame = new StringBuilder();
+
+                } else if (b >= 32 && b <= 126) {
+                    char c = (char)b;
+                    frame.append(c);
                 }
+            }
+            
+        } catch (SerialPortException ex) {
+            LOG.severe(ex);
+        }
     }
 
 }

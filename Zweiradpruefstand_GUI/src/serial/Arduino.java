@@ -25,8 +25,6 @@ public class Arduino {
         }
         return instance;
     }
-    
-    private String response;
 
     private Arduino() {
     }
