@@ -4,7 +4,7 @@ import data.Bike;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.SwingWorker;
-import serial.Telegram;
+
 
 /**
  *
@@ -18,9 +18,9 @@ public class MeasurementWorker extends SwingWorker<Void, String> implements Prop
 
     @Override
     protected Void doInBackground() throws Exception {
-        Telegram.getInstance().readEnvData();
-        Telegram.getInstance().readRpmData();
-        Telegram.getInstance().readBikeTemp();
+//        Telegram1.getInstance().readEnvData();
+//        Telegram1.getInstance().readRpmData();
+//        Telegram1.getInstance().readBikeTemp();
         
         
         

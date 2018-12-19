@@ -1,44 +1,26 @@
 package serial;
 
-import com.sun.corba.se.impl.orbutil.threadpool.TimeoutException;
-import data.Environment;
 import data.RawDatapoint;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JFrame;
-import logging.Logger;
-import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
+import java.util.concurrent.ExecutionException;
+import javax.swing.SwingWorker;
 import jssc.SerialPortException;
+import logging.Logger;
 
 /**
  *
  * @author emil
  */
-public class Telegram extends JFrame implements SerialPortEventListener {
+public class Telegram {
 
-    /**************************************
-     * Aufbau der Datenübertragung:       *
-     * Request: START                     *
-     * Response: Temperaturen             *
-     * Request: MEASURE                   *
-     * Response: Drehzahlen und Zeit      *
-     * Request: ENGINE                    *
-     * Response: Motor-/Abgastemperatur   *
-     **************************************/
-    
     private static Telegram instance = null;
-    
+
     private static final Logger LOG = Logger.getLogger(Telegram.class.getName());
-    
-    private final jssc.SerialPort port;
-    
-    // private String response = "";    
-    private StringBuilder frame;
-    private final LinkedList<String>responses;
-        
-    private List<RawDatapoint> list = new LinkedList<>();
+    private final jssc.SerialPort port = Port.getInstance().getPort();
+
+    private SwingWorker activeWorker;
 
     public static Telegram getInstance() {
         if (instance == null) {
@@ -46,127 +28,208 @@ public class Telegram extends JFrame implements SerialPortEventListener {
         }
         return instance;
     }
-    
+
     private Telegram() {
-        this.port = Port.getInstance().getPort();
-        try {
-            port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-            port.addEventListener((SerialPortEventListener) this);
-        } catch (SerialPortException ex) {
-            ex.printStackTrace(System.err);
-        }
-    }
-    
-    public void initializeCommunication(){
-        int count = 0;
-        try {
-            while (response.isEmpty()) {
-                count++;
-                Arduino.getInstance().sendRequest(Arduino.Request.INIT);
-                LOG.warning("Initialize: Try " + count);
-            }
-        } catch (Throwable th) {
-            LOG.severe(th);
-        }
+
     }
 
-    //Communication
-    public void readEnvData() {
-        //"EnvTemp#Airpress#Altitude"
+    private String response;
+    private final Object syncObj = new Object();
 
-        try {
-            Arduino.getInstance().sendRequest(Arduino.Request.START);
-            final String telegram;
-            try {
-                synchronized (responses) {
-                    responses.wait(1000);
-                    if (responses.isEmpty()) {
-                        
-                    } else {
-                        telegram = responses.remove();
-                        // ... verarbeiten
-                    }
-                }
-            }
-            
-            LOG.info("Telegram: 'START' sent");
-            if (!response.isEmpty()) {
-                LOG.fine("Telegram received: " + response);
-            }
-            if (response.contains("NO DATA") || response.isEmpty()) {
-                LOG.severe("No response");
-            } else {
-                String s[] = response.split("#");
-                Environment.getInstance().setEnvTemp(Double.parseDouble(s[0]));
-                Environment.getInstance().setAirPress(Double.parseDouble(s[1]));
-                Environment.getInstance().setAltitude(Double.parseDouble(s[2]));
-            }
-        } catch (Exception e) {
-            LOG.warning(e);
-        }
-    }
-    
-    public void readBikeTemp() {
-        //"EngTemp#FumeTemp"
-        
-        try {
-            Arduino.getInstance().sendRequest(Arduino.Request.ENGINE);
-            //String response = Arduino.getInstance().receiveResponse();
-            if (response.contains("NO DATA") || response.isEmpty()) {
-                throw new Exception("No response");
-                
-            } else {
-                String s[] = response.split("#");
-                Environment.getInstance().setEngTemp(Double.parseDouble(s[0]));
-                Environment.getInstance().setFumeTemp(Double.parseDouble(s[1]));
-            }
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
-    }
-    
-    public void readRpmData() {
-        //"engCount#wheelCount#time
-        try {
-            Arduino.getInstance().sendRequest(Arduino.Request.MEASURE);
-            //String response = Arduino.getInstance().receiveResponse();
-            if (response.contains("NO DATA") || response.isEmpty()) {
-                throw new Exception("No response");
-            } else {
-                String s[] = response.split("#");
-                list.add(new RawDatapoint(s[0], s[1], s[2]));
-            }
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
+    private List<RawDatapoint> list = new LinkedList<>();
+
+    public void sendRequest(Request request) throws UnsupportedEncodingException, SerialPortException, Exception {
+        switch (request) {
+            case INIT:
+                Port.getInstance().getPort().writeByte((byte) 'i');
+                Port.getInstance().getPort().writeByte((byte) '\n');
+                LOG.info("Request INIT sent");
+                break;
+            case START:
+                Port.getInstance().getPort().writeByte((byte) 's');
+                Port.getInstance().getPort().writeByte((byte) '\n');
+                LOG.info("Request START sent");
+                break;
+            case ENGINE:
+                Port.getInstance().getPort().writeByte((byte) 'e');
+                LOG.info("Request ENGINE sent");
+                break;
+            case MEASURE:
+                Port.getInstance().getPort().writeByte((byte) 'm');
+                LOG.info("Request MEASURE sent");
+                break;
+            case MEASURENO:
+                Port.getInstance().getPort().writeByte((byte) 'n');
+                LOG.info("Request MEASURENO sent");
+                break;
+            case RESET:
+                Port.getInstance().getPort().writeByte((byte) 'r');
+                LOG.info("Request RESET sent");
+                break;
+            case FINE:
+                Port.getInstance().getPort().writeByte((byte) 'f');
+                LOG.info("Request FINE sent");
+                break;
+            case WARNING:
+                Port.getInstance().getPort().writeByte((byte) 'w');
+                LOG.info("Request WARNING sent");
+                break;
+            case SEVERE:
+                Port.getInstance().getPort().writeByte((byte) 'v');
+                LOG.info("Request SEVERE sent");
+                break;
+            default:
+                throw new CommunicationException("Communication Problem...");
         }
     }
 
-    @Override
-    public void serialEvent(SerialPortEvent spe) {
-        LOG.info("Serial Event happened");
+    //RESPONSE
+    public void initializeCommunication() {
         try {
-            final SerialPort p = Port.getInstance().getPort();
-            final byte [] bytes = p.readBytes();
-            for (byte b : bytes) {
-                if (b == ':') { // start of frame
-                    frame = new StringBuilder();
-                    // Warnung falls response nicht leer
-
-                } else if (b == '\n') {
-                    synchronized (responses) {
-                        responses.add(frame.toString());
-                    }
-                    frame = new StringBuilder();
-
-                } else if (b >= 32 && b <= 126) {
-                    char c = (char)b;
-                    frame.append(c);
-                }
+            activeWorker = new UARTWorker(Request.INIT);
+            activeWorker.execute();
+            synchronized (syncObj) {
+                syncObj.wait();
+                LOG.fine(response);
             }
-            
-        } catch (SerialPortException ex) {
+        } catch (Exception ex) {
             LOG.severe(ex);
         }
     }
 
+    public void readEnvironment() {
+        try {
+            activeWorker = new UARTWorker(Request.START);
+            activeWorker.execute();
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+
+    public void readRPM() {
+        try {
+            activeWorker = new UARTWorker(Request.MEASURE);
+            activeWorker.execute();
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+
+    public void readRPMonlyRearWheel() {
+        try {
+            activeWorker = new UARTWorker(Request.MEASURENO);
+            activeWorker.execute();
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+
+    public void resetArduino() {
+        try {
+            sendRequest(Request.RESET);
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+
+    public void setStatusFine() {
+        try {
+            sendRequest(Request.FINE);
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+
+    public void setStatusWarning() {
+        try {
+            sendRequest(Request.WARNING);
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+
+    public void setStatusSevere() {
+        try {
+            sendRequest(Request.SEVERE);
+        } catch (Exception ex) {
+            LOG.severe(ex);
+        }
+    }
+    
+    private class UARTWorker extends RxTxWorker {
+        
+        public UARTWorker(Request request) {
+            super(request);
+        }
+
+        @Override
+        protected void done() {
+            try {
+                synchronized (syncObj) {
+                    response = get();
+                    syncObj.notify();
+                }
+            } catch (InterruptedException | ExecutionException ex) {
+                LOG.severe(ex);
+            } finally {
+                activeWorker = null;
+            }
+        }
+        
+        
+        
+    }
+    
+    // Möglichkeit die nicht funktioniert hat...
+
+//    private Future<String> getResponse() {
+//        LOG.info("Try to get a Response");
+//        return executor.submit(() -> {
+//           return Port.getInstance().getPort().readString();
+//        });
+//    }
+//    public String read() throws SerialPortException, ExecutionException, TimeoutException {
+//
+//        String result = null;
+//
+//        FutureTask<String> task = new FutureTask<>(new PortReader());
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+//
+//        try {
+//            result = (String) executor.submit(task).get(1000, TimeUnit.MILLISECONDS);
+//        } catch (InterruptedException | ExecutionException e) {
+//            LOG.severe(e);
+//        } catch (TimeoutException e) {
+//            LOG.severe("Timeout: read();" + e);
+//        }
+//
+//        return result;
+//    }
+//
+//    private class PortReader implements Callable<String>, SerialPortEventListener {
+//
+//        private String data = null;
+//
+//        @Override
+//        public void serialEvent(SerialPortEvent event) {
+//
+//            if (event.isRXCHAR() && event.getEventValue() > 0) {
+//                try {
+//                    data = Port.getInstance().getPort().readString(event.getEventValue());
+//                } catch (SerialPortException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public String call() throws Exception {
+//            if (data == null) {
+//                Thread.sleep(200);
+//            }
+//
+//            return data;
+//        }
+//        
+//    }
 }

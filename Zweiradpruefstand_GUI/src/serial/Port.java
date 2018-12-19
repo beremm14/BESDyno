@@ -1,5 +1,6 @@
 package serial;
 
+import java.util.logging.Level;
 import logging.Logger;
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -35,10 +36,14 @@ public class Port {
 
     public void connectPort(String serialPort) throws SerialPortException {
         port = new jssc.SerialPort(serialPort);
-        if (port.openPort() == false) {
+        if (port.openPort() == true) {
+            LOG.info("Connected");
+            port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            LOG.info("Params set: Baudrate: " + SerialPort.BAUDRATE_57600 + " Databits: " + SerialPort.DATABITS_8 + " Stopbits: " + SerialPort.STOPBITS_1 + " Parity: NONE");
+            Telegram.getInstance().initializeCommunication();
+        } else {
             throw new jssc.SerialPortException(serialPort, "openPort", "return value false");
         }
-        Telegram.getInstance().initializeCommunication();
     }
 
     public void disconnectPort() throws SerialPortException, Exception {

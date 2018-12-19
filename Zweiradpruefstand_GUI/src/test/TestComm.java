@@ -15,8 +15,7 @@ public class TestComm {
     private static final Logger LOG = Logger.getLogger(TestComm.class.getName());
     
     public TestComm() throws SerialPortException, Exception {
-        Telegram.getInstance().readEnvData();
-        System.out.println(Environment.getInstance().getEnvTemp() + " " + Environment.getInstance().getAltitude());
+        Telegram.getInstance().readEnvironment();
     }
     
     

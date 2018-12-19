@@ -26,6 +26,7 @@ import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
 import serial.Port;
+import serial.Telegram;
 
 /**
  *
@@ -343,6 +344,7 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
         jmiTestComm = new javax.swing.JMenuItem();
+        jmiReset = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -561,6 +563,15 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuDeveloper.add(jmiTestComm);
 
+        jmiReset.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        jmiReset.setText("Reset Arduino");
+        jmiReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiResetActionPerformed(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiReset);
+
         jMenuBar.add(jmenuDeveloper);
 
         jmenuAbout.setText("Über");
@@ -749,6 +760,10 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmiTestCommActionPerformed
 
+    private void jmiResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResetActionPerformed
+        Telegram.getInstance().resetArduino();
+    }//GEN-LAST:event_jmiResetActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws javax.swing.UnsupportedLookAndFeelException
@@ -840,6 +855,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
     private javax.swing.JMenuItem jmiRefresh;
+    private javax.swing.JMenuItem jmiReset;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
     private javax.swing.JMenuItem jmiStartSim;
