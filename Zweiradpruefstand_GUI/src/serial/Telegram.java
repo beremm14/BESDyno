@@ -174,10 +174,7 @@ public class Telegram {
             } finally {
                 activeWorker = null;
             }
-        }
-        
-        
-        
+        }  
     }
     
     // Möglichkeit die nicht funktioniert hat...
