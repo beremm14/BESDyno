@@ -8,6 +8,7 @@ import gui.MeasureDialog;
 import gui.SettingsDialog;
 import gui.VehicleSetDialog;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,16 +17,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
-import serial.Port;
+import serial.ConnectPortWorker;
+import serial.requests.Request;
+import serial.requests.Request.Status;
 import serial.Telegram;
 
 /**
@@ -36,26 +43,33 @@ public class BESDyno extends javax.swing.JFrame {
 
     private static final Logger LOG;
     private static final Logger LOGP;
-    
+
     //JDialog-Objects
     private AboutDialog about = new AboutDialog(this, false);
     private HelpDialog help = new HelpDialog(this, false);
     private VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
     private MeasureDialog measure = new MeasureDialog(this, true);
     private SettingsDialog settings = new SettingsDialog(this, true);
-    
+
     //Object-Variables
     private File file;
-    
+    private SwingWorker activeWorker;
+    private final MyTelegram telegram;
+    private jssc.SerialPort port;
+
     //Variables
     private boolean dark = false;
-    
+
+    public final List<Request> pendingRequests = new LinkedList<>();
+
     /**
      * Creates new form Gui
      */
     public BESDyno() {
         LOG.fine("Test");
         initComponents();
+        telegram = new MyTelegram();
+        telegram.execute();
         setTitle("BESDyno - Zweiradprüfstand");
         setLocationRelativeTo(null);
         setSize(new Dimension(1200, 750));
@@ -69,10 +83,10 @@ public class BESDyno extends javax.swing.JFrame {
             showThrowable(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", JOptionPane.WARNING_MESSAGE);
             LOG.warning(ex);
         }
-        
+
         refreshGui();
-        
-        if(Config.getInstance().isDark()) {
+
+        if (Config.getInstance().isDark()) {
             dark = Config.getInstance().isDark();
             setAppearance(dark);
         }
@@ -90,6 +104,15 @@ public class BESDyno extends javax.swing.JFrame {
         jbutDisconnect.setEnabled(false);
         jcbSerialDevices.setEnabled(false);
         jcbmiDarkMode.setState(false);
+        jmiRefresh.setEnabled(false);
+        jbutRefresh.setEnabled(false);
+
+        if (activeWorker != null) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            return;
+        } else {
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
         jmiRefresh.setEnabled(true);
         jbutRefresh.setEnabled(true);
 
@@ -101,7 +124,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         //Wenn ein Port geöffnet wurde
-        if (Port.getInstance().getPort() != null && Port.getInstance().getPort().isOpened()) {
+        if (port != null) {
             jbutDisconnect.setEnabled(true);
             jmiDisconnect.setEnabled(true);
             jcbSerialDevices.setEnabled(false);
@@ -112,7 +135,6 @@ public class BESDyno extends javax.swing.JFrame {
             jmiStartSim.setEnabled(true);
             jbutStartSim.setEnabled(true);
         }
-
     }
 
     //Status-Textfeld
@@ -134,7 +156,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     //JOptionPane + Message
     private void showThrowable(Throwable th, String msg, int symbol) {
         th.printStackTrace(System.err);
@@ -213,7 +235,7 @@ public class BESDyno extends javax.swing.JFrame {
             file = new File(Bike.getInstance().getVehicleName() + "bes");
         }
         chooser.setSelectedFile(file);
-        
+
         int rv = chooser.showSaveDialog(this);
         if (rv == JFileChooser.APPROVE_OPTION) {
             file = chooser.getSelectedFile();
@@ -270,7 +292,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
         }
     }
-    
+
     //Config
     private void loadConfig() throws FileNotFoundException, IOException, Exception {
         File home;
@@ -634,10 +656,10 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
-        
+
         LOG.info("Simulation started");
-        
-        if(vehicle.isPressedOK()) {
+
+        if (vehicle.isPressedOK()) {
             measure.setAppearance(dark);
             measure.setVisible(true);
         }
@@ -650,7 +672,10 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
         try {
-            Port.getInstance().connectPort((String) jcbSerialDevices.getSelectedItem());
+            MyConnectPortWorker w = new MyConnectPortWorker((String) jcbSerialDevices.getSelectedItem());
+            w.execute();
+            jtfStatus.setText("Port erfolgreich geöffnet");
+            activeWorker = w;
             refreshGui();
             LOG.finest("Connected with " + jcbSerialDevices.getSelectedItem());
         } catch (Throwable ex) {
@@ -661,45 +686,34 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
-            Port.getInstance().disconnectPort();
+            port.closePort();
+            jtfStatus.setText("Port erfolgreich geschlossen");
+        } catch (Exception e) {
+            LOG.warning(e);
+            jtfStatus.setText("Fehler beim Schließen des Ports");
+        } finally {
+            port = null;
+            telegram.setSerialPort(null);
             refreshGui();
-            LOG.info("Disconnected");
-        } catch (Throwable ex) {
-            writeOutThrowable(ex);
-            LOG.severe(ex);
         }
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
         about.setAppearance(dark);
         about.setVisible(true);
-        if (Port.getInstance().getPort().isOpened()) {
-            about.writeDevice((String)jcbSerialDevices.getSelectedItem());
+        if (port != null) {
+            about.writeDevice(port.getPortName());
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");
         }
     }//GEN-LAST:event_jmiAboutActionPerformed
 
     private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
-        try {
-            Port.getInstance().connectPort((String)jcbSerialDevices.getSelectedItem());
-            refreshGui();
-            LOG.fine("Connected with " + jcbSerialDevices.getSelectedItem());
-        } catch (Throwable ex) {
-            writeOutThrowable(ex);
-            LOG.severe(ex);
-        }
+        jmiConnectActionPerformed(evt);
     }//GEN-LAST:event_jbutConnectActionPerformed
 
     private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
-        try {
-            Port.getInstance().disconnectPort();
-            refreshGui();
-            LOG.info("Disconnected");
-        } catch (Throwable ex) {
-            writeOutThrowable(ex);
-            LOG.severe(ex);
-        }
+        jmiDisconnectActionPerformed(evt);
     }//GEN-LAST:event_jbutDisconnectActionPerformed
 
     private void jbutRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutRefreshActionPerformed
@@ -715,9 +729,9 @@ public class BESDyno extends javax.swing.JFrame {
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
-        
+
         LOG.info("Simulation started");
-        
+
         if (vehicle.isPressedOK()) {
             measure.setAppearance(dark);
             measure.setVisible(true);
@@ -761,8 +775,65 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiTestCommActionPerformed
 
     private void jmiResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResetActionPerformed
-        Telegram.getInstance().resetArduino();
+        try {
+            pendingRequests.add(telegram.resetTarget());
+            jtfStatus.setText("Reset...");
+        } catch (Exception e) {
+            LOG.warning(e);
+            jtfStatus.setText("Fehler beim Reset");
+        } finally {
+            refreshGui();
+        }
+
     }//GEN-LAST:event_jmiResetActionPerformed
+
+    private class MyConnectPortWorker extends ConnectPortWorker {
+
+        public MyConnectPortWorker(String port) {
+            super(port);
+        }
+
+        @Override
+        protected void done() {
+            try {
+                port = (jssc.SerialPort) get(2, TimeUnit.SECONDS);
+                telegram.setSerialPort(port);
+            } catch (Exception e) {
+                LOG.warning(e);
+                jtfStatus.setText("Port konnte nicht geöffnet werden...");
+            } finally {
+                activeWorker = null;
+                refreshGui();
+            }
+        }
+
+    }
+
+    private class MyTelegram extends Telegram {
+
+        @Override
+        protected void done() {
+
+        }
+
+        @Override
+        protected void process(List<Request> chunks) {
+            for (Request r : chunks) {
+                if (r.getStatus() == Status.DONE) {
+                    jtfStatus.setText("OK");
+                } else if (r.getStatus() == Status.ERROR) {
+                    jtfStatus.setText("ERROR");
+                } else {
+                    continue;
+                }
+                if (!pendingRequests.remove(r)) {
+                    LOG.warning("peningRequests: Objekt nicht vorhanden...");
+
+                }
+            }
+        }
+
+    }
 
     /**
      * @param args the command line arguments
@@ -771,10 +842,10 @@ public class BESDyno extends javax.swing.JFrame {
     public static void main(String args[]) throws UnsupportedLookAndFeelException {
         LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(System.out)));
         LOG.info("Start of BESDyno");
-        
+
         Config.initInstance(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "config.json"));
         Bike.getInstance();
-        
+
         //Menu-Bar support for macOS
         if (System.getProperty("os.name").contains("Mac OS X")) {
             try {
@@ -800,30 +871,30 @@ public class BESDyno extends javax.swing.JFrame {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-            
+
             java.awt.EventQueue.invokeLater(() -> {
                 new BESDyno().setVisible(true);
             });
         }
     }
-    
-    static {
-         //System.setProperty("logging.Logger.printStackTrace", "");
-         System.setProperty("logging.LogOutputStreamHandler.showRecordHashcode", "false");
-         //System.setProperty("logging.Logger.printAll", "");
-         //System.setProperty("logging.LogRecordDataFormattedText.Terminal","NETBEANS");
-         System.setProperty("logging.LogRecordDataFormattedText.Terminal", "LINUX");
-         System.setProperty("logging.Logger.Level", "INFO");
-         //System.setProperty("Test1.Logger.Level", "ALL");
-         System.setProperty("test.Test.Logger.Level", "FINER");
-         System.setProperty("test.*.Logger.Level", "FINE");
-         //System.setProperty("test.*.Logger.Handlers", "test.MyHandler");
-         //System.setProperty("test.*.Logger.Filter", "test.MyFilter");
-         //System.setProperty("logging.LogOutputStreamHandler.colorize", "false");
 
-         LOG = Logger.getLogger(BESDyno.class.getName());
-         LOGP = Logger.getParentLogger();
-     }
+    static {
+        //System.setProperty("logging.Logger.printStackTrace", "");
+        System.setProperty("logging.LogOutputStreamHandler.showRecordHashcode", "false");
+        //System.setProperty("logging.Logger.printAll", "");
+        //System.setProperty("logging.LogRecordDataFormattedText.Terminal","NETBEANS");
+        System.setProperty("logging.LogRecordDataFormattedText.Terminal", "LINUX");
+        System.setProperty("logging.Logger.Level", "INFO");
+        //System.setProperty("Test1.Logger.Level", "ALL");
+        System.setProperty("test.Test.Logger.Level", "FINER");
+        System.setProperty("test.*.Logger.Level", "FINE");
+        //System.setProperty("test.*.Logger.Handlers", "test.MyHandler");
+        //System.setProperty("test.*.Logger.Filter", "test.MyFilter");
+        //System.setProperty("logging.LogOutputStreamHandler.colorize", "false");
+
+        LOG = Logger.getLogger(BESDyno.class.getName());
+        LOGP = Logger.getParentLogger();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelDevice;
