@@ -10,9 +10,6 @@ import serial.CommunicationException;
  */
 public abstract class Request {
     
-    private String request;
-    private String response;
-
     private static final Logger LOG = Logger.getLogger(Request.class.getName());
 
     public static enum Status {

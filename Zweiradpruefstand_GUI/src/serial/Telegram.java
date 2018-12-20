@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import jssc.SerialPortException;
 import logging.Logger;
-import serial.requests.RequestReset;
+import serial.requests.*;
 
 /**
  *
@@ -30,13 +30,55 @@ public class Telegram extends RxTxWorker {
 
     }
     
-    public Request resetTarget() {
+    public Request init() {
+        synchronized (requestList) {
+            final Request request = new RequestInit();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
+    }
+    
+    public Request start() {
+        synchronized (requestList) {
+            final Request request = new RequestStart();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
+    }
+    
+    public Request engine() {
+        return null;
+    }
+    
+    public Request measure() {
+        return null;
+    }
+    
+    public Request measureno() {
+        return null;
+    }
+    
+    public Request reset() {
         synchronized (requestList) {
             final Request request = new RequestReset();
             requestList.add(request);
             requestList.notifyAll();
             return request;
         }
+    }
+    
+    public Request fine() {
+        return null;
+    }
+    
+    public Request warning() {
+        return null;
+    }
+    
+    public Request severe() {
+        return null;
     }
     
     /*public void sendRequest(RequestType request) throws UnsupportedEncodingException, SerialPortException, Exception {

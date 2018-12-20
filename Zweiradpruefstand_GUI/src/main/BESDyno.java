@@ -2,6 +2,7 @@ package main;
 
 import data.Bike;
 import data.Config;
+import development.CommunicationLogger;
 import gui.AboutDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
@@ -17,9 +18,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -27,6 +33,7 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import jssc.SerialPortException;
 import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
@@ -66,22 +73,26 @@ public class BESDyno extends javax.swing.JFrame {
      * Creates new form Gui
      */
     public BESDyno() {
-        LOG.fine("Test");
         initComponents();
+
         telegram = new MyTelegram();
         telegram.execute();
+
         setTitle("BESDyno - Zweiradprüfstand");
         setLocationRelativeTo(null);
         setSize(new Dimension(1200, 750));
+
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
+        jmiLogComm.setState(false);
+
         refreshPorts();
+
         try {
             loadConfig();
         } catch (Exception ex) {
-            jtfStatus.setText("Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!");
+            userLog("Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", LogLevel.WARNING);
             showThrowable(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", JOptionPane.WARNING_MESSAGE);
-            LOG.warning(ex);
         }
 
         refreshGui();
@@ -224,15 +235,15 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         if (home != null && home.exists()) {
-            folder = new File(home + "/Bike-Files");
+            folder = new File(home + File.separator + "Bike-Files");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
                     throw new Exception("Internal Error");
                 }
             }
-            file = new File(folder + Bike.getInstance().getVehicleName() + ".bes");
+            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
         } else {
-            file = new File(Bike.getInstance().getVehicleName() + "bes");
+            file = new File(Bike.getInstance().getVehicleName() + ".bes");
         }
         chooser.setSelectedFile(file);
 
@@ -252,6 +263,47 @@ public class BESDyno extends javax.swing.JFrame {
 
     }
 
+    // Saves the Communication Log
+    private void saveComm() throws Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Text-Datei (*.txt)", "txt"));
+
+        File comfile = null;
+        File home;
+        File folder;
+        Date date = Calendar.getInstance().getTime();
+        DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) +".txt");
+        }
+
+        chooser.setSelectedFile(comfile);
+
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            comfile = chooser.getSelectedFile();
+            
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
+                CommunicationLogger.getInstance().writeFile(w);
+            } catch (Exception ex) {
+                LOG.severe(ex);
+            }
+        }
+    }
+
     private void open() throws FileNotFoundException, IOException, Exception {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
@@ -266,15 +318,15 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         if (home != null && home.exists()) {
-            folder = new File(home + "/Bike-Files");
+            folder = new File(home + File.separator + "Bike-Files");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
                     LOG.severe("Internal Error");
                 }
             }
-            file = new File(folder + Bike.getInstance().getVehicleName() + ".bes");
+            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
         } else {
-            file = new File(Bike.getInstance().getVehicleName() + "bes");
+            file = new File(Bike.getInstance().getVehicleName() + ".bes");
         }
         chooser.setSelectedFile(file);
 
@@ -306,13 +358,13 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         if (home != null && home.exists()) {
-            folder = new File(home + "/.Bike");
+            folder = new File(home + File.separator + ".Bike");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
                     throw new Exception("Internal Error");
                 }
             }
-            ConfigFile = new File(folder + "/Bike.config");
+            ConfigFile = new File(folder + File.separator + "Bike.config");
         } else {
             ConfigFile = new File("Bike.config");
         }
@@ -320,7 +372,98 @@ public class BESDyno extends javax.swing.JFrame {
         if (ConfigFile.exists()) {
             try (BufferedReader r = new BufferedReader(new FileReader(ConfigFile))) {
                 Config.getInstance().readConfig(r);
+
             }
+        }
+    }
+
+    private enum LogLevel {
+        FINEST, FINE, INFO, WARNING, SEVERE
+    };
+
+    private void userLog(String msg, LogLevel level) {
+        jtfStatus.setText(msg);
+        switch (level) {
+            case FINEST:
+                LOG.finest(msg);
+                break;
+            case FINE:
+                LOG.fine(msg);
+                break;
+            case INFO:
+                LOG.info(msg);
+                break;
+            case WARNING:
+                LOG.warning(msg);
+                break;
+            case SEVERE:
+                LOG.severe(msg);
+                break;
+        }
+    }
+
+    private void userLog(Throwable th, String msg, LogLevel level) {
+        jtfStatus.setText(msg);
+        switch (level) {
+            case FINEST:
+                LOG.finest(th);
+                break;
+            case FINE:
+                LOG.fine(th);
+                break;
+            case INFO:
+                LOG.info(th);
+                break;
+            case WARNING:
+                LOG.warning(th);
+                break;
+            case SEVERE:
+                LOG.severe(th);
+                break;
+        }
+    }
+
+    private void userLogPane(String msg, LogLevel level) {
+        jtfStatus.setText(msg);
+        JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgetreten!", JOptionPane.ERROR_MESSAGE);
+        switch (level) {
+            case FINEST:
+                LOG.finest(msg);
+                break;
+            case FINE:
+                LOG.fine(msg);
+                break;
+            case INFO:
+                LOG.info(msg);
+                break;
+            case WARNING:
+                LOG.warning(msg);
+                break;
+            case SEVERE:
+                LOG.severe(msg);
+                break;
+        }
+    }
+
+    private void userLogPane(Throwable th, String msg, LogLevel level) {
+        jtfStatus.setText(msg);
+        JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgetreten!", JOptionPane.ERROR_MESSAGE);
+        switch (level) {
+            case FINEST:
+                LOG.finest(th);
+                break;
+            case FINE:
+                LOG.fine(th);
+                break;
+            case INFO:
+                LOG.info(th);
+                break;
+            case WARNING:
+                LOG.warning(th);
+                break;
+            case SEVERE:
+                LOG.severe(th);
+                break;
         }
     }
 
@@ -365,7 +508,10 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuAppearance = new javax.swing.JMenu();
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
+        jmiLogComm = new javax.swing.JCheckBoxMenuItem();
+        jmiLoggedComm = new javax.swing.JMenuItem();
         jmiTestComm = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jmiReset = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
@@ -576,6 +722,25 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmenuDeveloper.setText("Entwicklungstools");
 
+        jmiLogComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        jmiLogComm.setSelected(true);
+        jmiLogComm.setText("Kommunikation protokollieren");
+        jmiLogComm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiLogCommActionPerformed(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiLogComm);
+
+        jmiLoggedComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        jmiLoggedComm.setText("Kommunikationsprotokoll");
+        jmiLoggedComm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiLoggedCommActionPerformed(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiLoggedComm);
+
         jmiTestComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.META_MASK));
         jmiTestComm.setText("Kommunikation testen");
         jmiTestComm.addActionListener(new java.awt.event.ActionListener() {
@@ -584,6 +749,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuDeveloper.add(jmiTestComm);
+        jmenuDeveloper.add(jSeparator4);
 
         jmiReset.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
         jmiReset.setText("Reset Arduino");
@@ -693,7 +859,11 @@ public class BESDyno extends javax.swing.JFrame {
             jtfStatus.setText("Fehler beim Schließen des Ports");
         } finally {
             port = null;
-            telegram.setSerialPort(null);
+            try {
+                telegram.setSerialPort(null);
+            } catch (SerialPortException ex) {
+                LOG.severe(ex);
+            }
             refreshGui();
         }
     }//GEN-LAST:event_jmiDisconnectActionPerformed
@@ -768,15 +938,15 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiTestCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTestCommActionPerformed
         try {
-            new test.TestComm();
-        } catch (Exception ex) {
-            LOG.severe(ex);
+            pendingRequests.add(telegram.init());
+
+        } catch (Exception e) {
         }
     }//GEN-LAST:event_jmiTestCommActionPerformed
 
     private void jmiResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResetActionPerformed
         try {
-            pendingRequests.add(telegram.resetTarget());
+            pendingRequests.add(telegram.reset());
             jtfStatus.setText("Reset...");
         } catch (Exception e) {
             LOG.warning(e);
@@ -786,6 +956,18 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jmiResetActionPerformed
+
+    private void jmiLogCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLogCommActionPerformed
+        CommunicationLogger.getInstance().setCommLogging(jmiLogComm.getState());
+    }//GEN-LAST:event_jmiLogCommActionPerformed
+
+    private void jmiLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoggedCommActionPerformed
+        try {
+            saveComm();
+        } catch (Exception ex) {
+            userLog(ex, "Fehler beim Speichern des Kommunikationsprotokolls", LogLevel.WARNING);
+        }
+    }//GEN-LAST:event_jmiLoggedCommActionPerformed
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -852,8 +1034,10 @@ public class BESDyno extends javax.swing.JFrame {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(BESDyno.class
+                        .getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 //LOG.severe(ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
@@ -866,10 +1050,12 @@ public class BESDyno extends javax.swing.JFrame {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
+
                     }
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(BESDyno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(BESDyno.class
+                        .getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
 
             java.awt.EventQueue.invokeLater(() -> {
@@ -892,7 +1078,9 @@ public class BESDyno extends javax.swing.JFrame {
         //System.setProperty("test.*.Logger.Filter", "test.MyFilter");
         //System.setProperty("logging.LogOutputStreamHandler.colorize", "false");
 
-        LOG = Logger.getLogger(BESDyno.class.getName());
+        LOG
+                = Logger.getLogger(BESDyno.class
+                        .getName());
         LOGP = Logger.getParentLogger();
     }
 
@@ -905,6 +1093,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JSlider jSlider;
     private javax.swing.JButton jbutConnect;
     private javax.swing.JButton jbutDisconnect;
@@ -922,6 +1111,8 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenuItem jmiHelp;
+    private javax.swing.JCheckBoxMenuItem jmiLogComm;
+    private javax.swing.JMenuItem jmiLoggedComm;
     private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;

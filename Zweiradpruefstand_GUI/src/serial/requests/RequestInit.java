@@ -9,21 +9,21 @@ import serial.CommunicationException;
  *
  * @author emil
  */
-public class RequestReset extends Request {
+public class RequestInit extends Request {
 
-    private static final Logger LOG = Logger.getLogger(RequestReset.class.getName());
+    private static final Logger LOG = Logger.getLogger(RequestInit.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
 
     @Override
     public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
-        if (status != Status.WAITINGTOSEND) {
+        if (status != Request.Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
-        port.writeByte((byte) 'r');
+        port.writeByte((byte) 'i');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("r");
+            COMLOG.addReq("i");
         }
-        status = Status.WAITINGFORRESPONSE;
+        status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
@@ -32,10 +32,10 @@ public class RequestReset extends Request {
             COMLOG.addRes(res);
         }
         
-        if(res != ":RESET;") {
-            status = Status.ERROR;
+        if(res != ":BESDyno;") {
+            status = Request.Status.ERROR;
         } else {
-            status = Status.DONE;
+            status = Request.Status.DONE;
         }
         
     }
