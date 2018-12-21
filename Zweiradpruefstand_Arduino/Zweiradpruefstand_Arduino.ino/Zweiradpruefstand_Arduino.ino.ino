@@ -16,7 +16,7 @@ int resetPin = 12;
 
 //Protocol
 enum Protocol {
-  INIT, START, ENGINE, MEASURE, RESET, PROBLEM, FINE, WARNING, SEVERE
+  INIT, START, ENGINE, MEASURE, MEASURENO, RESET, PROBLEM, FINE, WARNING, SEVERE
 };
 
 enum Protocol currentState = PROBLEM;
@@ -162,6 +162,7 @@ void loop() {
       Serial.flush();
       break;
     case ENGINE:
+      //:engine#exhaust;
       readThermos();
       break;
     case MEASURE:

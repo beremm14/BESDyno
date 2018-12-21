@@ -47,6 +47,8 @@ import serial.Telegram;
  * @author emil
  */
 public class BESDyno extends javax.swing.JFrame {
+    
+    private static BESDyno instance;
 
     private static final Logger LOG;
     private static final Logger LOGP;
@@ -72,7 +74,15 @@ public class BESDyno extends javax.swing.JFrame {
     /**
      * Creates new form Gui
      */
-    public BESDyno() {
+    
+    public BESDyno getInstance() {
+        if(instance == null) {
+            instance = new BESDyno();
+        }
+        return instance;
+    }
+    
+    private BESDyno() {
         initComponents();
 
         telegram = new MyTelegram();
@@ -465,6 +475,22 @@ public class BESDyno extends javax.swing.JFrame {
                 LOG.severe(th);
                 break;
         }
+    }
+
+    public MyTelegram getTelegram() {
+        return telegram;
+    }
+
+    public boolean isDark() {
+        return dark;
+    }
+    
+    public boolean addPendingRequest(Request request) {
+        return pendingRequests.add(request);
+    }
+    
+    public boolean removePendingReuest(Request request) {
+        return pendingRequests.remove(request);
     }
 
     /**
@@ -1014,7 +1040,6 @@ public class BESDyno extends javax.swing.JFrame {
                 }
             }
         }
-
     }
 
     /**
