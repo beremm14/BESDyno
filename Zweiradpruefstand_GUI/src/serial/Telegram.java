@@ -49,15 +49,30 @@ public class Telegram extends RxTxWorker {
     }
     
     public Request engine() {
-        return null;
+        synchronized (requestList) {
+            final Request request = new RequestEngine();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
     }
     
     public Request measure() {
-        return null;
+        synchronized (requestList) {
+            final Request request = new RequestMeasure();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
     }
     
     public Request measureno() {
-        return null;
+        synchronized (requestList) {
+            final Request request = new RequestMeasureno();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
     }
     
     public Request reset() {
@@ -70,15 +85,30 @@ public class Telegram extends RxTxWorker {
     }
     
     public Request fine() {
-        return null;
+        synchronized (requestList) {
+            final Request request = new RequestStatusFine();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
     }
     
     public Request warning() {
-        return null;
+        synchronized (requestList) {
+            final Request request = new RequestStatusWarning();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
     }
     
     public Request severe() {
-        return null;
+        synchronized (requestList) {
+            final Request request = new RequestStatusSevere();
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
     }
     
     /*public void sendRequest(RequestType request) throws UnsupportedEncodingException, SerialPortException, Exception {

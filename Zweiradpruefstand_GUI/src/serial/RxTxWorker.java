@@ -3,8 +3,6 @@ package serial;
 import serial.requests.Request;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortEvent;

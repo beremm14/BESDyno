@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -73,9 +72,10 @@ public class BESDyno extends javax.swing.JFrame {
 
     /**
      * Creates new form Gui
+     * @return 
      */
     
-    public BESDyno getInstance() {
+    public static BESDyno getInstance() {
         if(instance == null) {
             instance = new BESDyno();
         }
@@ -101,8 +101,7 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             loadConfig();
         } catch (Exception ex) {
-            userLog("Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", LogLevel.WARNING);
-            showThrowable(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", JOptionPane.WARNING_MESSAGE);
+            userLogPane(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", LogLevel.WARNING);
         }
 
         refreshGui();
@@ -159,234 +158,7 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     //Status-Textfeld
-    private void writeOutThrowable(Throwable th) {
-        th.printStackTrace(System.err);
-        String msg = th.getMessage();
-        if (msg == null || msg.isEmpty()) {
-            msg = th.getClass().getSimpleName();
-        }
-        jtfStatus.setText(msg);
-    }
-
-    //JOptionPane
-    private void showThrowable(Throwable th) {
-        th.printStackTrace(System.err);
-        String msg = th.getMessage();
-        if (msg == null || msg.isEmpty()) {
-            msg = th.getClass().getSimpleName();
-        }
-        JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", JOptionPane.ERROR_MESSAGE);
-    }
-
-    //JOptionPane + Message
-    private void showThrowable(Throwable th, String msg, int symbol) {
-        th.printStackTrace(System.err);
-        JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgereten", symbol);
-    }
-
-    //Serial-Methods
-    private void refreshPorts() {
-        final String[] ports = jssc.SerialPortList.getPortNames();
-
-        String preferedPort = null;
-        for (String p : ports) {
-            if (p.contains("USB")) {
-                preferedPort = p;
-                break;
-            }
-        }
-
-        jcbSerialDevices.setModel(new DefaultComboBoxModel<String>(ports));
-        if (preferedPort != null) {
-            jcbSerialDevices.setSelectedItem(preferedPort);
-        }
-
-        refreshGui();
-    }
-
-    //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
-    private void setAppearance(boolean dark) {
-        if (dark) {
-
-            setBackground(Color.darkGray);
-            jPanChart.setBackground(Color.darkGray);
-            jPanStatus.setBackground(Color.darkGray);
-            jPanTools.setBackground(Color.darkGray);
-
-            jLabelDevice.setForeground(Color.white);
-
-            jtfStatus.setBackground(Color.darkGray);
-            jtfStatus.setForeground(Color.white);
-        } else {
-            setBackground(Color.white);
-            jPanChart.setBackground(Color.white);
-            jPanStatus.setBackground(Color.white);
-            jPanTools.setBackground(Color.white);
-
-            jLabelDevice.setForeground(Color.black);
-
-            jtfStatus.setBackground(Color.white);
-            jtfStatus.setForeground(Color.black);
-        }
-    }
-
-    //File-Methods
-    private void save() throws IOException, Exception {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-
-        File home;
-        File folder;
-
-        try {
-            home = new File(System.getProperty("user.home"));
-        } catch (Exception e) {
-            home = null;
-        }
-
-        if (home != null && home.exists()) {
-            folder = new File(home + File.separator + "Bike-Files");
-            if (!folder.exists()) {
-                if (!folder.mkdir()) {
-                    throw new Exception("Internal Error");
-                }
-            }
-            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
-        } else {
-            file = new File(Bike.getInstance().getVehicleName() + ".bes");
-        }
-        chooser.setSelectedFile(file);
-
-        int rv = chooser.showSaveDialog(this);
-        if (rv == JFileChooser.APPROVE_OPTION) {
-            file = chooser.getSelectedFile();
-            if (!file.getName().contains(".bes")) {
-                showThrowable(new Exception("Das ist keine bes-Datei"));
-            }
-
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                Bike.getInstance().writeFile(w);
-            } catch (Exception ex) {
-                LOG.severe(ex);
-            }
-        }
-
-    }
-
-    // Saves the Communication Log
-    private void saveComm() throws Exception {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Text-Datei (*.txt)", "txt"));
-
-        File comfile = null;
-        File home;
-        File folder;
-        Date date = Calendar.getInstance().getTime();
-        DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
-
-        try {
-            home = new File(System.getProperty("user.home"));
-        } catch (Exception e) {
-            home = null;
-        }
-
-        if (home != null && home.exists()) {
-            folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
-            if (!folder.exists()) {
-                if (!folder.mkdir()) {
-                    throw new Exception("Internal Error");
-                }
-            }
-            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) +".txt");
-        }
-
-        chooser.setSelectedFile(comfile);
-
-        int rv = chooser.showSaveDialog(this);
-        if (rv == JFileChooser.APPROVE_OPTION) {
-            comfile = chooser.getSelectedFile();
-            
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
-                CommunicationLogger.getInstance().writeFile(w);
-            } catch (Exception ex) {
-                LOG.severe(ex);
-            }
-        }
-    }
-
-    private void open() throws FileNotFoundException, IOException, Exception {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-
-        File home;
-        File folder;
-
-        try {
-            home = new File(System.getProperty("user.home"));
-        } catch (Exception e) {
-            home = null;
-        }
-
-        if (home != null && home.exists()) {
-            folder = new File(home + File.separator + "Bike-Files");
-            if (!folder.exists()) {
-                if (!folder.mkdir()) {
-                    LOG.severe("Internal Error");
-                }
-            }
-            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
-        } else {
-            file = new File(Bike.getInstance().getVehicleName() + ".bes");
-        }
-        chooser.setSelectedFile(file);
-
-        int rv = chooser.showOpenDialog(this);
-        if (rv == JFileChooser.APPROVE_OPTION) {
-            file = chooser.getSelectedFile();
-            if (!file.getName().contains(".bes")) {
-                showThrowable(new Exception("Das ist keine bes-Datei"));
-            }
-            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-                Bike.getInstance().readFile(r);
-            } catch (Exception ex) {
-                writeOutThrowable(ex);
-                LOG.severe(ex);
-            }
-        }
-    }
-
-    //Config
-    private void loadConfig() throws FileNotFoundException, IOException, Exception {
-        File home;
-        File folder;
-        File ConfigFile;
-
-        try {
-            home = new File(System.getProperty("user.home"));
-        } catch (Exception e) {
-            home = null;
-        }
-
-        if (home != null && home.exists()) {
-            folder = new File(home + File.separator + ".Bike");
-            if (!folder.exists()) {
-                if (!folder.mkdir()) {
-                    throw new Exception("Internal Error");
-                }
-            }
-            ConfigFile = new File(folder + File.separator + "Bike.config");
-        } else {
-            ConfigFile = new File("Bike.config");
-        }
-
-        if (ConfigFile.exists()) {
-            try (BufferedReader r = new BufferedReader(new FileReader(ConfigFile))) {
-                Config.getInstance().readConfig(r);
-
-            }
-        }
-    }
-
+    
     private enum LogLevel {
         FINEST, FINE, INFO, WARNING, SEVERE
     };
@@ -476,7 +248,210 @@ public class BESDyno extends javax.swing.JFrame {
                 break;
         }
     }
+    
+    //Serial-Methods
+    private void refreshPorts() {
+        final String[] ports = jssc.SerialPortList.getPortNames();
 
+        String preferedPort = null;
+        for (String p : ports) {
+            if (p.contains("USB")) {
+                preferedPort = p;
+                break;
+            }
+        }
+
+        jcbSerialDevices.setModel(new DefaultComboBoxModel<String>(ports));
+        if (preferedPort != null) {
+            jcbSerialDevices.setSelectedItem(preferedPort);
+        }
+
+        refreshGui();
+    }
+
+    //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
+    private void setAppearance(boolean dark) {
+        if (dark) {
+
+            setBackground(Color.darkGray);
+            jPanChart.setBackground(Color.darkGray);
+            jPanStatus.setBackground(Color.darkGray);
+            jPanTools.setBackground(Color.darkGray);
+
+            jLabelDevice.setForeground(Color.white);
+
+            jtfStatus.setBackground(Color.darkGray);
+            jtfStatus.setForeground(Color.white);
+        } else {
+            setBackground(Color.white);
+            jPanChart.setBackground(Color.white);
+            jPanStatus.setBackground(Color.white);
+            jPanTools.setBackground(Color.white);
+
+            jLabelDevice.setForeground(Color.black);
+
+            jtfStatus.setBackground(Color.white);
+            jtfStatus.setForeground(Color.black);
+        }
+    }
+
+    //File-Methods
+    private void save() throws IOException, Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
+
+        File home;
+        File folder;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + "Bike-Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
+        } else {
+            file = new File(Bike.getInstance().getVehicleName() + ".bes");
+        }
+        chooser.setSelectedFile(file);
+
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+            if (!file.getName().contains(".bes")) {
+                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
+            }
+
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+                Bike.getInstance().writeFile(w);
+            } catch (Exception ex) {
+                LOG.severe(ex);
+            }
+        }
+
+    }
+
+    // Saves the Communication Log
+    private void saveComm() throws Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Text-Datei (*.txt)", "txt"));
+
+        File comfile = null;
+        File home;
+        File folder;
+        Date date = Calendar.getInstance().getTime();
+        DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) +".txt");
+        }
+
+        chooser.setSelectedFile(comfile);
+
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            comfile = chooser.getSelectedFile();
+            
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
+                CommunicationLogger.getInstance().writeFile(w);
+            } catch (Exception ex) {
+                LOG.severe(ex);
+            }
+        }
+    }
+
+    private void open() throws FileNotFoundException, IOException, Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
+
+        File home;
+        File folder;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + "Bike-Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    LOG.severe("Internal Error");
+                }
+            }
+            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
+        } else {
+            file = new File(Bike.getInstance().getVehicleName() + ".bes");
+        }
+        chooser.setSelectedFile(file);
+
+        int rv = chooser.showOpenDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+            if (!file.getName().contains(".bes")) {
+                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
+            }
+            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+                Bike.getInstance().readFile(r);
+            } catch (Exception ex) {
+                userLog(ex, "Fehler beim Einlesen der Datei", LogLevel.WARNING);
+            }
+        }
+    }
+
+    //Config
+    private void loadConfig() throws FileNotFoundException, IOException, Exception {
+        File home;
+        File folder;
+        File ConfigFile;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + ".Bike");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            ConfigFile = new File(folder + File.separator + "Bike.config");
+        } else {
+            ConfigFile = new File("Bike.config");
+        }
+
+        if (ConfigFile.exists()) {
+            try (BufferedReader r = new BufferedReader(new FileReader(ConfigFile))) {
+                Config.getInstance().readConfig(r);
+
+            }
+        }
+    }
+
+    //Getter
     public MyTelegram getTelegram() {
         return telegram;
     }
@@ -818,12 +793,9 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
         try {
             save();
-            LOG.fine("File saved");
-        } catch (IOException ex) {
-            writeOutThrowable(ex);
+            userLog("Datei erfolgreich gespeichert", LogLevel.FINE);
         } catch (Exception ex) {
-            writeOutThrowable(ex);
-            LOG.severe(ex);
+            userLog(ex, "Fehler beim Speichern der Datei", LogLevel.WARNING);
         }
     }//GEN-LAST:event_jmiSaveActionPerformed
 
@@ -869,10 +841,9 @@ public class BESDyno extends javax.swing.JFrame {
             jtfStatus.setText("Port erfolgreich geöffnet");
             activeWorker = w;
             refreshGui();
-            LOG.finest("Connected with " + jcbSerialDevices.getSelectedItem());
+            userLog("Connected with " + jcbSerialDevices.getSelectedItem(), LogLevel.FINE);
         } catch (Throwable ex) {
-            writeOutThrowable(ex);
-            LOG.severe(ex);
+            userLog(ex, "Fehler beim Verbinden", LogLevel.SEVERE);
         }
     }//GEN-LAST:event_jmiConnectActionPerformed
 
@@ -914,7 +885,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jbutRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutRefreshActionPerformed
         refreshPorts();
-        LOG.info("Ports refreshed");
+        userLog("Port-Liste aktualisiert", LogLevel.INFO);
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
     private void onHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onHelp
@@ -941,8 +912,7 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             settings.saveConfig(Config.getInstance());
         } catch (Exception e) {
-            writeOutThrowable(new Exception("Fehler beim Speichern der Config-Datei!"));
-            LOG.warning(e);
+            userLog(e, "Fehler beim Speichern der Config-File", LogLevel.WARNING);
         }
     }//GEN-LAST:event_jcbmiDarkModeActionPerformed
 
@@ -953,20 +923,17 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenActionPerformed
         try {
             open();
-            LOG.fine("File opened");
-        } catch (IOException ex) {
-            writeOutThrowable(ex);
+            userLog("Datei erfolgreich geöffnet", LogLevel.FINE);
         } catch (Exception ex) {
-            writeOutThrowable(ex);
-            LOG.warning(ex);
+            userLog(ex, "Fehler beim Öffnen der Datei", LogLevel.WARNING);
         }
     }//GEN-LAST:event_jmiOpenActionPerformed
 
     private void jmiTestCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTestCommActionPerformed
         try {
             pendingRequests.add(telegram.init());
-
         } catch (Exception e) {
+            userLog(e, "TestComm: Fehler!", LogLevel.SEVERE);
         }
     }//GEN-LAST:event_jmiTestCommActionPerformed
 
@@ -1017,7 +984,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     }
 
-    private class MyTelegram extends Telegram {
+    public class MyTelegram extends Telegram {
 
         @Override
         protected void done() {
