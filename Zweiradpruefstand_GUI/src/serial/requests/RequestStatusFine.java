@@ -21,7 +21,7 @@ public class RequestStatusFine extends Request {
         }
         port.writeByte((byte) 'f');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("f");
+            COMLOG.addReq("FINE: f");
         }
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -32,4 +32,15 @@ public class RequestStatusFine extends Request {
             COMLOG.addRes(res);
         }
     }
+
+    @Override
+    public String getReqName() {
+        return "FINE";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at FINE";
+    }
+    
 }

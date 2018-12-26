@@ -21,7 +21,7 @@ public class RequestStatusSevere extends Request {
         }
         port.writeByte((byte) 'v');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("v");
+            COMLOG.addReq("SEVERE: v");
         }
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -32,4 +32,15 @@ public class RequestStatusSevere extends Request {
             COMLOG.addRes(res);
         }
     }
+
+    @Override
+    public String getReqName() {
+        return "SEVERE";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at SEVERE";
+    }
+    
 }

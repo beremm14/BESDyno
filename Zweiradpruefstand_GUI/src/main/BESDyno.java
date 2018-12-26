@@ -67,11 +67,13 @@ public class BESDyno extends javax.swing.JFrame {
 
     //Variables
     private boolean dark = false;
+    private boolean devMode = true;
 
+    //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
 
     /**
-     * Creates new form Gui
+     * Creates new form BESDyno
      * @return 
      */
     
@@ -94,7 +96,9 @@ public class BESDyno extends javax.swing.JFrame {
 
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
-        jmiLogComm.setState(false);
+        
+        jmiDevMode.setState(true);
+        CommunicationLogger.getInstance().setCommLogging(devMode);
 
         refreshPorts();
 
@@ -157,8 +161,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    //Status-Textfeld
-    
+    //Status-Textfeld: Logging for User
     private enum LogLevel {
         FINEST, FINE, INFO, WARNING, SEVERE
     };
@@ -249,6 +252,12 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
     
+    private void devLog(String msg) {
+        if(isDevMode()) {
+            LOG.debug(msg);
+        }
+    }
+    
     //Serial-Methods
     private void refreshPorts() {
         final String[] ports = jssc.SerialPortList.getPortNames();
@@ -272,7 +281,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Mit Ctrl+D kann das Erscheinungbild der Oberfläche geändert werden
     private void setAppearance(boolean dark) {
         if (dark) {
-
+            userLog("Dark-Mode aktiviert", LogLevel.INFO);
             setBackground(Color.darkGray);
             jPanChart.setBackground(Color.darkGray);
             jPanStatus.setBackground(Color.darkGray);
@@ -283,6 +292,7 @@ public class BESDyno extends javax.swing.JFrame {
             jtfStatus.setBackground(Color.darkGray);
             jtfStatus.setForeground(Color.white);
         } else {
+            userLog("Dark-Mode deaktiviert", LogLevel.INFO);
             setBackground(Color.white);
             jPanChart.setBackground(Color.white);
             jPanStatus.setBackground(Color.white);
@@ -460,8 +470,20 @@ public class BESDyno extends javax.swing.JFrame {
         return dark;
     }
     
-    public boolean addPendingRequest(Request request) {
-        return pendingRequests.add(request);
+    public boolean isDevMode() {
+        return devMode;
+    }
+    
+    //Communication
+    public void addPendingRequest(Request request) {
+        try {
+            pendingRequests.add(request);
+            devLog(request.getReqName());
+        } catch (Exception ex) {
+            userLog(ex, request.getErrorMessage(), LogLevel.WARNING);
+        } finally {
+            refreshGui();
+        }
     }
     
     public boolean removePendingReuest(Request request) {
@@ -509,7 +531,8 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuAppearance = new javax.swing.JMenu();
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
-        jmiLogComm = new javax.swing.JCheckBoxMenuItem();
+        jmiDevMode = new javax.swing.JCheckBoxMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jmiLoggedComm = new javax.swing.JMenuItem();
         jmiTestComm = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -544,6 +567,7 @@ public class BESDyno extends javax.swing.JFrame {
         gridBagConstraints.weighty = 1.0;
         jPanStatus.add(jtfStatus, gridBagConstraints);
 
+        jpbStatus.setBackground(new java.awt.Color(255, 255, 255));
         jpbStatus.setBorder(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -723,15 +747,16 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmenuDeveloper.setText("Entwicklungstools");
 
-        jmiLogComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
-        jmiLogComm.setSelected(true);
-        jmiLogComm.setText("Kommunikation protokollieren");
-        jmiLogComm.addActionListener(new java.awt.event.ActionListener() {
+        jmiDevMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.META_MASK));
+        jmiDevMode.setSelected(true);
+        jmiDevMode.setText("Entwicklungsmodus");
+        jmiDevMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiLogCommActionPerformed(evt);
+                jmiDevModeActionPerformed(evt);
             }
         });
-        jmenuDeveloper.add(jmiLogComm);
+        jmenuDeveloper.add(jmiDevMode);
+        jmenuDeveloper.add(jSeparator5);
 
         jmiLoggedComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
         jmiLoggedComm.setText("Kommunikationsprotokoll");
@@ -810,6 +835,7 @@ public class BESDyno extends javax.swing.JFrame {
         if (settings.isPressedOK()) {
             dark = settings.isDark();
             setAppearance(dark);
+            userLog("Einstellungen gespeichert", LogLevel.INFO);
         }
     }//GEN-LAST:event_jmiSettingsActionPerformed
 
@@ -821,7 +847,7 @@ public class BESDyno extends javax.swing.JFrame {
         vehicle.setAppearance(dark);
         vehicle.setVisible(true);
 
-        LOG.info("Simulation started");
+        userLog("Start der Simulation", LogLevel.INFO);
 
         if (vehicle.isPressedOK()) {
             measure.setAppearance(dark);
@@ -831,7 +857,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
         refreshPorts();
-        LOG.info("Ports refreshed");
+        userLog("Port-Liste aktualisiert", LogLevel.INFO);
     }//GEN-LAST:event_jmiRefreshActionPerformed
 
     private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
@@ -850,16 +876,15 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
             port.closePort();
-            jtfStatus.setText("Port erfolgreich geschlossen");
+            userLog("Port geschlossen", LogLevel.INFO);
         } catch (Exception e) {
-            LOG.warning(e);
-            jtfStatus.setText("Fehler beim Schließen des Ports");
+            userLog(e, "Fehler beim Schließen des Ports", LogLevel.WARNING);
         } finally {
             port = null;
             try {
                 telegram.setSerialPort(null);
             } catch (SerialPortException ex) {
-                LOG.severe(ex);
+                userLog(ex, "Interner Fehler: telegram.setSerialPort();", LogLevel.WARNING);
             }
             refreshGui();
         }
@@ -930,29 +955,12 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiOpenActionPerformed
 
     private void jmiTestCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTestCommActionPerformed
-        try {
-            pendingRequests.add(telegram.init());
-        } catch (Exception e) {
-            userLog(e, "TestComm: Fehler!", LogLevel.SEVERE);
-        }
+        addPendingRequest(telegram.start());
     }//GEN-LAST:event_jmiTestCommActionPerformed
 
     private void jmiResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResetActionPerformed
-        try {
-            pendingRequests.add(telegram.reset());
-            jtfStatus.setText("Reset...");
-        } catch (Exception e) {
-            LOG.warning(e);
-            jtfStatus.setText("Fehler beim Reset");
-        } finally {
-            refreshGui();
-        }
-
+        addPendingRequest(telegram.reset());
     }//GEN-LAST:event_jmiResetActionPerformed
-
-    private void jmiLogCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLogCommActionPerformed
-        CommunicationLogger.getInstance().setCommLogging(jmiLogComm.getState());
-    }//GEN-LAST:event_jmiLogCommActionPerformed
 
     private void jmiLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoggedCommActionPerformed
         try {
@@ -961,6 +969,11 @@ public class BESDyno extends javax.swing.JFrame {
             userLog(ex, "Fehler beim Speichern des Kommunikationsprotokolls", LogLevel.WARNING);
         }
     }//GEN-LAST:event_jmiLoggedCommActionPerformed
+
+    private void jmiDevModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDevModeActionPerformed
+        devMode = jmiDevMode.getState();
+        CommunicationLogger.getInstance().setCommLogging(jmiDevMode.getState());
+    }//GEN-LAST:event_jmiDevModeActionPerformed
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -973,6 +986,8 @@ public class BESDyno extends javax.swing.JFrame {
             try {
                 port = (jssc.SerialPort) get(2, TimeUnit.SECONDS);
                 telegram.setSerialPort(port);
+                LOG.info("setPort: RxTxWorker");
+                addPendingRequest(telegram.init());
             } catch (Exception e) {
                 LOG.warning(e);
                 jtfStatus.setText("Port konnte nicht geöffnet werden...");
@@ -988,7 +1003,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         @Override
         protected void done() {
-
+            telegram.execute();
         }
 
         @Override
@@ -1001,9 +1016,10 @@ public class BESDyno extends javax.swing.JFrame {
                 } else {
                     continue;
                 }
-                if (!pendingRequests.remove(r)) {
-                    LOG.warning("peningRequests: Objekt nicht vorhanden...");
-
+                if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
+                    if(!removePendingReuest(r)) {
+                        LOG.warning("Error: removePendingRequest()");
+                    }
                 }
             }
         }
@@ -1042,7 +1058,6 @@ public class BESDyno extends javax.swing.JFrame {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
-
                     }
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
@@ -1086,6 +1101,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSlider jSlider;
     private javax.swing.JButton jbutConnect;
     private javax.swing.JButton jbutDisconnect;
@@ -1100,10 +1116,10 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenu jmenuSimulation;
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;
+    private javax.swing.JCheckBoxMenuItem jmiDevMode;
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenuItem jmiHelp;
-    private javax.swing.JCheckBoxMenuItem jmiLogComm;
     private javax.swing.JMenuItem jmiLoggedComm;
     private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;

@@ -21,7 +21,7 @@ public class RequestReset extends Request {
         }
         port.writeByte((byte) 'r');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("r");
+            COMLOG.addReq("RESET: r");
         }
         status = Status.WAITINGFORRESPONSE;
     }
@@ -39,7 +39,15 @@ public class RequestReset extends Request {
         }
         
     }
-    
-    
-    
+
+    @Override
+    public String getReqName() {
+        return "RESET";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at RESET";
+    }
+ 
 }

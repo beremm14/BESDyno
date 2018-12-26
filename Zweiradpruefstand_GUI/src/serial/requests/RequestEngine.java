@@ -22,7 +22,7 @@ public class RequestEngine extends Request {
         }
         port.writeByte((byte) 'e');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("e");
+            COMLOG.addReq("ENGINE: e");
         }
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -46,4 +46,15 @@ public class RequestEngine extends Request {
         LOG.info(    "engTemp = " + Environment.getInstance().getEngTemp() +
                    " fumeTemp = " + Environment.getInstance().getFumeTemp());
     }
+
+    @Override
+    public String getReqName() {
+        return "ENGINE: Motorcycle Temperatures";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at ENGINE";
+    }
+    
 }

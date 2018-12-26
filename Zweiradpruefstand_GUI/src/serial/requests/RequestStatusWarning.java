@@ -21,7 +21,7 @@ public class RequestStatusWarning extends Request {
         }
         port.writeByte((byte) 'w');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("w");
+            COMLOG.addReq("WARNING: w");
         }
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -32,4 +32,15 @@ public class RequestStatusWarning extends Request {
             COMLOG.addRes(res);
         }
     }
+
+    @Override
+    public String getReqName() {
+        return "WARNING";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at WARNING";
+    }
+    
 }

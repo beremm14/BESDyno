@@ -6,8 +6,8 @@ import java.util.List;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import main.BESDyno;
 import serial.requests.Request.Status;
 
 /**
@@ -25,15 +25,18 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     public RxTxWorker() {
     }
+    
+    private void devLog(String msg) {
+        if (BESDyno.getInstance().isDevMode()) {
+            LOG.debug(msg);
+        }
+    }
 
     public void setSerialPort(jssc.SerialPort port) throws SerialPortException {
         this.port = port;
         if (port != null) {
-            port.addEventListener(new SerialPortEventListener() {
-                @Override
-                public void serialEvent(SerialPortEvent spe) {
-                    handlePortEvent(spe);
-                }
+            port.addEventListener((SerialPortEvent spe) -> {
+                handlePortEvent(spe);
             });
         }
     }
@@ -49,8 +52,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     String s = new String(b);
                     synchronized (receivedFrame) {
                         receivedFrame.append(s);
-                        if (s == ";") {
-
+                        if (";".equals(s)) {
                             receivedFrame.notifyAll();
                         }
                     }
@@ -73,6 +75,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         for (Request r : requestList) {
                             if (r.getStatus() == Status.WAITINGTOSEND) {
                                 req = r;
+                                devLog("doInBackground: Got Request: " + req.getReqName());
                                 break;
                             } else if (r.getStatus() == Status.WAITINGFORRESPONSE) {
                                 break;
@@ -82,15 +85,15 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                             requestList.wait();
                         }
                     } while (req == null);
-
                 }
-                req.setStatus(Status.WAITINGFORRESPONSE);
+                req.setStatus(Status.WAITINGTOSEND);
+                req.sendRequest(port);
                 publish(req);
                 Thread.sleep(1000);
                 synchronized (receivedFrame) {
                     receivedFrame.delete(0, receivedFrame.length() - 1);
                 }
-                req.sendRequest(port);
+                //req.sendRequest(port);
                 publish(req);
 
                 String res;

@@ -1,14 +1,8 @@
 package serial;
 
 import serial.requests.Request;
-import data.RawDatapoint;
-import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import javax.swing.SwingWorker;
-import jssc.SerialPortException;
 import logging.Logger;
+import main.BESDyno;
 import serial.requests.*;
 
 /**
@@ -17,24 +11,32 @@ import serial.requests.*;
  */
 public class Telegram extends RxTxWorker {
 
-    private static Telegram instance;
-
     private static final Logger LOG = Logger.getLogger(Telegram.class.getName());
-
-    private String response;
-    private final Object syncObj = new Object();
-
-    private List<RawDatapoint> list = new LinkedList<>();
 
     public Telegram() {
 
     }
     
+    private void devLog(String msg) {
+        if (BESDyno.getInstance().isDevMode()) {
+            LOG.info(msg);
+        }
+    }
+    
     public Request init() {
         synchronized (requestList) {
             final Request request = new RequestInit();
+            devLog("new: RequestInit();");
+            
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            devLog("Request INIT: WAITING-TO-SEND");
+            
             requestList.add(request);
+            devLog("Request INIT added to synchronized LinkedList<>():requestList");
+            
             requestList.notifyAll();
+            devLog("synchronized LinkedList<>():requestList notified");
+            
             return request;
         }
     }
@@ -42,6 +44,7 @@ public class Telegram extends RxTxWorker {
     public Request start() {
         synchronized (requestList) {
             final Request request = new RequestStart();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -51,6 +54,7 @@ public class Telegram extends RxTxWorker {
     public Request engine() {
         synchronized (requestList) {
             final Request request = new RequestEngine();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -60,6 +64,7 @@ public class Telegram extends RxTxWorker {
     public Request measure() {
         synchronized (requestList) {
             final Request request = new RequestMeasure();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -69,6 +74,7 @@ public class Telegram extends RxTxWorker {
     public Request measureno() {
         synchronized (requestList) {
             final Request request = new RequestMeasureno();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -78,6 +84,7 @@ public class Telegram extends RxTxWorker {
     public Request reset() {
         synchronized (requestList) {
             final Request request = new RequestReset();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -87,6 +94,7 @@ public class Telegram extends RxTxWorker {
     public Request fine() {
         synchronized (requestList) {
             final Request request = new RequestStatusFine();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -96,6 +104,7 @@ public class Telegram extends RxTxWorker {
     public Request warning() {
         synchronized (requestList) {
             final Request request = new RequestStatusWarning();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;
@@ -105,6 +114,7 @@ public class Telegram extends RxTxWorker {
     public Request severe() {
         synchronized (requestList) {
             final Request request = new RequestStatusSevere();
+            request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             return request;

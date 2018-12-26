@@ -22,7 +22,7 @@ public class RequestStart extends Request {
         }
         port.writeByte((byte) 's');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("s");
+            COMLOG.addReq("START: s");
         }
         status = Status.WAITINGFORRESPONSE;
     }
@@ -47,6 +47,16 @@ public class RequestStart extends Request {
         LOG.info(    "envTemp = " + Environment.getInstance().getEnvTemp() +
                    " envPress = " + Environment.getInstance().getAirPress() +
                 " envAltitude = " + Environment.getInstance().getAltitude());
+    }
+
+    @Override
+    public String getReqName() {
+        return "START: Environment";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at START";
     }
     
 }

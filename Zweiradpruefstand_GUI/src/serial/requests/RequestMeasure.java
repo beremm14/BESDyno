@@ -21,7 +21,7 @@ public class RequestMeasure extends Request {
         }
         port.writeByte((byte) 'm');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("m");
+            COMLOG.addReq("MEASURE: m");
         }
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -33,4 +33,15 @@ public class RequestMeasure extends Request {
         }
         
     }
+
+    @Override
+    public String getReqName() {
+        return "MEASURE: Engine & Wheel";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at MEASURE";
+    }
+    
 }

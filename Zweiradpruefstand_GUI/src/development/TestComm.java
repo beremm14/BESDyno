@@ -19,11 +19,7 @@ public class TestComm {
     private MyTelegram telegram = BESDyno.getInstance().getTelegram();
     
     public TestComm() throws SerialPortException, Exception {
-        try {
-            BESDyno.getInstance().addPendingRequest(telegram.start());
-        } catch (Exception e) {
-            LOG.warning(e);
-        }
+        BESDyno.getInstance().addPendingRequest(telegram.start());
     }
     
     

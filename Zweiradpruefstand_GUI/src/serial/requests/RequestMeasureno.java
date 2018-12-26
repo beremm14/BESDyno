@@ -21,7 +21,7 @@ public class RequestMeasureno extends Request {
         }
         port.writeByte((byte) 'n');
         if(COMLOG.isEnabled()) {
-            COMLOG.addReq("n");
+            COMLOG.addReq("MEASURENO: n");
         }
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -31,6 +31,16 @@ public class RequestMeasureno extends Request {
         if(COMLOG.isEnabled()) {
             COMLOG.addRes(res);
         }
-        
     }
+
+    @Override
+    public String getReqName() {
+        return "MEASURENO: Wheel only";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "ERROR at MEASURENO";
+    }
+    
 }

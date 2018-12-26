@@ -2,6 +2,7 @@ package serial.requests;
 
 import logging.Logger;
 import jssc.SerialPortException;
+import main.BESDyno;
 import serial.CommunicationException;
 
 /**
@@ -21,8 +22,17 @@ public abstract class Request {
     public Request() {
         status = Status.WAITINGTOSEND;
     }
+    
+    protected void devLog(String msg) {
+        if (BESDyno.getInstance().isDevMode()) {
+            LOG.debug(msg);
+        }
+    }
 
     public abstract void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException;
+    
+    public abstract String getReqName();
+    public abstract String getErrorMessage();
 
     public Status getStatus() {
         return status;
