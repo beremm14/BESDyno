@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -46,7 +48,7 @@ import serial.Telegram;
  * @author emil
  */
 public class BESDyno extends javax.swing.JFrame {
-    
+
     private static BESDyno instance;
 
     private static final Logger LOG;
@@ -66,7 +68,7 @@ public class BESDyno extends javax.swing.JFrame {
     private jssc.SerialPort port;
 
     //Variables
-    private boolean dark = false;
+//    private boolean dark = false;
     private boolean devMode = true;
 
     //Communication
@@ -74,16 +76,16 @@ public class BESDyno extends javax.swing.JFrame {
 
     /**
      * Creates new form BESDyno
-     * @return 
+     *
+     * @return
      */
-    
     public static BESDyno getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new BESDyno();
         }
         return instance;
     }
-    
+
     private BESDyno() {
         initComponents();
 
@@ -96,7 +98,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         jtfStatus.setEditable(false);
         jtfStatus.setText("Willkommen! Bitte verbinden Sie Ihr Gerät...");
-        
+
         jmiDevMode.setState(true);
         CommunicationLogger.getInstance().setCommLogging(devMode);
 
@@ -109,12 +111,10 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         refreshGui();
-
-        if (Config.getInstance().isDark()) {
-            dark = Config.getInstance().isDark();
-            setAppearance(dark);
-        }
-        jcbmiDarkMode.setState(dark);
+        
+        setAppearance(Config.getInstance().isDark());
+        
+        jcbmiDarkMode.setState(Config.getInstance().isDark());
     }
 
     private void refreshGui() {
@@ -251,13 +251,13 @@ public class BESDyno extends javax.swing.JFrame {
                 break;
         }
     }
-    
+
     private void devLog(String msg) {
-        if(isDevMode()) {
+        if (isDevMode()) {
             LOG.debug(msg);
         }
     }
-    
+
     //Serial-Methods
     private void refreshPorts() {
         final String[] ports = jssc.SerialPortList.getPortNames();
@@ -372,7 +372,7 @@ public class BESDyno extends javax.swing.JFrame {
                     throw new Exception("Internal Error");
                 }
             }
-            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) +".txt");
+            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
         }
 
         chooser.setSelectedFile(comfile);
@@ -380,7 +380,7 @@ public class BESDyno extends javax.swing.JFrame {
         int rv = chooser.showSaveDialog(this);
         if (rv == JFileChooser.APPROVE_OPTION) {
             comfile = chooser.getSelectedFile();
-            
+
             try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
                 CommunicationLogger.getInstance().writeFile(w);
             } catch (Exception ex) {
@@ -433,7 +433,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void loadConfig() throws FileNotFoundException, IOException, Exception {
         File home;
         File folder;
-        File ConfigFile;
+        File configFile;
 
         try {
             home = new File(System.getProperty("user.home"));
@@ -448,17 +448,39 @@ public class BESDyno extends javax.swing.JFrame {
                     throw new Exception("Internal Error");
                 }
             }
-            ConfigFile = new File(folder + File.separator + "Bike.config");
+            configFile = new File(folder + File.separator + "Config.json");
         } else {
-            ConfigFile = new File("Bike.config");
+            configFile = new File("Config.json");
         }
 
-        if (ConfigFile.exists()) {
-            try (BufferedReader r = new BufferedReader(new FileReader(ConfigFile))) {
-                Config.getInstance().readConfig(r);
+        if (configFile.exists()) {
+            Config.getInstance().readJson(new FileInputStream(configFile));
+        }
+    }
+    
+    private static File getConfigFile() throws Exception {
+        File home;
+        File folder;
+        File configFile;
 
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + ".Bike");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
             }
+            configFile = new File(folder + File.separator + "Config.json");
+        } else {
+            configFile = new File("Config.json");
         }
+        return configFile;
     }
 
     //Getter
@@ -467,13 +489,13 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     public boolean isDark() {
-        return dark;
+        return Config.getInstance().isDark();
     }
-    
+
     public boolean isDevMode() {
         return devMode;
     }
-    
+
     //Communication
     public void addPendingRequest(Request request) {
         try {
@@ -485,7 +507,7 @@ public class BESDyno extends javax.swing.JFrame {
             refreshGui();
         }
     }
-    
+
     public boolean removePendingReuest(Request request) {
         return pendingRequests.remove(request);
     }
@@ -533,9 +555,10 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuDeveloper = new javax.swing.JMenu();
         jmiDevMode = new javax.swing.JCheckBoxMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
-        jmiLoggedComm = new javax.swing.JMenuItem();
-        jmiTestComm = new javax.swing.JMenuItem();
+        jcbmiSaveLog = new javax.swing.JMenuItem();
+        jcbmiSaveLoggedComm = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jmiTestComm = new javax.swing.JMenuItem();
         jmiReset = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
@@ -758,16 +781,26 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuDeveloper.add(jmiDevMode);
         jmenuDeveloper.add(jSeparator5);
 
-        jmiLoggedComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
-        jmiLoggedComm.setText("Kommunikationsprotokoll");
-        jmiLoggedComm.addActionListener(new java.awt.event.ActionListener() {
+        jcbmiSaveLog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        jcbmiSaveLog.setText("Logging-Protokoll sichern");
+        jcbmiSaveLog.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiLoggedCommActionPerformed(evt);
+                jcbmiSaveLogActionPerformed(evt);
             }
         });
-        jmenuDeveloper.add(jmiLoggedComm);
+        jmenuDeveloper.add(jcbmiSaveLog);
 
-        jmiTestComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.META_MASK));
+        jcbmiSaveLoggedComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.META_MASK));
+        jcbmiSaveLoggedComm.setText("Kommunikations-Protokoll sichern");
+        jcbmiSaveLoggedComm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbmiSaveLoggedCommActionPerformed(evt);
+            }
+        });
+        jmenuDeveloper.add(jcbmiSaveLoggedComm);
+        jmenuDeveloper.add(jSeparator4);
+
+        jmiTestComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.META_MASK));
         jmiTestComm.setText("Kommunikation testen");
         jmiTestComm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -775,7 +808,6 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuDeveloper.add(jmiTestComm);
-        jmenuDeveloper.add(jSeparator4);
 
         jmiReset.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
         jmiReset.setText("Reset Arduino");
@@ -829,12 +861,18 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiPrintActionPerformed
 
     private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
-        settings.setAppearance(dark);
+        try {
+            loadConfig();
+        } catch (Exception ex) {
+            LOG.warning(ex);
+        }
+        settings.setSwingValues(Config.getInstance());
+        settings.setAppearance(Config.getInstance().isDark());
         settings.setVisible(true);
 
         if (settings.isPressedOK()) {
-            dark = settings.isDark();
-            setAppearance(dark);
+            jcbmiDarkMode.setState(Config.getInstance().isDark());
+            setAppearance(Config.getInstance().isDark());
             userLog("Einstellungen gespeichert", LogLevel.INFO);
         }
     }//GEN-LAST:event_jmiSettingsActionPerformed
@@ -844,13 +882,13 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiQuitActionPerformed
 
     private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
-        vehicle.setAppearance(dark);
+        vehicle.setAppearance(Config.getInstance().isDark());
         vehicle.setVisible(true);
 
         userLog("Start der Simulation", LogLevel.INFO);
 
         if (vehicle.isPressedOK()) {
-            measure.setAppearance(dark);
+            measure.setAppearance(Config.getInstance().isDark());
             measure.setVisible(true);
         }
     }//GEN-LAST:event_jmiStartSimActionPerformed
@@ -891,7 +929,7 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiDisconnectActionPerformed
 
     private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
-        about.setAppearance(dark);
+        about.setAppearance(Config.getInstance().isDark());
         about.setVisible(true);
         if (port != null) {
             about.writeDevice(port.getPortName());
@@ -914,26 +952,25 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jbutRefreshActionPerformed
 
     private void onHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onHelp
-        help.setAppearance(dark);
+        help.setAppearance(Config.getInstance().isDark());
         help.setVisible(true);
     }//GEN-LAST:event_onHelp
 
     private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
-        vehicle.setAppearance(dark);
+        vehicle.setAppearance(Config.getInstance().isDark());
         vehicle.setVisible(true);
 
         LOG.info("Simulation started");
 
         if (vehicle.isPressedOK()) {
-            measure.setAppearance(dark);
+            measure.setAppearance(Config.getInstance().isDark());
             measure.setVisible(true);
         }
     }//GEN-LAST:event_jbutStartSimActionPerformed
 
     private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
-        dark = jcbmiDarkMode.getState();
-        setAppearance(dark);
-        Config.getInstance().setDark(dark);
+        Config.getInstance().setDark(jcbmiDarkMode.getState());
+        setAppearance(Config.getInstance().isDark());
         try {
             settings.saveConfig(Config.getInstance());
         } catch (Exception e) {
@@ -962,18 +999,22 @@ public class BESDyno extends javax.swing.JFrame {
         addPendingRequest(telegram.reset());
     }//GEN-LAST:event_jmiResetActionPerformed
 
-    private void jmiLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiLoggedCommActionPerformed
+    private void jcbmiSaveLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiSaveLoggedCommActionPerformed
         try {
             saveComm();
         } catch (Exception ex) {
             userLog(ex, "Fehler beim Speichern des Kommunikationsprotokolls", LogLevel.WARNING);
         }
-    }//GEN-LAST:event_jmiLoggedCommActionPerformed
+    }//GEN-LAST:event_jcbmiSaveLoggedCommActionPerformed
 
     private void jmiDevModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDevModeActionPerformed
         devMode = jmiDevMode.getState();
         CommunicationLogger.getInstance().setCommLogging(jmiDevMode.getState());
     }//GEN-LAST:event_jmiDevModeActionPerformed
+
+    private void jcbmiSaveLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiSaveLogActionPerformed
+        userLog(new UnsupportedOperationException("Save Log: not supported yet"), "Speichern des Logs wird noch nicht unterstützt...", LogLevel.WARNING);
+    }//GEN-LAST:event_jcbmiSaveLogActionPerformed
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -1017,7 +1058,7 @@ public class BESDyno extends javax.swing.JFrame {
                     continue;
                 }
                 if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
-                    if(!removePendingReuest(r)) {
+                    if (!removePendingReuest(r)) {
                         LOG.warning("Error: removePendingRequest()");
                     }
                 }
@@ -1032,9 +1073,12 @@ public class BESDyno extends javax.swing.JFrame {
     public static void main(String args[]) throws UnsupportedLookAndFeelException {
         LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(System.out)));
         LOG.info("Start of BESDyno");
-
-        Config.initInstance(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "config.json"));
-        Bike.getInstance();
+        
+        try {
+            Config.createInstance(new FileInputStream(getConfigFile()));
+        } catch (Exception ex) {
+            LOG.warning(ex);
+        }
 
         //Menu-Bar support for macOS
         if (System.getProperty("os.name").contains("Mac OS X")) {
@@ -1109,6 +1153,8 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JButton jbutStartSim;
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
+    private javax.swing.JMenuItem jcbmiSaveLog;
+    private javax.swing.JMenuItem jcbmiSaveLoggedComm;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuAppearance;
     private javax.swing.JMenu jmenuDeveloper;
@@ -1120,7 +1166,6 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenuItem jmiHelp;
-    private javax.swing.JMenuItem jmiLoggedComm;
     private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;

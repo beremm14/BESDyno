@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,10 +17,16 @@ import javax.swing.JOptionPane;
  */
 public class SettingsDialog extends javax.swing.JDialog {
 
+    private static final Logger LOG = Logger.getLogger(SettingsDialog.class.getName());
+    
+    
+
     private boolean pressedOK;
 
     /**
      * Creates new form SettingsDialog
+     * @param parent
+     * @param modal
      */
     public SettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -26,7 +34,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         try {
             loadConfig();
         } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+            LOG.warning(ex);
         }
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
@@ -295,11 +303,10 @@ public class SettingsDialog extends javax.swing.JDialog {
         if(!error) {
             try {
                 saveConfig(Config.getInstance());
-                Config.getInstance().writeJson();
             } catch (Exception e) {
                 error = true;
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Interner Fehler", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace(System.err);
+                LOG.warning(e);
             }
         }
         if(!error) {
@@ -311,7 +318,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     //Sets jTFs & jRBs from Config-File
-    private void setSwingValues(Config c) {
+    public void setSwingValues(Config c) {
         jtfHysteresisKmh.setText(String.format("%d", c.getHysteresisKmh()));
         jtfHysteresisRpm.setText(String.format("%d", c.getHysteresisRpm()));
         jtfHysteresisTime.setText(String.format("%d", c.getHysteresisTime()));
@@ -345,22 +352,20 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
 
         if (home != null && home.exists()) {
-            folder = new File(home + "/.Bike");
+            folder = new File(home + File.separator + ".Bike");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
                     throw new Exception("Internal Error");
                 }
             }
-            file = new File(folder + "/Bike.config");
+            file = new File(folder + File.separator + "Config.json");
         } else {
-            file = new File("Bike.config");
+            file = new File("Config.json");
         }
 
         if (file.exists()) {
-            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-                Config.getInstance().readConfig(r);
-                setSwingValues(Config.getInstance());
-            }
+            Config.getInstance().readJson(new FileInputStream(file));
+            setSwingValues(Config.getInstance());
         }
     }
 
@@ -377,19 +382,20 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
 
         if (home != null && home.exists()) {
-            folder = new File(home + "/.Bike");
+            folder = new File(home + File.separator + ".Bike");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
                     throw new Exception("Internal Error");
                 }
             }
-            file = new File(folder + "/Bike.config");
+            file = new File(folder + File.separator + "Config.json");
         } else {
-            file = new File("Bike.config");
+            file = new File("Config.json");
         }
-
+        
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            config.writeConfig(w);
+            config.writeJson(w);
+            LOG.info("Config-File updated");
         }
     }
 

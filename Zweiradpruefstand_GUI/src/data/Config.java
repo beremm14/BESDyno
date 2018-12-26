@@ -5,24 +5,26 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.Map;
-import javax.json.Json;
 import logging.Logger;
+import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 
 /**
  *
  * @author emil
  */
-public class Config {    
-    
-    
+public class Config {
+
     private static Config instance = null;
-    
-    private File configFile;
+    private static final Logger LOG = Logger.getLogger(Config.class.getName());
 
     private boolean ps;
 
@@ -45,7 +47,7 @@ public class Config {
     private int idleRpm;
     private int hysteresisRpm;
     private int startRpm;
-    
+
     public static Config getInstance() {
         if (instance == null) {
             throw new RuntimeException("Instance not initialized");
@@ -53,24 +55,17 @@ public class Config {
         return instance;
     }
     
-    public static void initInstance(File configFile) {
-        if (instance != null) {
-            throw new RuntimeException("Instance already initialized");
-        }
-        instance = new Config(configFile);
+    public static Config createInstance(InputStream fis) throws Exception {
+        instance = new Config();
+        instance.readJson(fis);
+        return instance;
     }
-
-    private Config(File configFile) {
-        this.configFile = configFile;
-    }
-    
-    
 
     //Getter
     public boolean isPs() {
         return ps;
     }
-    
+
     public String getPowerUnit() {
         return ps ? "PS" : "kW";
     }
@@ -130,7 +125,7 @@ public class Config {
     public int getStartRpm() {
         return startRpm;
     }
-    
+
     //Setter
     public void setPs(boolean ps) {
         this.ps = ps;
@@ -188,49 +183,15 @@ public class Config {
         this.hysteresisRpm = hysteresisRpm;
     }
 
-    public void setStartRpm(int startRpm) {    
+    public void setStartRpm(int startRpm) {
         this.startRpm = startRpm;
     }
 
-    //Writeout
-    public void writeConfig(BufferedWriter w) throws IOException {
-        w.write(String.format("%b", dark));
-        w.write("\t");
-        w.write(String.format("%d", hysteresisKmh));
-        w.write("\t");
-        w.write(String.format("%d", hysteresisRpm));
-        w.write("\t");
-        w.write(String.format("%d", hysteresisTime));
-        w.write("\t");
-        w.write(String.format("%d", idleKmh));
-        w.write("\t");
-        w.write(String.format("%d", idleRpm));
-        w.write("\t");
-        w.write(Double.toString(inertiaCorr));
-        w.write("\t");
-        w.write(String.format("%d", period));
-        w.write("\t");
-        w.write(String.format("%d", pngHeight));
-        w.write("\t");
-        w.write(String.format("%d", pngWidth));
-        w.write("\t");
-        w.write(String.format("%d", powerCorr));
-        w.write("\t");
-        w.write(String.format("%b", ps));
-        w.write("\t");
-        w.write(String.format("%d", startKmh));
-        w.write("\t");
-        w.write(String.format("%d", startRpm));
-        w.write("\t");
-        w.write(String.format("%d", torqueCorr));
-    }
-    
-    public void writeJson() throws IOException {
-        
+    public void writeJson(BufferedWriter w) throws IOException {
+
         final JsonObjectBuilder b = Json.createObjectBuilder();
-        
-        b
-                .add("Dark", dark)
+
+        b.add("Dark", dark)
                 .add("Hysteresis Km/h", hysteresisKmh)
                 .add("Hysteresis Rpm", hysteresisRpm)
                 .add("Hysteresis Time", hysteresisTime)
@@ -245,41 +206,35 @@ public class Config {
                 .add("Start Km/h", startKmh)
                 .add("Start Rpm", startRpm)
                 .add("Torque Correction Factor", torqueCorr);
-        
+
         JsonObject obj = b.build();
-                
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(configFile))) {
-            w.write(obj.toString());
-            System.out.println(obj.toString());
-        }
-        
+        w.write(obj.toString());
+        LOG.info("Config-File written: " + obj.toString());
     }
 
-    //Read
-    public void readConfig(BufferedReader r) throws IOException, NumberFormatException, Exception {
-        while (r.ready()) {
-            String line = r.readLine().trim();
-            if (line.isEmpty())
-                throw new Exception("Config-File Error!");
-            
-            String s[] = line.split("\t");
-
-            dark = Boolean.parseBoolean(s[0]);
-            hysteresisKmh = Integer.parseInt(s[1]);
-            hysteresisRpm = Integer.parseInt(s[2]);
-            hysteresisTime = Integer.parseInt(s[3]);
-            idleKmh = Integer.parseInt(s[4]);
-            idleRpm = Integer.parseInt(s[5]);
-            inertiaCorr = Double.parseDouble(s[6]);
-            period = Integer.parseInt(s[7]);
-            pngHeight = Integer.parseInt(s[8]);
-            pngWidth = Integer.parseInt(s[9]);
-            powerCorr = Integer.parseInt(s[10]);
-            ps = Boolean.parseBoolean(s[11]);
-            startKmh = Integer.parseInt(s[12]);
-            startRpm = Integer.parseInt(s[13]);
-            torqueCorr = Integer.parseInt(s[14]);
+    public void readJson(InputStream fis) throws IOException, Exception {
+        JsonObject json;
+        
+        try (JsonReader jsonReader = Json.createReader(fis)) {
+            json = jsonReader.readObject();
         }
+
+        dark = json.getBoolean("Dark");
+        hysteresisKmh = json.getInt("Hysteresis Km/h");
+        hysteresisRpm = json.getInt("Hysteresis Rpm");
+        hysteresisTime = json.getInt("Hysteresis Time");
+        idleKmh = json.getInt("Idle Km/h");
+        idleRpm = json.getInt("Idle Rpm");
+        inertiaCorr = json.getJsonNumber("Inertia").doubleValue();
+        period = json.getInt("Period");
+        pngHeight = json.getInt("PNG Height");
+        pngWidth = json.getInt("PNG Width");
+        powerCorr = json.getInt("Power Correction Factor");
+        ps = json.getBoolean("PS");
+        startKmh = json.getInt("Start Km/h");
+        startRpm = json.getInt("Start Rpm");
+        torqueCorr = json.getInt("Torque Correction Factor");
+
     }
 
 }
