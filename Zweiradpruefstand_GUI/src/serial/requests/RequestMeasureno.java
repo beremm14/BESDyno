@@ -34,13 +34,18 @@ public class RequestMeasureno extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "MEASURENO: Wheel only";
     }
 
     @Override
     public String getErrorMessage() {
         return "ERROR at MEASURENO";
+    }
+
+    @Override
+    public String getReqName() {
+        return "MEASURENO";
     }
     
 }

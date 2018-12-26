@@ -48,13 +48,19 @@ public class RequestEngine extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "ENGINE: Motorcycle Temperatures";
     }
+    
 
     @Override
     public String getErrorMessage() {
         return "ERROR at ENGINE";
+    }
+
+    @Override
+    public String getReqName() {
+        return "ENGINE";
     }
     
 }

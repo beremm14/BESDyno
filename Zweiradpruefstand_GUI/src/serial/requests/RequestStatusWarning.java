@@ -34,13 +34,18 @@ public class RequestStatusWarning extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "WARNING";
     }
 
     @Override
     public String getErrorMessage() {
         return "ERROR at WARNING";
+    }
+
+    @Override
+    public String getReqName() {
+        return "WARNING";
     }
     
 }

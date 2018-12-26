@@ -34,13 +34,18 @@ public class RequestStatusFine extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "FINE";
     }
 
     @Override
     public String getErrorMessage() {
         return "ERROR at FINE";
+    }
+
+    @Override
+    public String getReqName() {
+        return "FINE";
     }
     
 }

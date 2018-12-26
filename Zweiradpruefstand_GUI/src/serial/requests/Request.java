@@ -31,6 +31,7 @@ public abstract class Request {
 
     public abstract void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException;
     
+    public abstract String getReqMessage();
     public abstract String getReqName();
     public abstract String getErrorMessage();
 

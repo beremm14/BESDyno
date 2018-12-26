@@ -42,7 +42,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     }
 
     private void handlePortEvent(SerialPortEvent spe) {
-        if (spe.isRXCHAR()) {
+        devLog("SerialPort Event happened!!! :)");
+        if (spe.isRXCHAR() || spe.isRXFLAG()) {
             while (true) {
                 try {
                     final byte[] b = port.readBytes(1);
@@ -86,14 +87,21 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         }
                     } while (req == null);
                 }
+                
                 req.setStatus(Status.WAITINGTOSEND);
+                devLog("Request " + req.getReqName() + " WAITING-TO-SEND");
+                
+                devLog("Request " + req.getReqName() + " on the way...");
                 req.sendRequest(port);
+                devLog("Request " + req.getReqName() + ": sending completed");
+                
                 publish(req);
-                Thread.sleep(1000);
+                devLog("Request " + req.getReqName() + " published");
+                
                 synchronized (receivedFrame) {
-                    receivedFrame.delete(0, receivedFrame.length() - 1);
+                    receivedFrame.delete(0, receivedFrame.length());
                 }
-                //req.sendRequest(port);
+                
                 publish(req);
 
                 String res;

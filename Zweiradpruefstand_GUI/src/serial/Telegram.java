@@ -19,7 +19,7 @@ public class Telegram extends RxTxWorker {
     
     private void devLog(String msg) {
         if (BESDyno.getInstance().isDevMode()) {
-            LOG.info(msg);
+            LOG.debug(msg);
         }
     }
     
@@ -44,9 +44,17 @@ public class Telegram extends RxTxWorker {
     public Request start() {
         synchronized (requestList) {
             final Request request = new RequestStart();
+            devLog("new: requestStart();");
+            
             request.setStatus(Request.Status.WAITINGTOSEND);
+            devLog("Request START: WAITING-TO-SEND");
+            
             requestList.add(request);
+            devLog("Request START added to synchronized LinkedList<>():requestList");
+            
             requestList.notifyAll();
+            devLog("synchronized LinkedList<>():requestList notified");
+            
             return request;
         }
     }

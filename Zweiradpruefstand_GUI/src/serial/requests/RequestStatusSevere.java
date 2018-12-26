@@ -34,13 +34,18 @@ public class RequestStatusSevere extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "SEVERE";
     }
 
     @Override
     public String getErrorMessage() {
         return "ERROR at SEVERE";
+    }
+
+    @Override
+    public String getReqName() {
+        return "SEVERE";
     }
     
 }

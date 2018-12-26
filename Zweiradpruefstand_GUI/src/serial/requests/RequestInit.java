@@ -1,9 +1,7 @@
 package serial.requests;
 
 import development.CommunicationLogger;
-import logging.Logger;
 import jssc.SerialPortException;
-import main.BESDyno;
 import serial.CommunicationException;
 
 /**
@@ -12,7 +10,6 @@ import serial.CommunicationException;
  */
 public class RequestInit extends Request {
 
-    private static final Logger LOG = Logger.getLogger(RequestInit.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
 
     @Override
@@ -36,11 +33,13 @@ public class RequestInit extends Request {
 
     @Override
     public void handleResponse(String res) {
+        devLog("INIT-Response: " + res);
         if(COMLOG.isEnabled()) {
             COMLOG.addRes(res);
+            devLog("INIT-Response " + res + " logged");
         }
         
-        if(res != ":BESDyno;") {
+        if(!res.equals(":BESDyno;")) {
             status = Request.Status.ERROR;
         } else {
             status = Request.Status.DONE;
@@ -49,13 +48,18 @@ public class RequestInit extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "INIT";
     }
 
     @Override
     public String getErrorMessage() {
         return "ERROR at INIT";
+    }
+
+    @Override
+    public String getReqName() {
+        return "INIT";
     }
 
 }

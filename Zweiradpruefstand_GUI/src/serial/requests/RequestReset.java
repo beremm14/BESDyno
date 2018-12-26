@@ -41,13 +41,18 @@ public class RequestReset extends Request {
     }
 
     @Override
-    public String getReqName() {
+    public String getReqMessage() {
         return "RESET";
     }
 
     @Override
     public String getErrorMessage() {
         return "ERROR at RESET";
+    }
+
+    @Override
+    public String getReqName() {
+        return "RESET";
     }
  
 }

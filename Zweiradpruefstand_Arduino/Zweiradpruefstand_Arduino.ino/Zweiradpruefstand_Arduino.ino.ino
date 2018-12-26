@@ -38,7 +38,7 @@ float exhTemp;
 
 //-Functions------------------------------------------------------------//
 enum Protocol convertIncomingString() {
-    char req = Serial.read();
+    char req = (char)Serial.read();
     if (req == 's') {
       return START;
     } else if (req == 'e') {
@@ -133,7 +133,6 @@ void setStatusMaxProblem() {
 
 void setup() {
     Serial.begin(57600, SERIAL_8N1);
-    Serial.println("BES Dyno started");
 
     pinMode(resetPin, OUTPUT);
     pinMode(statusPinF, OUTPUT);
@@ -141,9 +140,7 @@ void setup() {
     pinMode(statusPinS, OUTPUT);
     
     digitalWrite(resetPin, HIGH);
-    digitalWrite(statusPinF, LOW);
-    digitalWrite(statusPinW, HIGH);
-    digitalWrite(statusPinS, HIGH);
+    setStatusWarning();
     
     analogReference(EXTERNAL);
 }
@@ -151,7 +148,7 @@ void setup() {
 void loop() {
   switch (currentState) {
     case INIT:
-      Serial.println(":BES Dyno is ready!;");
+      Serial.println(":BESDyno;");
       Serial.flush();
       setStatusFine();
       break;

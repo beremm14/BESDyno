@@ -3,6 +3,7 @@ package main;
 import data.Bike;
 import data.Config;
 import development.CommunicationLogger;
+import development.gui.DevInfoPane;
 import gui.AboutDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
@@ -26,7 +27,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -60,6 +60,7 @@ public class BESDyno extends javax.swing.JFrame {
     private VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
     private MeasureDialog measure = new MeasureDialog(this, true);
     private SettingsDialog settings = new SettingsDialog(this, true);
+    private DevInfoPane infoPane = new DevInfoPane(this, false);
 
     //Object-Variables
     private File file;
@@ -68,7 +69,6 @@ public class BESDyno extends javax.swing.JFrame {
     private jssc.SerialPort port;
 
     //Variables
-//    private boolean dark = false;
     private boolean devMode = true;
 
     //Communication
@@ -499,8 +499,8 @@ public class BESDyno extends javax.swing.JFrame {
     //Communication
     public void addPendingRequest(Request request) {
         try {
+            devLog(request.getReqMessage());
             pendingRequests.add(request);
-            devLog(request.getReqName());
         } catch (Exception ex) {
             userLog(ex, request.getErrorMessage(), LogLevel.WARNING);
         } finally {
@@ -510,6 +510,14 @@ public class BESDyno extends javax.swing.JFrame {
 
     public boolean removePendingReuest(Request request) {
         return pendingRequests.remove(request);
+    }
+    
+    public void showPendingRequests() {
+        infoPane.setAppearance(Config.getInstance().isDark());
+        for (Request r : pendingRequests) {
+            infoPane.addElement(r.getReqMessage());
+        }
+        infoPane.setVisible(true);
     }
 
     /**
@@ -560,6 +568,7 @@ public class BESDyno extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jmiTestComm = new javax.swing.JMenuItem();
         jmiReset = new javax.swing.JMenuItem();
+        jmiShowPendingRequests = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -818,6 +827,14 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuDeveloper.add(jmiReset);
 
+        jmiShowPendingRequests.setText("Unfertige Requests anzeigen");
+        jmiShowPendingRequests.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiShowPendingRequestsActionPerformed(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiShowPendingRequests);
+
         jMenuBar.add(jmenuDeveloper);
 
         jmenuAbout.setText("Über");
@@ -913,6 +930,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
+            telegram.cancel(true);
             port.closePort();
             userLog("Port geschlossen", LogLevel.INFO);
         } catch (Exception e) {
@@ -992,7 +1010,8 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiOpenActionPerformed
 
     private void jmiTestCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTestCommActionPerformed
-        addPendingRequest(telegram.start());
+        LOG.debug("Test communication...");
+        addPendingRequest(telegram.init());
     }//GEN-LAST:event_jmiTestCommActionPerformed
 
     private void jmiResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResetActionPerformed
@@ -1015,6 +1034,10 @@ public class BESDyno extends javax.swing.JFrame {
     private void jcbmiSaveLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiSaveLogActionPerformed
         userLog(new UnsupportedOperationException("Save Log: not supported yet"), "Speichern des Logs wird noch nicht unterstützt...", LogLevel.WARNING);
     }//GEN-LAST:event_jcbmiSaveLogActionPerformed
+
+    private void jmiShowPendingRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowPendingRequestsActionPerformed
+        showPendingRequests();
+    }//GEN-LAST:event_jmiShowPendingRequestsActionPerformed
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -1051,13 +1074,14 @@ public class BESDyno extends javax.swing.JFrame {
         protected void process(List<Request> chunks) {
             for (Request r : chunks) {
                 if (r.getStatus() == Status.DONE) {
-                    jtfStatus.setText("OK");
+                    devLog("Request " + r.getReqName() + ": DONE");
                 } else if (r.getStatus() == Status.ERROR) {
-                    jtfStatus.setText("ERROR");
+                    devLog("Request: " + r.getReqName() + ": ERROR");
                 } else {
                     continue;
-                }
+                }                
                 if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
+                    devLog("Request " + r.getReqName() + " removed from pendingRequests");
                     if (!removePendingReuest(r)) {
                         LOG.warning("Error: removePendingRequest()");
                     }
@@ -1173,6 +1197,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiReset;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
+    private javax.swing.JMenuItem jmiShowPendingRequests;
     private javax.swing.JMenuItem jmiStartSim;
     private javax.swing.JMenuItem jmiTestComm;
     private javax.swing.JProgressBar jpbStatus;

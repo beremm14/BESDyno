@@ -1,11 +1,9 @@
 package development;
 
-import data.Environment;
 import jssc.SerialPortException;
 import logging.Logger;
 import main.BESDyno;
 import main.BESDyno.MyTelegram;
-import serial.Telegram;
 
 
 /**
@@ -19,9 +17,8 @@ public class TestComm {
     private MyTelegram telegram = BESDyno.getInstance().getTelegram();
     
     public TestComm() throws SerialPortException, Exception {
-        BESDyno.getInstance().addPendingRequest(telegram.start());
+        LOG.debug("Test communication...");
+        BESDyno.getInstance().addPendingRequest(telegram.init());
     }
-    
-    
-    
+
 }
