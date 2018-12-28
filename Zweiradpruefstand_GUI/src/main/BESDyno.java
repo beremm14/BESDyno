@@ -508,7 +508,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    public boolean removePendingReuest(Request request) {
+    public boolean removePendingRequest(Request request) {
         return pendingRequests.remove(request);
     }
     
@@ -1081,9 +1081,7 @@ public class BESDyno extends javax.swing.JFrame {
                 }                
                 if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
                     devLog("Request " + r.getReqName() + " removed from pendingRequests");
-                    if (!removePendingReuest(r)) {
-                        LOG.warning("Error: removePendingRequest()");
-                    }
+                    removePendingRequest(r);
                 }
             }
         }

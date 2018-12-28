@@ -6,6 +6,7 @@ import java.util.List;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import main.BESDyno;
 import serial.requests.Request.Status;
@@ -43,7 +44,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     private void handlePortEvent(SerialPortEvent spe) {
         devLog("SerialPort Event happened!!! :)");
-        if (spe.isRXCHAR() || spe.isRXFLAG()) {
+        if (spe.isRXCHAR()) {
             while (true) {
                 try {
                     final byte[] b = port.readBytes(1);

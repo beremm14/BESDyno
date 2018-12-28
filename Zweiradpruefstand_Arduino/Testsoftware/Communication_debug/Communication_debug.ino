@@ -42,6 +42,7 @@ void setup() {
 void loop() {
 }
 
+//ISR
 void serialEvent() {
   while(Serial.available()) {
     char req = Serial.read();
