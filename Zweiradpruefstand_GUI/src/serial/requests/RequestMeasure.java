@@ -1,6 +1,7 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import java.io.UnsupportedEncodingException;
 import jssc.SerialPortException;
 import logging.Logger;
 import serial.CommunicationException;
@@ -19,7 +20,11 @@ public class RequestMeasure extends Request {
         if (status != Request.Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
-        port.writeByte((byte) 'm');
+        try {
+            port.writeBytes("m".getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            LOG.severe(ex);
+        }
         if(COMLOG.isEnabled()) {
             COMLOG.addReq("MEASURE: m");
         }

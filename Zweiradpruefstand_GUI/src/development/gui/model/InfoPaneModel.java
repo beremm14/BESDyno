@@ -17,6 +17,10 @@ public class InfoPaneModel extends AbstractListModel {
         fireContentsChanged(s, 0, list.size()-1);
         return rv;
     }
+    
+    public void rmAll() {
+        list.removeAll(list);
+    }
 
     @Override
     public int getSize() {

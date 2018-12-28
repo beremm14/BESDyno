@@ -1,6 +1,7 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import java.io.UnsupportedEncodingException;
 import logging.Logger;
 import jssc.SerialPortException;
 import serial.CommunicationException;
@@ -19,7 +20,11 @@ public class RequestReset extends Request {
         if (status != Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
-        port.writeByte((byte) 'r');
+        try {
+            port.writeBytes("r".getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            LOG.severe(ex);
+        }
         if(COMLOG.isEnabled()) {
             COMLOG.addReq("RESET: r");
         }

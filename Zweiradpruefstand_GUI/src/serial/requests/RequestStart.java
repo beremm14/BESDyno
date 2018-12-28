@@ -2,6 +2,7 @@ package serial.requests;
 
 import data.Environment;
 import development.CommunicationLogger;
+import java.io.UnsupportedEncodingException;
 import logging.Logger;
 import jssc.SerialPortException;
 import serial.CommunicationException;
@@ -22,8 +23,12 @@ public class RequestStart extends Request {
         }
         
         devLog("Request START will be sent");
-        port.writeByte((byte) 's');
-        devLog("Request START sent");
+        try {
+            port.writeBytes("s".getBytes("UTF-8"));
+            devLog("Request START sent");
+        } catch (UnsupportedEncodingException ex) {
+            LOG.severe(ex);
+        }
         
         if(COMLOG.isEnabled()) {
             COMLOG.addReq("START: s");

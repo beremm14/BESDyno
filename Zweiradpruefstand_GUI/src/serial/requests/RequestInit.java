@@ -23,14 +23,12 @@ public class RequestInit extends Request {
         }
         
         devLog("Request INIT will be sent");
-        //port.writeString("i");
         try {
             port.writeBytes("i".getBytes("UTF-8"));
             devLog("Request INIT sent");
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        
         
         if(COMLOG.isEnabled()) {
             COMLOG.addReq("INIT: i");

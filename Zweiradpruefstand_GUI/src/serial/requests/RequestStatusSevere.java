@@ -1,6 +1,7 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import java.io.UnsupportedEncodingException;
 import jssc.SerialPortException;
 import logging.Logger;
 import serial.CommunicationException;
@@ -19,7 +20,11 @@ public class RequestStatusSevere extends Request {
         if (status != Request.Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
-        port.writeByte((byte) 'v');
+        try {
+            port.writeBytes("r".getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            LOG.severe(ex);
+        }
         if(COMLOG.isEnabled()) {
             COMLOG.addReq("SEVERE: v");
         }

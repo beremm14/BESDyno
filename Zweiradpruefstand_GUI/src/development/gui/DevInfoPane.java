@@ -42,6 +42,10 @@ public class DevInfoPane extends javax.swing.JDialog {
         model.add(s);
     }
     
+    public void rmAll() {
+        model.rmAll();
+    }
+    
     public void setAppearance(boolean dark) {
         if (dark) {
             jInfoPane.setBackground(Color.DARK_GRAY);
