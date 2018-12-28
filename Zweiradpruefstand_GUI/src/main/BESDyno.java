@@ -1051,7 +1051,7 @@ public class BESDyno extends javax.swing.JFrame {
                 port = (jssc.SerialPort) get(2, TimeUnit.SECONDS);
                 telegram.setSerialPort(port);
                 LOG.info("setPort: RxTxWorker");
-                addPendingRequest(telegram.init());
+                //addPendingRequest(telegram.init());
             } catch (Exception e) {
                 LOG.warning(e);
                 jtfStatus.setText("Port konnte nicht geöffnet werden...");
@@ -1067,7 +1067,6 @@ public class BESDyno extends javax.swing.JFrame {
 
         @Override
         protected void done() {
-            telegram.execute();
         }
 
         @Override

@@ -1,6 +1,9 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import logging.Logger;
 import jssc.SerialPortException;
 import serial.CommunicationException;
 
@@ -10,6 +13,7 @@ import serial.CommunicationException;
  */
 public class RequestInit extends Request {
 
+    private static final Logger LOG = Logger.getLogger(RequestInit.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
 
     @Override
@@ -19,8 +23,14 @@ public class RequestInit extends Request {
         }
         
         devLog("Request INIT will be sent");
-        port.writeByte((byte) 'i');
-        devLog("Request INIT sent");
+        //port.writeString("i");
+        try {
+            port.writeBytes("i".getBytes("UTF-8"));
+            devLog("Request INIT sent");
+        } catch (UnsupportedEncodingException ex) {
+            LOG.severe(ex);
+        }
+        
         
         if(COMLOG.isEnabled()) {
             COMLOG.addReq("INIT: i");
