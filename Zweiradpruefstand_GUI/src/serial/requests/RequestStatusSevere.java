@@ -21,7 +21,7 @@ public class RequestStatusSevere extends Request {
             throw new CommunicationException("Request bereits gesendet");
         }
         try {
-            port.writeBytes("r".getBytes("UTF-8"));
+            port.writeBytes("v".getBytes("UTF-8"));
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
@@ -36,6 +36,11 @@ public class RequestStatusSevere extends Request {
         if(COMLOG.isEnabled()) {
             COMLOG.addRes(res);
         }
+        if(res.equals(":SEVERE;")) {
+            status = Status.DONE;
+        } else {
+            status = Status.ERROR;
+        }
     }
 
     @Override
@@ -43,10 +48,6 @@ public class RequestStatusSevere extends Request {
         return "SEVERE";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at SEVERE";
-    }
 
     @Override
     public String getReqName() {

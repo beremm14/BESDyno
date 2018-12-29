@@ -43,10 +43,6 @@ public class RequestMeasureno extends Request {
         return "MEASURENO: Wheel only";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at MEASURENO";
-    }
 
     @Override
     public String getReqName() {

@@ -33,7 +33,6 @@ public abstract class Request {
     
     public abstract String getReqMessage();
     public abstract String getReqName();
-    public abstract String getErrorMessage();
 
     public Status getStatus() {
         return status;

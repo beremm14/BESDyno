@@ -73,10 +73,6 @@ public class RequestStart extends Request {
         return "START: Environment";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at START";
-    }
 
     @Override
     public String getReqName() {

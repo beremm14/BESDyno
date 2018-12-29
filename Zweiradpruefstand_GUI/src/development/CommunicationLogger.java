@@ -14,25 +14,20 @@ import java.util.List;
  * @author emil
  */
 public class CommunicationLogger {
-    
+
     private static CommunicationLogger instance;
-    
+
     private boolean enableLogging;
     private final List<String> reqList = new LinkedList<>();
     private final List<String> resList = new LinkedList<>();
-    
-    private final Date date = Calendar.getInstance().getTime();
-    //Year-Month-Day Hour:Minutes:Seconds.Milliseconds
-    private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    
-    
+
     public static CommunicationLogger getInstance() {
         if (instance == null) {
             instance = new CommunicationLogger();
         }
         return instance;
     }
-    
+
     private CommunicationLogger() {
     }
 
@@ -43,12 +38,18 @@ public class CommunicationLogger {
     public void setCommLogging(boolean enableLogging) {
         this.enableLogging = enableLogging;
     }
-    
+
     public void addReq(String req) {
+        Date date = Calendar.getInstance().getTime();
+        //Year-Month-Day Hour:Minutes:Seconds.Milliseconds
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         reqList.add(df.format(date) + ": " + req);
     }
-    
+
     public void addRes(String res) {
+        Date date = Calendar.getInstance().getTime();
+        //Year-Month-Day Hour:Minutes:Seconds.Milliseconds
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         resList.add(df.format(date) + ": " + res);
     }
 
@@ -59,7 +60,7 @@ public class CommunicationLogger {
     public List<String> getResList() {
         return resList;
     }
-    
+
     public void writeFile(BufferedWriter w) throws IOException {
         w.write("REQUESTS");
         w.newLine();
@@ -70,7 +71,7 @@ public class CommunicationLogger {
         w.newLine();
         w.write("RESPONSES");
         w.newLine();
-        for(String s : resList) {
+        for (String s : resList) {
             w.write(s);
             w.newLine();
         }

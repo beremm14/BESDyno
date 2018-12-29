@@ -36,6 +36,11 @@ public class RequestStatusWarning extends Request {
         if(COMLOG.isEnabled()) {
             COMLOG.addRes(res);
         }
+        if(res.equals(":WARNING;")) {
+            status = Status.DONE;
+        } else {
+            status = Status.ERROR;
+        }
     }
 
     @Override
@@ -43,10 +48,6 @@ public class RequestStatusWarning extends Request {
         return "WARNING";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at WARNING";
-    }
 
     @Override
     public String getReqName() {

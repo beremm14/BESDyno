@@ -519,7 +519,7 @@ public class BESDyno extends javax.swing.JFrame {
             devLog(request.getReqMessage());
             pendingRequests.add(request);
         } catch (Exception ex) {
-            userLog(ex, request.getErrorMessage(), LogLevel.WARNING);
+            userLog(ex, "ERROR at Request: " + request.getReqName(), LogLevel.WARNING);
         } finally {
             refreshGui();
         }
@@ -605,8 +605,16 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiSaveLoggedComm = new javax.swing.JMenuItem();
         jcbmiSaveLog = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        jmiTestComm = new javax.swing.JMenuItem();
-        jmiReset = new javax.swing.JMenuItem();
+        jmenuRequests = new javax.swing.JMenu();
+        jmiInit = new javax.swing.JMenuItem();
+        jmiStart = new javax.swing.JMenuItem();
+        jmiEngine = new javax.swing.JMenuItem();
+        jmiMeasure = new javax.swing.JMenuItem();
+        jmiMeasureno = new javax.swing.JMenuItem();
+        jmiFine = new javax.swing.JMenuItem();
+        jmiWarning = new javax.swing.JMenuItem();
+        jmiSevere = new javax.swing.JMenuItem();
+        jmiMaxProblems = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -863,23 +871,81 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuDeveloper.add(jcbmiSaveLog);
         jmenuDeveloper.add(jSeparator4);
 
-        jmiTestComm.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.META_MASK));
-        jmiTestComm.setText("Kommunikation testen");
-        jmiTestComm.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiTestCommActionPerformed(evt);
-            }
-        });
-        jmenuDeveloper.add(jmiTestComm);
+        jmenuRequests.setText("Request senden");
 
-        jmiReset.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
-        jmiReset.setText("Reset Arduino");
-        jmiReset.addActionListener(new java.awt.event.ActionListener() {
+        jmiInit.setText("INIT");
+        jmiInit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiResetActionPerformed(evt);
+                jmiInitActionPerformed(evt);
             }
         });
-        jmenuDeveloper.add(jmiReset);
+        jmenuRequests.add(jmiInit);
+
+        jmiStart.setText("START");
+        jmiStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiStartActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiStart);
+
+        jmiEngine.setText("ENGINE");
+        jmiEngine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiEngineActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiEngine);
+
+        jmiMeasure.setText("MEASURE");
+        jmiMeasure.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiMeasureActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiMeasure);
+
+        jmiMeasureno.setText("MEASURENO");
+        jmiMeasureno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiMeasurenoActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiMeasureno);
+
+        jmiFine.setText("FINE");
+        jmiFine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiFineActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiFine);
+
+        jmiWarning.setText("WARNING");
+        jmiWarning.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiWarningActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiWarning);
+
+        jmiSevere.setText("SEVERE");
+        jmiSevere.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiSevereActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiSevere);
+
+        jmiMaxProblems.setText("MAXPROBLEMS");
+        jmiMaxProblems.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiMaxProblemsActionPerformed(evt);
+            }
+        });
+        jmenuRequests.add(jmiMaxProblems);
+
+        jmenuDeveloper.add(jmenuRequests);
 
         jMenuBar.add(jmenuDeveloper);
 
@@ -1055,15 +1121,6 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmiOpenActionPerformed
 
-    private void jmiTestCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiTestCommActionPerformed
-        LOG.debug("Test communication...");
-        addPendingRequest(telegram.init());
-    }//GEN-LAST:event_jmiTestCommActionPerformed
-
-    private void jmiResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiResetActionPerformed
-        addPendingRequest(telegram.reset());
-    }//GEN-LAST:event_jmiResetActionPerformed
-
     private void jcbmiSaveLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiSaveLoggedCommActionPerformed
         try {
             saveComm();
@@ -1088,6 +1145,51 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiShowLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowLoggedCommActionPerformed
         showLoggedComm();
     }//GEN-LAST:event_jmiShowLoggedCommActionPerformed
+
+    private void jmiInitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInitActionPerformed
+        LOG.info("Test Communication: INIT");
+        addPendingRequest(telegram.init());
+    }//GEN-LAST:event_jmiInitActionPerformed
+
+    private void jmiStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartActionPerformed
+        LOG.info("Test Communication: START");
+        addPendingRequest(telegram.start());
+    }//GEN-LAST:event_jmiStartActionPerformed
+
+    private void jmiEngineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiEngineActionPerformed
+        LOG.info("Test Communication: ENGINE");
+        addPendingRequest(telegram.engine());
+    }//GEN-LAST:event_jmiEngineActionPerformed
+
+    private void jmiMeasureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiMeasureActionPerformed
+        LOG.info("Test Communication: MEASURE");
+        addPendingRequest(telegram.measure());
+    }//GEN-LAST:event_jmiMeasureActionPerformed
+
+    private void jmiMeasurenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiMeasurenoActionPerformed
+        LOG.info("Test Communication: MEASURENO");
+        addPendingRequest(telegram.measureno());
+    }//GEN-LAST:event_jmiMeasurenoActionPerformed
+
+    private void jmiFineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiFineActionPerformed
+        LOG.info("Test Communication: FINE");
+        addPendingRequest(telegram.fine());
+    }//GEN-LAST:event_jmiFineActionPerformed
+
+    private void jmiWarningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiWarningActionPerformed
+        LOG.info("Test Communication: WARNING");
+        addPendingRequest(telegram.warning());
+    }//GEN-LAST:event_jmiWarningActionPerformed
+
+    private void jmiSevereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSevereActionPerformed
+        LOG.info("Test Communication: SEVERE");
+        addPendingRequest(telegram.severe());
+    }//GEN-LAST:event_jmiSevereActionPerformed
+
+    private void jmiMaxProblemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiMaxProblemsActionPerformed
+        LOG.info("Test Communication: MAXPROBLEMS");
+        addPendingRequest(telegram.maxProblems());
+    }//GEN-LAST:event_jmiMaxProblemsActionPerformed
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -1133,6 +1235,7 @@ public class BESDyno extends javax.swing.JFrame {
                 } else {
                     continue;
                 }
+                
                 if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
                     devLog("Request " + r.getReqName() + " removed from pendingRequests");
                     removePendingRequest(r);
@@ -1140,7 +1243,7 @@ public class BESDyno extends javax.swing.JFrame {
 
                 if (r.getReqName() == "INIT") {
                     if (r.getStatus() == Status.DONE) {
-                        userLog("Gerät ist einsatzbereit!", LogLevel.SEVERE);
+                        userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
                         userLogPane("Gerät hat möglicherweise einen Fehler oder ist defekt. Keine Gewährleistung der Korrektheit der Messdaten - Status-LEDs kontrollieren!", LogLevel.WARNING);
                     }
@@ -1242,24 +1345,32 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenu jmenuAppearance;
     private javax.swing.JMenu jmenuDeveloper;
     private javax.swing.JMenu jmenuFile;
+    private javax.swing.JMenu jmenuRequests;
     private javax.swing.JMenu jmenuSimulation;
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JCheckBoxMenuItem jmiDevMode;
     private javax.swing.JMenuItem jmiDisconnect;
+    private javax.swing.JMenuItem jmiEngine;
     private javax.swing.JMenuItem jmiExport;
+    private javax.swing.JMenuItem jmiFine;
     private javax.swing.JMenuItem jmiHelp;
+    private javax.swing.JMenuItem jmiInit;
+    private javax.swing.JMenuItem jmiMaxProblems;
+    private javax.swing.JMenuItem jmiMeasure;
+    private javax.swing.JMenuItem jmiMeasureno;
     private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
     private javax.swing.JMenuItem jmiRefresh;
-    private javax.swing.JMenuItem jmiReset;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
+    private javax.swing.JMenuItem jmiSevere;
     private javax.swing.JMenuItem jmiShowLoggedComm;
     private javax.swing.JMenuItem jmiShowPendingRequests;
+    private javax.swing.JMenuItem jmiStart;
     private javax.swing.JMenuItem jmiStartSim;
-    private javax.swing.JMenuItem jmiTestComm;
+    private javax.swing.JMenuItem jmiWarning;
     private javax.swing.JProgressBar jpbStatus;
     private javax.swing.JTextField jtfStatus;
     // End of variables declaration//GEN-END:variables

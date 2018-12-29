@@ -47,10 +47,10 @@ public class RequestInit extends Request {
             devLog("INIT-Response " + res + " logged");
         }
         
-        if(!res.equals(":BESDyno;")) {
-            status = Request.Status.ERROR;
-        } else {
+        if(res.equals(":BESDyno;")) {
             status = Request.Status.DONE;
+        } else {
+            status = Request.Status.ERROR;
         }
         
     }
@@ -60,10 +60,6 @@ public class RequestInit extends Request {
         return "INIT";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at INIT";
-    }
 
     @Override
     public String getReqName() {

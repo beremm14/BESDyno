@@ -6,7 +6,6 @@ import java.util.List;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import main.BESDyno;
 import serial.requests.Request.Status;
@@ -37,25 +36,32 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
         this.port = port;
         if (port != null) {
             port.addEventListener((SerialPortEvent spe) -> {
-                handlePortEvent(spe);
+                try {
+                    handlePortEvent(spe);
+                } catch (InterruptedException ex) {
+                    LOG.severe(ex);
+                }
             });
         }
     }
 
-    private void handlePortEvent(SerialPortEvent spe) {
-        devLog("SerialPort Event happened!!! :)");
+    private void handlePortEvent(SerialPortEvent spe) throws InterruptedException {
         if (spe.isRXCHAR()) {
+            devLog("SerialPort Event happened!!! :)");
             while (true) {
                 try {
                     final byte[] b = port.readBytes(1);
                     if (b == null || b.length == 0) {
                         break;
                     }
-                    String s = new String(b);
+                    String s = new String(b).trim();
+                    //String s = port.readString().trim();
+                    devLog("Response-String: " + s);
                     synchronized (receivedFrame) {
                         receivedFrame.append(s);
                         if (";".equals(s)) {
                             receivedFrame.notifyAll();
+                            devLog("Response-String built -> synchronized receivedFrame notified");
                         }
                     }
                 } catch (SerialPortException ex) {
@@ -96,14 +102,15 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 req.sendRequest(port);
                 devLog("Request " + req.getReqName() + ": sending completed");
                 
-                publish(req);
-                devLog("Request " + req.getReqName() + " published");
+                //publish(req);
+                //devLog("Request " + req.getReqName() + " published");
                 
                 synchronized (receivedFrame) {
                     receivedFrame.delete(0, receivedFrame.length());
+                    devLog("synchronized receivedFrame deleted");
                 }
                 
-                publish(req);
+                //publish(req);
 
                 String res;
                 synchronized (receivedFrame) {
@@ -111,6 +118,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         receivedFrame.wait();
                     }
                     res = receivedFrame.toString();
+                    devLog("Response: toString(): " + res);
                     receivedFrame.delete(0, receivedFrame.length()-1);
                 }
                 

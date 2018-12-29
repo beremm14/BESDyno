@@ -36,6 +36,11 @@ public class RequestStatusFine extends Request {
         if(COMLOG.isEnabled()) {
             COMLOG.addRes(res);
         }
+        if(res.equals(":FINE;")) {
+            status = Status.DONE;
+        } else {
+            status = Status.ERROR;
+        }
     }
 
     @Override
@@ -43,10 +48,6 @@ public class RequestStatusFine extends Request {
         return "FINE";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at FINE";
-    }
 
     @Override
     public String getReqName() {

@@ -53,10 +53,6 @@ public class RequestEngine extends Request {
     }
     
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at ENGINE";
-    }
 
     @Override
     public String getReqName() {

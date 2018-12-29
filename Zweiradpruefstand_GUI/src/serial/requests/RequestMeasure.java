@@ -44,10 +44,6 @@ public class RequestMeasure extends Request {
         return "MEASURE: Engine & Wheel";
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "ERROR at MEASURE";
-    }
 
     @Override
     public String getReqName() {

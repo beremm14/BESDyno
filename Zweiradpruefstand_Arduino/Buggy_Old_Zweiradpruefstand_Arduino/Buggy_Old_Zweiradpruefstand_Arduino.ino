@@ -14,6 +14,13 @@ int statusPinW = 5;
 int statusPinS = 6;
 int resetPin = 12;
 
+//Protocol
+enum Protocol {
+  INIT, START, ENGINE, MEASURE, MEASURENO, RESET, PROBLEM, FINE, WARNING, SEVERE
+};
+
+enum Protocol currentState = PROBLEM;
+
 //-Declarations----------------------------------------------------------//
 void serialEvent();
 
@@ -30,19 +37,53 @@ float engTemp;
 float exhTemp;
 
 //-Functions------------------------------------------------------------//
+enum Protocol convertIncomingString() {
+    char req = (char)Serial.read();
+    if (req == 's') {
+      return START;
+    } else if (req == 'e') {
+      return ENGINE;
+    } else if (req == 'm') {
+      return MEASURE;
+    } else if (req == 'r') {
+      return RESET;
+    } else if (req == 'i') {
+      return INIT;
+    } else if (req == 'f') {
+      return FINE;
+    } else if (req == 'w') {
+      return WARNING;
+    } else if (req == 'v') {
+      return SEVERE;
+    } else {
+      return PROBLEM;
+    }
+}
 
 void readEnvironment () {
     if (!bmp.begin()) {
         setStatusSevere();
         return;
-    } else {
-      envTemp = bmp.readTemperature();
-      envPress = bmp.readPressure();
-      envAlt = bmp.readAltitude();
-      if (envTemp == 0 || envPress == 0 || envAlt == 0) {
-        setStatusWarning();
-      }
-   }
+    }
+    envTemp = bmp.readTemperature();
+    envPress = bmp.readPressure();
+    envAlt = bmp.readAltitude();
+    if (envTemp == 0 || envPress == 0 || envAlt == 0) {
+      setStatusWarning();
+    }
+}
+
+void sendEnvironment() {
+  Serial.print(envTemp);
+  
+}
+
+void readSparkplug() {
+                                                                                                     
+}
+
+void readRearWheel() {
+
 }
 
 void readThermos() {
@@ -53,10 +94,16 @@ void readThermos() {
     //EXHAUST
     float u_exh = (analogRead(A1)*4.94)/1024;
     exhTemp = (u_exh-1.248)/0.005;
+}
 
-    if (engTemp <= 0 || exhTemp <= 0) {
-      setStatusWarning();
-    }
+void testTemps() {
+  readEnvironment();
+  readThermos();
+  Serial.println("---");
+  Serial.println(envTemp);
+  Serial.println(engTemp);
+  Serial.println(exhTemp);
+  Serial.flush();
 }
 
 void setStatusFine() {
@@ -77,14 +124,12 @@ void setStatusSevere() {
   digitalWrite(statusPinS, LOW);
 }
 
-void setStatusMaxProblems() {
+void setStatusMaxProblem() {
   digitalWrite(statusPinF, HIGH);
   digitalWrite(statusPinW, LOW);
   digitalWrite(statusPinS, LOW);
 }
 
-
-//Initialize BESDyno
 
 void setup() {
     Serial.begin(57600, SERIAL_8N1);
@@ -100,76 +145,52 @@ void setup() {
     analogReference(EXTERNAL);
 }
 
-
-//Main
-
 void loop() {
-}
-
-
-//ISR for Communication
-
-//INIT:        :BESDyno;
-//START:       :envTemp#envPress#envAlt;
-//ENGINE:      :engTemp#exhTemp;
-//MEASURE:     :;
-//MEASURENO:   :;
-//FINE:        :FINE;
-//WARNING:     :WARNING;
-//SEVERE:      :SEVERE;
-//MAXPROBLEMS: :MAXPROBLEMS;
-
-void serialEvent() {
-  while(Serial.available()) {
-    char req = (char)Serial.read();
-    
-    if(req == 'i') {
-      setStatusFine();
+  switch (currentState) {
+    case INIT:
       Serial.println(":BESDyno;");
       Serial.flush();
-      
-    } else if (req == 's') {
       setStatusFine();
+      break;
+    case START:
       readEnvironment();
       String environment = ':' + String(envTemp) + '#' + String(envPress) + '#' + String(envAlt) + ';';
       Serial.println(environment);
       Serial.flush();
-      
-    } else if (req == 'e') {
-      setStatusFine();
+      break;
+    case ENGINE:
+      //:engine#exhaust;
       readThermos();
-      String thermos = ':' + String(engTemp) + '#' + String(exhTemp) + ';';
-      Serial.println(thermos);
+      break;
+    case MEASURE:
+      readSparkplug();
+      readRearWheel();
+      break;
+    case RESET:
+      Serial.println("RESET");
       Serial.flush();
-      
-    } else if (req == 'm') {
-      Serial.println(":;");
-      Serial.flush();
-      
-    } else if (req == 'n') {
-      Serial.println(":;");
-      Serial.flush();
-      
-    } else if (req == 'f') {
+      digitalWrite(resetPin, LOW);
+      delay(200);
+      break;
+    case PROBLEM:
+      break;
+    case FINE:
       setStatusFine();
-      Serial.println(":FINE;");
-      Serial.flush();
-      
-    } else if (req == 'w') {
+      break;
+    case WARNING:
       setStatusWarning();
-      Serial.println(":WARNING;");
-      Serial.flush();
-      
-    } else if (req == 'v') {
+      break;
+    case SEVERE:
       setStatusSevere();
-      Serial.println(":SEVERE;");
-      Serial.flush();
-      
-    } else if (req == 'x') {
-      setStatusMaxProblems();
-      Serial.println(":MAXPROBLEMS;");
-      Serial.flush();
-    }
+      break;
+  }
+
+}
+
+
+void serialEvent() {
+  while(Serial.available()) {
+    currentState = convertIncomingString();
   }
 }
 
