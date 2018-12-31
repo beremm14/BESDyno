@@ -13,6 +13,8 @@ import gui.VehicleSetDialog;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,7 +32,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -75,7 +76,7 @@ public class BESDyno extends javax.swing.JFrame {
     private jssc.SerialPort port;
 
     //Variables
-    private boolean devMode = true;
+    private static boolean devMode = true;
     private boolean secondTry = true;
 
     //Communication
@@ -536,7 +537,7 @@ public class BESDyno extends javax.swing.JFrame {
         return Config.getInstance().isDark();
     }
 
-    public boolean isDevMode() {
+    public static boolean isDevMode() {
         return devMode;
     }
 
@@ -1284,8 +1285,8 @@ public class BESDyno extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this,
                 "Wenn beide Kontrollleuchten (Gelb & Rot) leuchten ist ein schwerwiegender Fehler am Gerät oder im Programm aufgetreten...\n\n"
                 + "Starten Sie die Software neu und drücken Sie den Reset-Button am Gerät.\n\n"
-                + "Wenn der Fehler erneut oder öfters auftritt, starten Sie das Programm im Entwicklungsmodus,\n"
-                + "sichern Sie das Kommuniationsprotokoll und senden Sie alle Dateien im Ordner 'Service_Files' an den Entwickler!",
+                + "Wenn der Fehler erneut oder öfters auftritt, starten Sie das Programm im Entwicklungsmodus\n"
+                + "und senden Sie nach erneuter Ausführung alle Dateien im Ordner 'Service_Files' an den Entwickler!",
                 "Gelbe & Rote LED: Schwerwiegender Fehler",
                 JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_jmiYellowRedActionPerformed
@@ -1397,7 +1398,43 @@ public class BESDyno extends javax.swing.JFrame {
                 //LOG.severe(ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
-                new BESDyno().setVisible(true);
+                BESDyno besDyno = new BESDyno();
+                besDyno.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        LOG.info("End of BESDyno");
+                        if (isDevMode()) {
+                            try {
+                                File comfile = null;
+                                File home;
+                                File folder;
+                                Date date = Calendar.getInstance().getTime();
+                                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+                                home = new File(System.getProperty("user.home"));
+
+                                if (home != null && home.exists()) {
+                                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+                                    if (!folder.exists()) {
+                                        if (!folder.mkdir()) {
+                                            throw new Exception("Internal Error");
+                                        }
+                                    }
+                                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
+                                    try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
+                                        CommunicationLogger.getInstance().writeFile(w);
+                                    } catch (Exception ex) {
+                                        LOG.severe(ex);
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                LOG.warning(ex);
+                            }
+                        }
+                    }
+
+                });
+                besDyno.setVisible(true);
             });
             //Other OS
         } else {
@@ -1414,7 +1451,43 @@ public class BESDyno extends javax.swing.JFrame {
             }
 
             java.awt.EventQueue.invokeLater(() -> {
-                new BESDyno().setVisible(true);
+                BESDyno besDyno = new BESDyno();
+                besDyno.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        LOG.info("End of BESDyno");
+                        if (isDevMode()) {
+                            try {
+                                File comfile = null;
+                                File home;
+                                File folder;
+                                Date date = Calendar.getInstance().getTime();
+                                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+                                home = new File(System.getProperty("user.home"));
+
+                                if (home != null && home.exists()) {
+                                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+                                    if (!folder.exists()) {
+                                        if (!folder.mkdir()) {
+                                            throw new Exception("Internal Error");
+                                        }
+                                    }
+                                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
+                                    try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
+                                        CommunicationLogger.getInstance().writeFile(w);
+                                    } catch (Exception ex) {
+                                        LOG.severe(ex);
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                LOG.warning(ex);
+                            }
+                        }
+                    }
+
+                });
+                besDyno.setVisible(true);
             });
         }
     }
