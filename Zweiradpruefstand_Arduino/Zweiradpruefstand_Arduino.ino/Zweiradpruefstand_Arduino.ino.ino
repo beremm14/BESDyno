@@ -83,6 +83,44 @@ void setStatusMaxProblems() {
   digitalWrite(statusPinS, LOW);
 }
 
+void visualizeInitialization() {
+  setStatusFine();
+  delay(50);
+  setStatusWarning();
+  delay(50);
+  setStatusSevere();
+  delay(50);
+  setStatusWarning();
+  delay(50);
+  setStatusFine();
+  delay(50);
+  setStatusWarning();
+  delay(50);
+  setStatusSevere();
+  delay(50);
+  setStatusWarning();
+  delay(50);
+  setStatusFine();
+  delay(50);
+  setStatusWarning();
+  delay(50);
+  setStatusSevere();
+  delay(50);
+  setStatusWarning();
+}
+
+void visualizeInitComplete() {
+  setStatusFine();
+  delay(200);
+  setStatusWarning();
+  delay(200);
+  setStatusSevere();
+  delay(200);
+  setStatusWarning();
+  delay(200);
+  setStatusFine();
+}
+
 
 //Initialize BESDyno
 
@@ -95,7 +133,8 @@ void setup() {
     pinMode(statusPinS, OUTPUT);
     
     digitalWrite(resetPin, HIGH);
-    setStatusWarning();
+
+    visualizeInitialization();
     
     analogReference(EXTERNAL);
 }
@@ -124,9 +163,11 @@ void serialEvent() {
     char req = (char)Serial.read();
     
     if(req == 'i') {
-      setStatusFine();
       Serial.println(":BESDyno;");
       Serial.flush();
+      visualizeInitialization();
+      delay(50);
+      visualizeInitComplete();
       
     } else if (req == 's') {
       setStatusFine();

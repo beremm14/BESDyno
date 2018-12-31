@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import logging.Logger;
 import jssc.SerialPortException;
+import main.BESDyno;
 import serial.CommunicationException;
 
 /**
@@ -24,9 +25,11 @@ public class RequestInit extends Request {
 
         LOG.debug("Request INIT will be sent");
         try {
+            Thread.sleep(2000);
             port.writeBytes("i".getBytes("UTF-8"));
+            BESDyno.getInstance().userLog("Initialisierungs-Anfrage wurde an das Gerät gesendet", BESDyno.LogLevel.INFO);
             LOG.debug("Request INIT sent");
-        } catch (UnsupportedEncodingException ex) {
+        } catch (UnsupportedEncodingException | InterruptedException ex) {
             LOG.severe(ex);
         }
 
@@ -40,14 +43,14 @@ public class RequestInit extends Request {
     @Override
     public void handleResponse(String res) {
         LOG.debug("INIT-Response: " + res);
-
+        
         COMLOG.addRes(res);
         LOG.debug("INIT-Response " + res + " logged");
 
-        if (!res.equals(":BESDyno;")) {
-            status = Request.Status.ERROR;
-        } else {
+        if (res.equals(":BESDyno;")) {
             status = Request.Status.DONE;
+        } else {
+            status = Request.Status.ERROR;
         }
 
     }

@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -70,11 +71,12 @@ public class BESDyno extends javax.swing.JFrame {
     //Object-Variables
     private File file;
     private SwingWorker activeWorker;
-    private final MyTelegram telegram;
+    private MyTelegram telegram;
     private jssc.SerialPort port;
 
     //Variables
     private boolean devMode = true;
+    private boolean secondTry = true;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
@@ -93,8 +95,6 @@ public class BESDyno extends javax.swing.JFrame {
 
     private BESDyno() {
         initComponents();
-
-        telegram = new MyTelegram();
 
         setTitle("BESDyno - Zweiradprüfstand");
         setLocationRelativeTo(null);
@@ -196,11 +196,11 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     //Status-Textfeld: Logging for User
-    private enum LogLevel {
+    public enum LogLevel {
         FINEST, FINE, INFO, WARNING, SEVERE
     };
 
-    private void userLog(String msg, LogLevel level) {
+    public void userLog(String msg, LogLevel level) {
         jtfStatus.setText(msg);
         switch (level) {
             case FINEST:
@@ -221,7 +221,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    private void userLog(Throwable th, String msg, LogLevel level) {
+    public void userLog(Throwable th, String msg, LogLevel level) {
         jtfStatus.setText(msg);
         switch (level) {
             case FINEST:
@@ -242,7 +242,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    private void userLogPane(String msg, LogLevel level) {
+    public void userLogPane(String msg, LogLevel level) {
         jtfStatus.setText(msg);
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgetreten!", JOptionPane.ERROR_MESSAGE);
         switch (level) {
@@ -264,7 +264,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    private void userLogPane(Throwable th, String msg, LogLevel level) {
+    public void userLogPane(Throwable th, String msg, LogLevel level) {
         jtfStatus.setText(msg);
         JOptionPane.showMessageDialog(this, msg, "Fehler ist aufgetreten!", JOptionPane.ERROR_MESSAGE);
         switch (level) {
@@ -292,7 +292,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         String preferedPort = null;
         for (String p : ports) {
-            if (p.contains("USB")) {
+            if (p.contains("usb") || p.contains("COM") || p.contains("tty") || p.contains("cu")) {
                 preferedPort = p;
                 break;
             }
@@ -1091,16 +1091,21 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
+            telegram.setSerialPort(null);
             if (!telegram.cancel(true)) {
                 LOG.warning("Fehler beim Beenden: SwingWorker -> RxTxWorker -> TelegramWorker -> MyTelegramWorker...");
                 return;
             }
-            port.closePort();
-            userLog("Port geschlossen", LogLevel.INFO);
-        } catch (Throwable th) {
-            userLog(th, "Fehler beim Schließen des Ports", LogLevel.WARNING);
+        } catch (Exception ex) {
+            userLog(ex, "Fehler beim Schließen des Ports", LogLevel.WARNING);
         } finally {
-            port = null;
+            try {
+                port.closePort();
+                port = null;
+            } catch (Throwable th) {
+                userLog(th, "Fehler beim Schließen des Ports", LogLevel.WARNING);
+            }
+            userLog("Port geschlossen", LogLevel.INFO);
             try {
                 telegram.setSerialPort(null);
             } catch (SerialPortException ex) {
@@ -1294,13 +1299,13 @@ public class BESDyno extends javax.swing.JFrame {
         @Override
         protected void done() {
             try {
-                telegram.execute();
+                secondTry = true;
                 port = (jssc.SerialPort) get(2, TimeUnit.SECONDS);
+                telegram = new MyTelegram();
                 telegram.setSerialPort(port);
                 LOG.info("setPort: RxTxWorker");
+                telegram.execute();
                 userLog("Warten Sie bitte, bis das Gerät bereit ist...", LogLevel.INFO);
-                Thread.sleep(2000);
-                userLog("Initialisierungs-Anfrage wurde an das Gerät gesendet", LogLevel.INFO);
                 addPendingRequest(telegram.init());
             } catch (Exception e) {
                 userLog(e, "Gerät konnte nicht verbunden werden...", LogLevel.SEVERE);
@@ -1338,7 +1343,14 @@ public class BESDyno extends javax.swing.JFrame {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
-                        userLogPane("Gerät hat möglicherweise einen Fehler oder ist defekt. Keine Gewährleistung der Korrektheit der Messdaten - Status-LEDs kontrollieren!", LogLevel.WARNING);
+                        if (secondTry) {
+                            LOG.warning("INIT: Second try was required...");
+                            addPendingRequest(telegram.init());
+                            secondTry = false;
+                        } else {
+                            userLogPane("Gerät hat möglicherweise einen Fehler oder ist defekt. Keine Gewährleistung der Korrektheit der Messdaten - Status-LEDs kontrollieren!", LogLevel.WARNING);
+                            addPendingRequest(telegram.warning());
+                        }
                     }
                 } else if (r.getVariety() == Variety.START) {
                     if (r.getStatus() == Status.DONE) {
@@ -1351,6 +1363,7 @@ public class BESDyno extends javax.swing.JFrame {
                         userLog("Messung der Motorradtemperaturen abgeschlossen", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
                         userLog("Motorradtemperaturen fehlerhaft - Thermoelemente überprüfen!", LogLevel.WARNING);
+                        addPendingRequest(telegram.warning());
                     }
                 }
             }

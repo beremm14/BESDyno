@@ -24,7 +24,6 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     public RxTxWorker() {
     }
-    
 
     public void setSerialPort(jssc.SerialPort port) throws SerialPortException {
         this.port = port;
@@ -37,6 +36,11 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 }
             });
         }
+    }
+
+    public void clearReceivedFrames() {
+        receivedFrame.delete(0, receivedFrame.length());
+        LOG.debug("synchronized receivedFrame deleted");
     }
 
     private void handlePortEvent(SerialPortEvent spe) throws InterruptedException {
@@ -71,6 +75,12 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
         try {
             LOG.info("RxTxWorker started");
             while (!isCancelled()) {
+
+                synchronized (receivedFrame) {
+                    receivedFrame.delete(0, receivedFrame.length());
+                    LOG.debug("synchronized receivedFrame deleted");
+                }
+
                 Request req = null;
                 synchronized (requestList) {
                     do {
@@ -88,38 +98,27 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         }
                     } while (req == null);
                 }
-                
+
                 req.setStatus(Status.WAITINGTOSEND);
                 LOG.debug("Request " + req.getReqName() + " WAITING-TO-SEND");
-                
+
                 LOG.debug("Request " + req.getReqName() + " on the way...");
                 req.sendRequest(port);
                 LOG.debug("Request " + req.getReqName() + ": sending completed");
-                
-                //publish(req);
-                //devLog("Request " + req.getReqName() + " published");
-                
-                synchronized (receivedFrame) {
-                    receivedFrame.delete(0, receivedFrame.length());
-                    LOG.debug("synchronized receivedFrame deleted");
-                }
-                
-                //publish(req);
 
                 String res;
                 synchronized (receivedFrame) {
-                    while (receivedFrame.length() == 0 || receivedFrame.charAt(receivedFrame.length()-1) != ';') {
+                    while (receivedFrame.length() == 0 || receivedFrame.charAt(receivedFrame.length() - 1) != ';') {
                         receivedFrame.wait();
                     }
                     res = receivedFrame.toString();
                     LOG.debug("Response: toString(): " + res);
-                    receivedFrame.delete(0, receivedFrame.length()-1);
+                    receivedFrame.delete(0, receivedFrame.length() - 1);
                 }
-                
+
                 req.handleResponse(res);
-                
+
                 publish(req);
-                
 
                 synchronized (requestList) {
                     requestList.remove(req);
