@@ -11,7 +11,7 @@ import serial.CommunicationException;
  * @author emil
  */
 public class RequestStatusSevere extends Request {
-    
+
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
 
@@ -25,18 +25,18 @@ public class RequestStatusSevere extends Request {
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        if(COMLOG.isEnabled()) {
-            COMLOG.addReq("SEVERE: v");
-        }
+
+        COMLOG.addReq("SEVERE: v");
+
         status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
     public void handleResponse(String res) {
-        if(COMLOG.isEnabled()) {
-            COMLOG.addRes(res);
-        }
-        if(res.equals(":SEVERE;")) {
+
+        COMLOG.addRes(res);
+
+        if (res.equals(":SEVERE;")) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;
@@ -48,10 +48,14 @@ public class RequestStatusSevere extends Request {
         return "SEVERE";
     }
 
-
     @Override
     public String getReqName() {
         return "SEVERE";
     }
-    
+
+    @Override
+    public Variety getVariety() {
+        return Variety.SEVERE;
+    }
+
 }

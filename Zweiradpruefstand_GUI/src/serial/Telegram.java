@@ -2,7 +2,6 @@ package serial;
 
 import serial.requests.Request;
 import logging.Logger;
-import main.BESDyno;
 import serial.requests.*;
 
 /**
@@ -17,25 +16,20 @@ public class Telegram extends RxTxWorker {
 
     }
     
-    private void devLog(String msg) {
-        if (BESDyno.getInstance().isDevMode()) {
-            LOG.debug(msg);
-        }
-    }
     
     public Request init() {
         synchronized (requestList) {
             final Request request = new RequestInit();
-            devLog("new: RequestInit();");
+            LOG.debug("new: RequestInit();");
             
             request.setStatus(Request.Status.WAITINGTOSEND);
-            devLog("Request INIT: WAITING-TO-SEND");
+            LOG.debug("Request INIT: WAITING-TO-SEND");
             
             requestList.add(request);
-            devLog("Request INIT added to synchronized LinkedList<>():requestList");
+            LOG.debug("Request INIT added to synchronized LinkedList<>():requestList");
             
             requestList.notifyAll();
-            devLog("synchronized LinkedList<>():requestList notified");
+            LOG.debug("synchronized LinkedList<>():requestList notified");
             
             return request;
         }
@@ -44,16 +38,16 @@ public class Telegram extends RxTxWorker {
     public Request start() {
         synchronized (requestList) {
             final Request request = new RequestStart();
-            devLog("new: requestStart();");
+            LOG.debug("new: requestStart();");
             
             request.setStatus(Request.Status.WAITINGTOSEND);
-            devLog("Request START: WAITING-TO-SEND");
+            LOG.debug("Request START: WAITING-TO-SEND");
             
             requestList.add(request);
-            devLog("Request START added to synchronized LinkedList<>():requestList");
+            LOG.debug("Request START added to synchronized LinkedList<>():requestList");
             
             requestList.notifyAll();
-            devLog("synchronized LinkedList<>():requestList notified");
+            LOG.debug("synchronized LinkedList<>():requestList notified");
             
             return request;
         }

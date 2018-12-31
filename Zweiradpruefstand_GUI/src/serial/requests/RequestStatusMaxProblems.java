@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package serial.requests;
 
 import development.CommunicationLogger;
@@ -30,17 +25,17 @@ public class RequestStatusMaxProblems extends Request {
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        if (COMLOG.isEnabled()) {
-            COMLOG.addReq("MAXPROBLEMS: x");
-        }
+
+        COMLOG.addReq("MAXPROBLEMS: x");
+
         status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
     public void handleResponse(String res) {
-        if (COMLOG.isEnabled()) {
-            COMLOG.addRes(res);
-        }
+
+        COMLOG.addRes(res);
+
         if (res.equals(":MAXPROBLEMS;")) {
             status = Request.Status.DONE;
         } else {
@@ -56,5 +51,10 @@ public class RequestStatusMaxProblems extends Request {
     @Override
     public String getReqName() {
         return "MAXPROBLEMS";
+    }
+
+    @Override
+    public Variety getVariety() {
+        return Variety.MAXPROBLEMS;
     }
 }

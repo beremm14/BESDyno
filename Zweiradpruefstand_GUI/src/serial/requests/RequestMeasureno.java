@@ -11,7 +11,7 @@ import serial.CommunicationException;
  * @author emil
  */
 public class RequestMeasureno extends Request {
-    
+
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
 
@@ -25,17 +25,17 @@ public class RequestMeasureno extends Request {
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        if(COMLOG.isEnabled()) {
-            COMLOG.addReq("MEASURENO: n");
-        }
+
+        COMLOG.addReq("MEASURENO: n");
+
         status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
     public void handleResponse(String res) {
-        if(COMLOG.isEnabled()) {
-            COMLOG.addRes(res);
-        }
+
+        COMLOG.addRes(res);
+
     }
 
     @Override
@@ -43,10 +43,14 @@ public class RequestMeasureno extends Request {
         return "MEASURENO: Wheel only";
     }
 
-
     @Override
     public String getReqName() {
         return "MEASURENO";
     }
-    
+
+    @Override
+    public Variety getVariety() {
+        return Variety.MEASURENO;
+    }
+
 }

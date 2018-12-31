@@ -1,8 +1,6 @@
 package serial.requests;
 
-import logging.Logger;
 import jssc.SerialPortException;
-import main.BESDyno;
 import serial.CommunicationException;
 
 /**
@@ -11,10 +9,12 @@ import serial.CommunicationException;
  */
 public abstract class Request {
     
-    private static final Logger LOG = Logger.getLogger(Request.class.getName());
-
     public static enum Status {
         WAITINGTOSEND, WAITINGFORRESPONSE, DONE, ERROR
+    };
+    
+    public static enum Variety {
+        INIT, START, MEASURE, MEASURENO, ENGINE, FINE, WARNING, SEVERE, MAXPROBLEMS
     };
 
     protected Status status;
@@ -23,21 +23,16 @@ public abstract class Request {
         status = Status.WAITINGTOSEND;
     }
     
-    protected void devLog(String msg) {
-        if (BESDyno.getInstance().isDevMode()) {
-            LOG.debug(msg);
-        }
-    }
-
     public abstract void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException;
     
     public abstract String getReqMessage();
     public abstract String getReqName();
+    public abstract Variety getVariety();
 
     public Status getStatus() {
         return status;
     }
-
+    
     public void setStatus(Status status) {
         this.status = status;
     }

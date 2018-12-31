@@ -11,7 +11,7 @@ import serial.CommunicationException;
  * @author emil
  */
 public class RequestStatusWarning extends Request {
-    
+
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
 
@@ -25,18 +25,18 @@ public class RequestStatusWarning extends Request {
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        if(COMLOG.isEnabled()) {
-            COMLOG.addReq("WARNING: w");
-        }
+
+        COMLOG.addReq("WARNING: w");
+
         status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
     public void handleResponse(String res) {
-        if(COMLOG.isEnabled()) {
-            COMLOG.addRes(res);
-        }
-        if(res.equals(":WARNING;")) {
+
+        COMLOG.addRes(res);
+
+        if (res.equals(":WARNING;")) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;
@@ -48,10 +48,14 @@ public class RequestStatusWarning extends Request {
         return "WARNING";
     }
 
-
     @Override
     public String getReqName() {
         return "WARNING";
     }
-    
+
+    @Override
+    public Variety getVariety() {
+        return Variety.WARNING;
+    }
+
 }

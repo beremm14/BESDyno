@@ -21,51 +21,54 @@ public class RequestStart extends Request {
         if (status != Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
-        
-        devLog("Request START will be sent");
+
+        LOG.debug("Request START will be sent");
         try {
             port.writeBytes("s".getBytes("UTF-8"));
-            devLog("Request START sent");
+            LOG.debug("Request START sent");
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        
-        if(COMLOG.isEnabled()) {
-            COMLOG.addReq("START: s");
-            devLog("Request START logged");
-        }
-        
+
+        COMLOG.addReq("START: s");
+        LOG.debug("Request START logged");
+
         status = Status.WAITINGFORRESPONSE;
-        devLog("Request START: WAITING-FOR-RESPONSE");
+        LOG.debug("Request START: WAITING-FOR-RESPONSE");
     }
 
     @Override
     public void handleResponse(String res) {
-        devLog("START-Response: " + res);
-        if(COMLOG.isEnabled()) {
-            COMLOG.addRes(res);
-            devLog("START-Response " + res + " logged");
-        }
-        
+        LOG.debug("START-Response: " + res);
+
+        COMLOG.addRes(res);
+        LOG.debug("START-Response " + res + " logged");
+
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
-        devLog("START-Response: : and ; replaced");
-        
+        LOG.debug("START-Response: : and ; replaced");
+
         // :Temperature#Pressure#Altitude;
         String values[] = response.split("#");
-        devLog("START-Response: Response-String splitted");
-        
-        if(values[0].isEmpty() || values[1].isEmpty() || values[2].isEmpty()) {
+        LOG.debug("START-Response: Response-String splitted");
+
+        if (values[0].isEmpty() || values[1].isEmpty() || values[2].isEmpty()) {
             LOG.warning("START Response maybe incomplete");
         }
-        
+
         Environment.getInstance().setEnvTemp(Double.parseDouble(values[0]));
         Environment.getInstance().setAirPress(Double.parseDouble(values[1]));
         Environment.getInstance().setAltitude(Double.parseDouble(values[2]));
-        devLog("START-Response: Values -> Environment");
-        LOG.info(    "envTemp = " + Environment.getInstance().getEnvTemp() +
-                   " envPress = " + Environment.getInstance().getAirPress() +
-                " envAltitude = " + Environment.getInstance().getAltitude());
+        LOG.debug("START-Response: Values -> Environment");
+        LOG.info("envTemp = " + Environment.getInstance().getEnvTemp()
+                + " envPress = " + Environment.getInstance().getAirPress()
+                + " envAltitude = " + Environment.getInstance().getAltitude());
+
+        if (Environment.getInstance().getAirPress() == 0) {
+            status = Status.ERROR;
+        } else {
+            status = Status.DONE;
+        }
     }
 
     @Override
@@ -73,10 +76,14 @@ public class RequestStart extends Request {
         return "START: Environment";
     }
 
-
     @Override
     public String getReqName() {
         return "START";
     }
-    
+
+    @Override
+    public Variety getVariety() {
+        return Variety.START;
+    }
+
 }

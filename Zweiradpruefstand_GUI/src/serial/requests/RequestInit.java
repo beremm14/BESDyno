@@ -21,38 +21,35 @@ public class RequestInit extends Request {
         if (status != Request.Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
-        
-        devLog("Request INIT will be sent");
+
+        LOG.debug("Request INIT will be sent");
         try {
             port.writeBytes("i".getBytes("UTF-8"));
-            devLog("Request INIT sent");
+            LOG.debug("Request INIT sent");
         } catch (UnsupportedEncodingException ex) {
             LOG.severe(ex);
         }
-        
-        if(COMLOG.isEnabled()) {
-            COMLOG.addReq("INIT: i");
-            devLog("Request INIT logged");
-        }
-        
+
+        COMLOG.addReq("INIT: i");
+        LOG.debug("Request INIT logged");
+
         status = Request.Status.WAITINGFORRESPONSE;
-        devLog("Request INIT: WAITING-FOR-RESPONSE");
+        LOG.debug("Request INIT: WAITING-FOR-RESPONSE");
     }
 
     @Override
     public void handleResponse(String res) {
-        devLog("INIT-Response: " + res);
-        if(COMLOG.isEnabled()) {
-            COMLOG.addRes(res);
-            devLog("INIT-Response " + res + " logged");
-        }
-        
-        if(res.equals(":BESDyno;")) {
-            status = Request.Status.DONE;
-        } else {
+        LOG.debug("INIT-Response: " + res);
+
+        COMLOG.addRes(res);
+        LOG.debug("INIT-Response " + res + " logged");
+
+        if (!res.equals(":BESDyno;")) {
             status = Request.Status.ERROR;
+        } else {
+            status = Request.Status.DONE;
         }
-        
+
     }
 
     @Override
@@ -60,10 +57,14 @@ public class RequestInit extends Request {
         return "INIT";
     }
 
-
     @Override
     public String getReqName() {
         return "INIT";
+    }
+
+    @Override
+    public Variety getVariety() {
+        return Variety.INIT;
     }
 
 }

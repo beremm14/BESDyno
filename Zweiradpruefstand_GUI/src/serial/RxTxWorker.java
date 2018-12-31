@@ -7,7 +7,6 @@ import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
-import main.BESDyno;
 import serial.requests.Request.Status;
 
 /**
@@ -26,11 +25,6 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     public RxTxWorker() {
     }
     
-    private void devLog(String msg) {
-        if (BESDyno.getInstance().isDevMode()) {
-            LOG.debug(msg);
-        }
-    }
 
     public void setSerialPort(jssc.SerialPort port) throws SerialPortException {
         this.port = port;
@@ -47,7 +41,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     private void handlePortEvent(SerialPortEvent spe) throws InterruptedException {
         if (spe.isRXCHAR()) {
-            devLog("SerialPort Event happened!!! :)");
+            LOG.debug("SerialPort Event happened!!! :)");
             while (true) {
                 try {
                     final byte[] b = port.readBytes(1);
@@ -56,12 +50,12 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     }
                     String s = new String(b).trim();
                     //String s = port.readString().trim();
-                    devLog("Response-String: " + s);
+                    LOG.debug("Response-String: " + s);
                     synchronized (receivedFrame) {
                         receivedFrame.append(s);
                         if (";".equals(s)) {
                             receivedFrame.notifyAll();
-                            devLog("Response-String built -> synchronized receivedFrame notified");
+                            LOG.debug("Response-String built -> synchronized receivedFrame notified");
                         }
                     }
                 } catch (SerialPortException ex) {
@@ -83,7 +77,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         for (Request r : requestList) {
                             if (r.getStatus() == Status.WAITINGTOSEND) {
                                 req = r;
-                                devLog("doInBackground: Got Request: " + req.getReqName());
+                                LOG.debug("doInBackground: Got Request: " + req.getReqName());
                                 break;
                             } else if (r.getStatus() == Status.WAITINGFORRESPONSE) {
                                 break;
@@ -96,18 +90,18 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 }
                 
                 req.setStatus(Status.WAITINGTOSEND);
-                devLog("Request " + req.getReqName() + " WAITING-TO-SEND");
+                LOG.debug("Request " + req.getReqName() + " WAITING-TO-SEND");
                 
-                devLog("Request " + req.getReqName() + " on the way...");
+                LOG.debug("Request " + req.getReqName() + " on the way...");
                 req.sendRequest(port);
-                devLog("Request " + req.getReqName() + ": sending completed");
+                LOG.debug("Request " + req.getReqName() + ": sending completed");
                 
                 //publish(req);
                 //devLog("Request " + req.getReqName() + " published");
                 
                 synchronized (receivedFrame) {
                     receivedFrame.delete(0, receivedFrame.length());
-                    devLog("synchronized receivedFrame deleted");
+                    LOG.debug("synchronized receivedFrame deleted");
                 }
                 
                 //publish(req);
@@ -118,7 +112,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         receivedFrame.wait();
                     }
                     res = receivedFrame.toString();
-                    devLog("Response: toString(): " + res);
+                    LOG.debug("Response: toString(): " + res);
                     receivedFrame.delete(0, receivedFrame.length()-1);
                 }
                 

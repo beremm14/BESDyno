@@ -13,11 +13,13 @@ import gui.VehicleSetDialog;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,6 +44,7 @@ import logging.Logger;
 import serial.ConnectPortWorker;
 import serial.requests.Request;
 import serial.requests.Request.Status;
+import serial.requests.Request.Variety;
 import serial.Telegram;
 
 /**
@@ -92,7 +95,7 @@ public class BESDyno extends javax.swing.JFrame {
         initComponents();
 
         telegram = new MyTelegram();
-        
+
         setTitle("BESDyno - Zweiradprüfstand");
         setLocationRelativeTo(null);
         setSize(new Dimension(1200, 750));
@@ -100,7 +103,37 @@ public class BESDyno extends javax.swing.JFrame {
         jtfStatus.setEditable(false);
 
         jmiDevMode.setState(true);
-        CommunicationLogger.getInstance().setCommLogging(devMode);
+        devMode = jmiDevMode.getState();
+        LOG.setDevMode(devMode);
+
+        if (devMode) {
+            try {
+                File logfile = null;
+                File home;
+                File folder;
+                Date date = Calendar.getInstance().getTime();
+                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+                try {
+                    home = new File(System.getProperty("user.home"));
+                } catch (Exception e) {
+                    home = null;
+                }
+
+                if (home != null && home.exists()) {
+                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+                    if (!folder.exists()) {
+                        if (!folder.mkdir()) {
+                            throw new Exception("Internal Error");
+                        }
+                    }
+                    logfile = new File(folder + File.separator + "Log_" + df.format(date) + ".log");
+                }
+                LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(new BufferedOutputStream(new FileOutputStream(logfile.getPath())))));
+            } catch (Exception ex) {
+                LOG.warning(ex);
+            }
+        }
 
         refreshPorts();
 
@@ -250,12 +283,6 @@ public class BESDyno extends javax.swing.JFrame {
             case SEVERE:
                 LOG.severe(th);
                 break;
-        }
-    }
-
-    private void devLog(String msg) {
-        if (isDevMode()) {
-            LOG.debug(msg);
         }
     }
 
@@ -516,7 +543,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Communication
     public void addPendingRequest(Request request) {
         try {
-            devLog(request.getReqMessage());
+            LOG.debug(request.getReqMessage() + " added to pedningRequests");
             pendingRequests.add(request);
         } catch (Exception ex) {
             userLog(ex, "ERROR at Request: " + request.getReqName(), LogLevel.WARNING);
@@ -591,6 +618,10 @@ public class BESDyno extends javax.swing.JFrame {
         jmiQuit = new javax.swing.JMenuItem();
         jmenuSimulation = new javax.swing.JMenu();
         jmiStartSim = new javax.swing.JMenuItem();
+        jmenuStatus = new javax.swing.JMenu();
+        jmiYellow = new javax.swing.JMenuItem();
+        jmiRed = new javax.swing.JMenuItem();
+        jmiYellowRed = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiRefresh = new javax.swing.JMenuItem();
         jmiConnect = new javax.swing.JMenuItem();
@@ -603,7 +634,6 @@ public class BESDyno extends javax.swing.JFrame {
         jmiShowPendingRequests = new javax.swing.JMenuItem();
         jmiShowLoggedComm = new javax.swing.JMenuItem();
         jcbmiSaveLoggedComm = new javax.swing.JMenuItem();
-        jcbmiSaveLog = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jmenuRequests = new javax.swing.JMenu();
         jmiInit = new javax.swing.JMenuItem();
@@ -778,6 +808,34 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuSimulation.add(jmiStartSim);
+
+        jmenuStatus.setText("Fehlercode - Status LED");
+
+        jmiYellow.setText("Gelb - Warnung");
+        jmiYellow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiYellowActionPerformed(evt);
+            }
+        });
+        jmenuStatus.add(jmiYellow);
+
+        jmiRed.setText("Rot - Fehler");
+        jmiRed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiRedActionPerformed(evt);
+            }
+        });
+        jmenuStatus.add(jmiRed);
+
+        jmiYellowRed.setText("Gelb & Rot - Schwerwiegender Fehler");
+        jmiYellowRed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiYellowRedActionPerformed(evt);
+            }
+        });
+        jmenuStatus.add(jmiYellowRed);
+
+        jmenuSimulation.add(jmenuStatus);
         jmenuSimulation.add(jSeparator3);
 
         jmiRefresh.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.META_MASK));
@@ -860,15 +918,6 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuDeveloper.add(jcbmiSaveLoggedComm);
-
-        jcbmiSaveLog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
-        jcbmiSaveLog.setText("Logging-Protokoll sichern");
-        jcbmiSaveLog.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcbmiSaveLogActionPerformed(evt);
-            }
-        });
-        jmenuDeveloper.add(jcbmiSaveLog);
         jmenuDeveloper.add(jSeparator4);
 
         jmenuRequests.setText("Request senden");
@@ -1042,11 +1091,14 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
         try {
-            telegram.cancel(true);
+            if (!telegram.cancel(true)) {
+                LOG.warning("Fehler beim Beenden: SwingWorker -> RxTxWorker -> TelegramWorker -> MyTelegramWorker...");
+                return;
+            }
             port.closePort();
             userLog("Port geschlossen", LogLevel.INFO);
-        } catch (Exception e) {
-            userLog(e, "Fehler beim Schließen des Ports", LogLevel.WARNING);
+        } catch (Throwable th) {
+            userLog(th, "Fehler beim Schließen des Ports", LogLevel.WARNING);
         } finally {
             port = null;
             try {
@@ -1131,12 +1183,36 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void jmiDevModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDevModeActionPerformed
         devMode = jmiDevMode.getState();
-        CommunicationLogger.getInstance().setCommLogging(jmiDevMode.getState());
-    }//GEN-LAST:event_jmiDevModeActionPerformed
+        LOG.setDevMode(devMode);
+        if (devMode) {
+            try {
+                File logfile = null;
+                File home;
+                File folder;
+                Date date = Calendar.getInstance().getTime();
+                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
 
-    private void jcbmiSaveLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiSaveLogActionPerformed
-        userLog(new UnsupportedOperationException("Save Log: not supported yet"), "Speichern des Logs wird noch nicht unterstützt...", LogLevel.WARNING);
-    }//GEN-LAST:event_jcbmiSaveLogActionPerformed
+                try {
+                    home = new File(System.getProperty("user.home"));
+                } catch (Exception e) {
+                    home = null;
+                }
+
+                if (home != null && home.exists()) {
+                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+                    if (!folder.exists()) {
+                        if (!folder.mkdir()) {
+                            throw new Exception("Internal Error");
+                        }
+                    }
+                    logfile = new File(folder + File.separator + "Log_" + df.format(date) + ".log");
+                }
+                LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(new BufferedOutputStream(new FileOutputStream(logfile.getPath())))));
+            } catch (Exception ex) {
+                LOG.warning(ex);
+            }
+        }
+    }//GEN-LAST:event_jmiDevModeActionPerformed
 
     private void jmiShowPendingRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowPendingRequestsActionPerformed
         showPendingRequests();
@@ -1191,6 +1267,24 @@ public class BESDyno extends javax.swing.JFrame {
         addPendingRequest(telegram.maxProblems());
     }//GEN-LAST:event_jmiMaxProblemsActionPerformed
 
+    private void jmiYellowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiYellowActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmiYellowActionPerformed
+
+    private void jmiRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRedActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmiRedActionPerformed
+
+    private void jmiYellowRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiYellowRedActionPerformed
+        JOptionPane.showMessageDialog(this,
+                "Wenn beide Kontrollleuchten (Gelb & Rot) leuchten ist ein schwerwiegender Fehler am Gerät oder im Programm aufgetreten...\n\n"
+                + "Starten Sie die Software neu und drücken Sie den Reset-Button am Gerät.\n\n"
+                + "Wenn der Fehler erneut oder öfters auftritt, starten Sie das Programm im Entwicklungsmodus,\n"
+                + "sichern Sie das Kommuniationsprotokoll und senden Sie alle Dateien im Ordner 'Service_Files' an den Entwickler!",
+                "Gelbe & Rote LED: Schwerwiegender Fehler",
+                JOptionPane.WARNING_MESSAGE);
+    }//GEN-LAST:event_jmiYellowRedActionPerformed
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1209,8 +1303,7 @@ public class BESDyno extends javax.swing.JFrame {
                 userLog("Initialisierungs-Anfrage wurde an das Gerät gesendet", LogLevel.INFO);
                 addPendingRequest(telegram.init());
             } catch (Exception e) {
-                LOG.warning(e);
-                jtfStatus.setText("Port konnte nicht geöffnet werden...");
+                userLog(e, "Gerät konnte nicht verbunden werden...", LogLevel.SEVERE);
             } finally {
                 activeWorker = null;
                 refreshGui();
@@ -1229,23 +1322,35 @@ public class BESDyno extends javax.swing.JFrame {
         protected void process(List<Request> chunks) {
             for (Request r : chunks) {
                 if (r.getStatus() == Status.DONE) {
-                    devLog("Request " + r.getReqName() + ": DONE");
+                    LOG.debug("Request " + r.getReqName() + ": DONE");
                 } else if (r.getStatus() == Status.ERROR) {
-                    devLog("Request: " + r.getReqName() + ": ERROR");
+                    LOG.debug("Request: " + r.getReqName() + ": ERROR");
                 } else {
                     continue;
                 }
-                
+
                 if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
-                    devLog("Request " + r.getReqName() + " removed from pendingRequests");
+                    LOG.debug("Request " + r.getReqName() + " removed from pendingRequests");
                     removePendingRequest(r);
                 }
 
-                if (r.getReqName() == "INIT") {
+                if (r.getVariety() == Variety.INIT) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
                         userLogPane("Gerät hat möglicherweise einen Fehler oder ist defekt. Keine Gewährleistung der Korrektheit der Messdaten - Status-LEDs kontrollieren!", LogLevel.WARNING);
+                    }
+                } else if (r.getVariety() == Variety.START) {
+                    if (r.getStatus() == Status.DONE) {
+                        userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
+                    } else if (r.getStatus() == Status.ERROR) {
+                        userLogPane("Umweltdaten möglicherweise fehlerhaft oder unvollständig...", LogLevel.WARNING);
+                    }
+                } else if (r.getVariety() == Variety.ENGINE) {
+                    if (r.getStatus() == Status.DONE) {
+                        userLog("Messung der Motorradtemperaturen abgeschlossen", LogLevel.FINE);
+                    } else if (r.getStatus() == Status.ERROR) {
+                        userLog("Motorradtemperaturen fehlerhaft - Thermoelemente überprüfen!", LogLevel.WARNING);
                     }
                 }
             }
@@ -1307,7 +1412,12 @@ public class BESDyno extends javax.swing.JFrame {
         //System.setProperty("logging.Logger.printAll", "");
         //System.setProperty("logging.LogRecordDataFormattedText.Terminal","NETBEANS");
         System.setProperty("logging.LogRecordDataFormattedText.Terminal", "LINUX");
+        System.setProperty("logging.Logger.Level", "SEVERE");
+        System.setProperty("logging.Logger.Level", "WARNING");
         System.setProperty("logging.Logger.Level", "INFO");
+        System.setProperty("logging.Logger.Level", "FINE");
+        System.setProperty("logging.Logger.Level", "FINER");
+        System.setProperty("logging.Logger.Level", "FINEST");
         //System.setProperty("Test1.Logger.Level", "ALL");
         System.setProperty("test.Test.Logger.Level", "FINER");
         System.setProperty("test.*.Logger.Level", "FINE");
@@ -1339,7 +1449,6 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JButton jbutStartSim;
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
-    private javax.swing.JMenuItem jcbmiSaveLog;
     private javax.swing.JMenuItem jcbmiSaveLoggedComm;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuAppearance;
@@ -1347,6 +1456,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenu jmenuFile;
     private javax.swing.JMenu jmenuRequests;
     private javax.swing.JMenu jmenuSimulation;
+    private javax.swing.JMenu jmenuStatus;
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JCheckBoxMenuItem jmiDevMode;
@@ -1362,6 +1472,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
+    private javax.swing.JMenuItem jmiRed;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSettings;
@@ -1371,6 +1482,8 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiStart;
     private javax.swing.JMenuItem jmiStartSim;
     private javax.swing.JMenuItem jmiWarning;
+    private javax.swing.JMenuItem jmiYellow;
+    private javax.swing.JMenuItem jmiYellowRed;
     private javax.swing.JProgressBar jpbStatus;
     private javax.swing.JTextField jtfStatus;
     // End of variables declaration//GEN-END:variables

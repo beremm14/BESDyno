@@ -31,14 +31,6 @@ public class CommunicationLogger {
     private CommunicationLogger() {
     }
 
-    public boolean isEnabled() {
-        return enableLogging;
-    }
-
-    public void setCommLogging(boolean enableLogging) {
-        this.enableLogging = enableLogging;
-    }
-
     public void addReq(String req) {
         Date date = Calendar.getInstance().getTime();
         //Year-Month-Day Hour:Minutes:Seconds.Milliseconds

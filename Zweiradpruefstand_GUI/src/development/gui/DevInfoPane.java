@@ -9,12 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
-import javax.swing.DefaultListModel;
 import logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
