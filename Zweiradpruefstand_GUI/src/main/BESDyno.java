@@ -375,7 +375,7 @@ public class BESDyno extends javax.swing.JFrame {
         File home;
         File folder;
         Date date = Calendar.getInstance().getTime();
-        DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yy.MM.dd-HH.mm.ss.SSS");
 
         try {
             home = new File(System.getProperty("user.home"));
@@ -414,7 +414,7 @@ public class BESDyno extends javax.swing.JFrame {
                 File home;
                 File folder;
                 Date date = Calendar.getInstance().getTime();
-                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+                DateFormat df = new SimpleDateFormat("yy.MM.dd-HH.mm.ss.SSS");
 
                 home = new File(System.getProperty("user.home"));
 
@@ -426,6 +426,7 @@ public class BESDyno extends javax.swing.JFrame {
                         }
                     }
                     comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
+                    LOG.info(df.format(date));
                     try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
                         CommunicationLogger.getInstance().writeFile(w);
                         LOG.fine("Communication Log written...");
@@ -540,7 +541,7 @@ public class BESDyno extends javax.swing.JFrame {
                 File home;
                 File folder;
                 Date date = Calendar.getInstance().getTime();
-                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+                DateFormat df = new SimpleDateFormat("yy.MM.dd-HH.mm.ss.SSS");
 
                 try {
                     home = new File(System.getProperty("user.home"));
