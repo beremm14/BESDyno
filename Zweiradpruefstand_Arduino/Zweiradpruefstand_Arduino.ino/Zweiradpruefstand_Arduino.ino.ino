@@ -83,6 +83,12 @@ void setStatusMaxProblems() {
   digitalWrite(statusPinS, LOW);
 }
 
+void setNoStatus() {
+  digitalWrite(statusPinF, LOW);
+  digitalWrite(statusPinW, LOW);
+  digitalWrite(statusPinS, LOW);
+}
+
 void visualizeInitialization() {
   setStatusFine();
   delay(50);
@@ -119,6 +125,8 @@ void visualizeInitComplete() {
   setStatusWarning();
   delay(200);
   setStatusFine();
+  delay(200);
+  setStatusWarning();
 }
 
 
@@ -135,6 +143,7 @@ void setup() {
     digitalWrite(resetPin, HIGH);
 
     visualizeInitialization();
+    setNoStatus();
     
     analogReference(EXTERNAL);
 }
@@ -163,9 +172,9 @@ void serialEvent() {
     char req = (char)Serial.read();
     
     if(req == 'i') {
+      visualizeInitialization();
       Serial.println(":BESDyno;");
       Serial.flush();
-      visualizeInitialization();
       delay(50);
       visualizeInitComplete();
       

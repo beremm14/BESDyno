@@ -107,34 +107,7 @@ public class BESDyno extends javax.swing.JFrame {
         devMode = jmiDevMode.getState();
         LOG.setDevMode(devMode);
 
-        if (devMode) {
-            try {
-                File logfile = null;
-                File home;
-                File folder;
-                Date date = Calendar.getInstance().getTime();
-                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
-
-                try {
-                    home = new File(System.getProperty("user.home"));
-                } catch (Exception e) {
-                    home = null;
-                }
-
-                if (home != null && home.exists()) {
-                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
-                    if (!folder.exists()) {
-                        if (!folder.mkdir()) {
-                            throw new Exception("Internal Error");
-                        }
-                    }
-                    logfile = new File(folder + File.separator + "Log_" + df.format(date) + ".log");
-                }
-                LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(new BufferedOutputStream(new FileOutputStream(logfile.getPath())))));
-            } catch (Exception ex) {
-                LOG.warning(ex);
-            }
-        }
+        addLogFileHandler(devMode);
 
         refreshPorts();
 
@@ -434,6 +407,38 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
+    private static void saveCommAuto() {
+        if (isDevMode()) {
+            try {
+                File comfile;
+                File home;
+                File folder;
+                Date date = Calendar.getInstance().getTime();
+                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+                home = new File(System.getProperty("user.home"));
+
+                if (home != null && home.exists()) {
+                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+                    if (!folder.exists()) {
+                        if (!folder.mkdir()) {
+                            throw new Exception("Internal Error");
+                        }
+                    }
+                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
+                    try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
+                        CommunicationLogger.getInstance().writeFile(w);
+                        LOG.fine("Communication Log written...");
+                    } catch (Exception ex) {
+                        LOG.severe(ex);
+                    }
+                }
+            } catch (Exception ex) {
+                LOG.warning(ex);
+            }
+        }
+    }
+
     private void open() throws FileNotFoundException, IOException, Exception {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
@@ -526,6 +531,37 @@ public class BESDyno extends javax.swing.JFrame {
             configFile = new File("Config.json");
         }
         return configFile;
+    }
+    
+    private void addLogFileHandler(boolean enabled) {
+        if (enabled) {
+            try {
+                File logfile = null;
+                File home;
+                File folder;
+                Date date = Calendar.getInstance().getTime();
+                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
+
+                try {
+                    home = new File(System.getProperty("user.home"));
+                } catch (Exception e) {
+                    home = null;
+                }
+
+                if (home != null && home.exists()) {
+                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
+                    if (!folder.exists()) {
+                        if (!folder.mkdir()) {
+                            throw new Exception("Internal Error");
+                        }
+                    }
+                    logfile = new File(folder + File.separator + "Log_" + df.format(date) + ".log");
+                }
+                LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(new BufferedOutputStream(new FileOutputStream(logfile.getPath())))));
+            } catch (Exception ex) {
+                LOG.warning(ex);
+            }
+        }
     }
 
     //Getter
@@ -1190,34 +1226,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void jmiDevModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDevModeActionPerformed
         devMode = jmiDevMode.getState();
         LOG.setDevMode(devMode);
-        if (devMode) {
-            try {
-                File logfile = null;
-                File home;
-                File folder;
-                Date date = Calendar.getInstance().getTime();
-                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
-
-                try {
-                    home = new File(System.getProperty("user.home"));
-                } catch (Exception e) {
-                    home = null;
-                }
-
-                if (home != null && home.exists()) {
-                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
-                    if (!folder.exists()) {
-                        if (!folder.mkdir()) {
-                            throw new Exception("Internal Error");
-                        }
-                    }
-                    logfile = new File(folder + File.separator + "Log_" + df.format(date) + ".log");
-                }
-                LOGP.addHandler(new LogBackgroundHandler(new LogOutputStreamHandler(new BufferedOutputStream(new FileOutputStream(logfile.getPath())))));
-            } catch (Exception ex) {
-                LOG.warning(ex);
-            }
-        }
+        addLogFileHandler(devMode);
     }//GEN-LAST:event_jmiDevModeActionPerformed
 
     private void jmiShowPendingRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowPendingRequestsActionPerformed
@@ -1274,14 +1283,15 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiMaxProblemsActionPerformed
 
     private void jmiYellowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiYellowActionPerformed
-        // TODO add your handling code here:
+        LOG.warning("User checked LED: WARNING");
     }//GEN-LAST:event_jmiYellowActionPerformed
 
     private void jmiRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRedActionPerformed
-        // TODO add your handling code here:
+        LOG.warning("User checked LED: SEVERE");
     }//GEN-LAST:event_jmiRedActionPerformed
 
     private void jmiYellowRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiYellowRedActionPerformed
+        LOG.warning("User checked LED: MAXPROBLEMS");
         JOptionPane.showMessageDialog(this,
                 "Wenn beide Kontrollleuchten (Gelb & Rot) leuchten ist ein schwerwiegender Fehler am Gerät oder im Programm aufgetreten...\n\n"
                 + "Starten Sie die Software neu und drücken Sie den Reset-Button am Gerät.\n\n"
@@ -1343,6 +1353,7 @@ public class BESDyno extends javax.swing.JFrame {
                 if (r.getVariety() == Variety.INIT) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
+                        addPendingRequest(telegram.fine());
                     } else if (r.getStatus() == Status.ERROR) {
                         if (secondTry) {
                             LOG.warning("INIT: Second try was required...");
@@ -1402,37 +1413,9 @@ public class BESDyno extends javax.swing.JFrame {
                 besDyno.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
+                        saveCommAuto();
                         LOG.info("End of BESDyno");
-                        if (isDevMode()) {
-                            try {
-                                File comfile = null;
-                                File home;
-                                File folder;
-                                Date date = Calendar.getInstance().getTime();
-                                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
-
-                                home = new File(System.getProperty("user.home"));
-
-                                if (home != null && home.exists()) {
-                                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
-                                    if (!folder.exists()) {
-                                        if (!folder.mkdir()) {
-                                            throw new Exception("Internal Error");
-                                        }
-                                    }
-                                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
-                                    try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
-                                        CommunicationLogger.getInstance().writeFile(w);
-                                    } catch (Exception ex) {
-                                        LOG.severe(ex);
-                                    }
-                                }
-                            } catch (Exception ex) {
-                                LOG.warning(ex);
-                            }
-                        }
                     }
-
                 });
                 besDyno.setVisible(true);
             });
@@ -1455,37 +1438,9 @@ public class BESDyno extends javax.swing.JFrame {
                 besDyno.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
+                        saveCommAuto();
                         LOG.info("End of BESDyno");
-                        if (isDevMode()) {
-                            try {
-                                File comfile = null;
-                                File home;
-                                File folder;
-                                Date date = Calendar.getInstance().getTime();
-                                DateFormat df = new SimpleDateFormat("yy.mm.DD-HH:mm:ss");
-
-                                home = new File(System.getProperty("user.home"));
-
-                                if (home != null && home.exists()) {
-                                    folder = new File(home + File.separator + "Bike-Files" + File.separator + "Service_Files");
-                                    if (!folder.exists()) {
-                                        if (!folder.mkdir()) {
-                                            throw new Exception("Internal Error");
-                                        }
-                                    }
-                                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
-                                    try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
-                                        CommunicationLogger.getInstance().writeFile(w);
-                                    } catch (Exception ex) {
-                                        LOG.severe(ex);
-                                    }
-                                }
-                            } catch (Exception ex) {
-                                LOG.warning(ex);
-                            }
-                        }
                     }
-
                 });
                 besDyno.setVisible(true);
             });
