@@ -2,10 +2,6 @@ package development;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,59 +10,59 @@ import java.util.List;
  * @author emil
  */
 public class CommunicationLogger {
-
+    
     private static CommunicationLogger instance;
-
-    private boolean enableLogging;
-    private final List<String> reqList = new LinkedList<>();
-    private final List<String> resList = new LinkedList<>();
-
+    
+    private final List<LoggedRequest> reqList = new LinkedList<>();
+    private final List<LoggedResponse> resList = new LinkedList<>();
+    
     public static CommunicationLogger getInstance() {
         if (instance == null) {
             instance = new CommunicationLogger();
         }
         return instance;
     }
-
+    
     private CommunicationLogger() {
     }
-
-    public void addReq(String req) {
-        Date date = Calendar.getInstance().getTime();
-        //Year-Month-Day Hour:Minutes:Seconds.Milliseconds
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        reqList.add(df.format(date) + ": " + req);
+    
+    public void addReq(LoggedRequest lr) {
+        reqList.add(lr);
     }
-
-    public void addRes(String res) {
-        Date date = Calendar.getInstance().getTime();
-        //Year-Month-Day Hour:Minutes:Seconds.Milliseconds
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        resList.add(df.format(date) + ": " + res);
+    
+    public void addRes(LoggedResponse lr) {
+        resList.add(lr);
     }
-
-    public List<String> getReqList() {
+    
+    public List<LoggedRequest> getReqList() {
         return reqList;
     }
-
-    public List<String> getResList() {
+    
+    public List<LoggedResponse> getResList() {
         return resList;
     }
-
+    
     public void writeFile(BufferedWriter w) throws IOException {
         w.write("REQUESTS");
         w.newLine();
-        for (String s : reqList) {
-            w.write(s);
+        for (LoggedRequest lr : reqList) {
+            w.write(lr.getReqTime());
+            w.write(" : ");
+            w.write(lr.getReq());
             w.newLine();
         }
         w.newLine();
         w.write("RESPONSES");
         w.newLine();
-        for (String s : resList) {
-            w.write(s);
+        for (LoggedResponse lr : resList) {
+            w.write(lr.getResTime());
+            w.write(" : ");
+            w.write(lr.getRes());
+            w.write(" CRC: ");
+            w.write(lr.getResCRC() + "<->");
+            w.write(lr.getCalcedCRC() + "");
             w.newLine();
         }
     }
-
+    
 }

@@ -2,6 +2,8 @@ package serial.requests;
 
 import data.Environment;
 import development.CommunicationLogger;
+import development.LoggedRequest;
+import development.LoggedResponse;
 import java.io.UnsupportedEncodingException;
 import logging.Logger;
 import jssc.SerialPortException;
@@ -30,7 +32,7 @@ public class RequestStart extends Request {
             LOG.severe(ex);
         }
 
-        COMLOG.addReq("START: s");
+        COMLOG.addReq(new LoggedRequest("START"));
         LOG.debug("Request START logged");
 
         status = Status.WAITINGFORRESPONSE;
@@ -41,7 +43,7 @@ public class RequestStart extends Request {
     public void handleResponse(String res) {
         LOG.debug("START-Response: " + res);
 
-        COMLOG.addRes(res);
+        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
         LOG.debug("START-Response " + res + " logged");
 
         String response = res.replaceAll(":", "");

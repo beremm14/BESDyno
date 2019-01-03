@@ -1,6 +1,8 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import development.LoggedRequest;
+import development.LoggedResponse;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import logging.Logger;
@@ -33,7 +35,7 @@ public class RequestInit extends Request {
             LOG.severe(ex);
         }
 
-        COMLOG.addReq("INIT: i");
+        COMLOG.addReq(new LoggedRequest("INIT"));
         LOG.debug("Request INIT logged");
 
         status = Request.Status.WAITINGFORRESPONSE;
@@ -44,10 +46,10 @@ public class RequestInit extends Request {
     public void handleResponse(String res) {
         LOG.debug("INIT-Response: " + res);
         
-        COMLOG.addRes(res);
+        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
         LOG.debug("INIT-Response " + res + " logged");
 
-        if (checkCRC(res) && res.equals(":BESDyno>" + getCRC(res) + ';')) {
+        if (checkCRC(res) && res.equals(":BESDyno>" + calcCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

@@ -1,6 +1,8 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import development.LoggedRequest;
+import development.LoggedResponse;
 import java.io.UnsupportedEncodingException;
 import jssc.SerialPortException;
 import logging.Logger;
@@ -26,7 +28,7 @@ public class RequestStatusSevere extends Request {
             LOG.severe(ex);
         }
 
-        COMLOG.addReq("SEVERE: v");
+        COMLOG.addReq(new LoggedRequest("SEVERE"));
 
         status = Request.Status.WAITINGFORRESPONSE;
     }
@@ -34,9 +36,9 @@ public class RequestStatusSevere extends Request {
     @Override
     public void handleResponse(String res) {
 
-        COMLOG.addRes(res);
+        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
-        if (checkCRC(res) && res.equals(":SEVERE>" + getCRC(res) + ';')) {
+        if (checkCRC(res) && res.equals(":SEVERE>" + calcCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

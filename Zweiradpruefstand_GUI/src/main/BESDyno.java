@@ -620,15 +620,13 @@ public class BESDyno extends javax.swing.JFrame {
         commPane.rmAll();
 
         //Requests
-        commPane.addRequest("REQUESTS:");
-        CommunicationLogger.getInstance().getReqList().forEach((s) -> {
-            commPane.addRequest(s);
+        CommunicationLogger.getInstance().getReqList().forEach((lr) -> {
+            commPane.addRequest(lr);
         });
 
         //Responses
-        commPane.addResponse("RESPONSES:");
-        CommunicationLogger.getInstance().getResList().forEach((s) -> {
-            commPane.addResponse(s);
+        CommunicationLogger.getInstance().getResList().forEach((lr) -> {
+            commPane.addResponse(lr);
         });
         commPane.setVisible(true);
     }

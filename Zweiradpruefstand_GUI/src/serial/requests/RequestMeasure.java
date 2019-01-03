@@ -1,6 +1,8 @@
 package serial.requests;
 
 import development.CommunicationLogger;
+import development.LoggedRequest;
+import development.LoggedResponse;
 import java.io.UnsupportedEncodingException;
 import jssc.SerialPortException;
 import logging.Logger;
@@ -26,14 +28,14 @@ public class RequestMeasure extends Request {
             LOG.severe(ex);
         }
 
-        COMLOG.addReq("MEASURE: m");
+        COMLOG.addReq(new LoggedRequest("MEASURE"));
 
         status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
     public void handleResponse(String res) {
-        COMLOG.addRes(res);
+        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
     }
 

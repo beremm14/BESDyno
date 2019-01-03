@@ -1,6 +1,9 @@
 package development.gui;
 
-import development.gui.model.InfoPaneModel;
+import development.LoggedRequest;
+import development.LoggedResponse;
+import development.gui.model.RequestTableModel;
+import development.gui.model.ResponseTableModel;
 import java.awt.Color;
 import java.awt.Dimension;
 import logging.Logger;
@@ -14,8 +17,8 @@ public class LoggedCommPane extends javax.swing.JDialog {
 
     private static final Logger LOG = Logger.getLogger(LoggedCommPane.class.getName());
     
-    private final InfoPaneModel reqModel = new InfoPaneModel();
-    private final InfoPaneModel resModel = new InfoPaneModel();
+    private final RequestTableModel reqModel = new RequestTableModel();
+    private final ResponseTableModel resModel = new ResponseTableModel();
 
     /**
      * Creates new form LoggedCommPane
@@ -23,16 +26,16 @@ public class LoggedCommPane extends javax.swing.JDialog {
     public LoggedCommPane(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setSize(new Dimension(500, 500));
-        jListReq.setModel(reqModel);
-        jListRes.setModel(resModel);
+        setSize(new Dimension(1000, 500));
+        jTableReq.setModel(reqModel);
+        jTableRes.setModel(resModel);
     }
     
-    public void addRequest(String req) {
+    public void addRequest(LoggedRequest req) {
         reqModel.add(req);
     }
     
-    public void addResponse(String res) {
+    public void addResponse(LoggedResponse res) {
         resModel.add(res);
     }
     
@@ -43,25 +46,41 @@ public class LoggedCommPane extends javax.swing.JDialog {
     
     public void setAppearance(boolean dark) {
         if(dark) {
-            jListReq.setBackground(Color.DARK_GRAY);
-            jScrollPane1.setBackground(Color.DARK_GRAY);
-            jScrollPane2.setBackground(Color.DARK_GRAY);
-            jListRes.setBackground(Color.DARK_GRAY);
+            jTableReq.setBackground(Color.DARK_GRAY);
+            jTableReq.setGridColor(Color.DARK_GRAY);
+            jTableReq.getTableHeader().setBackground(Color.DARK_GRAY);
+            jScrollPane3.setBackground(Color.DARK_GRAY);
+            jScrollPane3.getViewport().setBackground(Color.DARK_GRAY);
+            jScrollPane4.setBackground(Color.DARK_GRAY);
+            jScrollPane4.getViewport().setBackground(Color.DARK_GRAY);
+            jTableRes.setBackground(Color.DARK_GRAY);
+            jTableRes.setGridColor(Color.DARK_GRAY);
+            jTableRes.getTableHeader().setBackground(Color.DARK_GRAY);
             jPanButtons.setBackground(Color.DARK_GRAY);
             jPanTables.setBackground(Color.DARK_GRAY);
             
-            jListReq.setForeground(Color.WHITE);
-            jListRes.setForeground(Color.WHITE);
+            jTableReq.setForeground(Color.WHITE);
+            jTableReq.getTableHeader().setForeground(Color.WHITE);
+            jTableRes.setForeground(Color.WHITE);
+            jTableRes.getTableHeader().setForeground(Color.WHITE);
         } else {
-            jListReq.setBackground(Color.WHITE);
-            jScrollPane1.setBackground(Color.WHITE);
-            jScrollPane2.setBackground(Color.WHITE);
-            jListRes.setBackground(Color.WHITE);
+            jTableReq.setBackground(Color.WHITE);
+            jTableReq.setGridColor(Color.WHITE);
+            jTableReq.getTableHeader().setBackground(Color.WHITE);
+            jScrollPane3.setBackground(Color.WHITE);
+            jScrollPane3.getViewport().setBackground(Color.WHITE);
+            jScrollPane4.setBackground(Color.WHITE);
+            jScrollPane4.getViewport().setBackground(Color.WHITE);
+            jTableRes.setGridColor(Color.WHITE);
+            jTableRes.setBackground(Color.WHITE);
+            jTableRes.getTableHeader().setBackground(Color.WHITE);
             jPanButtons.setBackground(Color.WHITE);
             jPanTables.setBackground(Color.WHITE);
             
-            jListReq.setForeground(Color.BLACK);
-            jListRes.setForeground(Color.BLACK);
+            jTableReq.setForeground(Color.BLACK);
+            jTableReq.getTableHeader().setForeground(Color.BLACK);
+            jTableRes.setForeground(Color.BLACK);
+            jTableRes.getTableHeader().setForeground(Color.BLACK);
         }
     }
 
@@ -79,10 +98,10 @@ public class LoggedCommPane extends javax.swing.JDialog {
         jButSave = new javax.swing.JButton();
         jButOk = new javax.swing.JButton();
         jPanTables = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jListReq = new javax.swing.JList<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jListRes = new javax.swing.JList<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableReq = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTableRes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -114,23 +133,35 @@ public class LoggedCommPane extends javax.swing.JDialog {
 
         jPanTables.setLayout(new java.awt.GridLayout(1, 0));
 
-        jListReq.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jListReq);
+        jTableReq.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTableReq);
 
-        jPanTables.add(jScrollPane1);
+        jPanTables.add(jScrollPane3);
 
-        jListRes.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jListRes);
+        jTableRes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(jTableRes);
 
-        jPanTables.add(jScrollPane2);
+        jPanTables.add(jScrollPane4);
 
         getContentPane().add(jPanTables, java.awt.BorderLayout.CENTER);
 
@@ -193,11 +224,11 @@ public class LoggedCommPane extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButOk;
     private javax.swing.JButton jButSave;
-    private javax.swing.JList<String> jListReq;
-    private javax.swing.JList<String> jListRes;
     private javax.swing.JPanel jPanButtons;
     private javax.swing.JPanel jPanTables;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTableReq;
+    private javax.swing.JTable jTableRes;
     // End of variables declaration//GEN-END:variables
 }

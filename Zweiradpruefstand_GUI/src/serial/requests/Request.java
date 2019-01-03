@@ -1,6 +1,5 @@
 package serial.requests;
 
-import logging.Logger;
 import java.util.zip.CRC32;
 import jssc.SerialPortException;
 import serial.CommunicationException;
@@ -10,8 +9,6 @@ import serial.CommunicationException;
  * @author emil
  */
 public abstract class Request {
-
-    private static final Logger LOG = Logger.getLogger(Request.class.getName());
 
     public static enum Status {
         WAITINGTOSEND, WAITINGFORRESPONSE, DONE, ERROR
@@ -58,10 +55,11 @@ public abstract class Request {
     
     protected String removeCRC(String s) {
         String[]value = s.split(">");
-        return value[0];
+        String rv = value[0].replaceAll(":", "");
+        return rv;
     }
     
-    protected long getCRC(String res) {
+    protected long calcCRC(String res) {
         CRC32 crc = new CRC32();
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
@@ -71,6 +69,13 @@ public abstract class Request {
         byte[]b = toCheck[0].trim().getBytes();
         crc.update(b);
         return crc.getValue();
+    }
+    
+    protected long getSentCRC(String res) {
+        String response = res.replaceAll(":", "");
+        response = response.replaceAll(";", "");
+        String[]value = response.split(">");
+        return Long.parseLong(value[1]);
     }
 
 }

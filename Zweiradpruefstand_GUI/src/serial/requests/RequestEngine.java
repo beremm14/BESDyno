@@ -2,6 +2,8 @@ package serial.requests;
 
 import data.Environment;
 import development.CommunicationLogger;
+import development.LoggedRequest;
+import development.LoggedResponse;
 import logging.Logger;
 import jssc.SerialPortException;
 import serial.CommunicationException;
@@ -21,15 +23,14 @@ public class RequestEngine extends Request {
             throw new CommunicationException("Request bereits gesendet");
         }
         port.writeByte((byte) 'e');
-        COMLOG.addReq("ENGINE: e");
+        COMLOG.addReq(new LoggedRequest("ENGINE"));
 
         status = Request.Status.WAITINGFORRESPONSE;
     }
 
     @Override
     public void handleResponse(String res) {
-
-        COMLOG.addRes(res);
+        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
