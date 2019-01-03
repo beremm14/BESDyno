@@ -203,8 +203,8 @@ void loop() {
 //INIT:        :BESDyno>crc;
 //START:       :envTemp#envPress#envAlt>crc;
 //ENGINE:      :engTemp#exhTemp>crc;
-//MEASURE:     :;
-//MEASURENO:   :;
+//MEASURE:     :NOTSUPPORTED>crc;
+//MEASURENO:   :NOTSUPPORTED>crc;
 //FINE:        :FINE>crc;
 //WARNING:     :WARNING>crc;
 //SEVERE:      :SEVERE>crc;
@@ -241,12 +241,12 @@ void serialEvent() {
 
     } else if (req == 'm') {
       setStatusMaxProblems();
-      Serial.println(":;");
+      Serial.println(createTelegram("NOTSUPPORTED"));
       Serial.flush();
 
     } else if (req == 'n') {
       setStatusMaxProblems();
-      Serial.println(":;");
+      Serial.println(createTelegram("NOTSUPPORTED"));
       Serial.flush();
 
     } else if (req == 'f') {

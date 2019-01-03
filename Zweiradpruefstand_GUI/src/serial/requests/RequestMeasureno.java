@@ -38,6 +38,11 @@ public class RequestMeasureno extends Request {
 
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
+        if (checkCRC(res) && res.equals(":NOTSUPPORTED>" + calcCRC(res) + ';')) {
+            status = Status.DONE;
+        } else {
+            status = Status.ERROR;
+        }
     }
 
     @Override
