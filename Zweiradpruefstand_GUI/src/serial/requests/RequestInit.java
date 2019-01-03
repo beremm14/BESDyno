@@ -47,10 +47,10 @@ public class RequestInit extends Request {
         COMLOG.addRes(res);
         LOG.debug("INIT-Response " + res + " logged");
 
-        if (res.equals(":BESDyno;")) {
-            status = Request.Status.DONE;
+        if (checkCRC(res) && res.equals(":BESDyno>" + getCRC(res) + ';')) {
+            status = Status.DONE;
         } else {
-            status = Request.Status.ERROR;
+            status = Status.ERROR;
         }
 
     }

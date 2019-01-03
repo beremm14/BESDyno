@@ -1,5 +1,7 @@
 package serial.requests;
 
+import logging.Logger;
+import java.util.zip.CRC32;
 import jssc.SerialPortException;
 import serial.CommunicationException;
 
@@ -8,7 +10,9 @@ import serial.CommunicationException;
  * @author emil
  */
 public abstract class Request {
-    
+
+    private static final Logger LOG = Logger.getLogger(Request.class.getName());
+
     public static enum Status {
         WAITINGTOSEND, WAITINGFORRESPONSE, DONE, ERROR
     };
@@ -28,6 +32,7 @@ public abstract class Request {
     public abstract String getReqMessage();
     public abstract String getReqName();
     public abstract Variety getVariety();
+    public abstract void handleResponse(String res);
 
     public Status getStatus() {
         return status;
@@ -37,6 +42,35 @@ public abstract class Request {
         this.status = status;
     }
 
-    public abstract void handleResponse(String res);
+    protected boolean checkCRC(String res) {
+        CRC32 crc = new CRC32();
+        String response = res.replaceAll(":", "");
+        response = response.replaceAll(";", "");
+        
+        String toCheck[] = response.split(">");
+        
+        byte[] b = toCheck[0].trim().getBytes();
+        crc.update(b);
+        long checksum = crc.getValue();
+        
+        return checksum == Long.parseLong(toCheck[1]);
+    }
+    
+    protected String removeCRC(String s) {
+        String[]value = s.split(">");
+        return value[0];
+    }
+    
+    protected long getCRC(String res) {
+        CRC32 crc = new CRC32();
+        String response = res.replaceAll(":", "");
+        response = response.replaceAll(";", "");
+        
+        String toCheck[] = response.split(">");
+        
+        byte[]b = toCheck[0].trim().getBytes();
+        crc.update(b);
+        return crc.getValue();
+    }
 
 }

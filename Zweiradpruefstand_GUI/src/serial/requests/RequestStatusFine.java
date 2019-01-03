@@ -36,7 +36,7 @@ public class RequestStatusFine extends Request {
 
         COMLOG.addRes(res);
 
-        if (res.equals(":FINE;")) {
+        if (checkCRC(res) && res.equals(":FINE>" + getCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

@@ -50,6 +50,7 @@ public class RequestStart extends Request {
 
         // :Temperature#Pressure#Altitude;
         String values[] = response.split("#");
+        values[2] = removeCRC(values[2]);
         LOG.debug("START-Response: Response-String splitted");
 
         if (values[0].isEmpty() || values[1].isEmpty() || values[2].isEmpty()) {
@@ -64,10 +65,10 @@ public class RequestStart extends Request {
                 + " envPress = " + Environment.getInstance().getAirPress()
                 + " envAltitude = " + Environment.getInstance().getAltitude());
 
-        if (Environment.getInstance().getAirPress() == 0) {
-            status = Status.ERROR;
-        } else {
+        if (Environment.getInstance().getAirPress() > 0 && checkCRC(res)) {
             status = Status.DONE;
+        } else {
+            status = Status.ERROR;
         }
     }
 

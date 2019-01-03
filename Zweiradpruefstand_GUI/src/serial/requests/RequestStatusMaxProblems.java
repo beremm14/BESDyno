@@ -36,10 +36,10 @@ public class RequestStatusMaxProblems extends Request {
 
         COMLOG.addRes(res);
 
-        if (res.equals(":MAXPROBLEMS;")) {
-            status = Request.Status.DONE;
+        if (checkCRC(res) && res.equals(":MAXPROBLEMS>" + getCRC(res) + ';')) {
+            status = Status.DONE;
         } else {
-            status = Request.Status.ERROR;
+            status = Status.ERROR;
         }
     }
 

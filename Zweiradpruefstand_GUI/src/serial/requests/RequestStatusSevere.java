@@ -36,7 +36,7 @@ public class RequestStatusSevere extends Request {
 
         COMLOG.addRes(res);
 
-        if (res.equals(":SEVERE;")) {
+        if (checkCRC(res) && res.equals(":SEVERE>" + getCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

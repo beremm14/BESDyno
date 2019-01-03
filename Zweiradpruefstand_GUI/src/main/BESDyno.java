@@ -171,7 +171,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     //Status-Textfeld: Logging for User
     public enum LogLevel {
-        FINEST, FINE, INFO, WARNING, SEVERE
+        FINEST, FINER, FINE, INFO, WARNING, SEVERE
     };
 
     public void userLog(String msg, LogLevel level) {
@@ -179,6 +179,9 @@ public class BESDyno extends javax.swing.JFrame {
         switch (level) {
             case FINEST:
                 LOG.finest(msg);
+                break;
+            case FINER:
+                LOG.finer(msg);
                 break;
             case FINE:
                 LOG.fine(msg);
@@ -200,6 +203,9 @@ public class BESDyno extends javax.swing.JFrame {
         switch (level) {
             case FINEST:
                 LOG.finest(th);
+                break;
+            case FINER:
+                LOG.finer(th);
                 break;
             case FINE:
                 LOG.fine(th);
@@ -223,6 +229,9 @@ public class BESDyno extends javax.swing.JFrame {
             case FINEST:
                 LOG.finest(msg);
                 break;
+            case FINER:
+                LOG.finer(msg);
+                break;
             case FINE:
                 LOG.fine(msg);
                 break;
@@ -244,6 +253,9 @@ public class BESDyno extends javax.swing.JFrame {
         switch (level) {
             case FINEST:
                 LOG.finest(th);
+                break;
+            case FINER:
+                LOG.finer(th);
                 break;
             case FINE:
                 LOG.fine(th);
@@ -426,7 +438,6 @@ public class BESDyno extends javax.swing.JFrame {
                         }
                     }
                     comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
-                    LOG.info(df.format(date));
                     try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
                         CommunicationLogger.getInstance().writeFile(w);
                         LOG.fine("Communication Log written...");
@@ -533,7 +544,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
         return configFile;
     }
-    
+
     private void addLogFileHandler(boolean enabled) {
         if (enabled) {
             try {
@@ -581,7 +592,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Communication
     public void addPendingRequest(Request request) {
         try {
-            LOG.debug(request.getReqMessage() + " added to pedningRequests");
+            LOG.debug(request.getReqMessage() + " added to pendingRequests");
             pendingRequests.add(request);
         } catch (Exception ex) {
             userLog(ex, "ERROR at Request: " + request.getReqName(), LogLevel.WARNING);
@@ -1374,6 +1385,7 @@ public class BESDyno extends javax.swing.JFrame {
                 } else if (r.getVariety() == Variety.ENGINE) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Motorradtemperaturen abgeschlossen", LogLevel.FINE);
+                        addPendingRequest(telegram.fine());
                     } else if (r.getStatus() == Status.ERROR) {
                         userLog("Motorradtemperaturen fehlerhaft - Thermoelemente überprüfen!", LogLevel.WARNING);
                         addPendingRequest(telegram.warning());
@@ -1467,9 +1479,7 @@ public class BESDyno extends javax.swing.JFrame {
         //System.setProperty("test.*.Logger.Filter", "test.MyFilter");
         //System.setProperty("logging.LogOutputStreamHandler.colorize", "false");
 
-        LOG
-                = Logger.getLogger(BESDyno.class
-                        .getName());
+        LOG = Logger.getLogger(BESDyno.class.getName());
         LOGP = Logger.getParentLogger();
     }
 

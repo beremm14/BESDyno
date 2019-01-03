@@ -36,6 +36,7 @@ public class RequestEngine extends Request {
 
         // :EngineTemp#FumeTemp;
         String values[] = response.split("#");
+        values[1] = removeCRC(values[1]);
         if (values[0].isEmpty() || values[1].isEmpty()) {
             LOG.warning("START Response maybe incomplete");
         }
@@ -44,7 +45,8 @@ public class RequestEngine extends Request {
         LOG.info("engTemp = " + Environment.getInstance().getEngTemp()
                 + " fumeTemp = " + Environment.getInstance().getFumeTemp());
         
-        if (Environment.getInstance().getEngTemp() <= 0 || Environment.getInstance().getFumeTemp() <= 0) {
+        if ((Environment.getInstance().getEngTemp() <= 0 || Environment.getInstance().getFumeTemp() <= 0)
+             && checkCRC(res)) {
             status = Status.ERROR;
         } else {
             status = Status.DONE;

@@ -36,7 +36,7 @@ public class RequestStatusWarning extends Request {
 
         COMLOG.addRes(res);
 
-        if (res.equals(":WARNING;")) {
+        if (checkCRC(res) && res.equals(":WARNING>" + getCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;
