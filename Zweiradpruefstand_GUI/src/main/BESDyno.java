@@ -77,6 +77,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     //Variables
     private static boolean devMode = true;
+    private static OS os = OS.OTHER;
     private boolean secondTry = true;
 
     //Communication
@@ -168,6 +169,11 @@ public class BESDyno extends javax.swing.JFrame {
             jbutStartSim.setEnabled(true);
         }
     }
+
+    //Operation System
+    public enum OS {
+        MACOS, LINUX, WINDOWS, OTHER
+    };
 
     //Status-Textfeld: Logging for User
     public enum LogLevel {
@@ -587,6 +593,10 @@ public class BESDyno extends javax.swing.JFrame {
 
     public static boolean isDevMode() {
         return devMode;
+    }
+
+    public OS getOs() {
+        return os;
     }
 
     //Communication
@@ -1409,6 +1419,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         //Menu-Bar support for macOS
         if (System.getProperty("os.name").contains("Mac OS X")) {
+            os = OS.MACOS;
             try {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
@@ -1431,7 +1442,58 @@ public class BESDyno extends javax.swing.JFrame {
                 besDyno.setVisible(true);
             });
             //Other OS
+        } else if (System.getProperty("os.name").startsWith("Windows ")) {
+            os = OS.WINDOWS;
+            try {
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("com.sun.java.swing.plaf.windows.WindowsLookAndFeel".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                }
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(BESDyno.class
+                        .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+
+            java.awt.EventQueue.invokeLater(() -> {
+                BESDyno besDyno = new BESDyno();
+                besDyno.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        saveCommAuto();
+                        LOG.info("End of BESDyno");
+                    }
+                });
+                besDyno.setVisible(true);
+            });
+        } else if (System.getProperty("os.name").startsWith("Linux")) {
+            os = OS.LINUX;
+            try {
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("Nimbus".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                }
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(BESDyno.class
+                        .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+
+            java.awt.EventQueue.invokeLater(() -> {
+                BESDyno besDyno = new BESDyno();
+                besDyno.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        saveCommAuto();
+                        LOG.info("End of BESDyno");
+                    }
+                });
+                besDyno.setVisible(true);
+            });
         } else {
+            os = OS.OTHER;
             try {
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
