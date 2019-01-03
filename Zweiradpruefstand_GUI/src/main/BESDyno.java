@@ -13,6 +13,7 @@ import gui.VehicleSetDialog;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -412,6 +413,13 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         chooser.setSelectedFile(comfile);
+
+        //Later maybe - native OS-specific File Dialog
+//        FileDialog fileDialog = new FileDialog(this);
+//                fileDialog.setMode(FileDialog.SAVE);
+//                fileDialog.setDirectory(comfile.getPath());
+//                fileDialog.setTitle(chooser.getDialogTitle());
+//                fileDialog.setVisible(true);
 
         int rv = chooser.showSaveDialog(this);
         if (rv == JFileChooser.APPROVE_OPTION) {
@@ -1421,6 +1429,7 @@ public class BESDyno extends javax.swing.JFrame {
         if (System.getProperty("os.name").contains("Mac OS X")) {
             os = OS.MACOS;
             try {
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
