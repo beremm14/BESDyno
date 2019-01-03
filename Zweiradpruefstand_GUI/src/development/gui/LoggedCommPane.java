@@ -16,12 +16,15 @@ import main.BESDyno;
 public class LoggedCommPane extends javax.swing.JDialog {
 
     private static final Logger LOG = Logger.getLogger(LoggedCommPane.class.getName());
-    
+
     private final RequestTableModel reqModel = new RequestTableModel();
     private final ResponseTableModel resModel = new ResponseTableModel();
 
     /**
      * Creates new form LoggedCommPane
+     *
+     * @param parent
+     * @param modal
      */
     public LoggedCommPane(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -30,22 +33,22 @@ public class LoggedCommPane extends javax.swing.JDialog {
         jTableReq.setModel(reqModel);
         jTableRes.setModel(resModel);
     }
-    
+
     public void addRequest(LoggedRequest req) {
         reqModel.add(req);
     }
-    
+
     public void addResponse(LoggedResponse res) {
         resModel.add(res);
     }
-    
+
     public void rmAll() {
         reqModel.rmAll();
         resModel.rmAll();
     }
-    
+
     public void setAppearance(boolean dark) {
-        if(dark) {
+        if (dark) {
             jTableReq.setBackground(Color.DARK_GRAY);
             jTableReq.setGridColor(Color.DARK_GRAY);
             jTableReq.getTableHeader().setBackground(Color.DARK_GRAY);
@@ -58,7 +61,7 @@ public class LoggedCommPane extends javax.swing.JDialog {
             jTableRes.getTableHeader().setBackground(Color.DARK_GRAY);
             jPanButtons.setBackground(Color.DARK_GRAY);
             jPanTables.setBackground(Color.DARK_GRAY);
-            
+
             jTableReq.setForeground(Color.WHITE);
             jTableReq.getTableHeader().setForeground(Color.WHITE);
             jTableRes.setForeground(Color.WHITE);
@@ -76,7 +79,7 @@ public class LoggedCommPane extends javax.swing.JDialog {
             jTableRes.getTableHeader().setBackground(Color.WHITE);
             jPanButtons.setBackground(Color.WHITE);
             jPanTables.setBackground(Color.WHITE);
-            
+
             jTableReq.setForeground(Color.BLACK);
             jTableReq.getTableHeader().setForeground(Color.BLACK);
             jTableRes.setForeground(Color.BLACK);
@@ -131,7 +134,7 @@ public class LoggedCommPane extends javax.swing.JDialog {
 
         getContentPane().add(jPanButtons, java.awt.BorderLayout.SOUTH);
 
-        jPanTables.setLayout(new java.awt.GridLayout(1, 0));
+        jPanTables.setLayout(new java.awt.GridLayout());
 
         jTableReq.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -171,6 +174,7 @@ public class LoggedCommPane extends javax.swing.JDialog {
     private void jButSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButSaveActionPerformed
         try {
             BESDyno.getInstance().saveComm();
+            LOG.info("Communication Log saved");
         } catch (Exception ex) {
             LOG.warning(ex);
         }
@@ -214,6 +218,10 @@ public class LoggedCommPane extends javax.swing.JDialog {
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
+                    if (BESDyno.isDevMode()) {
+                        BESDyno.saveCommAuto();
+                        LOG.info("Communication Log saved");
+                    }
                     System.exit(0);
                 }
             });

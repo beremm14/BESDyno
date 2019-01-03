@@ -388,7 +388,7 @@ public class BESDyno extends javax.swing.JFrame {
     // Saves the Communication Log
     public void saveComm() throws Exception {
         JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Text-Datei (*.txt)", "txt"));
+        chooser.setFileFilter(new FileNameExtensionFilter("Log-Datei (*.log)", "log"));
 
         File comfile = null;
         File home;
@@ -409,7 +409,7 @@ public class BESDyno extends javax.swing.JFrame {
                     throw new Exception("Internal Error");
                 }
             }
-            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
+            comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".log");
         }
 
         chooser.setSelectedFile(comfile);
@@ -433,7 +433,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    private static void saveCommAuto() {
+    public static void saveCommAuto() {
         if (isDevMode()) {
             try {
                 File comfile;
@@ -451,7 +451,7 @@ public class BESDyno extends javax.swing.JFrame {
                             throw new Exception("Internal Error");
                         }
                     }
-                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".txt");
+                    comfile = new File(folder + File.separator + "CommLog_" + df.format(date) + ".log");
                     try (BufferedWriter w = new BufferedWriter(new FileWriter(comfile))) {
                         CommunicationLogger.getInstance().writeFile(w);
                         LOG.fine("Communication Log written...");
