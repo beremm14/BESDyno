@@ -24,7 +24,7 @@ Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle
 ### Protokoll
 Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientiert.
 #### Aufbau:
-| Doppelpunkt `:` | Daten, bei mehreren Werten mit Hash `#` getrennt | Greater `>` | CRC32-Prüfsumme | Semicolon `;` |
+| Doppelpunkt `:` | Daten, bei mehreren Werten mit Hash `#` getrennt | Bigger than `>` | CRC32-Prüfsumme | Semicolon `;` |
 | --------------- | ------------------------------------------------ | ----------- | --------------- | ------------- |
 
 #### Requests (mit Response-Beispielen)
