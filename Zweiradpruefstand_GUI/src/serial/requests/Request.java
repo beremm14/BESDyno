@@ -30,6 +30,7 @@ public abstract class Request {
     public abstract String getReqName();
     public abstract Variety getVariety();
     public abstract void handleResponse(String res);
+    public abstract String getResponse();
 
     public Status getStatus() {
         return status;

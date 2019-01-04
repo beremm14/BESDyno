@@ -16,6 +16,8 @@ public class RequestStatusFine extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
+    
+    private String response;
 
     @Override
     public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
@@ -35,7 +37,7 @@ public class RequestStatusFine extends Request {
 
     @Override
     public void handleResponse(String res) {
-
+        response = res;
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
         if (checkCRC(res) && res.equals(":FINE>" + calcCRC(res) + ';')) {
@@ -58,6 +60,11 @@ public class RequestStatusFine extends Request {
     @Override
     public Variety getVariety() {
         return Variety.FINE;
+    }
+
+    @Override
+    public String getResponse() {
+        return response;
     }
 
 }

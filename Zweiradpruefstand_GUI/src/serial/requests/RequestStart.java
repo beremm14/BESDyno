@@ -17,6 +17,8 @@ public class RequestStart extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestStart.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
+    
+    private String response;
 
     @Override
     public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
@@ -42,7 +44,7 @@ public class RequestStart extends Request {
     @Override
     public void handleResponse(String res) {
         LOG.debug("START-Response: " + res);
-
+        response = res;
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
         LOG.debug("START-Response " + res + " logged");
 
@@ -87,6 +89,11 @@ public class RequestStart extends Request {
     @Override
     public Variety getVariety() {
         return Variety.START;
+    }
+
+    @Override
+    public String getResponse() {
+        return response;
     }
 
 }

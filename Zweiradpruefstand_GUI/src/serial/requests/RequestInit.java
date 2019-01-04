@@ -4,7 +4,6 @@ import development.CommunicationLogger;
 import development.LoggedRequest;
 import development.LoggedResponse;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
 import logging.Logger;
 import jssc.SerialPortException;
 import main.BESDyno;
@@ -18,6 +17,8 @@ public class RequestInit extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestInit.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
+    
+    private String response;
 
     @Override
     public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
@@ -44,6 +45,7 @@ public class RequestInit extends Request {
 
     @Override
     public void handleResponse(String res) {
+        response = res;
         LOG.debug("INIT-Response: " + res);
         
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
@@ -70,6 +72,11 @@ public class RequestInit extends Request {
     @Override
     public Variety getVariety() {
         return Variety.INIT;
+    }
+
+    @Override
+    public String getResponse() {
+        return response;
     }
 
 }

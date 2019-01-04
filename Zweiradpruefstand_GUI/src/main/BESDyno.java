@@ -420,7 +420,6 @@ public class BESDyno extends javax.swing.JFrame {
 //                fileDialog.setDirectory(comfile.getPath());
 //                fileDialog.setTitle(chooser.getDialogTitle());
 //                fileDialog.setVisible(true);
-
         int rv = chooser.showSaveDialog(this);
         if (rv == JFileChooser.APPROVE_OPTION) {
             comfile = chooser.getSelectedFile();
@@ -754,7 +753,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutStartSim.setText("Start Simulation");
         jbutStartSim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbutStartSimActionPerformed(evt);
+                onButStartSim(evt);
             }
         });
         jPanStatus.add(jbutStartSim, new java.awt.GridBagConstraints());
@@ -779,7 +778,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutConnect.setPreferredSize(new java.awt.Dimension(127, 29));
         jbutConnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbutConnectActionPerformed(evt);
+                onButConnect(evt);
             }
         });
         jPanTools.add(jbutConnect, new java.awt.GridBagConstraints());
@@ -788,7 +787,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutDisconnect.setPreferredSize(new java.awt.Dimension(127, 29));
         jbutDisconnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbutDisconnectActionPerformed(evt);
+                onButDisconnect(evt);
             }
         });
         jPanTools.add(jbutDisconnect, new java.awt.GridBagConstraints());
@@ -796,7 +795,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutRefresh.setText("Aktualisieren");
         jbutRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbutRefreshActionPerformed(evt);
+                onButRefresh(evt);
             }
         });
         jPanTools.add(jbutRefresh, new java.awt.GridBagConstraints());
@@ -809,7 +808,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiOpen.setText("Öffnen");
         jmiOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiOpenActionPerformed(evt);
+                onOpen(evt);
             }
         });
         jmenuFile.add(jmiOpen);
@@ -818,7 +817,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSave.setText("Speichern");
         jmiSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiSaveActionPerformed(evt);
+                onSave(evt);
             }
         });
         jmenuFile.add(jmiSave);
@@ -827,7 +826,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiExport.setText("Exportieren");
         jmiExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiExportActionPerformed(evt);
+                onExport(evt);
             }
         });
         jmenuFile.add(jmiExport);
@@ -837,7 +836,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiPrint.setText("Drucken");
         jmiPrint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiPrintActionPerformed(evt);
+                onPrint(evt);
             }
         });
         jmenuFile.add(jmiPrint);
@@ -847,7 +846,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSettings.setText("Einstellungen");
         jmiSettings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiSettingsActionPerformed(evt);
+                onSettings(evt);
             }
         });
         jmenuFile.add(jmiSettings);
@@ -856,7 +855,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiQuit.setText("Beenden");
         jmiQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiQuitActionPerformed(evt);
+                onQuit(evt);
             }
         });
         jmenuFile.add(jmiQuit);
@@ -869,7 +868,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiStartSim.setText("Start Simulation");
         jmiStartSim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiStartSimActionPerformed(evt);
+                onStartSim(evt);
             }
         });
         jmenuSimulation.add(jmiStartSim);
@@ -879,7 +878,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiYellow.setText("Gelb - Warnung");
         jmiYellow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiYellowActionPerformed(evt);
+                onYellow(evt);
             }
         });
         jmenuStatus.add(jmiYellow);
@@ -887,7 +886,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiRed.setText("Rot - Fehler");
         jmiRed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiRedActionPerformed(evt);
+                onRed(evt);
             }
         });
         jmenuStatus.add(jmiRed);
@@ -895,7 +894,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiYellowRed.setText("Gelb & Rot - Schwerwiegender Fehler");
         jmiYellowRed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiYellowRedActionPerformed(evt);
+                onYellowRed(evt);
             }
         });
         jmenuStatus.add(jmiYellowRed);
@@ -907,7 +906,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiRefresh.setText("Aktualisieren");
         jmiRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiRefreshActionPerformed(evt);
+                onRefresh(evt);
             }
         });
         jmenuSimulation.add(jmiRefresh);
@@ -916,7 +915,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiConnect.setText("Verbinden");
         jmiConnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiConnectActionPerformed(evt);
+                onConnect(evt);
             }
         });
         jmenuSimulation.add(jmiConnect);
@@ -925,7 +924,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiDisconnect.setText("Trennen");
         jmiDisconnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiDisconnectActionPerformed(evt);
+                onDisconnect(evt);
             }
         });
         jmenuSimulation.add(jmiDisconnect);
@@ -939,7 +938,7 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode.setText("Dark Mode");
         jcbmiDarkMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcbmiDarkModeActionPerformed(evt);
+                onDark(evt);
             }
         });
         jmenuAppearance.add(jcbmiDarkMode);
@@ -953,7 +952,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiDevMode.setText("Entwicklungsmodus");
         jmiDevMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiDevModeActionPerformed(evt);
+                toggleDevMode(evt);
             }
         });
         jmenuDeveloper.add(jmiDevMode);
@@ -962,7 +961,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiShowPendingRequests.setText("Unfertige Requests anzeigen");
         jmiShowPendingRequests.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiShowPendingRequestsActionPerformed(evt);
+                onShowPendingRequests(evt);
             }
         });
         jmenuDeveloper.add(jmiShowPendingRequests);
@@ -970,7 +969,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiShowLoggedComm.setText("Kommunikations-Protokoll einsehen");
         jmiShowLoggedComm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiShowLoggedCommActionPerformed(evt);
+                onShowLoggedComm(evt);
             }
         });
         jmenuDeveloper.add(jmiShowLoggedComm);
@@ -979,7 +978,7 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiSaveLoggedComm.setText("Kommunikations-Protokoll sichern");
         jcbmiSaveLoggedComm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcbmiSaveLoggedCommActionPerformed(evt);
+                onSaveLoggedComm(evt);
             }
         });
         jmenuDeveloper.add(jcbmiSaveLoggedComm);
@@ -990,7 +989,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiInit.setText("INIT");
         jmiInit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiInitActionPerformed(evt);
+                onTestInit(evt);
             }
         });
         jmenuRequests.add(jmiInit);
@@ -998,7 +997,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiStart.setText("START");
         jmiStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiStartActionPerformed(evt);
+                onTestStart(evt);
             }
         });
         jmenuRequests.add(jmiStart);
@@ -1006,7 +1005,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiEngine.setText("ENGINE");
         jmiEngine.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiEngineActionPerformed(evt);
+                onTestEngine(evt);
             }
         });
         jmenuRequests.add(jmiEngine);
@@ -1014,7 +1013,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiMeasure.setText("MEASURE");
         jmiMeasure.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiMeasureActionPerformed(evt);
+                onTestMeasure(evt);
             }
         });
         jmenuRequests.add(jmiMeasure);
@@ -1022,7 +1021,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiMeasureno.setText("MEASURENO");
         jmiMeasureno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiMeasurenoActionPerformed(evt);
+                onTestMeasureNo(evt);
             }
         });
         jmenuRequests.add(jmiMeasureno);
@@ -1030,7 +1029,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiFine.setText("FINE");
         jmiFine.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiFineActionPerformed(evt);
+                onTestFine(evt);
             }
         });
         jmenuRequests.add(jmiFine);
@@ -1038,7 +1037,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiWarning.setText("WARNING");
         jmiWarning.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiWarningActionPerformed(evt);
+                onTestWarning(evt);
             }
         });
         jmenuRequests.add(jmiWarning);
@@ -1046,7 +1045,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSevere.setText("SEVERE");
         jmiSevere.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiSevereActionPerformed(evt);
+                onTestSevere(evt);
             }
         });
         jmenuRequests.add(jmiSevere);
@@ -1054,7 +1053,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiMaxProblems.setText("MAXPROBLEMS");
         jmiMaxProblems.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiMaxProblemsActionPerformed(evt);
+                onTestMaxProblems(evt);
             }
         });
         jmenuRequests.add(jmiMaxProblems);
@@ -1069,7 +1068,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiAbout.setText("Über");
         jmiAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmiAboutActionPerformed(evt);
+                onAbout(evt);
             }
         });
         jmenuAbout.add(jmiAbout);
@@ -1090,20 +1089,20 @@ public class BESDyno extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jmiSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSaveActionPerformed
+    private void onSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSave
         try {
             save();
             userLog("Datei erfolgreich gespeichert", LogLevel.FINE);
         } catch (Exception ex) {
             userLog(ex, "Fehler beim Speichern der Datei", LogLevel.WARNING);
         }
-    }//GEN-LAST:event_jmiSaveActionPerformed
+    }//GEN-LAST:event_onSave
 
-    private void jmiPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPrintActionPerformed
+    private void onPrint(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onPrint
 
-    }//GEN-LAST:event_jmiPrintActionPerformed
+    }//GEN-LAST:event_onPrint
 
-    private void jmiSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSettingsActionPerformed
+    private void onSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSettings
         try {
             loadConfig();
         } catch (Exception ex) {
@@ -1118,13 +1117,13 @@ public class BESDyno extends javax.swing.JFrame {
             setAppearance(Config.getInstance().isDark());
             userLog("Einstellungen gespeichert", LogLevel.INFO);
         }
-    }//GEN-LAST:event_jmiSettingsActionPerformed
+    }//GEN-LAST:event_onSettings
 
-    private void jmiQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiQuitActionPerformed
+    private void onQuit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onQuit
 
-    }//GEN-LAST:event_jmiQuitActionPerformed
+    }//GEN-LAST:event_onQuit
 
-    private void jmiStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartSimActionPerformed
+    private void onStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onStartSim
         vehicle.setAppearance(Config.getInstance().isDark());
         vehicle.setVisible(true);
 
@@ -1134,14 +1133,14 @@ public class BESDyno extends javax.swing.JFrame {
             measure.setAppearance(Config.getInstance().isDark());
             measure.setVisible(true);
         }
-    }//GEN-LAST:event_jmiStartSimActionPerformed
+    }//GEN-LAST:event_onStartSim
 
-    private void jmiRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRefreshActionPerformed
+    private void onRefresh(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onRefresh
         refreshPorts();
         userLog("Port-Liste aktualisiert", LogLevel.INFO);
-    }//GEN-LAST:event_jmiRefreshActionPerformed
+    }//GEN-LAST:event_onRefresh
 
-    private void jmiConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiConnectActionPerformed
+    private void onConnect(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onConnect
         try {
             MyConnectPortWorker w = new MyConnectPortWorker((String) jcbSerialDevices.getSelectedItem());
             w.execute();
@@ -1152,9 +1151,9 @@ public class BESDyno extends javax.swing.JFrame {
         } catch (Throwable ex) {
             userLog(ex, "Fehler beim Verbinden", LogLevel.SEVERE);
         }
-    }//GEN-LAST:event_jmiConnectActionPerformed
+    }//GEN-LAST:event_onConnect
 
-    private void jmiDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDisconnectActionPerformed
+    private void onDisconnect(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDisconnect
         try {
             telegram.setSerialPort(null);
             if (!telegram.cancel(true)) {
@@ -1178,9 +1177,9 @@ public class BESDyno extends javax.swing.JFrame {
             }
             refreshGui();
         }
-    }//GEN-LAST:event_jmiDisconnectActionPerformed
+    }//GEN-LAST:event_onDisconnect
 
-    private void jmiAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAboutActionPerformed
+    private void onAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onAbout
         about.setAppearance(Config.getInstance().isDark());
         about.setVisible(true);
         if (port != null) {
@@ -1188,39 +1187,30 @@ public class BESDyno extends javax.swing.JFrame {
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");
         }
-    }//GEN-LAST:event_jmiAboutActionPerformed
+    }//GEN-LAST:event_onAbout
 
-    private void jbutConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutConnectActionPerformed
-        jmiConnectActionPerformed(evt);
-    }//GEN-LAST:event_jbutConnectActionPerformed
+    private void onButConnect(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onButConnect
+        onConnect(evt);
+    }//GEN-LAST:event_onButConnect
 
-    private void jbutDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutDisconnectActionPerformed
-        jmiDisconnectActionPerformed(evt);
-    }//GEN-LAST:event_jbutDisconnectActionPerformed
+    private void onButDisconnect(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onButDisconnect
+        onDisconnect(evt);
+    }//GEN-LAST:event_onButDisconnect
 
-    private void jbutRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutRefreshActionPerformed
-        refreshPorts();
-        userLog("Port-Liste aktualisiert", LogLevel.INFO);
-    }//GEN-LAST:event_jbutRefreshActionPerformed
+    private void onButRefresh(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onButRefresh
+        onRefresh(evt);
+    }//GEN-LAST:event_onButRefresh
 
     private void onHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onHelp
         help.setAppearance(Config.getInstance().isDark());
         help.setVisible(true);
     }//GEN-LAST:event_onHelp
 
-    private void jbutStartSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutStartSimActionPerformed
-        vehicle.setAppearance(Config.getInstance().isDark());
-        vehicle.setVisible(true);
+    private void onButStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onButStartSim
+        onStartSim(evt);
+    }//GEN-LAST:event_onButStartSim
 
-        LOG.info("Simulation started");
-
-        if (vehicle.isPressedOK()) {
-            measure.setAppearance(Config.getInstance().isDark());
-            measure.setVisible(true);
-        }
-    }//GEN-LAST:event_jbutStartSimActionPerformed
-
-    private void jcbmiDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiDarkModeActionPerformed
+    private void onDark(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDark
         Config.getInstance().setDark(jcbmiDarkMode.getState());
         setAppearance(Config.getInstance().isDark());
         try {
@@ -1228,100 +1218,100 @@ public class BESDyno extends javax.swing.JFrame {
         } catch (Exception e) {
             userLog(e, "Fehler beim Speichern der Config-File", LogLevel.WARNING);
         }
-    }//GEN-LAST:event_jcbmiDarkModeActionPerformed
+    }//GEN-LAST:event_onDark
 
-    private void jmiExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExportActionPerformed
+    private void onExport(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onExport
 
-    }//GEN-LAST:event_jmiExportActionPerformed
+    }//GEN-LAST:event_onExport
 
-    private void jmiOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiOpenActionPerformed
+    private void onOpen(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onOpen
         try {
             open();
             userLog("Datei erfolgreich geöffnet", LogLevel.FINE);
         } catch (Exception ex) {
             userLog(ex, "Fehler beim Öffnen der Datei", LogLevel.WARNING);
         }
-    }//GEN-LAST:event_jmiOpenActionPerformed
+    }//GEN-LAST:event_onOpen
 
-    private void jcbmiSaveLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbmiSaveLoggedCommActionPerformed
+    private void onSaveLoggedComm(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveLoggedComm
         try {
             saveComm();
         } catch (Exception ex) {
             userLog(ex, "Fehler beim Speichern des Kommunikationsprotokolls", LogLevel.WARNING);
         }
-    }//GEN-LAST:event_jcbmiSaveLoggedCommActionPerformed
+    }//GEN-LAST:event_onSaveLoggedComm
 
-    private void jmiDevModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiDevModeActionPerformed
+    private void toggleDevMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleDevMode
         devMode = jmiDevMode.getState();
         LOG.setDevMode(devMode);
         addLogFileHandler(devMode);
         if (devMode) {
             JOptionPane.showMessageDialog(this, "Wechseln in den Entwicklungsmodus: LOG-Dateien werden gespeichert...", "Entwicklungsmodus", JOptionPane.INFORMATION_MESSAGE);
         }
-    }//GEN-LAST:event_jmiDevModeActionPerformed
+    }//GEN-LAST:event_toggleDevMode
 
-    private void jmiShowPendingRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowPendingRequestsActionPerformed
+    private void onShowPendingRequests(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onShowPendingRequests
         showPendingRequests();
-    }//GEN-LAST:event_jmiShowPendingRequestsActionPerformed
+    }//GEN-LAST:event_onShowPendingRequests
 
-    private void jmiShowLoggedCommActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowLoggedCommActionPerformed
+    private void onShowLoggedComm(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onShowLoggedComm
         showLoggedComm();
-    }//GEN-LAST:event_jmiShowLoggedCommActionPerformed
+    }//GEN-LAST:event_onShowLoggedComm
 
-    private void jmiInitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiInitActionPerformed
+    private void onTestInit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestInit
         LOG.info("Test Communication: INIT");
         addPendingRequest(telegram.init());
-    }//GEN-LAST:event_jmiInitActionPerformed
+    }//GEN-LAST:event_onTestInit
 
-    private void jmiStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiStartActionPerformed
+    private void onTestStart(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestStart
         LOG.info("Test Communication: START");
         addPendingRequest(telegram.start());
-    }//GEN-LAST:event_jmiStartActionPerformed
+    }//GEN-LAST:event_onTestStart
 
-    private void jmiEngineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiEngineActionPerformed
+    private void onTestEngine(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestEngine
         LOG.info("Test Communication: ENGINE");
         addPendingRequest(telegram.engine());
-    }//GEN-LAST:event_jmiEngineActionPerformed
+    }//GEN-LAST:event_onTestEngine
 
-    private void jmiMeasureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiMeasureActionPerformed
+    private void onTestMeasure(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestMeasure
         LOG.info("Test Communication: MEASURE");
         addPendingRequest(telegram.measure());
-    }//GEN-LAST:event_jmiMeasureActionPerformed
+    }//GEN-LAST:event_onTestMeasure
 
-    private void jmiMeasurenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiMeasurenoActionPerformed
+    private void onTestMeasureNo(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestMeasureNo
         LOG.info("Test Communication: MEASURENO");
         addPendingRequest(telegram.measureno());
-    }//GEN-LAST:event_jmiMeasurenoActionPerformed
+    }//GEN-LAST:event_onTestMeasureNo
 
-    private void jmiFineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiFineActionPerformed
+    private void onTestFine(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestFine
         LOG.info("Test Communication: FINE");
         addPendingRequest(telegram.fine());
-    }//GEN-LAST:event_jmiFineActionPerformed
+    }//GEN-LAST:event_onTestFine
 
-    private void jmiWarningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiWarningActionPerformed
+    private void onTestWarning(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestWarning
         LOG.info("Test Communication: WARNING");
         addPendingRequest(telegram.warning());
-    }//GEN-LAST:event_jmiWarningActionPerformed
+    }//GEN-LAST:event_onTestWarning
 
-    private void jmiSevereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSevereActionPerformed
+    private void onTestSevere(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestSevere
         LOG.info("Test Communication: SEVERE");
         addPendingRequest(telegram.severe());
-    }//GEN-LAST:event_jmiSevereActionPerformed
+    }//GEN-LAST:event_onTestSevere
 
-    private void jmiMaxProblemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiMaxProblemsActionPerformed
+    private void onTestMaxProblems(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestMaxProblems
         LOG.info("Test Communication: MAXPROBLEMS");
         addPendingRequest(telegram.maxProblems());
-    }//GEN-LAST:event_jmiMaxProblemsActionPerformed
+    }//GEN-LAST:event_onTestMaxProblems
 
-    private void jmiYellowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiYellowActionPerformed
+    private void onYellow(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onYellow
         LOG.warning("User checked LED: WARNING");
-    }//GEN-LAST:event_jmiYellowActionPerformed
+    }//GEN-LAST:event_onYellow
 
-    private void jmiRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRedActionPerformed
+    private void onRed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onRed
         LOG.warning("User checked LED: SEVERE");
-    }//GEN-LAST:event_jmiRedActionPerformed
+    }//GEN-LAST:event_onRed
 
-    private void jmiYellowRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiYellowRedActionPerformed
+    private void onYellowRed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onYellowRed
         LOG.warning("User checked LED: MAXPROBLEMS");
         JOptionPane.showMessageDialog(this,
                 "Wenn beide Kontrollleuchten (Gelb & Rot) leuchten ist ein schwerwiegender Fehler am Gerät oder im Programm aufgetreten...\n\n"
@@ -1330,7 +1320,7 @@ public class BESDyno extends javax.swing.JFrame {
                 + "und senden Sie nach erneuter Ausführung alle Dateien im Ordner 'Service_Files' an den Entwickler!",
                 "Gelbe & Rote LED: Schwerwiegender Fehler",
                 JOptionPane.WARNING_MESSAGE);
-    }//GEN-LAST:event_jmiYellowRedActionPerformed
+    }//GEN-LAST:event_onYellowRed
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -1392,22 +1382,43 @@ public class BESDyno extends javax.swing.JFrame {
                             secondTry = false;
                         } else {
                             userLogPane("Gerät hat möglicherweise einen Fehler oder ist defekt. Keine Gewährleistung der Korrektheit der Messdaten - Status-LEDs kontrollieren!", LogLevel.WARNING);
+                            LOG.warning("INIT returns ERROR: " + r.getResponse());
                             addPendingRequest(telegram.warning());
                         }
                     }
+
                 } else if (r.getVariety() == Variety.START) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
                         userLogPane("Umweltdaten möglicherweise fehlerhaft oder unvollständig...", LogLevel.WARNING);
+                        LOG.warning("START returns ERROR: " + r.getResponse());
                     }
+
                 } else if (r.getVariety() == Variety.ENGINE) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Motorradtemperaturen abgeschlossen", LogLevel.FINE);
                         addPendingRequest(telegram.fine());
                     } else if (r.getStatus() == Status.ERROR) {
                         userLog("Motorradtemperaturen fehlerhaft - Thermoelemente überprüfen!", LogLevel.WARNING);
+                        LOG.warning("ENGINE returns ERROR: " + r.getResponse());
                         addPendingRequest(telegram.warning());
+                    }
+
+                } else if (r.getVariety() == Variety.MEASURE) {
+                    if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("MEASURE returns ERROR: " + r.getResponse());
+                    }
+                    if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
+                        addPendingRequest(telegram.measure());
+                    }
+
+                } else if (r.getVariety() == Variety.MEASURENO) {
+                    if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("MEASURENO returns ERROR: " + r.getResponse());
+                    }
+                    if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
+                        addPendingRequest(telegram.measureno());
                     }
                 }
             }

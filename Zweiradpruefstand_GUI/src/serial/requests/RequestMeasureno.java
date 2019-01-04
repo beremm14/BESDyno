@@ -18,6 +18,8 @@ public class RequestMeasureno extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
+    
+    private String response;
 
     @Override
     public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
@@ -37,7 +39,7 @@ public class RequestMeasureno extends Request {
 
     @Override
     public void handleResponse(String res) {
-
+        response = res;
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
         String response = res.replaceAll(":", "");
@@ -71,6 +73,11 @@ public class RequestMeasureno extends Request {
     @Override
     public Variety getVariety() {
         return Variety.MEASURENO;
+    }
+
+    @Override
+    public String getResponse() {
+        return response;
     }
 
 }
