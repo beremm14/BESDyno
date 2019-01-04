@@ -18,5 +18,24 @@ Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle
   
 ## For Developer
   **/Zweiradpruefstand_GUI**: Das PC-Interface wurde in NetBeans geschrieben, es wird die IDE benötigt, sowie [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html).  
-  **/Zweiradpruefstand_AVR**: Software, die zur Endauslieferung des Produktes verwendet wird.  
   **/Zweiradpruefstand_Arduino**: Protoyp-Software, die zur Demonstration der Funktionsfähigkeit sowie für erste Messungen im Rahmen der Diplomarbeit angefertigt wird.  
+
+## Dokumentation
+### Protokoll
+Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientiert.
+#### Aufbau:
+| Doppelpunkt `:` | Daten, bei mehreren Werten mit Hash `#` getrennt | Greater `>` | CRC32-Prüfsumme | Semicolon `;` |
+| --------------- | ------------------------------------------------ | ----------- | --------------- | ------------- |
+
+#### Requests (mit Response-Beispielen)
+| Request | Req-String Rx | Response | Response-String Tx |
+| ------- | ------------- | -------- | ------------------ |
+| INIT | `i` | Initialisierungs-Antwort | `:BESDyno>CRC;` |
+| START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:24.53#9871.23#303.54>CRC;` |
+| ENGINE | `e` | Motor- & Abgastemperatur | `:430.26#591.68>CRC;` |
+| MEASURE | `m` | Motor- & Walzendrehzahl | `:507#2927#507#2927>CRC;` |
+| MEASURENO | `n` | Nur Walzendrehzahl | `:193#1114>CRC;` |
+| FINE | `f` | *setzt grüne LED* | `:FINE>CRC;` |
+| WARNING | `w` | *setzt gelbe LED* | `:WARNING>CRC;` |
+| SEVERE | `v` | *setzt rote LED* | `:SEVERE>CRC;` |
+| MAXPROBLEMS | `x` | *setzt gelbe & rote LED* | `:MAXPROBLEMS>CRC;` |
