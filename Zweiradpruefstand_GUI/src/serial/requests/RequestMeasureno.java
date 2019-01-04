@@ -1,5 +1,7 @@
 package serial.requests;
 
+import data.BikePower;
+import data.RawDatapoint;
 import development.CommunicationLogger;
 import development.LoggedRequest;
 import development.LoggedResponse;
@@ -38,7 +40,18 @@ public class RequestMeasureno extends Request {
 
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
-        if (checkCRC(res) && res.equals(":NOTSUPPORTED>" + calcCRC(res) + ';')) {
+        String response = res.replaceAll(":", "");
+        response = response.replaceAll(";", "");
+
+        // :rearCount#rearTime>crc;
+        String values[] = response.split("#");
+        values[1] = removeCRC(values[1]);
+        
+        RawDatapoint dp = new RawDatapoint(values[0], values[1]);
+        BikePower.getInstance().addRawDP(dp);
+        LOG.debug("MEASURENO: wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+        
+        if (checkCRC(res) && dp.getTime() > 0) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

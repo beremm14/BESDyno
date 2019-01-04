@@ -21,6 +21,18 @@ public class RawDatapoint {
         this.wheelCount = wheelCount;
         this.time = time;
     }
+    
+    public RawDatapoint(String wheelCount, String time) {
+        this.engCount = 0;
+        this.wheelCount = Integer.parseInt(wheelCount);
+        this.time = Integer.parseInt(time);
+    }
+    
+    public RawDatapoint(int wheelCount, int time) {
+        this.engCount = 0;
+        this.wheelCount = wheelCount;
+        this.time = time;
+    }
 
     public int getEngCount() {
         return engCount;

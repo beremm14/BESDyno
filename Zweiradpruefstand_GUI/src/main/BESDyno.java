@@ -1255,6 +1255,9 @@ public class BESDyno extends javax.swing.JFrame {
         devMode = jmiDevMode.getState();
         LOG.setDevMode(devMode);
         addLogFileHandler(devMode);
+        if (devMode) {
+            JOptionPane.showMessageDialog(this, "Wechseln in den Entwicklungsmodus: LOG-Dateien werden gespeichert...", "Entwicklungsmodus", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_jmiDevModeActionPerformed
 
     private void jmiShowPendingRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiShowPendingRequestsActionPerformed
