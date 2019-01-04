@@ -1410,7 +1410,7 @@ public class BESDyno extends javax.swing.JFrame {
                         LOG.warning("MEASURE returns ERROR: " + r.getResponse());
                     }
                     if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
-                        addPendingRequest(telegram.measure());
+                        //addPendingRequest(telegram.measure());
                     }
 
                 } else if (r.getVariety() == Variety.MEASURENO) {
@@ -1418,7 +1418,7 @@ public class BESDyno extends javax.swing.JFrame {
                         LOG.warning("MEASURENO returns ERROR: " + r.getResponse());
                     }
                     if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
-                        addPendingRequest(telegram.measureno());
+                        //addPendingRequest(telegram.measureno());
                     }
                 }
             }
