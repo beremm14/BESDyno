@@ -1279,6 +1279,7 @@ public class BESDyno extends javax.swing.JFrame {
         if (jcbmiDevMode.getState()) {
             int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie in den Entwicklungsmodus wechseln?", "Entwicklunsmodus", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (answ == JOptionPane.YES_OPTION) {
+                LOG.info("Switched to Development-Mode");
                 devMode = jcbmiDevMode.getState();
                 addLogFileHandler(devMode);
             } else if (answ == JOptionPane.NO_OPTION) {
@@ -1286,6 +1287,7 @@ public class BESDyno extends javax.swing.JFrame {
                 devMode = false;
             }
         } else {
+            LOG.info("Switched to User-Mode");
             jcbmiDebugLogging.setState(false);
             LOG.setDebugMode(false);
         }
@@ -1371,6 +1373,11 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void toggleDebugLogging(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleDebugLogging
         LOG.setDebugMode(jcbmiDebugLogging.getState());
+        if(jcbmiDebugLogging.getState()) {
+            LOG.info("Enabled Debug Logging");
+        } else {
+            LOG.info("Disabled Debug Logging");
+        }
     }//GEN-LAST:event_toggleDebugLogging
 
     private class MyConnectPortWorker extends ConnectPortWorker {
