@@ -128,6 +128,9 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     private void refreshGui() {
+        devMode = jcbmiDevMode.getState();
+        LOG.setDebugMode(jcbmiDebugLogging.getState());
+        
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
@@ -718,13 +721,13 @@ public class BESDyno extends javax.swing.JFrame {
         jmiInit = new javax.swing.JMenuItem();
         jmiStart = new javax.swing.JMenuItem();
         jmiEngine = new javax.swing.JMenuItem();
+        jmiKill = new javax.swing.JMenuItem();
         jmiMeasure = new javax.swing.JMenuItem();
         jmiMeasureno = new javax.swing.JMenuItem();
         jmiFine = new javax.swing.JMenuItem();
         jmiWarning = new javax.swing.JMenuItem();
         jmiSevere = new javax.swing.JMenuItem();
         jmiMaxProblems = new javax.swing.JMenuItem();
-        jmiKill = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -1036,6 +1039,14 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuRequests.add(jmiEngine);
 
+        jmiKill.setText("KILL");
+        jmiKill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onTestKill(evt);
+            }
+        });
+        jmenuRequests.add(jmiKill);
+
         jmiMeasure.setText("MEASURE");
         jmiMeasure.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1083,14 +1094,6 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuRequests.add(jmiMaxProblems);
-
-        jmiKill.setText("KILL");
-        jmiKill.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onTestKill(evt);
-            }
-        });
-        jmenuRequests.add(jmiKill);
 
         jmenuDeveloper.add(jmenuRequests);
 
@@ -1282,7 +1285,7 @@ public class BESDyno extends javax.swing.JFrame {
             int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie in den Entwicklungsmodus wechseln?", "Entwicklunsmodus", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (answ == JOptionPane.YES_OPTION) {
                 LOG.info("Switched to Development-Mode");
-                devMode = jcbmiDevMode.getState();
+                devMode = true;
                 addLogFileHandler(devMode);
             } else if (answ == JOptionPane.NO_OPTION) {
                 jcbmiDevMode.setState(false);
@@ -1479,6 +1482,16 @@ public class BESDyno extends javax.swing.JFrame {
                     }
                     if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
                         //addPendingRequest(telegram.measureno());
+                    }
+                } else if (r.getVariety() == Variety.KILL) {
+                    if (r.getStatus() == Status.DONE) {
+                        if (Bike.getInstance().isMeasRpm()) {
+                            addPendingRequest(telegram.measure());
+                            LOG.info("KILL sent MEASURE");
+                        } else {
+                            addPendingRequest(telegram.measureno());
+                            LOG.info("KILL sent MEASURENO");
+                        }
                     }
                 }
             }

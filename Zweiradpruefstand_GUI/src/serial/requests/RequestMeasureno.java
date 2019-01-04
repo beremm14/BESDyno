@@ -50,8 +50,13 @@ public class RequestMeasureno extends Request {
         values[1] = removeCRC(values[1]);
         
         RawDatapoint dp = new RawDatapoint(values[0], values[1]);
-        BikePower.getInstance().addRawDP(dp);
-        LOG.debug("MEASURENO: wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+        if (dp.getTime() > 0) {
+            BikePower.getInstance().addRawDP(dp);
+            LOG.debug("MEASURENO: wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+        } else {
+            LOG.warning("MEASURENO: Time = 0");
+        }
+        
         
         if (checkCRC(res) && dp.getTime() > 0) {
             status = Status.DONE;

@@ -12,9 +12,6 @@ import java.util.List;
  */
 public class LineChart {
     
-    private Bike bike = Bike.getInstance();
-    private BikePower power = BikePower.getInstance();
-    private Config config = Config.getInstance();
 
     public LineChart() {
         

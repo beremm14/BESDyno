@@ -18,7 +18,7 @@ public class RequestMeasure extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
-    
+
     private String response;
 
     @Override
@@ -48,11 +48,15 @@ public class RequestMeasure extends Request {
         // :engCount#engTime#rearCount#rearTime>crc;
         String values[] = response.split("#");
         values[3] = removeCRC(values[3]);
-        
+
         RawDatapoint dp = new RawDatapoint(values[0], values[2], values[1]);
-        BikePower.getInstance().addRawDP(dp);
-        LOG.debug("MEASURE: engCount: " + dp.getEngCount() + " wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
-        
+        if (dp.getTime() > 0) {
+            BikePower.getInstance().addRawDP(dp);
+            LOG.debug("MEASURE: engCount: " + dp.getEngCount() + " wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+        } else {
+            LOG.warning("MEASURE: Time = 0");
+        }
+
         if (checkCRC(res) && dp.getTime() == Integer.parseInt(values[3]) && dp.getTime() > 0) {
             status = Status.DONE;
         } else {

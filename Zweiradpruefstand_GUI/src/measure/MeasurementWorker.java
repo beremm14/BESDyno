@@ -1,6 +1,5 @@
 package measure;
 
-import data.Bike;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.SwingWorker;
@@ -11,20 +10,10 @@ import javax.swing.SwingWorker;
  * @author emil
  */
 public class MeasurementWorker extends SwingWorker<Void, String> implements PropertyChangeListener {
-    
-    private final Bike bike = Bike.getInstance();
-    
-    private Calculate calc;
 
     @Override
     protected Void doInBackground() throws Exception {
-//        Telegram1.getInstance().readEnvData();
-//        Telegram1.getInstance().readRpmData();
-//        Telegram1.getInstance().readBikeTemp();
-        
-        
-        
-        return null;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -32,4 +21,5 @@ public class MeasurementWorker extends SwingWorker<Void, String> implements Prop
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+
 }
