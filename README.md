@@ -33,7 +33,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | INIT | `i` | Initialisierungs-Antwort | `:BESDyno>CRC;` |
 | START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:24.53#9871.23#303.54>CRC;` |
 | ENGINE | `e` | Motor- & Abgastemperatur | `:430.26#591.68>CRC;` |
-| KILL | `k` | *setzt RPM-Counter auf 0* | `KILL>CRC` |
+| KILL | `k` | *setzt RPM-Counter auf 0* | `:KILL>CRC;` |
 | MEASURE | `m` | Motor- & Walzendrehzahl | `:507#2927#507#2927>CRC;` |
 | MEASURENO | `n` | Nur Walzendrehzahl | `:193#1114>CRC;` |
 | FINE | `f` | *setzt grüne LED* | `:FINE>CRC;` |
