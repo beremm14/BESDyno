@@ -13,7 +13,6 @@ import gui.VehicleSetDialog;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -77,7 +76,7 @@ public class BESDyno extends javax.swing.JFrame {
     private jssc.SerialPort port;
 
     //Variables
-    private static boolean devMode = true;
+    private static boolean devMode = false;
     private static OS os = OS.OTHER;
     private boolean secondTry = true;
 
@@ -105,8 +104,9 @@ public class BESDyno extends javax.swing.JFrame {
 
         jtfStatus.setEditable(false);
 
-        jmiDevMode.setState(true);
-        devMode = jmiDevMode.getState();
+        jcbmiDevMode.setState(false);
+        jcbmiDebugLogging.setState(false);
+        devMode = jcbmiDevMode.getState();
         LOG.setDebugMode(jcbmiDebugLogging.getState());
 
         addLogFileHandler(devMode);
@@ -707,7 +707,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuAppearance = new javax.swing.JMenu();
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
-        jmiDevMode = new javax.swing.JCheckBoxMenuItem();
+        jcbmiDevMode = new javax.swing.JCheckBoxMenuItem();
         jcbmiDebugLogging = new javax.swing.JCheckBoxMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jmiShowPendingRequests = new javax.swing.JMenuItem();
@@ -963,15 +963,15 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmenuDeveloper.setText("Entwicklungstools");
 
-        jmiDevMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.META_MASK));
-        jmiDevMode.setSelected(true);
-        jmiDevMode.setText("Entwicklungsmodus");
-        jmiDevMode.addActionListener(new java.awt.event.ActionListener() {
+        jcbmiDevMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.META_MASK));
+        jcbmiDevMode.setSelected(true);
+        jcbmiDevMode.setText("Entwicklungsmodus");
+        jcbmiDevMode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toggleDevMode(evt);
             }
         });
-        jmenuDeveloper.add(jmiDevMode);
+        jmenuDeveloper.add(jcbmiDevMode);
 
         jcbmiDebugLogging.setText("Debug Logging");
         jcbmiDebugLogging.addActionListener(new java.awt.event.ActionListener() {
@@ -1276,13 +1276,13 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void toggleDevMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleDevMode
         devMode = false;
-        if (jmiDevMode.getState()) {
+        if (jcbmiDevMode.getState()) {
             int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie in den Entwicklungsmodus wechseln?", "Entwicklunsmodus", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (answ == JOptionPane.YES_OPTION) {
-                devMode = jmiDevMode.getState();
+                devMode = jcbmiDevMode.getState();
                 addLogFileHandler(devMode);
             } else if (answ == JOptionPane.NO_OPTION) {
-                jmiDevMode.setState(false);
+                jcbmiDevMode.setState(false);
                 devMode = false;
             }
         } else {
@@ -1636,6 +1636,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
     private javax.swing.JCheckBoxMenuItem jcbmiDebugLogging;
+    private javax.swing.JCheckBoxMenuItem jcbmiDevMode;
     private javax.swing.JMenuItem jcbmiSaveLoggedComm;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuAppearance;
@@ -1646,7 +1647,6 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenu jmenuStatus;
     private javax.swing.JMenuItem jmiAbout;
     private javax.swing.JMenuItem jmiConnect;
-    private javax.swing.JCheckBoxMenuItem jmiDevMode;
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiEngine;
     private javax.swing.JMenuItem jmiExport;
