@@ -28,7 +28,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | --------------- | ------------------------------------------------ | ----------- | --------------- | ------------- |
 
 #### Requests (mit Response-Beispielen)
-| Request | Req-String Rx | Response | Response-String Tx |
+| Request | Request-String Rx | Response | Response-String Tx |
 | ------- | ------------- | -------- | ------------------ |
 | INIT | `i` | Initialisierungs-Antwort | `:BESDyno>CRC;` |
 | START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:24.53#9871.23#303.54>CRC;` |
