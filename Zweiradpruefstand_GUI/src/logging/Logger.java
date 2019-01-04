@@ -1087,8 +1087,8 @@ public class Logger {
         return devMode;
     }
 
-    public void setDevMode(boolean devMode) {
-        Logger.devMode = devMode;
+    public void setDebugMode(boolean debug) {
+        Logger.devMode = debug;
     }
 
     /**

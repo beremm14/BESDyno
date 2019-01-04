@@ -107,7 +107,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmiDevMode.setState(true);
         devMode = jmiDevMode.getState();
-        LOG.setDevMode(devMode);
+        LOG.setDebugMode(jcbmiDebugLogging.getState());
 
         addLogFileHandler(devMode);
 
@@ -140,6 +140,20 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode.setState(false);
         jmiRefresh.setEnabled(false);
         jbutRefresh.setEnabled(false);
+
+        //Development Tools
+        jmiShowPendingRequests.setEnabled(false);
+        jmiShowLoggedComm.setEnabled(false);
+        jcbmiSaveLoggedComm.setEnabled(false);
+        jcbmiDebugLogging.setEnabled(false);
+        jmenuRequests.setEnabled(false);
+        if (devMode) {
+            jmiShowPendingRequests.setEnabled(true);
+            jmiShowLoggedComm.setEnabled(true);
+            jcbmiSaveLoggedComm.setEnabled(true);
+            jcbmiDebugLogging.setEnabled(true);
+            jmenuRequests.setEnabled(true);
+        }
 
         if (activeWorker != null) {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -694,6 +708,7 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
         jmiDevMode = new javax.swing.JCheckBoxMenuItem();
+        jcbmiDebugLogging = new javax.swing.JCheckBoxMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jmiShowPendingRequests = new javax.swing.JMenuItem();
         jmiShowLoggedComm = new javax.swing.JMenuItem();
@@ -957,6 +972,14 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuDeveloper.add(jmiDevMode);
+
+        jcbmiDebugLogging.setText("Debug Logging");
+        jcbmiDebugLogging.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleDebugLogging(evt);
+            }
+        });
+        jmenuDeveloper.add(jcbmiDebugLogging);
         jmenuDeveloper.add(jSeparator5);
 
         jmiShowPendingRequests.setText("Unfertige Requests anzeigen");
@@ -1252,12 +1275,21 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_onSaveLoggedComm
 
     private void toggleDevMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleDevMode
-        devMode = jmiDevMode.getState();
-        LOG.setDevMode(devMode);
-        addLogFileHandler(devMode);
-        if (devMode) {
-            JOptionPane.showMessageDialog(this, "Wechseln in den Entwicklungsmodus: LOG-Dateien werden gespeichert...", "Entwicklungsmodus", JOptionPane.INFORMATION_MESSAGE);
+        devMode = false;
+        if (jmiDevMode.getState()) {
+            int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie in den Entwicklungsmodus wechseln?", "Entwicklunsmodus", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (answ == JOptionPane.YES_OPTION) {
+                devMode = jmiDevMode.getState();
+                addLogFileHandler(devMode);
+            } else if (answ == JOptionPane.NO_OPTION) {
+                jmiDevMode.setState(false);
+                devMode = false;
+            }
+        } else {
+            jcbmiDebugLogging.setState(false);
+            LOG.setDebugMode(false);
         }
+        refreshGui();
     }//GEN-LAST:event_toggleDevMode
 
     private void onShowPendingRequests(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onShowPendingRequests
@@ -1336,6 +1368,10 @@ public class BESDyno extends javax.swing.JFrame {
         LOG.info("Test Communication: KILL");
         addPendingRequest(telegram.kill());
     }//GEN-LAST:event_onTestKill
+
+    private void toggleDebugLogging(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleDebugLogging
+        LOG.setDebugMode(jcbmiDebugLogging.getState());
+    }//GEN-LAST:event_toggleDebugLogging
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -1599,6 +1635,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JButton jbutStartSim;
     private javax.swing.JComboBox<String> jcbSerialDevices;
     private javax.swing.JCheckBoxMenuItem jcbmiDarkMode;
+    private javax.swing.JCheckBoxMenuItem jcbmiDebugLogging;
     private javax.swing.JMenuItem jcbmiSaveLoggedComm;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuAppearance;
