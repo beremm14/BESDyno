@@ -31,11 +31,11 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | Request | Request-String Rx | Response | Response-String Tx |
 | ------- | ------------- | -------- | ------------------ |
 | INIT | `i` | Initialisierungs-Antwort | `:BESDyno>CRC;` |
-| START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:24.53#9871.23#303.54>CRC;` |
-| ENGINE | `e` | Motor- & Abgastemperatur | `:430.26#591.68>CRC;` |
+| START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:Temperatur#Luftdruck#Seehöhe>CRC;` |
+| ENGINE | `e` | Motor- & Abgastemperatur | `:Motortemp.#Abgastemp.>CRC;` |
 | KILL | `k` | *setzt RPM-Counter auf 0* | `:KILL>CRC;` |
-| MEASURE | `m` | Motor- & Walzendrehzahl | `:507#2927#507#2927>CRC;` |
-| MEASURENO | `n` | Nur Walzendrehzahl | `:193#1114>CRC;` |
+| MEASURE | `m` | Motor- & Walzendrehzahl | `:Motor-Counts#Motorzeit#Walzen-Counts#Walzenzeit>CRC;` |
+| MEASURENO | `n` | Nur Walzendrehzahl | `:Walzen-Counts#Zeit>CRC;` |
 | FINE | `f` | *setzt grüne LED* | `:FINE>CRC;` |
 | WARNING | `w` | *setzt gelbe LED* | `:WARNING>CRC;` |
 | SEVERE | `v` | *setzt rote LED* | `:SEVERE>CRC;` |
