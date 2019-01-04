@@ -35,10 +35,13 @@ int engCount;
 int rearCount;
 int engTime;
 int rearTime;
+
+//Task-Machine
 long lastmillis;
 
 //-Functions------------------------------------------------------------//
 
+//CRC Table
 PROGMEM const uint32_t crc_table[16] = {
   0x00000000, 0x1db71064, 0x3b6e20c8, 0x26d930ac,
   0x76dc4190, 0x6b6b51f4, 0x4db26158, 0x5005713c,
@@ -46,6 +49,7 @@ PROGMEM const uint32_t crc_table[16] = {
   0x9b64c2b0, 0x86d3d2d4, 0xa00ae278, 0xbdbdf21c
 };
 
+//CRC Functions
 unsigned long crc_update(unsigned long crc, byte data)
 {
   byte tbl_idx;
@@ -81,6 +85,7 @@ String createTelegram(String msg) {
   return ':' + msg + '>' + createCRC(msg) + ';';
 }
 
+//Measurement Functions
 void readEnvironment () {
   if (!bmp.begin()) {
     setStatusSevere();
@@ -109,6 +114,7 @@ void readThermos() {
   }
 }
 
+//Status LED Functions
 void setStatusFine() {
   digitalWrite(statusPinF, LOW);
   digitalWrite(statusPinW, HIGH);
@@ -179,26 +185,15 @@ void visualizeInitComplete() {
   setStatusWarning();
 }
 
+//Task Machine
 void callTaskMachine() {
   if (millis() - lastmillis == 1) {
     task_1ms();
-  } else if (millis() - lastmillis == 2) {
-    task_2ms();
-  } else if (millis() - lastmillis == 4) {
-    task_4ms();
-  } else if (millis() - lastmillis == 8) {
-    task_8ms();
-  } else if (millis() - lastmillis == 16) {
-    task_16ms();
-  } else if (millis() - lastmillis == 32) {
-    task_32ms();
-  } else if (millis() - lastmillis == 64) {
-    task_64ms();
-  } else if (millis() - lastmillis == 128) {
-    task_128ms();
   }
+  //for more machines -> else if(){}
 }
 
+//Reset Variables
 void resetMeasurement() {
   engCount = 0;
   rearCount = 0;
@@ -207,8 +202,7 @@ void resetMeasurement() {
 }
 
 
-//Initialize BESDyno
-
+//-Setup-once called----------------------------------------------------------//
 void setup() {
   Serial.begin(57600, SERIAL_8N1);
 
@@ -216,6 +210,9 @@ void setup() {
   pinMode(statusPinF, OUTPUT);
   pinMode(statusPinW, OUTPUT);
   pinMode(statusPinS, OUTPUT);
+
+  pinMode(engRPMPin, INPUT);
+  pinMode(rearRPMPin, INPUT);
 
   digitalWrite(resetPin, HIGH);
 
@@ -228,8 +225,7 @@ void setup() {
 }
 
 
-//Main
-
+//-Main---------------------------------------------------------------------//
 void loop() {
   attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
   attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
@@ -238,11 +234,12 @@ void loop() {
 }
 
 
-//Taskmachines
+//-Task-Machines----------------------------------------------------------//
 void task_1ms() {
   engTime++;
   rearTime++;
 }
+/*
 void task_2ms() {}
 void task_4ms() {}
 void task_8ms() {}
@@ -250,8 +247,10 @@ void task_16ms() {}
 void task_32ms() {}
 void task_64ms() {}
 void task_128ms() {}
+*/
 
 
+//-ISR-------------------------------------------------------------------//
 //ISR for Engine
 void engISR() {
   engCount++;
@@ -273,6 +272,7 @@ void rearISR() {
 //WARNING:     :WARNING>crc;
 //SEVERE:      :SEVERE>crc;
 //MAXPROBLEMS: :MAXPROBLEMS>crc;
+//KILL:        :KILL>CRC;
 
 //CRC is calculated without ':' and ';'
 //Every Response: :Message>Checksum;
@@ -337,6 +337,12 @@ void serialEvent() {
       setStatusMaxProblems();
       Serial.println(createTelegram("MAXPROBLEMS"));
       Serial.flush();
+      
+    } else if (req == 'k') {
+      setStatusFine();
+      Serial.println(createTelegram("KILL"));
+      Serial.flush();
+      resetMeasurement();
     }
   }
 }

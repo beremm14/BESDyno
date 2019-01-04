@@ -709,6 +709,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiWarning = new javax.swing.JMenuItem();
         jmiSevere = new javax.swing.JMenuItem();
         jmiMaxProblems = new javax.swing.JMenuItem();
+        jmiKill = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
@@ -1058,6 +1059,14 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuRequests.add(jmiMaxProblems);
 
+        jmiKill.setText("KILL");
+        jmiKill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onTestKill(evt);
+            }
+        });
+        jmenuRequests.add(jmiKill);
+
         jmenuDeveloper.add(jmenuRequests);
 
         jMenuBar.add(jmenuDeveloper);
@@ -1321,6 +1330,11 @@ public class BESDyno extends javax.swing.JFrame {
                 "Gelbe & Rote LED: Schwerwiegender Fehler",
                 JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_onYellowRed
+
+    private void onTestKill(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestKill
+        LOG.info("Test Communication: KILL");
+        addPendingRequest(telegram.kill());
+    }//GEN-LAST:event_onTestKill
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -1601,6 +1615,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiFine;
     private javax.swing.JMenuItem jmiHelp;
     private javax.swing.JMenuItem jmiInit;
+    private javax.swing.JMenuItem jmiKill;
     private javax.swing.JMenuItem jmiMaxProblems;
     private javax.swing.JMenuItem jmiMeasure;
     private javax.swing.JMenuItem jmiMeasureno;
