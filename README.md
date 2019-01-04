@@ -39,3 +39,12 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | WARNING | `w` | *setzt gelbe LED* | `:WARNING>CRC;` |
 | SEVERE | `v` | *setzt rote LED* | `:SEVERE>CRC;` |
 | MAXPROBLEMS | `x` | *setzt gelbe & rote LED* | `:MAXPROBLEMS>CRC;` |
+
+### CommLog-Files
+  Im Entwicklunsmodus wird beim Schließen des Hauptfensters die gesamte Kommunikation als .log-Datei in das Verzeichnis `User/Bike-Files/Service_Files` gespeichert - wie auch das Logging-Protokoll.  
+  
+  Diese Datei ist so zu lesen:  
+#### REQUESTS
+`Zeitstempel : Name des Requests`
+#### RESPONSES
+`Zeitstempel : Response CRC: *empfangener CRC* <-> *berechneter CRC*`
