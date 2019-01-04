@@ -30,40 +30,47 @@ float envAlt;
 float engTemp;
 float exhTemp;
 
+//RPM
+int engCount;
+int rearCount;
+int engTime;
+int rearTime;
+long lastmillis;
+
 //-Functions------------------------------------------------------------//
 
 PROGMEM const uint32_t crc_table[16] = {
-   0x00000000, 0x1db71064, 0x3b6e20c8, 0x26d930ac,
-   0x76dc4190, 0x6b6b51f4, 0x4db26158, 0x5005713c,
-   0xedb88320, 0xf00f9344, 0xd6d6a3e8, 0xcb61b38c,
-   0x9b64c2b0, 0x86d3d2d4, 0xa00ae278, 0xbdbdf21c
+  0x00000000, 0x1db71064, 0x3b6e20c8, 0x26d930ac,
+  0x76dc4190, 0x6b6b51f4, 0x4db26158, 0x5005713c,
+  0xedb88320, 0xf00f9344, 0xd6d6a3e8, 0xcb61b38c,
+  0x9b64c2b0, 0x86d3d2d4, 0xa00ae278, 0xbdbdf21c
 };
 
 unsigned long crc_update(unsigned long crc, byte data)
 {
-   byte tbl_idx;
-   tbl_idx = crc ^ (data >> (0 * 4));
-   crc = pgm_read_dword_near(crc_table + (tbl_idx & 0x0f)) ^ (crc >> 4);
-   tbl_idx = crc ^ (data >> (1 * 4));
-   crc = pgm_read_dword_near(crc_table + (tbl_idx & 0x0f)) ^ (crc >> 4);
-   return crc;
+  byte tbl_idx;
+  tbl_idx = crc ^ (data >> (0 * 4));
+  crc = pgm_read_dword_near(crc_table + (tbl_idx & 0x0f)) ^ (crc >> 4);
+  tbl_idx = crc ^ (data >> (1 * 4));
+  crc = pgm_read_dword_near(crc_table + (tbl_idx & 0x0f)) ^ (crc >> 4);
+  return crc;
 }
 
 unsigned long crc_string(char *s)
 {
- unsigned long crc = ~0L;
- while (*s)
-   crc = crc_update(crc, *s++);
- crc = ~crc;
- 
- return crc;
+  unsigned long crc = ~0L;
+  while (*s)
+    crc = crc_update(crc, *s++);
+  crc = ~crc;
+
+  return crc;
 }
 
-char* string2char(String command){
-    if(command.length()!=0){
-        char *p = const_cast<char*>(command.c_str());
-        return p;
-    }
+char* string2char(String command) {
+  if (command.length() != 0) {
+    char *p = const_cast<char*>(command.c_str());
+    return p;
+  }
 }
 
 String createCRC(String msg) {
@@ -172,6 +179,33 @@ void visualizeInitComplete() {
   setStatusWarning();
 }
 
+void callTaskMachine() {
+  if (millis() - lastmillis == 1) {
+    task_1ms();
+  } else if (millis() - lastmillis == 2) {
+    task_2ms();
+  } else if (millis() - lastmillis == 4) {
+    task_4ms();
+  } else if (millis() - lastmillis == 8) {
+    task_8ms();
+  } else if (millis() - lastmillis == 16) {
+    task_16ms();
+  } else if (millis() - lastmillis == 32) {
+    task_32ms();
+  } else if (millis() - lastmillis == 64) {
+    task_64ms();
+  } else if (millis() - lastmillis == 128) {
+    task_128ms();
+  }
+}
+
+void resetMeasurement() {
+  engCount = 0;
+  rearCount = 0;
+  engTime = 0;
+  rearTime = 0;
+}
+
 
 //Initialize BESDyno
 
@@ -189,22 +223,52 @@ void setup() {
   setNoStatus();
 
   analogReference(EXTERNAL);
+
+  resetMeasurement();
 }
 
 
 //Main
 
 void loop() {
+  attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
+  callTaskMachine();
+  lastmillis = millis();
 }
 
+
+//Taskmachines
+void task_1ms() {
+  engTime++;
+  rearTime++;
+}
+void task_2ms() {}
+void task_4ms() {}
+void task_8ms() {}
+void task_16ms() {}
+void task_32ms() {}
+void task_64ms() {}
+void task_128ms() {}
+
+
+//ISR for Engine
+void engISR() {
+  engCount++;
+}
+
+//ISR for Rear-Wheel
+void rearISR() {
+  rearCount++;
+}
 
 //ISR for Communication
 
 //INIT:        :BESDyno>crc;
 //START:       :envTemp#envPress#envAlt>crc;
 //ENGINE:      :engTemp#exhTemp>crc;
-//MEASURE:     :NOTSUPPORTED>crc;
-//MEASURENO:   :NOTSUPPORTED>crc;
+//MEASURE:     :engCount#engTime#rearCount#rearTime>crc;
+//MEASURENO:   :rearCount#rearTime>crc;
 //FINE:        :FINE>crc;
 //WARNING:     :WARNING>crc;
 //SEVERE:      :SEVERE>crc;
@@ -231,6 +295,7 @@ void serialEvent() {
       String environment = String(envTemp) + '#' + String(envPress) + '#' + String(envAlt);
       Serial.println(createTelegram(environment));
       Serial.flush();
+      resetMeasurement();
 
     } else if (req == 'e') {
       setStatusFine();
@@ -240,14 +305,18 @@ void serialEvent() {
       Serial.flush();
 
     } else if (req == 'm') {
-      setStatusMaxProblems();
-      Serial.println(createTelegram("NOTSUPPORTED"));
+      setStatusFine();
+      String measure = String(engCount) + '#' + String(engTime) + '#' + String(rearCount) + '#' + String(rearTime);
+      Serial.println(createTelegram(measure));
       Serial.flush();
+      resetMeasurement();
 
     } else if (req == 'n') {
-      setStatusMaxProblems();
-      Serial.println(createTelegram("NOTSUPPORTED"));
+      setStatusFine();
+      String measureno = String(rearCount) + '#' + String(rearTime);
+      Serial.println(createTelegram(measureno));
       Serial.flush();
+      resetMeasurement();
 
     } else if (req == 'f') {
       setStatusFine();
