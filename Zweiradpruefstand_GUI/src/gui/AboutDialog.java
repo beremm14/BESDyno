@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.ImageIcon;
+import main.BESDyno.OS;
 
 /**
  *
@@ -113,6 +115,20 @@ public class AboutDialog extends javax.swing.JDialog {
         }
     }
     
+    public void setOSIcon(OS os) {
+        switch (os) {
+            case MACOS:
+                jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/mac50.png")));
+                break;
+            case LINUX:
+                jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/linux50.png")));
+                break;
+            case WINDOWS:
+                jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/windows50.png")));
+                break;
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,6 +138,7 @@ public class AboutDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanHeader = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
@@ -136,6 +153,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanOS = new javax.swing.JPanel();
         jLabelOsNameT = new javax.swing.JLabel();
         jLabelOsName = new javax.swing.JLabel();
+        jLabelOS = new javax.swing.JLabel();
         jLabelOsVersionT = new javax.swing.JLabel();
         jLabelOsVersion = new javax.swing.JLabel();
         jPanJava = new javax.swing.JPanel();
@@ -210,23 +228,51 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jPanOS.setBackground(new java.awt.Color(255, 255, 255));
         jPanOS.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Betriebssystem", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
-        jPanOS.setLayout(new java.awt.GridLayout(2, 0));
+        jPanOS.setLayout(new java.awt.GridBagLayout());
 
         jLabelOsNameT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelOsNameT.setText("Betriebssystem:");
-        jPanOS.add(jLabelOsNameT);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanOS.add(jLabelOsNameT, gridBagConstraints);
 
         jLabelOsName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelOsName.setText("jLabel1");
-        jPanOS.add(jLabelOsName);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        jPanOS.add(jLabelOsName, gridBagConstraints);
+
+        jLabelOS.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        jPanOS.add(jLabelOS, gridBagConstraints);
 
         jLabelOsVersionT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelOsVersionT.setText("OS-Version:");
-        jPanOS.add(jLabelOsVersionT);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanOS.add(jLabelOsVersionT, gridBagConstraints);
 
         jLabelOsVersion.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelOsVersion.setText("jLabel1");
-        jPanOS.add(jLabelOsVersion);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        jPanOS.add(jLabelOsVersion, gridBagConstraints);
 
         jPanSysInfo.add(jPanOS);
 
@@ -364,6 +410,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelDevelopers;
     private javax.swing.JLabel jLabelDevice;
     private javax.swing.JLabel jLabelDeviceT;
+    private javax.swing.JLabel jLabelOS;
     private javax.swing.JLabel jLabelOsName;
     private javax.swing.JLabel jLabelOsNameT;
     private javax.swing.JLabel jLabelOsVersion;

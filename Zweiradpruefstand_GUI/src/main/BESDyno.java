@@ -1190,6 +1190,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void onAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onAbout
         about.setAppearance(Config.getInstance().isDark());
+        about.setOSIcon(os);
         about.setVisible(true);
         if (port != null) {
             about.writeDevice(port.getPortName());
