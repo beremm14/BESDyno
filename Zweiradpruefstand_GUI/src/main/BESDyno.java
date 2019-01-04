@@ -749,6 +749,8 @@ public class BESDyno extends javax.swing.JFrame {
 
         jPanStatus.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatus.setLayout(new java.awt.GridBagLayout());
+
+        jtfStatus.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
