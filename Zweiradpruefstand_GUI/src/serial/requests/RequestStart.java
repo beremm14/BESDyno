@@ -17,7 +17,7 @@ public class RequestStart extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestStart.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
-    
+
     private String response;
 
     @Override
@@ -51,7 +51,14 @@ public class RequestStart extends Request {
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
         LOG.debug("START-Response: : and ; replaced");
+        LOG.info(removeCRC(response));
 
+        if (removeCRC(response).equals("BMP-ERROR")) {
+            LOG.severe("ERROR at START: BMP180");
+            status = Status.ERROR;
+            return;
+        }
+        
         // :Temperature#Pressure#Altitude;
         String values[] = response.split("#");
         values[2] = removeCRC(values[2]);
@@ -74,6 +81,7 @@ public class RequestStart extends Request {
         } else {
             status = Status.ERROR;
         }
+
     }
 
     @Override
