@@ -3,9 +3,9 @@
 ## JAVA PC-Client
 
 ## C++ Arduino Software
-  Version **1.2** or higher required!  
+  Version **1.2** or higher required, newest recommended!  
 
-  * **v1.3**: Supports: BMP-Check before measurement *(recommended)*  
+  * **v1.3**: Supports: BMP-Check before measurement
   * **v1.2**: Closed: Intern Pullup-Issue  
   
   **Don't use:**  
