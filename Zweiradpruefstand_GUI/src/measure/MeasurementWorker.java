@@ -24,74 +24,144 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status status;
 
     public enum Status {
-        SHIFT_UP, READY, START, STOP
+        SHIFT_UP, READY, START, STOP, AUTOMATIC
     };
 
     @Override
     protected Object doInBackground() throws Exception {
-        switch (status) {
-            
-            case SHIFT_UP:
-                if (bike.isMeasRpm()) {
-                    do {
-                        main.addPendingRequest(telegram.measure());
 
-                        Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size() - 1));
-                        power.addWR(dp.getWheelRpm());
-                        power.addER(dp.getEngRpm());
+        //Automatic-Bikes
+        if (bike.isAutomatic()) {
+            status = Status.AUTOMATIC;
 
-                        switch (config.getVelocity()) {
-                            case MPS:
-                                power.addVel(calc.calcMps(dp));
-                                break;
-                            case KMH:
-                                power.addVel(calc.calcKmh(dp));
-                                break;
-                            case MPH:
-                                power.addVel(calc.calcMph(dp));
-                                break;
-                            default:
-                                throw new Exception("No Velocity Unit...");
-                        }
-                        publish(new DialData(dp));
-                    } while (power.getVelList().get(power.getVelList().size() - 1) < config.getIdleKmh()
-                            && power.getEngRpm().get(power.getEngRpm().size() - 1) < config.getIdleRpm());
-                } else {
-                    do {
-                        main.addPendingRequest(telegram.measureno());
+            if (bike.isMeasRpm()) {
+                int stopCount = 0;
+                do {
+                    main.addPendingRequest(telegram.measure());
 
-                        Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size() - 1));
-                        power.addWR(dp.getWheelRpm());
+                    Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size()-1));
+                    power.addWR(dp.getWheelRpm());
+                    power.addER(dp.getEngRpm());
 
-                        switch (config.getVelocity()) {
-                            case MPS:
-                                power.addVel(calc.calcMps(dp));
-                                break;
-                            case KMH:
-                                power.addVel(calc.calcKmh(dp));
-                                break;
-                            case MPH:
-                                power.addVel(calc.calcMph(dp));
-                                break;
-                            default:
-                                throw new Exception("No Velocity Unit...");
-                        }
-                        publish(new DialData(power.getVelList().get(power.getVelList().size()-1)));
-                    } while (power.getVelList().get(power.getVelList().size() - 1) < config.getIdleKmh());
-                }
-                break;
-                
-            case READY:
-                break;
-                
-            case START:
-                break;
-                
-            case STOP:
-                break;
-                
-            default:
-                throw new Exception("No Status...");
+                    switch (config.getVelocity()) {
+                        case MPS:
+                            power.addVel(calc.calcMps(dp));
+                            break;
+                        case KMH:
+                            power.addVel(calc.calcKmh(dp));
+                            break;
+                        case MPH:
+                            power.addVel(calc.calcMph(dp));
+                            break;
+                        default:
+                            throw new Exception("No Velocity Unit...");
+                    }
+                    publish(new DialData(dp));
+                    
+                    if (power.getVelList().get(power.getVelList().size()-1) < config.getStartKmh() ||
+                        power.getEngRpm().get(power.getEngRpm().size()-1) < config.getStartRpm()) {
+                        stopCount++;
+                    }
+                } while (stopCount < 5);
+            } else {
+                int stopCount = 0;
+                do {
+                    main.addPendingRequest(telegram.measureno());
+
+                            Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size()-1));
+                            power.addWR(dp.getWheelRpm());
+
+                            switch (config.getVelocity()) {
+                                case MPS:
+                                    power.addVel(calc.calcMps(dp));
+                                    break;
+                                case KMH:
+                                    power.addVel(calc.calcKmh(dp));
+                                    break;
+                                case MPH:
+                                    power.addVel(calc.calcMph(dp));
+                                    break;
+                                default:
+                                    throw new Exception("No Velocity Unit...");
+                            }
+                    publish(new DialData(power.getVelList().get(power.getVelList().size()-1)));
+                    
+                    if (power.getVelList().get(power.getVelList().size()-1) < config.getStartKmh()) {
+                        stopCount++;
+                    }
+                } while (stopCount < 5);
+            }
+
+            //Manual-Bikes
+        } else {
+
+            switch (status) {
+
+                case SHIFT_UP:
+                    if (bike.isMeasRpm()) {
+                        do {
+                            main.addPendingRequest(telegram.measure());
+
+                            Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size()-1));
+                            power.addWR(dp.getWheelRpm());
+                            power.addER(dp.getEngRpm());
+
+                            switch (config.getVelocity()) {
+                                case MPS:
+                                    power.addVel(calc.calcMps(dp));
+                                    break;
+                                case KMH:
+                                    power.addVel(calc.calcKmh(dp));
+                                    break;
+                                case MPH:
+                                    power.addVel(calc.calcMph(dp));
+                                    break;
+                                default:
+                                    throw new Exception("No Velocity Unit...");
+                            }
+                            publish(new DialData(dp));
+                        } while (power.getVelList().get(power.getVelList().size()-1) <= config.getIdleKmh()
+                                || power.getEngRpm().get(power.getEngRpm().size()-1) <= config.getIdleRpm());
+                    } else {
+                        do {
+                            main.addPendingRequest(telegram.measureno());
+
+                            Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size()-1));
+                            power.addWR(dp.getWheelRpm());
+
+                            switch (config.getVelocity()) {
+                                case MPS:
+                                    power.addVel(calc.calcMps(dp));
+                                    break;
+                                case KMH:
+                                    power.addVel(calc.calcKmh(dp));
+                                    break;
+                                case MPH:
+                                    power.addVel(calc.calcMph(dp));
+                                    break;
+                                default:
+                                    throw new Exception("No Velocity Unit...");
+                            }
+                            publish(new DialData(power.getVelList().get(power.getVelList().size()-1)));
+                        } while (power.getVelList().get(power.getVelList().size()-1) < config.getIdleKmh());
+                    }
+                    break;
+
+                case READY:
+                    if (bike.isMeasRpm()) {
+
+                    }
+                    break;
+
+                case START:
+                    break;
+
+                case STOP:
+                    break;
+
+                default:
+                    throw new Exception("No Status...");
+            }
         }
         return null;
     }
