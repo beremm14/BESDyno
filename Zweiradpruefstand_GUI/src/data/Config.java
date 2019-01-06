@@ -47,6 +47,8 @@ public class Config {
     private int idleRpm;
     private int hysteresisRpm;
     private int startRpm;
+    
+    private double arduinoVersion;
 
     public static Config getInstance() {
         if (instance == null) {
@@ -125,6 +127,10 @@ public class Config {
     public int getStartRpm() {
         return startRpm;
     }
+    
+    public double getArduinoVersion() {
+        return arduinoVersion;
+    }
 
     //Setter
     public void setPs(boolean ps) {
@@ -185,6 +191,10 @@ public class Config {
 
     public void setStartRpm(int startRpm) {
         this.startRpm = startRpm;
+    }
+    
+    public void setArduinoVersion(double arduinoVersion) {
+        this.arduinoVersion = arduinoVersion;
     }
 
     public void writeJson(BufferedWriter w) throws IOException {

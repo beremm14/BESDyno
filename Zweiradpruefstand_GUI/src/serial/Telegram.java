@@ -133,4 +133,14 @@ public class Telegram extends RxTxWorker {
         }
     }
     
+    public Request version() {
+        synchronized (requestList) {
+            final Request request = new RequestVersion();
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            return request;
+        }
+    }
+    
 }

@@ -51,7 +51,6 @@ public class RequestStart extends Request {
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
         LOG.debug("START-Response: : and ; replaced");
-        LOG.info(removeCRC(response));
 
         if (removeCRC(response).equals("BMP-ERROR")) {
             LOG.severe("ERROR at START: BMP180");

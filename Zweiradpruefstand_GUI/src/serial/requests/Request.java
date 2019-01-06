@@ -15,7 +15,7 @@ public abstract class Request {
     };
     
     public static enum Variety {
-        INIT, START, MEASURE, MEASURENO, ENGINE, FINE, WARNING, SEVERE, MAXPROBLEMS, KILL
+        INIT, START, MEASURE, MEASURENO, ENGINE, FINE, WARNING, SEVERE, MAXPROBLEMS, KILL, VERSION
     };
 
     protected Status status;

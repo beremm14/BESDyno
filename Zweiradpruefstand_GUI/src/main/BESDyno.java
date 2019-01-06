@@ -79,6 +79,7 @@ public class BESDyno extends javax.swing.JFrame {
     private static boolean devMode = false;
     private static OS os = OS.OTHER;
     private boolean secondTry = true;
+    private double reqArduVers = 1.4;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
@@ -622,6 +623,10 @@ public class BESDyno extends javax.swing.JFrame {
     public OS getOs() {
         return os;
     }
+    
+    public double getReqArduVers() {
+        return reqArduVers;
+    }
 
     //Communication
     public void addPendingRequest(Request request) {
@@ -719,6 +724,7 @@ public class BESDyno extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jmenuRequests = new javax.swing.JMenu();
         jmiInit = new javax.swing.JMenuItem();
+        jmiVersion = new javax.swing.JMenuItem();
         jmiStart = new javax.swing.JMenuItem();
         jmiEngine = new javax.swing.JMenuItem();
         jmiKill = new javax.swing.JMenuItem();
@@ -1022,6 +1028,14 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuRequests.add(jmiInit);
+
+        jmiVersion.setText("VERSION");
+        jmiVersion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onTestVersion(evt);
+            }
+        });
+        jmenuRequests.add(jmiVersion);
 
         jmiStart.setText("START");
         jmiStart.addActionListener(new java.awt.event.ActionListener() {
@@ -1385,6 +1399,11 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_toggleDebugLogging
 
+    private void onTestVersion(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestVersion
+        LOG.info("Test Communication: VERSION");
+        addPendingRequest(telegram.version());
+    }//GEN-LAST:event_onTestVersion
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1436,8 +1455,7 @@ public class BESDyno extends javax.swing.JFrame {
 
                 if (r.getVariety() == Variety.INIT) {
                     if (r.getStatus() == Status.DONE) {
-                        userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
-                        addPendingRequest(telegram.fine());
+                        addPendingRequest(telegram.version());
                     } else if (r.getStatus() == Status.ERROR) {
                         if (secondTry) {
                             LOG.warning("INIT: Second try was required...");
@@ -1491,6 +1509,19 @@ public class BESDyno extends javax.swing.JFrame {
                         } else {
                             addPendingRequest(telegram.measureno());
                             LOG.info("KILL sent MEASURENO");
+                        }
+                    }
+                } else if (r.getVariety() == Variety.VERSION) {
+                    if (r.getStatus() == Status.DONE) {
+                        userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
+                        LOG.info("Arduino-Version: " + Config.getInstance().getArduinoVersion());
+                        addPendingRequest(telegram.fine());
+                    } else if (r.getStatus() == Status.ERROR) {
+                        if (Config.getInstance().getArduinoVersion() >= reqArduVers) {
+                            LOG.warning("VERSION returns ERROR: " + r.getResponse());
+                        } else {
+                            userLogPane("Die Firmware am Prüfstand ist veraltet, bitte laden Sie eine neue Version (mind. Version " + reqArduVers + ")!", LogLevel.SEVERE);
+                            LOG.warning("VERSION returns ERROR: " + r.getResponse());
                         }
                     }
                 }
@@ -1691,6 +1722,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiShowPendingRequests;
     private javax.swing.JMenuItem jmiStart;
     private javax.swing.JMenuItem jmiStartSim;
+    private javax.swing.JMenuItem jmiVersion;
     private javax.swing.JMenuItem jmiWarning;
     private javax.swing.JMenuItem jmiYellow;
     private javax.swing.JMenuItem jmiYellowRed;
