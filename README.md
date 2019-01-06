@@ -31,6 +31,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | Request | Request-String Rx | Response | Response-String Tx |
 | ------- | ------------- | -------- | ------------------ |
 | INIT | `i` | Initialisierungs-Antwort | `:BESDyno>CRC;` |
+| VERSION | `p` | Version der Arduino-Software | `:Version>CRC;` |
 | START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:Temperatur#Luftdruck#Seehöhe>CRC;` oder `:BMP-ERROR>CRC;` |
 | ENGINE | `e` | Motor- & Abgastemperatur | `:Motortemp.#Abgastemp.>CRC;` |
 | KILL | `k` | *setzt RPM-Counter auf 0* | `:KILL>CRC;` |
