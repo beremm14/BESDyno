@@ -50,3 +50,5 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 `Zeitstempel : Name des Requests`
 #### RESPONSES
 `Zeitstempel : Response CRC: *empfangener CRC* <-> *berechneter CRC*`
+
+### Messvorgang
