@@ -22,8 +22,12 @@ public class BikePower {
     private final List<Double> engPower = new LinkedList<>();
     private final List<Double> wheelPower = new LinkedList<>();
     
+    //RPM
     private final List<Integer> engRpm = new LinkedList<>();
     private final List<Integer> wheelRpm = new LinkedList<>();
+    
+    //Velocity
+    private final List<Double> velList = new LinkedList<>();
     
     //Uncalculated List
     private final List<RawDatapoint> rawList = new LinkedList<>();
@@ -54,6 +58,10 @@ public class BikePower {
     public List<RawDatapoint> getRawList() {
         return rawList;
     }
+    
+    public List<Double> getVelList() {
+        return velList;
+    }
 
     public double getBikePower() {
         return bikePower;
@@ -75,24 +83,28 @@ public class BikePower {
     }
 
     //LinkedList-Methods
-    public boolean addEP(Double e) {
-        return engPower.add(e);
+    public boolean addEP(Double p) {
+        return engPower.add(p);
     }
 
-    public boolean addWP(Double e) {
-        return wheelPower.add(e);
+    public boolean addWP(Double p) {
+        return wheelPower.add(p);
     }
     
-    public boolean addER(Integer e) {
-        return engRpm.add(e);
+    public boolean addER(Integer n) {
+        return engRpm.add(n);
     }
     
-    public boolean addWR(Integer e) {
-        return wheelRpm.add(e);
+    public boolean addWR(Integer n) {
+        return wheelRpm.add(n);
     }
     
     public boolean addRawDP(RawDatapoint dp) {
         return rawList.add(dp);
+    }
+    
+    public boolean addVel(Double v) {
+        return velList.add(v);
     }
 
 }

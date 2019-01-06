@@ -1,25 +1,107 @@
 package measure;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import data.Bike;
+import data.BikePower;
+import data.Config;
+import data.Datapoint;
+import data.DialData;
 import javax.swing.SwingWorker;
-
+import main.BESDyno;
 
 /**
  *
  * @author emil
  */
-public class MeasurementWorker extends SwingWorker<Void, String> implements PropertyChangeListener {
+public class MeasurementWorker extends SwingWorker<Object, DialData> {
+
+    private final BESDyno main = BESDyno.getInstance();
+    private final Bike bike = Bike.getInstance();
+    private final BikePower power = BikePower.getInstance();
+    private final Calculate calc = new Calculate();
+    private final Config config = Config.getInstance();
+    private final BESDyno.MyTelegram telegram = BESDyno.getInstance().getTelegram();
+
+    private Status status;
+
+    public enum Status {
+        SHIFT_UP, READY, START, STOP
+    };
 
     @Override
-    protected Void doInBackground() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected Object doInBackground() throws Exception {
+        switch (status) {
+            
+            case SHIFT_UP:
+                if (bike.isMeasRpm()) {
+                    do {
+                        main.addPendingRequest(telegram.measure());
+
+                        Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size() - 1));
+                        power.addWR(dp.getWheelRpm());
+                        power.addER(dp.getEngRpm());
+
+                        switch (config.getVelocity()) {
+                            case MPS:
+                                power.addVel(calc.calcMps(dp));
+                                break;
+                            case KMH:
+                                power.addVel(calc.calcKmh(dp));
+                                break;
+                            case MPH:
+                                power.addVel(calc.calcMph(dp));
+                                break;
+                            default:
+                                throw new Exception("No Velocity Unit...");
+                        }
+                        publish(new DialData(dp));
+                    } while (power.getVelList().get(power.getVelList().size() - 1) < config.getIdleKmh()
+                            && power.getEngRpm().get(power.getEngRpm().size() - 1) < config.getIdleRpm());
+                } else {
+                    do {
+                        main.addPendingRequest(telegram.measureno());
+
+                        Datapoint dp = calc.calcRpm(power.getRawList().get(power.getRawList().size() - 1));
+                        power.addWR(dp.getWheelRpm());
+
+                        switch (config.getVelocity()) {
+                            case MPS:
+                                power.addVel(calc.calcMps(dp));
+                                break;
+                            case KMH:
+                                power.addVel(calc.calcKmh(dp));
+                                break;
+                            case MPH:
+                                power.addVel(calc.calcMph(dp));
+                                break;
+                            default:
+                                throw new Exception("No Velocity Unit...");
+                        }
+                        publish(new DialData(power.getVelList().get(power.getVelList().size()-1)));
+                    } while (power.getVelList().get(power.getVelList().size() - 1) < config.getIdleKmh());
+                }
+                break;
+                
+            case READY:
+                break;
+                
+            case START:
+                break;
+                
+            case STOP:
+                break;
+                
+            default:
+                throw new Exception("No Status...");
+        }
+        return null;
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Status getStatus() {
+        return status;
     }
-    
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
 }

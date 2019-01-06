@@ -18,6 +18,12 @@ public class Datapoint {
         this.wheelRpm = wheelRpm;
         this.time = time;
     }
+    
+    public Datapoint(int wheelRpm, int time) {
+        this.engRpm = 0;
+        this.wheelRpm = wheelRpm;
+        this.time = time;
+    }
 
     public int getEngRpm() {
         return engRpm;

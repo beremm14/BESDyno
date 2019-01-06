@@ -1500,17 +1500,12 @@ public class BESDyno extends javax.swing.JFrame {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURE returns ERROR: " + r.getResponse());
                     }
-                    if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
-                        //addPendingRequest(telegram.measure());
-                    }
 
                 } else if (r.getVariety() == Variety.MEASURENO) {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURENO returns ERROR: " + r.getResponse());
                     }
-                    if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
-                        //addPendingRequest(telegram.measureno());
-                    }
+
                 } else if (r.getVariety() == Variety.KILL) {
                     if (r.getStatus() == Status.DONE) {
                         if (Bike.getInstance().isMeasRpm()) {

@@ -13,10 +13,6 @@ import java.util.List;
  */
 public class Calculate {
 
-    private final Config config = Config.getInstance();
-
-    public Calculate() {
-    }
 
     //Calculates All
     public void calcRpm(List<RawDatapoint> rawList) {
@@ -51,6 +47,10 @@ public class Calculate {
         return new Datapoint(engRpm, wheelRpm, rdp.getTime());
     }
     
+    public Datapoint calcWheelOnly(RawDatapoint rdp) {
+        int totalImpulse = 20; //???
+        return new Datapoint(rdp.getWheelCount() / rdp.getTime() * totalImpulse, rdp.getTime());
+    }
     
     //Calculates One Point
     public double calcMps(Datapoint dp) {
@@ -71,13 +71,13 @@ public class Calculate {
     
     //Calculates All
     public void calcPower() {
-        boolean ps = config.isPs();
+        boolean ps = Config.getInstance().isPs();
 
         //Wheel-Power
         for (int i = 0; i < Bike.getInstance().getDatalist().size(); i++) {
             double dOmega = 2 * Math.PI * Bike.getInstance().getDatalist().get(i).getWheelRpm();
             double alpha = dOmega / (Bike.getInstance().getDatalist().get(i).getTime() / 1000);
-            double torque = config.getInertia() * alpha;
+            double torque = Config.getInstance().getInertia() * alpha;
             double currPower = torque * dOmega;
 
             if (ps) {
@@ -93,7 +93,7 @@ public class Calculate {
         for (int i = 0; i < Bike.getInstance().getDatalist().size(); i++) {
             double dOmega = 2 * Math.PI * Bike.getInstance().getDatalist().get(i).getEngRpm();
             double alpha = dOmega / (Bike.getInstance().getDatalist().get(i).getTime() / 1000);
-            double torque = config.getInertia() * alpha;
+            double torque = Config.getInstance().getInertia() * alpha;
             double currPower = torque * dOmega;
 
             if (ps) {
