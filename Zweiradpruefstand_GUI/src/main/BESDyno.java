@@ -78,6 +78,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Variables
     private static boolean devMode = false;
     private static OS os = OS.OTHER;
+    private boolean connection = false;
     private boolean secondTry = true;
     private double reqArduVers = 1.4;
 
@@ -131,7 +132,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void refreshGui() {
         devMode = jcbmiDevMode.getState();
         LOG.setDebugMode(jcbmiDebugLogging.getState());
-        
+
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
@@ -623,9 +624,13 @@ public class BESDyno extends javax.swing.JFrame {
     public OS getOs() {
         return os;
     }
-    
+
     public double getReqArduVers() {
         return reqArduVers;
+    }
+
+    public boolean hasConnection() {
+        return connection;
     }
 
     //Communication
@@ -1175,14 +1180,18 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_onQuit
 
     private void onStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onStartSim
-        vehicle.setAppearance(Config.getInstance().isDark());
-        vehicle.setVisible(true);
+        if (connection) {
+            vehicle.setAppearance(Config.getInstance().isDark());
+            vehicle.setVisible(true);
 
-        userLog("Start der Simulation", LogLevel.INFO);
+            userLog("Start der Simulation", LogLevel.INFO);
 
-        if (vehicle.isPressedOK()) {
-            measure.setAppearance(Config.getInstance().isDark());
-            measure.setVisible(true);
+            if (vehicle.isPressedOK()) {
+                measure.setAppearance(Config.getInstance().isDark());
+                measure.setVisible(true);
+            }
+        } else {
+            userLogPane("Fehler beim Starten: Es wurde noch keine Verbindung aufgebaut...", LogLevel.SEVERE);
         }
     }//GEN-LAST:event_onStartSim
 
@@ -1215,6 +1224,7 @@ public class BESDyno extends javax.swing.JFrame {
             userLog(ex, "Fehler beim Schließen des Ports", LogLevel.WARNING);
         } finally {
             try {
+                connection = false;
                 port.closePort();
                 port = null;
             } catch (Throwable th) {
@@ -1392,7 +1402,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void toggleDebugLogging(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleDebugLogging
         LOG.setDebugMode(jcbmiDebugLogging.getState());
-        if(jcbmiDebugLogging.getState()) {
+        if (jcbmiDebugLogging.getState()) {
             LOG.info("Enabled Debug Logging");
         } else {
             LOG.info("Disabled Debug Logging");
@@ -1515,6 +1525,7 @@ public class BESDyno extends javax.swing.JFrame {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
                         LOG.info("Arduino-Version: " + Config.getInstance().getArduinoVersion());
+                        connection = true;
                         addPendingRequest(telegram.fine());
                     } else if (r.getStatus() == Status.ERROR) {
                         if (Config.getInstance().getArduinoVersion() >= reqArduVers) {

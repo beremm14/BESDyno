@@ -51,6 +51,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanPower.setBackground(Color.darkGray);
             jPanSerial.setBackground(Color.darkGray);
             jPanWest.setBackground(Color.darkGray);
+            jPanVelocity.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setBackground(Color.darkGray);
             jtfHysteresisRpm.setBackground(Color.darkGray);
@@ -84,6 +85,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbNightmode.setForeground(Color.white);
             jrbKW.setForeground(Color.white);
             jrbPS.setForeground(Color.white);
+            jrbMPS.setForeground(Color.white);
+            jrbKMH.setForeground(Color.white);
+            jrbMPH.setForeground(Color.white);
 
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
@@ -117,6 +121,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanPower.setBackground(Color.white);
             jPanSerial.setBackground(Color.white);
             jPanWest.setBackground(Color.white);
+            jPanVelocity.setBackground(Color.white);
 
             jtfInertia.setBackground(Color.white);
             jtfInertia.setForeground(Color.black);
@@ -153,6 +158,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbNightmode.setForeground(Color.black);
             jrbKW.setForeground(Color.black);
             jrbPS.setForeground(Color.black);
+            jrbKMH.setForeground(Color.black);
+            jrbMPH.setForeground(Color.black);
 
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);
@@ -194,6 +201,16 @@ public class SettingsDialog extends javax.swing.JDialog {
         
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
+        if (jrbKMH.isSelected()) {
+            c.setVelocity(Config.Velocity.KMH);
+        } else if (jrbMPS.isSelected()) {
+            c.setVelocity(Config.Velocity.MPS);
+        } else if (jrbMPH.isSelected()) {
+            c.setVelocity(Config.Velocity.MPH);
+        } else {
+            c.setVelocity(Config.Velocity.KMH);
+        }
+        
         try {
             c.setHysteresisKmh(Integer.parseInt(jtfHysteresisKmh.getText()));
         } catch (NumberFormatException e) {
@@ -337,6 +354,24 @@ public class SettingsDialog extends javax.swing.JDialog {
         jrbNightmode.setSelected(c.isDark());
         jrbKW.setSelected(!c.isPs());
         jrbPS.setSelected(c.isPs());
+        
+        switch (c.getVelocity()) {
+            case MPS:
+                jrbMPS.setSelected(true);
+                jrbMPH.setSelected(false);
+                jrbKMH.setSelected(false);
+                break;
+            case KMH:
+                jrbMPS.setSelected(false);
+                jrbMPH.setSelected(false);
+                jrbKMH.setSelected(true);
+                break;
+            case MPH:
+                jrbMPS.setSelected(false);
+                jrbMPH.setSelected(true);
+                jrbKMH.setSelected(false);
+                break;
+        }
     }
 
     //Loads Config-File from hidden Folder
@@ -411,8 +446,13 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jbgAppearance = new javax.swing.ButtonGroup();
         jbgPower = new javax.swing.ButtonGroup();
+        jbgVelocity = new javax.swing.ButtonGroup();
         jPanMain = new javax.swing.JPanel();
         jPanWest = new javax.swing.JPanel();
+        jPanVelocity = new javax.swing.JPanel();
+        jrbMPS = new javax.swing.JRadioButton();
+        jrbKMH = new javax.swing.JRadioButton();
+        jrbMPH = new javax.swing.JRadioButton();
         jPanPower = new javax.swing.JPanel();
         jrbPS = new javax.swing.JRadioButton();
         jrbKW = new javax.swing.JRadioButton();
@@ -471,6 +511,39 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanWest.setBackground(new java.awt.Color(255, 255, 255));
         jPanWest.setLayout(new java.awt.GridBagLayout());
 
+        jPanVelocity.setBackground(new java.awt.Color(255, 255, 255));
+        jPanVelocity.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Geschwindigkeitseinheit", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
+        jPanVelocity.setLayout(new java.awt.GridBagLayout());
+
+        jbgVelocity.add(jrbMPS);
+        jrbMPS.setText("Meter/Sekunde (m/s)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanVelocity.add(jrbMPS, gridBagConstraints);
+
+        jbgVelocity.add(jrbKMH);
+        jrbKMH.setText("Kilometer/Stunde (km/h)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanVelocity.add(jrbKMH, gridBagConstraints);
+
+        jbgVelocity.add(jrbMPH);
+        jrbMPH.setText("Meilen/Stunde (mph)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanVelocity.add(jrbMPH, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanWest.add(jPanVelocity, gridBagConstraints);
+
         jPanPower.setBackground(new java.awt.Color(255, 255, 255));
         jPanPower.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Leistungseinheit", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanPower.setMinimumSize(new java.awt.Dimension(200, 47));
@@ -490,6 +563,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanPower.add(jrbKW, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanWest.add(jPanPower, gridBagConstraints);
 
@@ -527,7 +602,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanWest.add(jPanPNG, gridBagConstraints);
 
@@ -584,7 +659,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanWest.add(jPanCorr, gridBagConstraints);
 
@@ -955,13 +1030,18 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanPNG;
     private javax.swing.JPanel jPanPower;
     private javax.swing.JPanel jPanSerial;
+    private javax.swing.JPanel jPanVelocity;
     private javax.swing.JPanel jPanWest;
     private javax.swing.ButtonGroup jbgAppearance;
     private javax.swing.ButtonGroup jbgPower;
+    private javax.swing.ButtonGroup jbgVelocity;
     private javax.swing.JButton jbutCancel;
     private javax.swing.JButton jbutOK;
     private javax.swing.JRadioButton jrbDaymode;
+    private javax.swing.JRadioButton jrbKMH;
     private javax.swing.JRadioButton jrbKW;
+    private javax.swing.JRadioButton jrbMPH;
+    private javax.swing.JRadioButton jrbMPS;
     private javax.swing.JRadioButton jrbNightmode;
     private javax.swing.JRadioButton jrbPS;
     private javax.swing.JTextField jtfHysteresisKmh;

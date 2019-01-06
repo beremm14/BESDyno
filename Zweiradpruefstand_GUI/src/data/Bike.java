@@ -27,7 +27,7 @@ public class Bike {
     private boolean measRpm;
     private boolean schleppEnable;
 
-    private List<Datapoint> list = new LinkedList<>();
+    private final List<Datapoint> rpms = new LinkedList<>();
 
     private final Date date = Calendar.getInstance().getTime();
     private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
@@ -57,7 +57,7 @@ public class Bike {
     }
 
     public List<Datapoint> getDatalist() {
-        return list;
+        return rpms;
     }
 
     public boolean isMeasRpm() {
@@ -91,30 +91,30 @@ public class Bike {
 
     //LinkedList-Methods
     public int size() {
-        return list.size();
+        return rpms.size();
     }
 
     public Datapoint get(int index) {
-        return list.get(index);
+        return rpms.get(index);
     }
 
     public Datapoint set(int index, Datapoint element) {
-        return list.set(index, element);
+        return rpms.set(index, element);
     }
 
     public boolean add(Datapoint e) {
-        return list.add(e);
+        return rpms.add(e);
     }
 
     @Override
     public String toString() {
-        return list.toString();
+        return rpms.toString();
     }
 
     //Writout
     private void writeList(BufferedWriter w) throws IOException {
         //Time, RPM, WSS
-        for (Datapoint d : list) {
+        for (Datapoint d : rpms) {
             d.writeLine(w);
             w.newLine();
         }
@@ -146,7 +146,7 @@ public class Bike {
 
     //Read
     public void readFile(BufferedReader r) throws IOException, Exception {
-        list.clear();
+        rpms.clear();
 
         String line = r.readLine().trim();
         if (!line.contains("BES-Data")) {

@@ -49,6 +49,12 @@ public class Config {
     private int startRpm;
     
     private double arduinoVersion;
+    
+    private Velocity velocity;
+    
+    public enum Velocity {
+        MPS, KMH, MPH
+    };
 
     public static Config getInstance() {
         if (instance == null) {
@@ -131,6 +137,10 @@ public class Config {
     public double getArduinoVersion() {
         return arduinoVersion;
     }
+    
+    public Velocity getVelocity() {
+        return velocity;
+    }
 
     //Setter
     public void setPs(boolean ps) {
@@ -196,6 +206,29 @@ public class Config {
     public void setArduinoVersion(double arduinoVersion) {
         this.arduinoVersion = arduinoVersion;
     }
+    
+    public void setVelocity(Velocity velocity) {
+        this.velocity = velocity;
+    }
+    
+    public int writeVelocity() {
+        switch(velocity) {
+            case MPS: return 0;
+            case KMH: return 1;
+            case MPH: return 2;
+            default: throw new RuntimeException("Error at writing out type of velocity...");
+        }
+    }
+    
+    public Velocity readVelocity(int velocity) {
+        switch(velocity) {
+            case 0: return Velocity.MPS;
+            case 1: return Velocity.KMH;
+            case 2: return Velocity.MPH;
+            default: throw new RuntimeException("Error at reading in type of velocity...");
+        }
+    }
+    
 
     public void writeJson(BufferedWriter w) throws IOException {
 
@@ -215,7 +248,8 @@ public class Config {
                 .add("PS", ps)
                 .add("Start Km/h", startKmh)
                 .add("Start Rpm", startRpm)
-                .add("Torque Correction Factor", torqueCorr);
+                .add("Torque Correction Factor", torqueCorr)
+                .add("Velocity", writeVelocity());
 
         JsonObject obj = b.build();
         w.write(obj.toString());
@@ -244,7 +278,7 @@ public class Config {
         startKmh = json.getInt("Start Km/h");
         startRpm = json.getInt("Start Rpm");
         torqueCorr = json.getInt("Torque Correction Factor");
-
+        velocity = readVelocity(json.getInt("Velocity"));
     }
 
 }

@@ -3,6 +3,7 @@ package gui;
 import data.Bike;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+import main.BESDyno;
 
 /**
  *
@@ -27,7 +28,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     public boolean isPressedOK() {
         return pressedOK;
     }
-
+    
     //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
         if (dark == true) {
@@ -38,22 +39,16 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jPanRPM.setBackground(Color.darkGray);
             jPanStroke.setBackground(Color.darkGray);
             jPanTransmission.setBackground(Color.darkGray);
-            jPanRPMCorr.setBackground(Color.darkGray);
 
-            jLabelName.setForeground(Color.white);
-            jLabelRPMCorr.setForeground(Color.white);
             jcbEnableRPM.setForeground(Color.white);
-            jcbEnableSchlepp.setForeground(Color.white);
             jrb2Stroke.setForeground(Color.white);
             jrb4Stroke.setForeground(Color.white);
             jrbAutomatic.setForeground(Color.white);
             jrbManual.setForeground(Color.white);
 
             jtfVehicleName.setBackground(Color.darkGray);
-            jtfRPMCorr.setBackground(Color.darkGray);
 
             jtfVehicleName.setForeground(Color.white);
-            jtfRPMCorr.setForeground(Color.white);
         } else {
             jPanButtons.setBackground(Color.white);
             jPanControls.setBackground(Color.white);
@@ -62,22 +57,16 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jPanRPM.setBackground(Color.white);
             jPanStroke.setBackground(Color.white);
             jPanTransmission.setBackground(Color.white);
-            jPanRPMCorr.setBackground(Color.white);
 
-            jLabelName.setForeground(Color.black);
-            jLabelRPMCorr.setForeground(Color.black);
             jcbEnableRPM.setForeground(Color.black);
-            jcbEnableSchlepp.setForeground(Color.black);
             jrb2Stroke.setForeground(Color.black);
             jrb4Stroke.setForeground(Color.black);
             jrbAutomatic.setForeground(Color.black);
             jrbManual.setForeground(Color.black);
 
             jtfVehicleName.setBackground(Color.white);
-            jtfRPMCorr.setBackground(Color.white);
 
             jtfVehicleName.setForeground(Color.black);
-            jtfRPMCorr.setForeground(Color.white);
         }
     }
 
@@ -85,10 +74,15 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private void confirm() {
         boolean error = false;
 
+        if ((!jrb2Stroke.isSelected() && !jrb4Stroke.isSelected()) ||
+            (!jrbAutomatic.isSelected() && !jrbManual.isSelected())) {
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder anwählen...", "Eingabefehler...", JOptionPane.ERROR_MESSAGE);
+            return;
+        } 
+        
         Bike.getInstance().setMeasRpm(jcbEnableRPM.isSelected());
         Bike.getInstance().setTwoStroke(jrb2Stroke.isSelected());
         Bike.getInstance().setAutomatic(jrbAutomatic.isSelected());
-        Bike.getInstance().setSchleppEnable(jcbEnableSchlepp.isSelected());
 
         if (jtfVehicleName.getText().length() > 25) {
             error = true;
@@ -134,14 +128,9 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         bgTransmission = new javax.swing.ButtonGroup();
         jPanMain = new javax.swing.JPanel();
         jPanName = new javax.swing.JPanel();
-        jLabelName = new javax.swing.JLabel();
         jtfVehicleName = new javax.swing.JTextField();
         jPanRPM = new javax.swing.JPanel();
         jcbEnableRPM = new javax.swing.JCheckBox();
-        jcbEnableSchlepp = new javax.swing.JCheckBox();
-        jPanRPMCorr = new javax.swing.JPanel();
-        jLabelRPMCorr = new javax.swing.JLabel();
-        jtfRPMCorr = new javax.swing.JTextField();
         jPanStroke = new javax.swing.JPanel();
         jrb2Stroke = new javax.swing.JRadioButton();
         jrb4Stroke = new javax.swing.JRadioButton();
@@ -160,14 +149,8 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jPanMain.setLayout(new java.awt.GridBagLayout());
 
         jPanName.setBackground(new java.awt.Color(255, 255, 255));
+        jPanName.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Fahrzeugname", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
         jPanName.setLayout(new java.awt.GridBagLayout());
-
-        jLabelName.setText("Fahrzeugname");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanName.add(jLabelName, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -181,10 +164,13 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
         jPanMain.add(jPanName, gridBagConstraints);
 
         jPanRPM.setBackground(new java.awt.Color(255, 255, 255));
+        jPanRPM.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Messung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
         jPanRPM.setLayout(new java.awt.GridBagLayout());
 
         jcbEnableRPM.setText("Motordrehzahl messen");
@@ -194,42 +180,17 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanRPM.add(jcbEnableRPM, gridBagConstraints);
 
-        jcbEnableSchlepp.setText("Schleppleistung messen");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        jPanRPM.add(jcbEnableSchlepp, gridBagConstraints);
-
-        jPanRPMCorr.setBackground(new java.awt.Color(255, 255, 255));
-        jPanRPMCorr.setLayout(new java.awt.GridBagLayout());
-
-        jLabelRPMCorr.setText("Motorleistung-Korrekturwert");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        jPanRPMCorr.add(jLabelRPMCorr, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanRPMCorr.add(jtfRPMCorr, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
-        jPanRPM.add(jPanRPMCorr, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.weightx = 1.0;
         jPanMain.add(jPanRPM, gridBagConstraints);
 
         jPanStroke.setBackground(new java.awt.Color(255, 255, 255));
+        jPanStroke.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Taktanzahl", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
         jPanStroke.setLayout(new java.awt.GridBagLayout());
 
         bgStroke.add(jrb2Stroke);
@@ -249,9 +210,13 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.weightx = 1.0;
         jPanMain.add(jPanStroke, gridBagConstraints);
 
         jPanTransmission.setBackground(new java.awt.Color(255, 255, 255));
+        jPanTransmission.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Getriebeart", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
         jPanTransmission.setLayout(new java.awt.GridBagLayout());
 
         bgTransmission.add(jrbManual);
@@ -271,6 +236,9 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.weightx = 1.0;
         jPanMain.add(jPanTransmission, gridBagConstraints);
 
         getContentPane().add(jPanMain, java.awt.BorderLayout.CENTER);
@@ -362,25 +330,20 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgStroke;
     private javax.swing.ButtonGroup bgTransmission;
-    private javax.swing.JLabel jLabelName;
-    private javax.swing.JLabel jLabelRPMCorr;
     private javax.swing.JPanel jPanButtons;
     private javax.swing.JPanel jPanControls;
     private javax.swing.JPanel jPanMain;
     private javax.swing.JPanel jPanName;
     private javax.swing.JPanel jPanRPM;
-    private javax.swing.JPanel jPanRPMCorr;
     private javax.swing.JPanel jPanStroke;
     private javax.swing.JPanel jPanTransmission;
     private javax.swing.JButton jbutCancel;
     private javax.swing.JButton jbutStart;
     private javax.swing.JCheckBox jcbEnableRPM;
-    private javax.swing.JCheckBox jcbEnableSchlepp;
     private javax.swing.JRadioButton jrb2Stroke;
     private javax.swing.JRadioButton jrb4Stroke;
     private javax.swing.JRadioButton jrbAutomatic;
     private javax.swing.JRadioButton jrbManual;
-    private javax.swing.JTextField jtfRPMCorr;
     private javax.swing.JTextField jtfVehicleName;
     // End of variables declaration//GEN-END:variables
 }
