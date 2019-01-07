@@ -44,6 +44,7 @@ import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
 import serial.ConnectPortWorker;
+import serial.DisconnectPortWorker;
 import serial.requests.Request;
 import serial.requests.Request.Status;
 import serial.requests.Request.Variety;
@@ -625,12 +626,25 @@ public class BESDyno extends javax.swing.JFrame {
         return os;
     }
 
+    public jssc.SerialPort getPort() {
+        return port;
+    }
+
     public double getReqArduVers() {
         return reqArduVers;
     }
 
     public boolean hasConnection() {
         return connection;
+    }
+
+    //Setter
+    public void setConnection(boolean connection) {
+        this.connection = connection;
+    }
+
+    public void setPort(jssc.SerialPort port) {
+        this.port = port;
     }
 
     //Communication
@@ -1214,30 +1228,11 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_onConnect
 
     private void onDisconnect(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDisconnect
-        try {
-            telegram.setSerialPort(null);
-            if (!telegram.cancel(true)) {
-                LOG.warning("Fehler beim Beenden: SwingWorker -> RxTxWorker -> TelegramWorker -> MyTelegramWorker...");
-                return;
-            }
-        } catch (Exception ex) {
-            userLog(ex, "Fehler beim Schließen des Ports", LogLevel.WARNING);
-        } finally {
-            try {
-                connection = false;
-                port.closePort();
-                port = null;
-            } catch (Throwable th) {
-                userLog(th, "Fehler beim Schließen des Ports", LogLevel.WARNING);
-            }
-            userLog("Port geschlossen", LogLevel.INFO);
-            try {
-                telegram.setSerialPort(null);
-            } catch (SerialPortException ex) {
-                userLog(ex, "Interner Fehler: telegram.setSerialPort();", LogLevel.WARNING);
-            }
-            refreshGui();
-        }
+        MyDisconnectPortWorker w = new MyDisconnectPortWorker();
+        w.execute();
+        activeWorker = w;
+        refreshGui();
+        userLog("Gerät wird getrennt...", LogLevel.INFO);
     }//GEN-LAST:event_onDisconnect
 
     private void onAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onAbout
@@ -1437,6 +1432,24 @@ public class BESDyno extends javax.swing.JFrame {
                 activeWorker = null;
                 refreshGui();
             }
+        }
+    }
+
+    private class MyDisconnectPortWorker extends DisconnectPortWorker {
+
+        @Override
+        protected void done() {
+            userLog("Gerät erfolgreich getrennt...", LogLevel.FINE);
+            port = null;
+            connection = false;
+            activeWorker = null;
+        }
+
+        @Override
+        protected void process(List<Throwable> chunks) {
+            chunks.forEach((th) -> {
+                userLog(th, "Fehler beim Trennen des Geräts!", LogLevel.SEVERE);
+            });
         }
 
     }
