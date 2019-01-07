@@ -69,7 +69,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   | Zustand | Wechsel wenn: | User-Eingabe | Programmmodus |
   | ------- | ------------- | ------------ | ------------- |
   | SHIFT_UP | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Hochschalten in den letzten Gang und Abfallen lassen bis zur Startgeschwindigkeit | x |
-  | WAIT | ...sich die Drehzahl innerhalb der Hysterese Zeitspanne bei **idleRPM ± hysteresisRPM** eingependelt hat | Warten... | x |
+  | WAIT | Wenn sich die Drehzahl innerhalb der Hysterese Zeitspanne bei **idleRPM ± hysteresisRPM** eingependelt hat | Warten... | x |
   | READY | Bei **einmaligem** Erreichen (**≥**) von **startRPM** | Gas geben! | x |
   | MEASURE | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Bei der Höchstdrehzahl abfallen lassen | MESSEN |
   | FINISH | Nach dem Ende der Berechnung -> Ende des Messvorgangs | Warten... | BERECHNEN |
