@@ -1,10 +1,14 @@
 package gui;
 
 import data.Bike;
+import data.DialData;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.List;
 import javax.swing.JInternalFrame;
+import measure.MeasurementWorker;
+import measure.MeasurementWorker.Status;
 
 /**
  *
@@ -15,7 +19,7 @@ public class MeasureDialog extends javax.swing.JDialog {
 //    private final DefaultValueDataset kmh = new DefaultValueDataset(0);
 //    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
-    //private Measure worker;
+    private MyMeasurementWorker worker;
     /**
      * Creates new form MeasureDialog
      */
@@ -28,12 +32,21 @@ public class MeasureDialog extends javax.swing.JDialog {
         setResizable(false);
         setMinimumSize(new Dimension(620, 450));
         
+        
         //createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
         if (Bike.getInstance().isMeasRpm()) {
             //createDial(rpm, "U/min*1000", jFrameRPM, 0, 13, 1);
         } else {
             jPanDial.remove(jFrameRPM);
         }
+        
+    }
+    
+    private void handleMeasurementChain() {
+        jpbMeasure.setIndeterminate(true);
+        worker = new MyMeasurementWorker();
+        worker.setStatus(Status.WAIT);
+        worker.execute();
     }
     
     //Sets Appearance like at the Main-GUI
@@ -207,6 +220,21 @@ public class MeasureDialog extends javax.swing.JDialog {
         
     }//GEN-LAST:event_jbutCancelActionPerformed
 
+    
+    private class MyMeasurementWorker extends MeasurementWorker {
+
+        @Override
+        protected void done() {
+        }
+
+        @Override
+        protected void process(List<DialData> chunks) {
+            
+        }
+        
+    }
+    
+    
     /**
      * @param args the command line arguments
      */

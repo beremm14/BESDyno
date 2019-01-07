@@ -18,13 +18,12 @@ import javax.swing.JOptionPane;
 public class SettingsDialog extends javax.swing.JDialog {
 
     private static final Logger LOG = Logger.getLogger(SettingsDialog.class.getName());
-    
-    
 
     private boolean pressedOK;
 
     /**
      * Creates new form SettingsDialog
+     *
      * @param parent
      * @param modal
      */
@@ -198,7 +197,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void confirm(Config c) {
 
         boolean error = false;
-        
+
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
         if (jrbKMH.isSelected()) {
@@ -210,7 +209,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         } else {
             c.setVelocity(Config.Velocity.KMH);
         }
-        
+
         try {
             c.setHysteresisKmh(Integer.parseInt(jtfHysteresisKmh.getText()));
         } catch (NumberFormatException e) {
@@ -307,7 +306,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             e.printStackTrace(System.err);
             jtfTorque.requestFocusInWindow();
         }
-        
+
         try {
             c.setInertiaCorr(Double.parseDouble(jtfInertia.getText()));
         } catch (NumberFormatException e) {
@@ -316,8 +315,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             e.printStackTrace(System.err);
             jtfInertia.requestFocusInWindow();
         }
-        
-        if(!error) {
+
+        if (!error) {
             try {
                 saveConfig(Config.getInstance());
             } catch (Exception e) {
@@ -326,7 +325,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 LOG.warning(e);
             }
         }
-        if(!error) {
+        if (!error) {
             pressedOK = true;
             dispose();
         } else {
@@ -336,17 +335,17 @@ public class SettingsDialog extends javax.swing.JDialog {
 
     //Sets jTFs & jRBs from Config-File
     public void setSwingValues(Config c) {
-        jtfHysteresisKmh.setText(String.format("%d", c.getHysteresisKmh()));
+        jtfHysteresisKmh.setText(String.format("%d", c.getHysteresisVelo()));
         jtfHysteresisRpm.setText(String.format("%d", c.getHysteresisRpm()));
         jtfHysteresisTime.setText(String.format("%d", c.getHysteresisTime()));
-        jtfIdleKmh.setText(String.format("%d", c.getIdleKmh()));
+        jtfIdleKmh.setText(String.format("%d", c.getIdleVelo()));
         jtfIdleRpm.setText(String.format("%d", c.getIdleRpm()));
         jtfInertia.setText(Double.toString(c.getInertia()));
         jtfPeriod.setText(String.format("%d", c.getPeriod()));
         jtfPngX.setText(String.format("%d", c.getPngWidth()));
         jtfPngY.setText(String.format("%d", c.getPngHeight()));
         jtfPower.setText(String.format("%d", c.getPowerCorr()));
-        jtfStartKmh.setText(String.format("%d", c.getStartKmh()));
+        jtfStartKmh.setText(String.format("%d", c.getStartVelo()));
         jtfStartRpm.setText(String.format("%d", c.getStartRpm()));
         jtfTorque.setText(String.format("%d", c.getTorqueCorr()));
 
@@ -354,22 +353,31 @@ public class SettingsDialog extends javax.swing.JDialog {
         jrbNightmode.setSelected(c.isDark());
         jrbKW.setSelected(!c.isPs());
         jrbPS.setSelected(c.isPs());
-        
+
         switch (c.getVelocity()) {
             case MPS:
                 jrbMPS.setSelected(true);
                 jrbMPH.setSelected(false);
                 jrbKMH.setSelected(false);
+                jLabelIdleKmh2.setText("m/s");
+                jLabelStartKmh2.setText("m/s");
+                jLabelHysteresisKmh2.setText("m/s");
                 break;
             case KMH:
                 jrbMPS.setSelected(false);
                 jrbMPH.setSelected(false);
                 jrbKMH.setSelected(true);
+                jLabelIdleKmh2.setText("Km/h");
+                jLabelStartKmh2.setText("Km/h");
+                jLabelHysteresisKmh2.setText("Km/h");
                 break;
             case MPH:
                 jrbMPS.setSelected(false);
                 jrbMPH.setSelected(true);
                 jrbKMH.setSelected(false);
+                jLabelIdleKmh2.setText("mph");
+                jLabelStartKmh2.setText("mph");
+                jLabelHysteresisKmh2.setText("mph");
                 break;
         }
     }
@@ -427,7 +435,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         } else {
             file = new File("Config.json");
         }
-        
+
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             config.writeJson(w);
             LOG.info("Config-File updated");
@@ -517,12 +525,22 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jbgVelocity.add(jrbMPS);
         jrbMPS.setText("Meter/Sekunde (m/s)");
+        jrbMPS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbMPSActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanVelocity.add(jrbMPS, gridBagConstraints);
 
         jbgVelocity.add(jrbKMH);
         jrbKMH.setText("Kilometer/Stunde (km/h)");
+        jrbKMH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbKMHActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -531,6 +549,11 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jbgVelocity.add(jrbMPH);
         jrbMPH.setText("Meilen/Stunde (mph)");
+        jrbMPH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbMPHActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -951,6 +974,24 @@ public class SettingsDialog extends javax.swing.JDialog {
         pressedOK = false;
         dispose();
     }//GEN-LAST:event_jbutCancelActionPerformed
+
+    private void jrbMPSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMPSActionPerformed
+        jLabelIdleKmh2.setText("m/s");
+        jLabelStartKmh2.setText("m/s");
+        jLabelHysteresisKmh2.setText("m/s");
+    }//GEN-LAST:event_jrbMPSActionPerformed
+
+    private void jrbKMHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbKMHActionPerformed
+        jLabelIdleKmh2.setText("Km/h");
+        jLabelStartKmh2.setText("Km/h");
+        jLabelHysteresisKmh2.setText("Km/h");
+    }//GEN-LAST:event_jrbKMHActionPerformed
+
+    private void jrbMPHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMPHActionPerformed
+        jLabelIdleKmh2.setText("mph");
+        jLabelStartKmh2.setText("mph");
+        jLabelHysteresisKmh2.setText("mph");
+    }//GEN-LAST:event_jrbMPHActionPerformed
 
     /**
      * @param args the command line arguments

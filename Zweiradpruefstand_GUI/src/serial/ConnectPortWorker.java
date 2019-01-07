@@ -1,10 +1,8 @@
 package serial;
 
-import java.util.logging.Level;
 import javax.swing.SwingWorker;
 import logging.Logger;
 import jssc.SerialPort;
-import jssc.SerialPortException;
 
 /**
  *

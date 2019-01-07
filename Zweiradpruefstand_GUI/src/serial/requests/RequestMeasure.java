@@ -1,6 +1,6 @@
 package serial.requests;
 
-import data.BikePower;
+import data.Database;
 import data.RawDatapoint;
 import development.CommunicationLogger;
 import development.LoggedRequest;
@@ -51,14 +51,14 @@ public class RequestMeasure extends Request {
 
         RawDatapoint dp = new RawDatapoint(values[0], values[2], values[1]);
         if (dp.getTime() > 0) {
-            BikePower.getInstance().addRawDP(dp);
+            Database.getInstance().addRawDP(dp);
             LOG.debug("MEASURE: engCount: " + dp.getEngCount() + " wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
         } else {
             LOG.warning("MEASURE: Time = 0");
         }
 
-        synchronized (BikePower.getInstance().syncObj) {
-            BikePower.getInstance().syncObj.notifyAll();
+        synchronized (Database.getInstance().syncObj) {
+            Database.getInstance().syncObj.notifyAll();
             LOG.debug("Measurement-syncObj notified");
         }
 

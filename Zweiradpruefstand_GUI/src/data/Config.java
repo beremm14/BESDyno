@@ -40,9 +40,9 @@ public class Config {
     private int period;
     private int hysteresisTime;
 
-    private int idleKmh;
-    private int hysteresisKmh;
-    private int startKmh;
+    private int idleVelo;
+    private int hysteresisVelo;
+    private int startVelo;
 
     private int idleRpm;
     private int hysteresisRpm;
@@ -110,16 +110,16 @@ public class Config {
         return hysteresisTime;
     }
 
-    public int getIdleKmh() {
-        return idleKmh;
+    public int getIdleVelo() {
+        return idleVelo;
     }
 
-    public int getHysteresisKmh() {
-        return hysteresisKmh;
+    public int getHysteresisVelo() {
+        return hysteresisVelo;
     }
 
-    public int getStartKmh() {
-        return startKmh;
+    public int getStartVelo() {
+        return startVelo;
     }
 
     public int getIdleRpm() {
@@ -180,15 +180,15 @@ public class Config {
     }
 
     public void setIdleKmh(int idleKmh) {
-        this.idleKmh = idleKmh;
+        this.idleVelo = idleKmh;
     }
 
     public void setHysteresisKmh(int hysteresisKmh) {
-        this.hysteresisKmh = hysteresisKmh;
+        this.hysteresisVelo = hysteresisKmh;
     }
 
     public void setStartKmh(int startKmh) {
-        this.startKmh = startKmh;
+        this.startVelo = startKmh;
     }
 
     public void setIdleRpm(int idleRpm) {
@@ -235,10 +235,10 @@ public class Config {
         final JsonObjectBuilder b = Json.createObjectBuilder();
 
         b.add("Dark", dark)
-                .add("Hysteresis Km/h", hysteresisKmh)
+                .add("Hysteresis Velo", hysteresisVelo)
                 .add("Hysteresis Rpm", hysteresisRpm)
                 .add("Hysteresis Time", hysteresisTime)
-                .add("Idle Km/h", idleKmh)
+                .add("Idle Velo", idleVelo)
                 .add("Idle Rpm", idleRpm)
                 .add("Inertia", inertiaCorr)
                 .add("Period", period)
@@ -246,7 +246,7 @@ public class Config {
                 .add("PNG Width", pngWidth)
                 .add("Power Correction Factor", powerCorr)
                 .add("PS", ps)
-                .add("Start Km/h", startKmh)
+                .add("Start Velo", startVelo)
                 .add("Start Rpm", startRpm)
                 .add("Torque Correction Factor", torqueCorr)
                 .add("Velocity", writeVelocity());
@@ -264,10 +264,10 @@ public class Config {
         }
 
         dark = json.getBoolean("Dark");
-        hysteresisKmh = json.getInt("Hysteresis Km/h");
+        hysteresisVelo = json.getInt("Hysteresis Velo");
         hysteresisRpm = json.getInt("Hysteresis Rpm");
         hysteresisTime = json.getInt("Hysteresis Time");
-        idleKmh = json.getInt("Idle Km/h");
+        idleVelo = json.getInt("Idle Velo");
         idleRpm = json.getInt("Idle Rpm");
         inertiaCorr = json.getJsonNumber("Inertia").doubleValue();
         period = json.getInt("Period");
@@ -275,7 +275,7 @@ public class Config {
         pngWidth = json.getInt("PNG Width");
         powerCorr = json.getInt("Power Correction Factor");
         ps = json.getBoolean("PS");
-        startKmh = json.getInt("Start Km/h");
+        startVelo = json.getInt("Start Velo");
         startRpm = json.getInt("Start Rpm");
         torqueCorr = json.getInt("Torque Correction Factor");
         velocity = readVelocity(json.getInt("Velocity"));

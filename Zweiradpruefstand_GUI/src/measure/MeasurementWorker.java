@@ -1,11 +1,14 @@
 package measure;
 
 import data.Bike;
-import data.BikePower;
+import data.Database;
 import data.Config;
+import data.Datapoint;
 import data.DialData;
 import logging.Logger;
 import javax.swing.SwingWorker;
+import main.BESDyno;
+import main.BESDyno.MyTelegram;
 
 /**
  *
@@ -13,26 +16,19 @@ import javax.swing.SwingWorker;
  */
 public class MeasurementWorker extends SwingWorker<Object, DialData> {
     
-    /*
-    WAIT:           Waits hysteresisTime milliseconds (security: no possibility to get lower than IDLE
-    SHIFT_UP:       Ends, if velocity is lower than IDLE
-    READY:          Ends, if velocity is higher than START
-    MEASURE:        Data for measurement; ends, if velocity is lower than IDLE
-    STOP:           Calculates power
-    NO_MEASUREMENT: Nothing to do...
-    */
-
     private static final Logger LOG = Logger.getLogger(MeasurementWorker.class.getName());
 
+    private final BESDyno main = BESDyno.getInstance();
     private final Bike bike = Bike.getInstance();
-    private final BikePower power = BikePower.getInstance();
+    private final Database data = Database.getInstance();
+    private final Calculate calc = new Calculate();
     private final Config config = Config.getInstance();
-    private final MeasurementManager manager = new MeasurementManager();
+    private final MyTelegram telegram = BESDyno.getInstance().getTelegram();
 
     private Status status;
 
-    public enum Status {
-        WAIT, SHIFT_UP, READY, MEASURE, FINISH, NO_MEASUREMENT
+    public static enum Status {
+        SHIFT_UP, WAIT, READY, MEASURE, FINISH, FINISHED
     };
 
     @Override
@@ -41,81 +37,25 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             while (!isCancelled()) {
                 switch (status) {
 
-                    case WAIT:
-                        Thread.sleep(config.getHysteresisTime());
-                        break;
-
                     case SHIFT_UP:
-                        if (bike.isMeasRpm()) {
-                            int stopCount = 0;
-                            do {
-                                publish(manager.measure());
-                                if (power.getVelList().get(power.getVelList().size() - 1) <= config.getIdleKmh()
-                                    || power.getEngRpm().get(power.getEngRpm().size() - 1) <= config.getIdleRpm()) {
-                                    stopCount++;
-                                }
-                            } while (stopCount < 3);
-                        } else {
-                            int stopCount = 0;
-                            do {
-                                publish(manager.measureno());
-                                if (power.getVelList().get(power.getVelList().size() - 1) < config.getIdleKmh()) {
-                                    stopCount++;
-                                }
-                            } while (stopCount < 3);
-                        }
-                        status = Status.READY;
+                        status = manageShiftUp();
+                        break;
+                        
+                    case WAIT:
+                        status = manageWait((int) config.getHysteresisTime()/config.getPeriod());
                         break;
 
                     case READY:
-                        if (bike.isMeasRpm()) {
-                            int startCount = 0;
-                            do {
-                                publish(manager.measure());
-                                if (power.getVelList().get(power.getVelList().size() - 1) >= config.getStartKmh()
-                                        || power.getEngRpm().get(power.getEngRpm().size() - 1) >= config.getStartRpm()) {
-                                    startCount++;
-                                }
-                            } while (startCount < 3);
-                        } else {
-                            int startCount = 0;
-                            do {
-                                publish(manager.measureno());
-                                if (power.getVelList().get(power.getVelList().size() - 1) >= config.getStartKmh()) {
-                                    startCount++;
-                                }
-                            } while (startCount < 3);
-                        }
-                        status = Status.MEASURE;
                         break;
 
                     case MEASURE:
-                        if (bike.isMeasRpm()) {
-                            int stopCount = 0;
-                            do {
-                                publish(manager.measure());
-                                if (power.getVelList().get(power.getVelList().size() - 1) <= config.getIdleKmh()
-                                        || power.getEngRpm().get(power.getEngRpm().size() - 1) <= config.getIdleRpm()) {
-                                    stopCount++;
-                                }
-                            } while (stopCount > 5);
-                        } else {
-                            int stopCount = 0;
-                            do {
-                                publish(manager.measureno());
-                                if (power.getVelList().get(power.getVelList().size() - 1) <= config.getIdleKmh()) {
-                                    stopCount++;
-                                }
-                            } while (stopCount < 5);
-                        }
-                        status = Status.FINISH;
                         break;
 
                     case FINISH:
                         break;
                         
-                    case NO_MEASUREMENT:
-                        break;
+                    case FINISHED:
+                        return null;
 
                     default:
                         throw new Exception("No Status...");
@@ -125,6 +65,162 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             LOG.severe(ex);
         }
         return null;
+    }
+    
+    
+    //State-Methods
+    
+    //Lower than Start-Speed reached once -> hysteresis loop
+    private Status manageShiftUp() throws Exception {
+        if (bike.isMeasRpm()) {
+            do {
+                publish(measure());
+            } while (data.getEngRpmList().get(data.getEngRpmList().size()-1) <= config.getStartRpm());
+        } else {
+            do {
+                publish(measureno());
+            } while (data.getVelList().get(data.getVelList().size()-1) <= config.getStartVelo());
+        }
+        return Status.WAIT;
+    }
+    
+    //Commute into Hysteresis -> ready
+    private Status manageWait(int hysCount) throws Exception {
+        if (bike.isMeasRpm()) {
+            int hysteresisMin = config.getIdleRpm() - config.getHysteresisRpm();
+            int hysteresisMax = config.getIdleRpm() + config.getHysteresisRpm();
+            int rpm;
+            int accepted = 0;
+            do {
+                publish(measure());
+                rpm = data.getEngRpmList().get(data.getEngRpmList().size()-1);
+                if (rpm > hysteresisMin && rpm < hysteresisMax) {
+                    accepted++;
+                }
+                Thread.sleep(config.getPeriod());
+            } while (accepted < hysCount);
+        } else {
+            int hysteresisMin = config.getIdleVelo() - config.getHysteresisVelo();
+            int hysteresisMax = config.getIdleVelo() + config.getHysteresisVelo();
+            double velocity;
+            int accepted = 0;
+            do {
+                publish(measure());
+                velocity = data.getVelList().get(data.getVelList().size()-1);
+                if (velocity > hysteresisMin && velocity < hysteresisMax) {
+                    accepted++;
+                }
+                Thread.sleep(config.getPeriod());
+            } while (accepted < hysCount);
+        }
+        return Status.READY;
+    }
+    
+    //Greater than Start-Speed reached once -> start of measurement
+    private Status manageReady() throws Exception {
+        if (bike.isMeasRpm()) {
+            do {
+                publish(measure());
+            } while (data.getEngRpmList().get(data.getEngRpmList().size()-1) >= config.getStartRpm());
+        } else {
+            do {
+                publish(measureno());
+            } while (data.getVelList().get(data.getVelList().size()-1) >= config.getStartVelo());
+        }
+        return Status.MEASURE;
+    }
+    
+    //Lower than Start-Speed reached 5 times -> finish
+    private Status manageMeasure() throws Exception {
+        //Clear all Lists for good Data ;)
+        data.clearLists();
+        
+        if (bike.isMeasRpm()) {
+            int stopCount = 0;
+            do {
+                publish(measure());
+                if (data.getEngRpmList().get(data.getEngRpmList().size()-1) <= config.getStartRpm()) {
+                    stopCount++;
+                }
+            } while (stopCount < 5);
+        } else {
+            int stopCount = 0;
+            do {
+                publish(measureno());
+                if (data.getVelList().get(data.getVelList().size()-1) <= config.getStartVelo()) {
+                    stopCount++;
+                }
+            } while (stopCount < 5);
+        }
+        return Status.FINISH;
+    }
+    
+    //Calculates Power -> end of measurement
+    private Status manageFinish() {
+        
+        return Status.FINISHED;
+    }
+    
+    
+    //Measurement-Methods
+    public DialData measure() throws Exception {
+        Datapoint dp;
+
+        main.addPendingRequest(telegram.measure());
+
+        synchronized (data.syncObj) {
+
+            data.syncObj.wait(1000);
+
+            dp = calc.calcRpm(data.getRawList().get(data.getRawList().size() - 1));
+            data.addWR(dp.getWheelRpm());
+            data.addER(dp.getEngRpm());
+
+            switch (config.getVelocity()) {
+                case MPS:
+                    data.addVel(calc.calcMps(dp));
+                    break;
+                case KMH:
+                    data.addVel(calc.calcKmh(dp));
+                    break;
+                case MPH:
+                    data.addVel(calc.calcMph(dp));
+                    break;
+                default:
+                    throw new Exception("No Velocity Unit...");
+            }
+        }
+
+        return new DialData(dp);
+    }
+
+    public DialData measureno() throws Exception {
+        Datapoint dp;
+
+        main.addPendingRequest(telegram.measureno());
+
+        synchronized (data.syncObj) {
+            data.syncObj.wait(1000);
+
+            dp = calc.calcRpm(data.getRawList().get(data.getRawList().size() - 1));
+            data.addWR(dp.getWheelRpm());
+
+            switch (config.getVelocity()) {
+                case MPS:
+                    data.addVel(calc.calcMps(dp));
+                    break;
+                case KMH:
+                    data.addVel(calc.calcKmh(dp));
+                    break;
+                case MPH:
+                    data.addVel(calc.calcMph(dp));
+                    break;
+                default:
+                    throw new Exception("No Velocity Unit...");
+            }
+        }
+
+        return new DialData(data.getVelList().get(data.getVelList().size() - 1));
     }
 
     public Status getStatus() {

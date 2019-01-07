@@ -1,7 +1,7 @@
 package measure;
 
 import data.Bike;
-import data.BikePower;
+import data.Database;
 import data.Config;
 import data.Datapoint;
 import data.RawDatapoint;
@@ -86,7 +86,7 @@ public class Calculate {
                 currPower = currPower / 1000;
             }
 
-            BikePower.getInstance().addWP(currPower);
+            Database.getInstance().addWP(currPower);
         }
 
         //Engine-Power
@@ -102,11 +102,14 @@ public class Calculate {
                 currPower = currPower / 1000;
             }
 
-            BikePower.getInstance().addEP(currPower);
+            Database.getInstance().addEP(currPower);
         }
 
         //Max-Engine-Power
-        BikePower.getInstance().setBikePower();
+        Database.getInstance().setBikePower();
+        
+        
+        
     }
 
 }

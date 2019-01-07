@@ -1,7 +1,7 @@
 package measure;
 
 import data.Bike;
-import data.BikePower;
+import data.Database;
 import data.Config;
 import java.awt.Color;
 import java.util.List;
