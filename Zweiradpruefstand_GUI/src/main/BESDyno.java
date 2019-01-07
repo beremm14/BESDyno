@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -1439,10 +1440,21 @@ public class BESDyno extends javax.swing.JFrame {
 
         @Override
         protected void done() {
-            userLog("Gerät erfolgreich getrennt...", LogLevel.FINE);
-            port = null;
-            connection = false;
-            activeWorker = null;
+            try {
+                connection = false;
+                port.closePort();
+                port = null;
+            } catch (Throwable th) {
+                userLog(th, "Fehler beim Trennen des Geräts!", LogLevel.WARNING);
+            }
+            try {
+                userLog("Gerät erfolgreich getrennt!", LogLevel.FINE);
+                activeWorker = null;
+                refreshGui();
+            } catch (Exception ex) {
+                LOG.severe(ex);
+            }
+
         }
 
         @Override
