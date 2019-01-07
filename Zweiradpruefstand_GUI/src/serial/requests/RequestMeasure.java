@@ -57,6 +57,11 @@ public class RequestMeasure extends Request {
             LOG.warning("MEASURE: Time = 0");
         }
 
+        synchronized (BikePower.getInstance().syncObj) {
+            BikePower.getInstance().syncObj.notifyAll();
+            LOG.debug("Measurement-syncObj notified");
+        }
+
         if (checkCRC(res) && dp.getTime() == Integer.parseInt(values[3]) && dp.getTime() > 0) {
             status = Status.DONE;
         } else {

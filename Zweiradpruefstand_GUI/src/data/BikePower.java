@@ -34,8 +34,12 @@ public class BikePower {
 
     //"Absolute" Power
     private double bikePower;
+    
+    //Sync-Object
+    public final Object syncObj;
 
     private BikePower() {
+        syncObj = new Object();
     }
 
     //Getter
@@ -105,6 +109,38 @@ public class BikePower {
     
     public boolean addVel(Double v) {
         return velList.add(v);
+    }
+    
+    public void resetEP() {
+        engPower.removeAll(engPower);
+    }
+    
+    public void resetER() {
+        engRpm.removeAll(engRpm);
+    }
+    
+    public void resetWP() {
+        wheelPower.removeAll(wheelPower);
+    }
+    
+    public void resetWR() {
+        wheelRpm.removeAll(wheelRpm);
+    }
+    public void resetRaw() {
+        rawList.removeAll(rawList);
+    }
+    
+    public void resetVel() {
+        velList.removeAll(velList);
+    }
+    
+    public void resetLists() {
+        engPower.removeAll(engPower);
+        engRpm.removeAll(engRpm);
+        wheelPower.removeAll(wheelPower);
+        wheelRpm.removeAll(wheelRpm);
+        rawList.removeAll(rawList);
+        velList.removeAll(velList);
     }
 
 }

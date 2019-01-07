@@ -57,6 +57,10 @@ public class RequestMeasureno extends Request {
             LOG.warning("MEASURENO: Time = 0");
         }
         
+        synchronized (BikePower.getInstance().syncObj) {
+            BikePower.getInstance().syncObj.notifyAll();
+            LOG.debug("Measurement-syncObj notified");
+        }
         
         if (checkCRC(res) && dp.getTime() > 0) {
             status = Status.DONE;
