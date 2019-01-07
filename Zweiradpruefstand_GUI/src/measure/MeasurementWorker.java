@@ -16,6 +16,22 @@ import main.BESDyno.MyTelegram;
  */
 public class MeasurementWorker extends SwingWorker<Object, DialData> {
     
+    /****************************************************************
+     *  Ablauf des Messvorgangs:                                    *
+     *                                                              *
+     *  1) Hochschalten in den letzten Gang und abfallen lassen     *
+     *     -> ab Erreichen der Startgeschwindigkeit: Einpendeln     *
+     *  2) Einpendeln um die Leerlaufgeschwindigkeit                *
+     *     -> solange wie HysteresisTime                            *
+     *  3) Gas geben                                                *
+     *     -> ab Erreichen der Start-Geschwindigkeit: Messen        *
+     *  4) Bei Höchstdrehzahl abfallen lassen                       *
+     *     -> ab wieder Erreichn der Start-Geschwindigkeit: Stoppen *
+     *                                                              *
+     *  Anmerkung: Bei Automatik-Zweirädern ist der                 *
+     *  erste State SHIFT_UP nicht notwendig.                       *
+     ****************************************************************/
+    
     private static final Logger LOG = Logger.getLogger(MeasurementWorker.class.getName());
 
     private final BESDyno main = BESDyno.getInstance();
