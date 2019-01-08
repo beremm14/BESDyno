@@ -59,26 +59,32 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
 
     @Override
     protected Double doInBackground() {
+        LOG.info("Measurement started...");
         try {
             switch (status) {
 
                 case SHIFT_UP:
+                    LOG.info("STATE: SHIFT_UP");
                     status = manageShiftUp();
                     break;
                     
                 case WAIT:
+                    LOG.info("STATE: WAIT");
                     status = manageWait((int) config.getHysteresisTime()/config.getPeriod());
                     break;
                     
                 case READY:
+                    LOG.info("STATE: READY");
                     status = manageReady();
                     break;
                     
                 case MEASURE:
+                    LOG.info("STATE: MEASURE");
                     status = manageMeasure();
                     break;
 
                 case FINISH:
+                    LOG.info("Measurement finished");
                     return manageFinish();
 
                     default:

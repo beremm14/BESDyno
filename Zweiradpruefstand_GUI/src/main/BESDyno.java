@@ -5,6 +5,7 @@ import data.Config;
 import development.CommunicationLogger;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
+import development.gui.MeasurementValuesPane;
 import gui.AboutDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
@@ -154,12 +155,14 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiSaveLoggedComm.setEnabled(false);
         jcbmiDebugLogging.setEnabled(false);
         jmenuRequests.setEnabled(false);
+        jmiShowMeasurementValues.setEnabled(false);
         if (devMode) {
             jmiShowPendingRequests.setEnabled(true);
             jmiShowLoggedComm.setEnabled(true);
             jcbmiSaveLoggedComm.setEnabled(true);
             jcbmiDebugLogging.setEnabled(true);
             jmenuRequests.setEnabled(true);
+            jmiShowMeasurementValues.setEnabled(true);
         }
 
         if (activeWorker != null) {
@@ -689,6 +692,12 @@ public class BESDyno extends javax.swing.JFrame {
         });
         commPane.setVisible(true);
     }
+    
+    public void showMeasurementData() {
+        MeasurementValuesPane valuesPane = new MeasurementValuesPane(this, false);
+        valuesPane.setAppearance(Config.getInstance().isDark());
+        valuesPane.setVisible(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -742,6 +751,8 @@ public class BESDyno extends javax.swing.JFrame {
         jmiShowLoggedComm = new javax.swing.JMenuItem();
         jcbmiSaveLoggedComm = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jmiShowMeasurementValues = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jmenuRequests = new javax.swing.JMenu();
         jmiInit = new javax.swing.JMenuItem();
         jmiVersion = new javax.swing.JMenuItem();
@@ -1038,6 +1049,15 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuDeveloper.add(jcbmiSaveLoggedComm);
         jmenuDeveloper.add(jSeparator4);
+
+        jmiShowMeasurementValues.setText("Messdaten anzeigen");
+        jmiShowMeasurementValues.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onShowMeasurementValues(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiShowMeasurementValues);
+        jmenuDeveloper.add(jSeparator6);
 
         jmenuRequests.setText("Request senden");
 
@@ -1410,6 +1430,10 @@ public class BESDyno extends javax.swing.JFrame {
         addPendingRequest(telegram.version());
     }//GEN-LAST:event_onTestVersion
 
+    private void onShowMeasurementValues(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onShowMeasurementValues
+        showMeasurementData();
+    }//GEN-LAST:event_onShowMeasurementValues
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1712,6 +1736,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JSlider jSlider;
     private javax.swing.JButton jbutConnect;
     private javax.swing.JButton jbutDisconnect;
@@ -1750,6 +1775,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiSettings;
     private javax.swing.JMenuItem jmiSevere;
     private javax.swing.JMenuItem jmiShowLoggedComm;
+    private javax.swing.JMenuItem jmiShowMeasurementValues;
     private javax.swing.JMenuItem jmiShowPendingRequests;
     private javax.swing.JMenuItem jmiStart;
     private javax.swing.JMenuItem jmiStartSim;
