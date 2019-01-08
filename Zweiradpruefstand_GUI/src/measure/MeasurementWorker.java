@@ -48,6 +48,15 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
         SHIFT_UP, WAIT, READY, MEASURE, FINISH
     };
 
+    public MeasurementWorker() {
+        if (bike.isAutomatic()) {
+            status = Status.WAIT;
+        } else {
+            status = Status.SHIFT_UP;
+        }
+    }
+    
+
     @Override
     protected Double doInBackground() {
         try {
@@ -98,7 +107,7 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
         return Status.WAIT;
     }
     
-    //Commute into Hysteresis -> ready
+    //Stabilize in Hysteresis loop -> ready
     private Status manageWait(int hysCount) throws Exception {
         if (bike.isMeasRpm()) {
             int hysteresisMin = config.getIdleRpm() - config.getHysteresisRpm();

@@ -5,7 +5,6 @@ import data.Database;
 import data.Config;
 import data.Datapoint;
 import data.RawDatapoint;
-import java.util.List;
 
 /**
  *
@@ -18,7 +17,7 @@ public class Calculate {
 
     //Calculates One Point
     public Datapoint calcRpm(RawDatapoint rdp) {
-        int totalImpulse = 20; //???
+        int totalImpulse = 26;
         int wheelRpm;
         int engRpm;
 
@@ -32,28 +31,27 @@ public class Calculate {
     }
 
     public Datapoint calcWheelOnly(RawDatapoint rdp) {
-        int totalImpulse = 20; //???
+        int totalImpulse = 26;
         return new Datapoint(rdp.getWheelCount() / rdp.getTime() * totalImpulse, rdp.getTime());
     }
 
     //Calculates One Point
     public double calcMps(Datapoint dp) {
-        double r = 0; //???
-        return r * dp.getWheelRpm() * 0.10472;
+        double r = 0.35;
+        return r * 2 * Math.PI * (dp.getWheelRpm() / 60);
     }
 
     public double calcKmh(Datapoint dp) {
-        double r = 0; //???
-        return r * dp.getWheelRpm() * 0.10472 * 3.6;
+        return calcMps(dp) * 3.6;
     }
 
     public double calcMph(Datapoint dp) {
-        double r = 0; //???
-        return r * dp.getWheelRpm() * 0.10472 * 2.237;
+        return calcMps(dp) * 2.237;
     }
 
     //Calculates All
     public double calcPower() {
+        
         //Engine
         for (int i = 0; i < data.getEngRpmList().size(); i++) {
             double dOmega = 2 * Math.PI * (data.getEngRpmList().get(i) / 60);
