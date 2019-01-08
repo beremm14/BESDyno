@@ -74,6 +74,6 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   | MEASURE | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Bei der Höchstdrehzahl abfallen lassen | MESSEN |
   | FINISH | Nach dem Ende der Berechnung -> Ende des Messvorgangs | Warten... | BERECHNEN |
   
-  
+  *Anmerkungen*: Wenn die Motordrehzahl nicht gemessen wird, erfolgt das Switchen der States sowie das Einpendeln über die Geschwindigkeit der Walze. Wenn ein Zweirad mit Automatik-Getriebe gemessen wird, ist der erste State *SHIFT_UP* nicht notwendig und wird übersprungen.  
   
   
