@@ -49,6 +49,7 @@ public class AboutDialog extends javax.swing.JDialog {
     
     public void setAppearance(boolean dark) {
         if (dark == true) {
+            jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128_white.png")));
             jPanAuthor.setBackground(Color.darkGray);
             jPanCopyright.setBackground(Color.darkGray);
             jPanDevice.setBackground(Color.darkGray);
@@ -85,6 +86,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelArduinoT.setForeground(Color.white);
             jLabelArduino.setForeground(Color.white);
         } else {
+            jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128.png")));
             jPanAuthor.setBackground(Color.white);
             jPanCopyright.setBackground(Color.white);
             jPanDevice.setBackground(Color.white);
@@ -183,6 +185,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelArduino = new javax.swing.JLabel();
         jPanCopyright = new javax.swing.JPanel();
         jLabelAuthor = new javax.swing.JLabel();
+        jLabelMade = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -362,10 +365,18 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanAuthor.add(jPanSysInfo, java.awt.BorderLayout.CENTER);
 
         jPanCopyright.setBackground(new java.awt.Color(255, 255, 255));
+        jPanCopyright.setLayout(new java.awt.GridBagLayout());
 
         jLabelAuthor.setText("© Emil Berger 2018-2019");
-        jLabelAuthor.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanCopyright.add(jLabelAuthor);
+        jLabelAuthor.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanCopyright.add(jLabelAuthor, new java.awt.GridBagConstraints());
+
+        jLabelMade.setText("Made with love in Europe on  macOS");
+        jLabelMade.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanCopyright.add(jLabelMade, gridBagConstraints);
 
         jPanAuthor.add(jPanCopyright, java.awt.BorderLayout.PAGE_END);
 
@@ -429,6 +440,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelDevelopers;
     private javax.swing.JLabel jLabelDevice;
     private javax.swing.JLabel jLabelDeviceT;
+    private javax.swing.JLabel jLabelMade;
     private javax.swing.JLabel jLabelOS;
     private javax.swing.JLabel jLabelOsName;
     private javax.swing.JLabel jLabelOsNameT;
