@@ -48,7 +48,7 @@ public class Config {
     private int hysteresisRpm;
     private int startRpm;
     
-    private double arduinoVersion;
+    private double arduinoVersion = 0;
     
     private Velocity velocity;
     

@@ -5,11 +5,8 @@ import data.Config;
 import data.DialData;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.util.List;
-import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import main.BESDyno;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
 
@@ -18,8 +15,6 @@ import measure.MeasurementWorker.Status;
  * @author emil
  */
 public class MeasureDialog extends javax.swing.JDialog {
-    
-    private ResultDialog result = new ResultDialog(BESDyno.getInstance(), true);
     
     private boolean finished;
     
@@ -243,9 +238,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         
         @Override
         protected void done() {
-            result.setAppearance(Config.getInstance().isDark());
-            result.setValues();
-            result.setVisible(true);
         }
 
         @Override

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import main.BESDyno.OS;
+import data.Config;
 
 /**
  *
@@ -29,7 +30,7 @@ public class AboutDialog extends javax.swing.JDialog {
     
     
     private void writeVersion () {
-        jLabelVersion.setText("BES Dyno 1.0");
+        jLabelVersion.setText("BES Dyno v1.0");
         jLabelOsName.setText(System.getProperty("os.name"));
         jLabelOsVersion.setText(System.getProperty("os.version"));
         jLabelVmName.setText(System.getProperty("java.vm.name"));
@@ -41,6 +42,9 @@ public class AboutDialog extends javax.swing.JDialog {
     
     public void writeDevice (String dn) {
         jLabelDevice.setText(dn);
+        if (Config.getInstance().getArduinoVersion() > 0) {
+            jLabelArduino.setText(String.format("BESMeasurement v%.1f", Config.getInstance().getArduinoVersion()));
+        }
     }
     
     public void setAppearance(boolean dark) {
@@ -78,6 +82,8 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelVmVersion.setForeground(Color.white);
             jLabelVmVersionT.setForeground(Color.white);
             jLabelWarning.setForeground(Color.white);
+            jLabelArduinoT.setForeground(Color.white);
+            jLabelArduino.setForeground(Color.white);
         } else {
             jPanAuthor.setBackground(Color.white);
             jPanCopyright.setBackground(Color.white);
@@ -112,6 +118,8 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelVmVersion.setForeground(Color.black);
             jLabelVmVersionT.setForeground(Color.black);
             jLabelWarning.setForeground(Color.black);
+            jLabelArduinoT.setForeground(Color.black);
+            jLabelArduino.setForeground(Color.black);
         }
     }
     
@@ -171,6 +179,8 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanDevice = new javax.swing.JPanel();
         jLabelDeviceT = new javax.swing.JLabel();
         jLabelDevice = new javax.swing.JLabel();
+        jLabelArduinoT = new javax.swing.JLabel();
+        jLabelArduino = new javax.swing.JLabel();
         jPanCopyright = new javax.swing.JPanel();
         jLabelAuthor = new javax.swing.JLabel();
 
@@ -330,7 +340,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jPanDevice.setBackground(new java.awt.Color(255, 255, 255));
         jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Endgerät", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
-        jPanDevice.setLayout(new java.awt.GridLayout(1, 0));
+        jPanDevice.setLayout(new java.awt.GridLayout(2, 2));
 
         jLabelDeviceT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelDeviceT.setText("Verbundener Prüfstand: ");
@@ -339,6 +349,13 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelDevice.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelDevice.setText("Kein Prüfstand verbunden...");
         jPanDevice.add(jLabelDevice);
+
+        jLabelArduinoT.setText("Prüfstand-Firmware-Software:");
+        jPanDevice.add(jLabelArduinoT);
+
+        jLabelArduino.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelArduino.setText("Kein Prüfstand verbunden...");
+        jPanDevice.add(jLabelArduino);
 
         jPanSysInfo.add(jPanDevice);
 
@@ -406,6 +423,8 @@ public class AboutDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabelArduino;
+    private javax.swing.JLabel jLabelArduinoT;
     private javax.swing.JLabel jLabelAuthor;
     private javax.swing.JLabel jLabelDevelopers;
     private javax.swing.JLabel jLabelDevice;

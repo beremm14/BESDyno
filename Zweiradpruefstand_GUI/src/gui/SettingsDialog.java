@@ -2,6 +2,7 @@ package gui;
 
 import data.Config;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,8 +36,19 @@ public class SettingsDialog extends javax.swing.JDialog {
         } catch (Exception ex) {
             LOG.warning(ex);
         }
+        setSize(new Dimension(750, 430));
+        setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
+    }
+    
+    public void writeDevice (String dn) {
+        jLabelDevice2.setText(dn);
+        if (Config.getInstance().getArduinoVersion() == 0) {
+            jLabelArduino2.setText("Kein Prüfstand verbunden...");
+        } else {
+            jLabelArduino2.setText(String.format("BESMeasurement v%.1f", Config.getInstance().getArduinoVersion()));
+        }
     }
 
     public void setAppearance(boolean dark) {
@@ -51,6 +63,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanSerial.setBackground(Color.darkGray);
             jPanWest.setBackground(Color.darkGray);
             jPanVelocity.setBackground(Color.darkGray);
+            jPanDevice.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setBackground(Color.darkGray);
             jtfHysteresisRpm.setBackground(Color.darkGray);
@@ -110,6 +123,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelStartRpm.setForeground(Color.white);
             jLabelStartRpm2.setForeground(Color.white);
             jLabelTorque.setForeground(Color.white);
+            jLabelDevice1.setForeground(Color.white);
+            jLabelDevice2.setForeground(Color.white);
+            jLabelArduino1.setForeground(Color.white);
+            jLabelArduino2.setForeground(Color.white);
         } else {
             jPanAppearance.setBackground(Color.white);
             jPanButtons.setBackground(Color.white);
@@ -121,6 +138,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanSerial.setBackground(Color.white);
             jPanWest.setBackground(Color.white);
             jPanVelocity.setBackground(Color.white);
+            jPanDevice.setBackground(Color.white);
 
             jtfInertia.setBackground(Color.white);
             jtfInertia.setForeground(Color.black);
@@ -182,6 +200,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelStartRpm.setForeground(Color.black);
             jLabelStartRpm2.setForeground(Color.black);
             jLabelTorque.setForeground(Color.black);
+            jLabelDevice1.setForeground(Color.black);
+            jLabelDevice2.setForeground(Color.black);
+            jLabelArduino1.setForeground(Color.black);
+            jLabelArduino2.setForeground(Color.black);
         }
     }
 
@@ -509,6 +531,11 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanButtons = new javax.swing.JPanel();
         jbutCancel = new javax.swing.JButton();
         jbutOK = new javax.swing.JButton();
+        jPanDevice = new javax.swing.JPanel();
+        jLabelDevice1 = new javax.swing.JLabel();
+        jLabelDevice2 = new javax.swing.JLabel();
+        jLabelArduino1 = new javax.swing.JLabel();
+        jLabelArduino2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -955,6 +982,40 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         getContentPane().add(jPanButtons, java.awt.BorderLayout.SOUTH);
 
+        jPanDevice.setBackground(new java.awt.Color(255, 255, 255));
+        jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Endgerät", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
+        jPanDevice.setLayout(new java.awt.GridBagLayout());
+
+        jLabelDevice1.setText("Verbundener Prüfstand:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanDevice.add(jLabelDevice1, gridBagConstraints);
+
+        jLabelDevice2.setText("jLabel1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        jPanDevice.add(jLabelDevice2, gridBagConstraints);
+
+        jLabelArduino1.setText("Prüfstand-Firmware-Version:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanDevice.add(jLabelArduino1, gridBagConstraints);
+
+        jLabelArduino2.setText("jLabel2");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        jPanDevice.add(jLabelArduino2, gridBagConstraints);
+
+        getContentPane().add(jPanDevice, java.awt.BorderLayout.NORTH);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -988,9 +1049,9 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jrbKMHActionPerformed
 
     private void jrbMPHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMPHActionPerformed
-        jLabelIdleKmh2.setText("mph");
-        jLabelStartKmh2.setText("mph");
-        jLabelHysteresisKmh2.setText("mph");
+        jLabelIdleKmh2.setText("mi/h");
+        jLabelStartKmh2.setText("mi/h");
+        jLabelHysteresisKmh2.setText("mi/h");
     }//GEN-LAST:event_jrbMPHActionPerformed
 
     /**
@@ -1041,6 +1102,10 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabelArduino1;
+    private javax.swing.JLabel jLabelArduino2;
+    private javax.swing.JLabel jLabelDevice1;
+    private javax.swing.JLabel jLabelDevice2;
     private javax.swing.JLabel jLabelHysteresisKmh;
     private javax.swing.JLabel jLabelHysteresisKmh2;
     private javax.swing.JLabel jLabelHysteresisRpm;
@@ -1066,6 +1131,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanAppearance;
     private javax.swing.JPanel jPanButtons;
     private javax.swing.JPanel jPanCorr;
+    private javax.swing.JPanel jPanDevice;
     private javax.swing.JPanel jPanEast;
     private javax.swing.JPanel jPanMain;
     private javax.swing.JPanel jPanPNG;

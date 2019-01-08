@@ -9,6 +9,7 @@ import development.gui.MeasurementValuesPane;
 import gui.AboutDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
+import gui.ResultDialog;
 import gui.SettingsDialog;
 import gui.VehicleSetDialog;
 import java.awt.Color;
@@ -71,6 +72,7 @@ public class BESDyno extends javax.swing.JFrame {
     private SettingsDialog settings = new SettingsDialog(this, true);
     private DevInfoPane infoPane = new DevInfoPane(this, false);
     private LoggedCommPane commPane = new LoggedCommPane(this, false);
+    private ResultDialog result = new ResultDialog(this, true);
 
     //Object-Variables
     private File file;
@@ -135,7 +137,7 @@ public class BESDyno extends javax.swing.JFrame {
     private void refreshGui() {
         devMode = jcbmiDevMode.getState();
         LOG.setDebugMode(jcbmiDebugLogging.getState());
-
+        
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
@@ -145,7 +147,6 @@ public class BESDyno extends javax.swing.JFrame {
         jmiDisconnect.setEnabled(false);
         jbutDisconnect.setEnabled(false);
         jcbSerialDevices.setEnabled(false);
-        jcbmiDarkMode.setState(false);
         jmiRefresh.setEnabled(false);
         jbutRefresh.setEnabled(false);
 
@@ -554,6 +555,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         if (configFile.exists()) {
             Config.getInstance().readJson(new FileInputStream(configFile));
+            jcbmiDarkMode.setState(Config.getInstance().isDark());
         }
     }
 
@@ -1201,6 +1203,11 @@ public class BESDyno extends javax.swing.JFrame {
         }
         settings.setSwingValues(Config.getInstance());
         settings.setAppearance(Config.getInstance().isDark());
+        if (port != null) {
+            settings.writeDevice(port.getPortName());
+        } else {
+            settings.writeDevice("Kein Prüfstand verbunden...");
+        }
         settings.setVisible(true);
 
         if (settings.isPressedOK()) {
@@ -1224,6 +1231,11 @@ public class BESDyno extends javax.swing.JFrame {
             if (vehicle.isPressedOK()) {
                 measure.setAppearance(Config.getInstance().isDark());
                 measure.setVisible(true);
+                if (measure.isFinished()) {
+                    result.setAppearance(Config.getInstance().isDark());
+                    result.setValues();
+                    result.setVisible(true);
+                }
             }
         } else {
             userLogPane("Fehler beim Starten: Es wurde noch keine Verbindung aufgebaut...", LogLevel.SEVERE);

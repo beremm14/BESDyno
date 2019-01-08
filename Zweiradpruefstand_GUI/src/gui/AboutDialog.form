@@ -369,8 +369,8 @@
               </Properties>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                <Property name="columns" type="int" value="0"/>
-                <Property name="rows" type="int" value="1"/>
+                <Property name="columns" type="int" value="2"/>
+                <Property name="rows" type="int" value="2"/>
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabelDeviceT">
@@ -380,6 +380,17 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabelDevice">
+                  <Properties>
+                    <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="text" type="java.lang.String" value="Kein Pr&#xfc;fstand verbunden..."/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabelArduinoT">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Pr&#xfc;fstand-Firmware-Software:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabelArduino">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="text" type="java.lang.String" value="Kein Pr&#xfc;fstand verbunden..."/>
