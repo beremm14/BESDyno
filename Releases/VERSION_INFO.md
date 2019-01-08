@@ -5,6 +5,7 @@
 ## C++ Arduino Software
   Version **1.4** or higher required, newest recommended!  
 
+  * **v1.5**: Supports: Working-LEDs
   * **v1.4**: Supports: Version-Checkt for Java-Software
 
   **Don't use:**  
