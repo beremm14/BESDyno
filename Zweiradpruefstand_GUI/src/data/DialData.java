@@ -30,7 +30,7 @@ public class DialData {
             case KMH:
                 this.wheelVelo = calc.calcKmh(dp);
                 break;
-            case MPH:
+            case MIH:
                 this.wheelVelo = calc.calcMph(dp);
                 break;
         }

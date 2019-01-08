@@ -5,7 +5,6 @@ import data.Database;
 import data.Config;
 import data.Datapoint;
 import data.DialData;
-import javax.swing.JOptionPane;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;
@@ -15,7 +14,7 @@ import main.BESDyno.MyTelegram;
  *
  * @author emil
  */
-public class MeasurementWorker extends SwingWorker<Double, DialData> {
+public class MeasurementWorker extends SwingWorker<Object, DialData> {
     
     /****************************************************************
      *  Ablauf des Messvorgangs:                                    *
@@ -48,50 +47,51 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
         SHIFT_UP, WAIT, READY, MEASURE, FINISH
     };
 
-    public MeasurementWorker() {
-        if (bike.isAutomatic()) {
+    @Override
+    protected Object doInBackground() {
+        if(bike.isAutomatic()) {
             status = Status.WAIT;
         } else {
             status = Status.SHIFT_UP;
         }
-    }
-    
-
-    @Override
-    protected Double doInBackground() {
+        
         LOG.info("Measurement started...");
-        try {
-            switch (status) {
+        while(!isCancelled()) {
+             try {
+                switch (status) {
 
-                case SHIFT_UP:
-                    LOG.info("STATE: SHIFT_UP");
-                    status = manageShiftUp();
-                    break;
+                    case SHIFT_UP:
+                        LOG.info("STATE: SHIFT_UP");
+                        status = manageShiftUp();
+                        break;
                     
-                case WAIT:
-                    LOG.info("STATE: WAIT");
-                    status = manageWait((int) config.getHysteresisTime()/config.getPeriod());
-                    break;
+                    case WAIT:
+                        LOG.info("STATE: WAIT");
+                        status = manageWait((int) config.getHysteresisTime()/config.getPeriod());
+                        break;
                     
-                case READY:
-                    LOG.info("STATE: READY");
-                    status = manageReady();
-                    break;
+                    case READY:
+                        LOG.info("STATE: READY");
+                        status = manageReady();
+                        break;
                     
-                case MEASURE:
-                    LOG.info("STATE: MEASURE");
-                    status = manageMeasure();
-                    break;
+                    case MEASURE:
+                        LOG.info("STATE: MEASURE");
+                        status = manageMeasure();
+                        break;
 
-                case FINISH:
-                    LOG.info("Measurement finished");
-                    return manageFinish();
+                    case FINISH:
+                        LOG.info("Measurement finished");
+                        manageFinish();
+                        
+                        return null;
 
-                    default:
-                        throw new Exception("No Status...");
+                        default:
+                            throw new Exception("No Status...");
                 }
-        } catch (Exception ex) {
-            LOG.severe(ex);
+            } catch (Exception ex) {
+                LOG.severe(ex);
+            }
         }
         return null;
     }
@@ -185,8 +185,8 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
     }
     
     //Calculates Power -> end of measurement
-    private double manageFinish() {
-        return calc.calcPower();
+    private void manageFinish() {
+        calc.calcPower();
     }
     
     
@@ -211,7 +211,7 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
                 case KMH:
                     data.addVel(calc.calcKmh(dp));
                     break;
-                case MPH:
+                case MIH:
                     data.addVel(calc.calcMph(dp));
                     break;
                 default:
@@ -240,7 +240,7 @@ public class MeasurementWorker extends SwingWorker<Double, DialData> {
                 case KMH:
                     data.addVel(calc.calcKmh(dp));
                     break;
-                case MPH:
+                case MIH:
                     data.addVel(calc.calcMph(dp));
                     break;
                 default:

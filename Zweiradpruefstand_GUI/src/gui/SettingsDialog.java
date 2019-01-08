@@ -205,7 +205,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         } else if (jrbMPS.isSelected()) {
             c.setVelocity(Config.Velocity.MPS);
         } else if (jrbMPH.isSelected()) {
-            c.setVelocity(Config.Velocity.MPH);
+            c.setVelocity(Config.Velocity.MIH);
         } else {
             c.setVelocity(Config.Velocity.KMH);
         }
@@ -371,13 +371,13 @@ public class SettingsDialog extends javax.swing.JDialog {
                 jLabelStartKmh2.setText("Km/h");
                 jLabelHysteresisKmh2.setText("Km/h");
                 break;
-            case MPH:
+            case MIH:
                 jrbMPS.setSelected(false);
                 jrbMPH.setSelected(true);
                 jrbKMH.setSelected(false);
-                jLabelIdleKmh2.setText("mph");
-                jLabelStartKmh2.setText("mph");
-                jLabelHysteresisKmh2.setText("mph");
+                jLabelIdleKmh2.setText("mi/h");
+                jLabelStartKmh2.setText("mi/h");
+                jLabelHysteresisKmh2.setText("mi/h");
                 break;
         }
     }
@@ -548,7 +548,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanVelocity.add(jrbKMH, gridBagConstraints);
 
         jbgVelocity.add(jrbMPH);
-        jrbMPH.setText("Meilen/Stunde (mph)");
+        jrbMPH.setText("Meilen/Stunde (mi/h)");
         jrbMPH.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jrbMPHActionPerformed(evt);

@@ -118,7 +118,7 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="jbgVelocity"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Meilen/Stunde (mph)"/>
+                    <Property name="text" type="java.lang.String" value="Meilen/Stunde (mi/h)"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jrbMPHActionPerformed"/>

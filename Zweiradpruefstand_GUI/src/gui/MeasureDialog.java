@@ -1,12 +1,15 @@
 package gui;
 
 import data.Bike;
+import data.Config;
 import data.DialData;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.List;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import main.BESDyno;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
 
@@ -16,6 +19,10 @@ import measure.MeasurementWorker.Status;
  */
 public class MeasureDialog extends javax.swing.JDialog {
     
+    private ResultDialog result = new ResultDialog(BESDyno.getInstance(), true);
+    
+    private boolean finished;
+    
 //    private final DefaultValueDataset kmh = new DefaultValueDataset(0);
 //    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
@@ -23,6 +30,7 @@ public class MeasureDialog extends javax.swing.JDialog {
     /**
      * Creates new form MeasureDialog
      */
+    
     public MeasureDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -78,6 +86,10 @@ public class MeasureDialog extends javax.swing.JDialog {
             jLabelStatus.setForeground(Color.black);
             jLabelStatusT.setForeground(Color.black);
         }
+    }
+    
+    public boolean isFinished() {
+        return finished;
     }
     
     //Creates Dial from Data
@@ -213,23 +225,34 @@ public class MeasureDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbutFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutFinishActionPerformed
-        
+        finished = true;
+        dispose();
     }//GEN-LAST:event_jbutFinishActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
-        
+        int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (answ == JOptionPane.YES_OPTION) {
+                worker.cancel(true);
+                finished = false;
+                dispose();
+            }
     }//GEN-LAST:event_jbutCancelActionPerformed
 
     
     private class MyMeasurementWorker extends MeasurementWorker {
-
+        
         @Override
         protected void done() {
+            result.setAppearance(Config.getInstance().isDark());
+            result.setValues();
+            result.setVisible(true);
         }
 
         @Override
         protected void process(List<DialData> chunks) {
-            
+            for (DialData dd : chunks) {
+                
+            }
         }
         
     }

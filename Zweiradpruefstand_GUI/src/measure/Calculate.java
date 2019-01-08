@@ -12,6 +12,7 @@ import data.RawDatapoint;
  */
 public class Calculate {
 
+    private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
     private final Database data = new Database();
 
@@ -50,8 +51,8 @@ public class Calculate {
     }
 
     //Calculates All
-    public double calcPower() {
-        
+    public void calcPower() {
+
         //Engine
         for (int i = 0; i < data.getEngRpmList().size(); i++) {
             double dOmega = 2 * Math.PI * (data.getEngRpmList().get(i) / 60);
@@ -87,14 +88,51 @@ public class Calculate {
         }
 
         //MAX-Power
-        double power = data.getEngPowerList().get(0);
-        for (Double p : data.getEngPowerList()) {
-            if (p > power) {
-                power = p;
+        if (bike.isMeasRpm()) {
+            double power = data.getEngPowerList().get(0);
+            for (Double p : data.getEngPowerList()) {
+                if (p > power) {
+                    power = p;
+                }
+            }
+            data.setBikePower(power);
+        } else {
+            double power = data.getWheelPowerList().get(0);
+            for (Double p : data.getWheelPowerList()) {
+                if (p > power) {
+                    power = p;
+                }
+            }
+            data.setBikePower(power);
+        }
+
+        //MAX-Velocity
+        double velo = data.getVelList().get(0);
+        for (Double v : data.getVelList()) {
+            if (v > velo) {
+                velo = v;
             }
         }
-        data.setBikePower(power);
-        return power;
+        data.setBikeVelo(velo);
+
+        //MAX-Torque
+        if (bike.isMeasRpm()) {
+            double torque = data.getEngTorList().get(0);
+            for (Double m : data.getEngTorList()) {
+                if (m > torque) {
+                    torque = m;
+                }
+            }
+            data.setBikeTorque(torque);
+        } else {
+            double torque = data.getWheelTorList().get(0);
+            for (Double m : data.getWheelTorList()) {
+                if (m > torque) {
+                    torque = m;
+                }
+            }
+            data.setBikeTorque(torque);
+        }
     }
 
 }

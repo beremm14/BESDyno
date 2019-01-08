@@ -53,7 +53,7 @@ public class Config {
     private Velocity velocity;
     
     public enum Velocity {
-        MPS, KMH, MPH
+        MPS, KMH, MIH
     };
 
     public static Config getInstance() {
@@ -215,7 +215,7 @@ public class Config {
         switch(velocity) {
             case MPS: return 0;
             case KMH: return 1;
-            case MPH: return 2;
+            case MIH: return 2;
             default: throw new RuntimeException("Error at writing out type of velocity...");
         }
     }
@@ -224,7 +224,7 @@ public class Config {
         switch(velocity) {
             case 0: return Velocity.MPS;
             case 1: return Velocity.KMH;
-            case 2: return Velocity.MPH;
+            case 2: return Velocity.MIH;
             default: throw new RuntimeException("Error at reading in type of velocity...");
         }
     }

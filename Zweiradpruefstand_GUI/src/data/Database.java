@@ -50,8 +50,10 @@ public class Database {
     //Uncalculated List
     private final List<RawDatapoint> rawList = new ArrayList<>();
 
-    //"Absolute" Power
+    //MAX-Values
     private double bikePower;
+    private double bikeVelo;
+    private double bikeTorque;
     
     //Sync-Object
     public final Object syncObj;
@@ -100,6 +102,14 @@ public class Database {
     public double getBikePower() {
         return bikePower;
     }
+    
+    public double getBikeVelo() {
+        return bikeVelo;
+    }
+    
+    public double getBikeTorque() {
+        return bikeTorque;
+    }
 
     //Getter
     public Object getSyncObj() {    
@@ -110,7 +120,15 @@ public class Database {
     public void setBikePower(double bikePower) {
         this.bikePower = bikePower;
     }
-    
+
+    public void setBikeVelo(double bikeVelo) {
+        this.bikeVelo = bikeVelo;
+    }
+
+    public void setBikeTorque(double bikeTorque) {
+        this.bikeTorque = bikeTorque;
+    }
+
     //LinkedList-Methods
     public boolean addEP(Double p) {
         return engPowerList.add(p);
