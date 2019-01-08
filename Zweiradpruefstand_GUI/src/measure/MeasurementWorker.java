@@ -5,6 +5,7 @@ import data.Database;
 import data.Config;
 import data.Datapoint;
 import data.DialData;
+import javax.swing.JOptionPane;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;
@@ -14,7 +15,7 @@ import main.BESDyno.MyTelegram;
  *
  * @author emil
  */
-public class MeasurementWorker extends SwingWorker<Object, DialData> {
+public class MeasurementWorker extends SwingWorker<Double, DialData> {
     
     /****************************************************************
      *  Ablauf des Messvorgangs:                                    *
@@ -44,39 +45,36 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status status;
 
     public static enum Status {
-        SHIFT_UP, WAIT, READY, MEASURE, FINISH, FINISHED
+        SHIFT_UP, WAIT, READY, MEASURE, FINISH
     };
 
     @Override
-    protected Object doInBackground() {
+    protected Double doInBackground() {
         try {
-            while (!isCancelled()) {
-                switch (status) {
+            switch (status) {
 
-                    case SHIFT_UP:
-                        status = manageShiftUp();
-                        break;
-                        
-                    case WAIT:
-                        status = manageWait((int) config.getHysteresisTime()/config.getPeriod());
-                        break;
+                case SHIFT_UP:
+                    status = manageShiftUp();
+                    break;
+                    
+                case WAIT:
+                    status = manageWait((int) config.getHysteresisTime()/config.getPeriod());
+                    break;
+                    
+                case READY:
+                    status = manageReady();
+                    break;
+                    
+                case MEASURE:
+                    status = manageMeasure();
+                    break;
 
-                    case READY:
-                        break;
-
-                    case MEASURE:
-                        break;
-
-                    case FINISH:
-                        break;
-                        
-                    case FINISHED:
-                        return null;
+                case FINISH:
+                    return manageFinish();
 
                     default:
                         throw new Exception("No Status...");
                 }
-            }
         } catch (Exception ex) {
             LOG.severe(ex);
         }
@@ -172,9 +170,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     }
     
     //Calculates Power -> end of measurement
-    private Status manageFinish() {
-        
-        return Status.FINISHED;
+    private double manageFinish() {
+        return calc.calcPower();
     }
     
     

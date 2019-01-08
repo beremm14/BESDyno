@@ -56,7 +56,7 @@ public class Database {
     //Sync-Object
     public final Object syncObj;
 
-    private Database() {
+    public Database() {
         syncObj = new Object();
     }
     
@@ -110,17 +110,7 @@ public class Database {
     public void setBikePower(double bikePower) {
         this.bikePower = bikePower;
     }
-
-    public void setBikePower() {
-        double power = engPowerList.get(0);
-        for (int i = 0; i < engPowerList.size(); i++) {
-            if (engPowerList.get(i) > power) {
-                power = engPowerList.get(i);
-            }
-        }
-        this.bikePower = power;
-    }
-
+    
     //LinkedList-Methods
     public boolean addEP(Double p) {
         return engPowerList.add(p);
