@@ -13,25 +13,6 @@ import java.util.List;
  */
 public class Calculate {
 
-
-    //Calculates All
-    public void calcRpm(List<RawDatapoint> rawList) {
-
-        int totalImpulse = 20; //???
-        int wheelRpm;
-        int engRpm;
-
-        for (int i = 0; i < rawList.size(); i++) {
-            wheelRpm = (rawList.get(i).getWheelCount() / rawList.get(i).getTime() * totalImpulse);
-            if (Bike.getInstance().isTwoStroke()) {
-                engRpm = rawList.get(i).getEngCount() / rawList.get(i).getTime();
-            } else {
-                engRpm = (rawList.get(i).getEngCount() * 2) / rawList.get(i).getTime();
-            }
-            Bike.getInstance().add(new Datapoint(engRpm, wheelRpm, rawList.get(i).getTime()));
-        }
-    }
-
     //Calculates One Point
     public Datapoint calcRpm(RawDatapoint rdp) {
         int totalImpulse = 20; //???
@@ -71,39 +52,39 @@ public class Calculate {
     
     //Calculates All
     public void calcPower() {
-        boolean ps = Config.getInstance().isPs();
-
-        //Wheel-Power
-        for (int i = 0; i < Bike.getInstance().getDatalist().size(); i++) {
-            double dOmega = 2 * Math.PI * Bike.getInstance().getDatalist().get(i).getWheelRpm();
-            double alpha = dOmega / (Bike.getInstance().getDatalist().get(i).getTime() / 1000);
-            double torque = Config.getInstance().getInertia() * alpha;
-            double currPower = torque * dOmega;
-
-            if (ps) {
-                currPower = currPower * 1.359621617 / 1000;
-            } else {
-                currPower = currPower / 1000;
-            }
-
-            Database.getInstance().addWP(currPower);
-        }
-
-        //Engine-Power
-        for (int i = 0; i < Bike.getInstance().getDatalist().size(); i++) {
-            double dOmega = 2 * Math.PI * Bike.getInstance().getDatalist().get(i).getEngRpm();
-            double alpha = dOmega / (Bike.getInstance().getDatalist().get(i).getTime() / 1000);
-            double torque = Config.getInstance().getInertia() * alpha;
-            double currPower = torque * dOmega;
-
-            if (ps) {
-                currPower = currPower * 1.359621617 / 1000;
-            } else {
-                currPower = currPower / 1000;
-            }
-
-            Database.getInstance().addEP(currPower);
-        }
+//        boolean ps = Config.getInstance().isPs();
+//
+//        //Wheel-Power
+//        for (int i = 0; i < Bike.getInstance().getDatalist().size(); i++) {
+//            double dOmega = 2 * Math.PI * Bike.getInstance().getDatalist().get(i).getWheelRpm();
+//            double alpha = dOmega / (Bike.getInstance().getDatalist().get(i).getTime() / 1000);
+//            double torque = Config.getInstance().getInertia() * alpha;
+//            double currPower = torque * dOmega;
+//
+//            if (ps) {
+//                currPower = currPower * 1.359621617 / 1000;
+//            } else {
+//                currPower = currPower / 1000;
+//            }
+//
+//            Database.getInstance().addWP(currPower);
+//        }
+//
+//        //Engine-Power
+//        for (int i = 0; i < Bike.getInstance().getDatalist().size(); i++) {
+//            double dOmega = 2 * Math.PI * Bike.getInstance().getDatalist().get(i).getEngRpm();
+//            double alpha = dOmega / (Bike.getInstance().getDatalist().get(i).getTime() / 1000);
+//            double torque = Config.getInstance().getInertia() * alpha;
+//            double currPower = torque * dOmega;
+//
+//            if (ps) {
+//                currPower = currPower * 1.359621617 / 1000;
+//            } else {
+//                currPower = currPower / 1000;
+//            }
+//
+//            Database.getInstance().addEP(currPower);
+//        }
 
         //Max-Engine-Power
         Database.getInstance().setBikePower();

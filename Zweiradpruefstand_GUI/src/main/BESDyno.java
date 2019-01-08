@@ -364,47 +364,47 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     //File-Methods
-    private void save() throws IOException, Exception {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-
-        File home;
-        File folder;
-
-        try {
-            home = new File(System.getProperty("user.home"));
-        } catch (Exception e) {
-            home = null;
-        }
-
-        if (home != null && home.exists()) {
-            folder = new File(home + File.separator + "Bike-Files");
-            if (!folder.exists()) {
-                if (!folder.mkdir()) {
-                    throw new Exception("Internal Error");
-                }
-            }
-            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
-        } else {
-            file = new File(Bike.getInstance().getVehicleName() + ".bes");
-        }
-        chooser.setSelectedFile(file);
-
-        int rv = chooser.showSaveDialog(this);
-        if (rv == JFileChooser.APPROVE_OPTION) {
-            file = chooser.getSelectedFile();
-            if (!file.getName().contains(".bes")) {
-                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
-            }
-
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                Bike.getInstance().writeFile(w);
-            } catch (Exception ex) {
-                LOG.severe(ex);
-            }
-        }
-
-    }
+//    private void save() throws IOException, Exception {
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
+//
+//        File home;
+//        File folder;
+//
+//        try {
+//            home = new File(System.getProperty("user.home"));
+//        } catch (Exception e) {
+//            home = null;
+//        }
+//
+//        if (home != null && home.exists()) {
+//            folder = new File(home + File.separator + "Bike-Files");
+//            if (!folder.exists()) {
+//                if (!folder.mkdir()) {
+//                    throw new Exception("Internal Error");
+//                }
+//            }
+//            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
+//        } else {
+//            file = new File(Bike.getInstance().getVehicleName() + ".bes");
+//        }
+//        chooser.setSelectedFile(file);
+//
+//        int rv = chooser.showSaveDialog(this);
+//        if (rv == JFileChooser.APPROVE_OPTION) {
+//            file = chooser.getSelectedFile();
+//            if (!file.getName().contains(".bes")) {
+//                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
+//            }
+//
+//            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+//                Bike.getInstance().writeFile(w);
+//            } catch (Exception ex) {
+//                LOG.severe(ex);
+//            }
+//        }
+//
+//    }
 
     // Saves the Communication Log
     public void saveComm() throws Exception {
@@ -485,45 +485,45 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    private void open() throws FileNotFoundException, IOException, Exception {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-
-        File home;
-        File folder;
-
-        try {
-            home = new File(System.getProperty("user.home"));
-        } catch (Exception e) {
-            home = null;
-        }
-
-        if (home != null && home.exists()) {
-            folder = new File(home + File.separator + "Bike-Files");
-            if (!folder.exists()) {
-                if (!folder.mkdir()) {
-                    LOG.severe("Internal Error");
-                }
-            }
-            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
-        } else {
-            file = new File(Bike.getInstance().getVehicleName() + ".bes");
-        }
-        chooser.setSelectedFile(file);
-
-        int rv = chooser.showOpenDialog(this);
-        if (rv == JFileChooser.APPROVE_OPTION) {
-            file = chooser.getSelectedFile();
-            if (!file.getName().contains(".bes")) {
-                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
-            }
-            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-                Bike.getInstance().readFile(r);
-            } catch (Exception ex) {
-                userLog(ex, "Fehler beim Einlesen der Datei", LogLevel.WARNING);
-            }
-        }
-    }
+//    private void open() throws FileNotFoundException, IOException, Exception {
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
+//
+//        File home;
+//        File folder;
+//
+//        try {
+//            home = new File(System.getProperty("user.home"));
+//        } catch (Exception e) {
+//            home = null;
+//        }
+//
+//        if (home != null && home.exists()) {
+//            folder = new File(home + File.separator + "Bike-Files");
+//            if (!folder.exists()) {
+//                if (!folder.mkdir()) {
+//                    LOG.severe("Internal Error");
+//                }
+//            }
+//            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
+//        } else {
+//            file = new File(Bike.getInstance().getVehicleName() + ".bes");
+//        }
+//        chooser.setSelectedFile(file);
+//
+//        int rv = chooser.showOpenDialog(this);
+//        if (rv == JFileChooser.APPROVE_OPTION) {
+//            file = chooser.getSelectedFile();
+//            if (!file.getName().contains(".bes")) {
+//                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
+//            }
+//            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+//                Bike.getInstance().readFile(r);
+//            } catch (Exception ex) {
+//                userLog(ex, "Fehler beim Einlesen der Datei", LogLevel.WARNING);
+//            }
+//        }
+//    }
 
     //Config
     private void loadConfig() throws FileNotFoundException, IOException, Exception {
@@ -1162,7 +1162,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void onSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSave
         try {
-            save();
+            //save();
             userLog("Datei erfolgreich gespeichert", LogLevel.FINE);
         } catch (Exception ex) {
             userLog(ex, "Fehler beim Speichern der Datei", LogLevel.WARNING);
@@ -1284,7 +1284,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void onOpen(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onOpen
         try {
-            open();
+            //open();
             userLog("Datei erfolgreich geöffnet", LogLevel.FINE);
         } catch (Exception ex) {
             userLog(ex, "Fehler beim Öffnen der Datei", LogLevel.WARNING);
