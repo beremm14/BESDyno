@@ -25,7 +25,8 @@ public class Bike {
     private boolean automatic;
 
     private boolean measRpm;
-    private boolean schleppEnable;
+    
+    private boolean startStopMethod;
 
     private final Date date = Calendar.getInstance().getTime();
     private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
@@ -57,9 +58,9 @@ public class Bike {
     public boolean isMeasRpm() {
         return measRpm;
     }
-
-    public boolean isSchleppEnable() {
-        return schleppEnable;
+    
+    public boolean isStartStopMethod() {
+        return startStopMethod;
     }
 
     //Setter
@@ -78,9 +79,9 @@ public class Bike {
     public void setMeasRpm(boolean measRpm) {
         this.measRpm = measRpm;
     }
-
-    public void setSchleppEnable(boolean schleppEnable) {
-        this.schleppEnable = schleppEnable;
+    
+    public void setStartStopMethode(boolean startStopMethod) {
+        this.startStopMethod = startStopMethod;
     }
 
 }

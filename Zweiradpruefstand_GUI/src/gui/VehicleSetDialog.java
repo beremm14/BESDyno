@@ -83,6 +83,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         Bike.getInstance().setMeasRpm(jcbEnableRPM.isSelected());
         Bike.getInstance().setTwoStroke(jrb2Stroke.isSelected());
         Bike.getInstance().setAutomatic(jrbAutomatic.isSelected());
+        Bike.getInstance().setStartStopMethode(jrbStartStop.isSelected());
 
         if (jtfVehicleName.getText().length() > 25) {
             error = true;
@@ -126,9 +127,13 @@ public class VehicleSetDialog extends javax.swing.JDialog {
 
         bgStroke = new javax.swing.ButtonGroup();
         bgTransmission = new javax.swing.ButtonGroup();
+        bgMethod = new javax.swing.ButtonGroup();
         jPanMain = new javax.swing.JPanel();
         jPanName = new javax.swing.JPanel();
         jtfVehicleName = new javax.swing.JTextField();
+        jPanMethod = new javax.swing.JPanel();
+        jrbStartStop = new javax.swing.JRadioButton();
+        jrbStop = new javax.swing.JRadioButton();
         jPanRPM = new javax.swing.JPanel();
         jcbEnableRPM = new javax.swing.JCheckBox();
         jPanStroke = new javax.swing.JPanel();
@@ -169,10 +174,37 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
         jPanMain.add(jPanName, gridBagConstraints);
 
+        jPanMethod.setBackground(new java.awt.Color(255, 255, 255));
+        jPanMethod.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Messmethode", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
+        jPanMethod.setLayout(new java.awt.GridBagLayout());
+
+        bgMethod.add(jrbStartStop);
+        jrbStartStop.setSelected(true);
+        jrbStartStop.setText("Start-Stop (mit Enddrehzahl)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanMethod.add(jrbStartStop, gridBagConstraints);
+
+        bgMethod.add(jrbStop);
+        jrbStop.setText("Drop-RPM (ohne Enddrehzahl)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanMethod.add(jrbStop, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanMain.add(jPanMethod, gridBagConstraints);
+
         jPanRPM.setBackground(new java.awt.Color(255, 255, 255));
         jPanRPM.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Messung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
         jPanRPM.setLayout(new java.awt.GridBagLayout());
 
+        jcbEnableRPM.setSelected(true);
         jcbEnableRPM.setText("Motordrehzahl messen");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -209,7 +241,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 1;
         gridBagConstraints.weightx = 1.0;
@@ -235,7 +267,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 1;
         gridBagConstraints.weightx = 1.0;
@@ -328,11 +360,13 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgMethod;
     private javax.swing.ButtonGroup bgStroke;
     private javax.swing.ButtonGroup bgTransmission;
     private javax.swing.JPanel jPanButtons;
     private javax.swing.JPanel jPanControls;
     private javax.swing.JPanel jPanMain;
+    private javax.swing.JPanel jPanMethod;
     private javax.swing.JPanel jPanName;
     private javax.swing.JPanel jPanRPM;
     private javax.swing.JPanel jPanStroke;
@@ -344,6 +378,8 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton jrb4Stroke;
     private javax.swing.JRadioButton jrbAutomatic;
     private javax.swing.JRadioButton jrbManual;
+    private javax.swing.JRadioButton jrbStartStop;
+    private javax.swing.JRadioButton jrbStop;
     private javax.swing.JTextField jtfVehicleName;
     // End of variables declaration//GEN-END:variables
 }

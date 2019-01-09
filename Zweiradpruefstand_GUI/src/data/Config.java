@@ -43,10 +43,12 @@ public class Config {
     private int idleVelo;
     private int hysteresisVelo;
     private int startVelo;
+    private int stopVelo;
 
     private int idleRpm;
     private int hysteresisRpm;
     private int startRpm;
+    private int stopRpm;
     
     private double arduinoVersion = 0;
     
@@ -142,6 +144,14 @@ public class Config {
         return velocity;
     }
 
+    public int getStopVelo() {
+        return stopVelo;
+    }
+
+    public int getStopRpm() {
+        return stopRpm;
+    }
+
     //Setter
     public void setPs(boolean ps) {
         this.ps = ps;
@@ -210,13 +220,35 @@ public class Config {
     public void setVelocity(Velocity velocity) {
         this.velocity = velocity;
     }
+
+    public void setIdleVelo(int idleVelo) {
+        this.idleVelo = idleVelo;
+    }
+
+    public void setHysteresisVelo(int hysteresisVelo) {
+        this.hysteresisVelo = hysteresisVelo;
+    }
+
+    public void setStartVelo(int startVelo) {
+        this.startVelo = startVelo;
+    }
+
+    public void setStopVelo(int stopVelo) {
+        this.stopVelo = stopVelo;
+    }
+
+    public void setStopRpm(int stopRpm) {
+        this.stopRpm = stopRpm;
+    }
+    
+    
     
     public int writeVelocity() {
         switch(velocity) {
             case MPS: return 0;
             case KMH: return 1;
             case MIH: return 2;
-            default: throw new RuntimeException("Error at writing out type of velocity...");
+            default: throw new RuntimeException("Error at writing out unit of velocity...");
         }
     }
     
@@ -225,7 +257,7 @@ public class Config {
             case 0: return Velocity.MPS;
             case 1: return Velocity.KMH;
             case 2: return Velocity.MIH;
-            default: throw new RuntimeException("Error at reading in type of velocity...");
+            default: throw new RuntimeException("Error at reading in unit of velocity...");
         }
     }
     
@@ -248,6 +280,8 @@ public class Config {
                 .add("PS", ps)
                 .add("Start Velo", startVelo)
                 .add("Start Rpm", startRpm)
+                .add("Stop Velo", stopVelo)
+                .add("Stop Rpm", stopRpm)
                 .add("Torque Correction Factor", torqueCorr)
                 .add("Velocity", writeVelocity());
 
@@ -277,6 +311,8 @@ public class Config {
         ps = json.getBoolean("PS");
         startVelo = json.getInt("Start Velo");
         startRpm = json.getInt("Start Rpm");
+        stopVelo = json.getInt("Stop Velo");
+        stopRpm = json.getInt("Stop Rpm");
         torqueCorr = json.getInt("Torque Correction Factor");
         velocity = readVelocity(json.getInt("Velocity"));
     }

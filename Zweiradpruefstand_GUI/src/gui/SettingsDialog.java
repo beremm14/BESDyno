@@ -36,7 +36,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         } catch (Exception ex) {
             LOG.warning(ex);
         }
-        setSize(new Dimension(750, 430));
+        setSize(new Dimension(750, 470));
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
@@ -78,6 +78,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setBackground(Color.darkGray);
             jtfStartRpm.setBackground(Color.darkGray);
             jtfTorque.setBackground(Color.darkGray);
+            jtfStopKmh.setBackground(Color.darkGray);
+            jtfStopRpm.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setForeground(Color.white);
             jtfHysteresisRpm.setForeground(Color.white);
@@ -92,6 +94,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setForeground(Color.white);
             jtfStartRpm.setForeground(Color.white);
             jtfTorque.setForeground(Color.white);
+            jtfStopKmh.setForeground(Color.white);
+            jtfStopRpm.setForeground(Color.white);
 
             jrbDaymode.setForeground(Color.white);
             jrbNightmode.setForeground(Color.white);
@@ -127,6 +131,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelDevice2.setForeground(Color.white);
             jLabelArduino1.setForeground(Color.white);
             jLabelArduino2.setForeground(Color.white);
+            jLabelStopKmh.setForeground(Color.white);
+            jLabelStopKmh2.setForeground(Color.white);
+            jLabelStopRpm.setForeground(Color.white);
+            jLabelStopRpm2.setForeground(Color.white);
         } else {
             jPanAppearance.setBackground(Color.white);
             jPanButtons.setBackground(Color.white);
@@ -156,6 +164,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setBackground(Color.white);
             jtfStartRpm.setBackground(Color.white);
             jtfTorque.setBackground(Color.white);
+            jtfStopKmh.setBackground(Color.white);
+            jtfStopRpm.setBackground(Color.white);
 
             jtfHysteresisKmh.setForeground(Color.black);
             jtfHysteresisRpm.setForeground(Color.black);
@@ -170,6 +180,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.setForeground(Color.black);
             jtfStartRpm.setForeground(Color.black);
             jtfTorque.setForeground(Color.black);
+            jtfStopKmh.setForeground(Color.black);
+            jtfStopRpm.setForeground(Color.black);
 
             jrbDaymode.setForeground(Color.black);
             jrbNightmode.setForeground(Color.black);
@@ -204,6 +216,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelDevice2.setForeground(Color.black);
             jLabelArduino1.setForeground(Color.black);
             jLabelArduino2.setForeground(Color.black);
+            jLabelStopKmh.setForeground(Color.black);
+            jLabelStopKmh2.setForeground(Color.black);
+            jLabelStopRpm.setForeground(Color.black);
+            jLabelStopRpm2.setForeground(Color.black);
         }
     }
 
@@ -313,7 +329,23 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStartKmh.requestFocusInWindow();
         }
         try {
+            c.setStopVelo(Integer.parseInt(jtfStopKmh.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfStartKmh.requestFocusInWindow();
+        }
+        try {
             c.setStartRpm(Integer.parseInt(jtfStartRpm.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfStartRpm.requestFocusInWindow();
+        }
+        try {
+            c.setStopRpm(Integer.parseInt(jtfStopRpm.getText()));
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
@@ -369,6 +401,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfPower.setText(String.format("%d", c.getPowerCorr()));
         jtfStartKmh.setText(String.format("%d", c.getStartVelo()));
         jtfStartRpm.setText(String.format("%d", c.getStartRpm()));
+        jtfStopKmh.setText(String.format("%d", c.getStopVelo()));
+        jtfStopRpm.setText(String.format("%d", c.getStopRpm()));
         jtfTorque.setText(String.format("%d", c.getTorqueCorr()));
 
         jrbDaymode.setSelected(!c.isDark());
@@ -384,6 +418,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 jLabelIdleKmh2.setText("m/s");
                 jLabelStartKmh2.setText("m/s");
                 jLabelHysteresisKmh2.setText("m/s");
+                jLabelStopKmh2.setText("m/s");
                 break;
             case KMH:
                 jrbMPS.setSelected(false);
@@ -392,6 +427,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 jLabelIdleKmh2.setText("Km/h");
                 jLabelStartKmh2.setText("Km/h");
                 jLabelHysteresisKmh2.setText("Km/h");
+                jLabelStopKmh2.setText("Km/h");
                 break;
             case MIH:
                 jrbMPS.setSelected(false);
@@ -400,6 +436,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 jLabelIdleKmh2.setText("mi/h");
                 jLabelStartKmh2.setText("mi/h");
                 jLabelHysteresisKmh2.setText("mi/h");
+                jLabelStopKmh2.setText("mi/h");
                 break;
         }
     }
@@ -528,6 +565,13 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfHysteresisRpm = new javax.swing.JTextField();
         jtfStartRpm = new javax.swing.JTextField();
         jtfIdleKmh = new javax.swing.JTextField();
+        jLabelStopRpm = new javax.swing.JLabel();
+        jLabelStopRpm2 = new javax.swing.JLabel();
+        jtfStopRpm = new javax.swing.JTextField();
+        jLabelStopKmh = new javax.swing.JLabel();
+        jtfStopKmh = new javax.swing.JTextField();
+        jLabelStopKmh2 = new javax.swing.JLabel();
+        jLabelHelp = new javax.swing.JLabel();
         jPanButtons = new javax.swing.JPanel();
         jbutCancel = new javax.swing.JButton();
         jbutOK = new javax.swing.JButton();
@@ -842,7 +886,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelIdlRpm.setText("Motordrehzahl wenn bereit");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
         jPanSerial.add(jLabelIdlRpm, gridBagConstraints);
@@ -850,7 +894,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelIdleRpm2.setText("U/min");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         jPanSerial.add(jLabelIdleRpm2, gridBagConstraints);
@@ -858,7 +902,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelHysteresisRpm.setText("Hysterese Motordrehzahl +/-");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
         jPanSerial.add(jLabelHysteresisRpm, gridBagConstraints);
@@ -866,15 +910,15 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelHysteresisRpm2.setText("U/min");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         jPanSerial.add(jLabelHysteresisRpm2, gridBagConstraints);
 
-        jLabelStartRpm.setText("Startmotordrehzahl");
+        jLabelStartRpm.setText("Start-Motordrehzahl");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
         jPanSerial.add(jLabelStartRpm, gridBagConstraints);
@@ -882,7 +926,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelStartRpm2.setText("U/min");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         jPanSerial.add(jLabelStartRpm2, gridBagConstraints);
@@ -916,21 +960,21 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanSerial.add(jtfStartKmh, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanSerial.add(jtfIdleRpm, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanSerial.add(jtfHysteresisRpm, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -943,11 +987,64 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.weighty = 1.0;
         jPanSerial.add(jtfIdleKmh, gridBagConstraints);
 
+        jLabelStopRpm.setText("Stop-Motordrehzahl");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
+        jPanSerial.add(jLabelStopRpm, gridBagConstraints);
+
+        jLabelStopRpm2.setText("U/min");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        jPanSerial.add(jLabelStopRpm2, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanSerial.add(jtfStopRpm, gridBagConstraints);
+
+        jLabelStopKmh.setText("Stoppgeschwindigkeit");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
+        jPanSerial.add(jLabelStopKmh, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanSerial.add(jtfStopKmh, gridBagConstraints);
+
+        jLabelStopKmh2.setText("Km/h");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        jPanSerial.add(jLabelStopKmh2, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanEast.add(jPanSerial, gridBagConstraints);
+
+        jLabelHelp.setFont(new java.awt.Font("Lucida Grande", 2, 11)); // NOI18N
+        jLabelHelp.setText("Hilfe beim Setzen der Parameter finden Sie im Help-Menü.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanEast.add(jLabelHelp, gridBagConstraints);
 
         jPanMain.add(jPanEast);
 
@@ -983,7 +1080,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         getContentPane().add(jPanButtons, java.awt.BorderLayout.SOUTH);
 
         jPanDevice.setBackground(new java.awt.Color(255, 255, 255));
-        jPanDevice.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Endgerät", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
+        jPanDevice.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20), javax.swing.BorderFactory.createTitledBorder(null, "Endgerät", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red))); // NOI18N
         jPanDevice.setLayout(new java.awt.GridBagLayout());
 
         jLabelDevice1.setText("Verbundener Prüfstand:");
@@ -1106,6 +1203,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelArduino2;
     private javax.swing.JLabel jLabelDevice1;
     private javax.swing.JLabel jLabelDevice2;
+    private javax.swing.JLabel jLabelHelp;
     private javax.swing.JLabel jLabelHysteresisKmh;
     private javax.swing.JLabel jLabelHysteresisKmh2;
     private javax.swing.JLabel jLabelHysteresisRpm;
@@ -1127,6 +1225,10 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelStartKmh2;
     private javax.swing.JLabel jLabelStartRpm;
     private javax.swing.JLabel jLabelStartRpm2;
+    private javax.swing.JLabel jLabelStopKmh;
+    private javax.swing.JLabel jLabelStopKmh2;
+    private javax.swing.JLabel jLabelStopRpm;
+    private javax.swing.JLabel jLabelStopRpm2;
     private javax.swing.JLabel jLabelTorque;
     private javax.swing.JPanel jPanAppearance;
     private javax.swing.JPanel jPanButtons;
@@ -1163,6 +1265,8 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jtfPower;
     private javax.swing.JTextField jtfStartKmh;
     private javax.swing.JTextField jtfStartRpm;
+    private javax.swing.JTextField jtfStopKmh;
+    private javax.swing.JTextField jtfStopRpm;
     private javax.swing.JTextField jtfTorque;
     // End of variables declaration//GEN-END:variables
 }
