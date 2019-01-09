@@ -63,6 +63,11 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   * Start-Motordrehazhl (startRPM)  
   * Stop-Motordrehzahl (stopRPM)  
   
+  Es gibt zwei Modi:
+  * **DROP-RPM**: Messen bis zur Höchstdrehzahl, Abfallen lassen und Messung bei Erreichen der Startdrehzahl stoppen  
+  * **Start-Stop**: Messen bis zu einer eingegeben Enddrehzahl  
+  *Die zweite Methode wurde eingeführt, weil es für Zweitaktmotoren problematisch sein kann die Drehzahl im letzten Gang so weit abfallen zu lassen.*  
+  
   Der Messvorgang besteht aus folgenden Zuständen:  
   
   | SHIFT_UP | WAIT | READY | MEASURE | FINISH |
@@ -75,7 +80,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   | READY | Bei **einmaligem** Erreichen (**≥**) von **startRPM** | Gas geben! | x | *beide* |
   | MEASURE | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Bei der Höchstdrehzahl abfallen lassen | MESSEN | **DROP-RPM** |
   | MEASURE | Bei **einmaligem** Erreichen (**≥**) von **stopRPM** | Nach eigenem Ermessen (schonend) runterschalten | MESSEN | **Start-Stop** |
-  | FINISH | Nach dem Ende der Berechnung -> Ende des Messvorgangs | Warten... | BERECHNEN |
+  | FINISH | Nach dem Ende der Berechnung -> Ende des Messvorgangs | Warten... | BERECHNEN | *beide* |
   
   *Anmerkungen*: Wenn die Motordrehzahl nicht gemessen wird, erfolgt das Switchen der States sowie das Einpendeln über die Geschwindigkeit der Walze. Wenn ein Zweirad mit Automatik-Getriebe gemessen wird, ist der erste State *SHIFT_UP* nicht notwendig und wird übersprungen.  
   
