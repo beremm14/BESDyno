@@ -57,21 +57,24 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   * Geschwindigkeit wenn bereit (idleVelocity)  
   * Hysterese Geschwindigkeit ± (hysteresisVelocity)  
   * Startgeschwindigkeit (startVelocity)  
+  * Stoppgeschwindigkeit (stopVelocity)  
   * Motordrehzahl wenn bereit (idleRPM)  
   * Hysterese Motordrehzahl ± (hysteresisRPM)  
-  * Startmotordrehazhl (startRPM)  
+  * Start-Motordrehazhl (startRPM)  
+  * Stop-Motordrehzahl (stopRPM)  
   
   Der Messvorgang besteht aus folgenden Zuständen:  
   
   | SHIFT_UP | WAIT | READY | MEASURE | FINISH |
   | -------- | ---- | ----- | ------- | ------ |
   
-  | Zustand | Wechsel wenn: | User-Eingabe | Programmmodus |
-  | ------- | ------------- | ------------ | ------------- |
-  | SHIFT_UP | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Hochschalten in den letzten Gang und Abfallen lassen bis zur Startgeschwindigkeit | x |
-  | WAIT | Wenn sich die Drehzahl innerhalb der Hysterese Zeitspanne bei **idleRPM ± hysteresisRPM** eingependelt hat | Warten... | x |
-  | READY | Bei **einmaligem** Erreichen (**≥**) von **startRPM** | Gas geben! | x |
-  | MEASURE | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Bei der Höchstdrehzahl abfallen lassen | MESSEN |
+  | Zustand | Wechsel wenn: | User-Eingabe | Programmmodus | Messmethodik |
+  | ------- | ------------- | ------------ | ------------- | ------------ |
+  | SHIFT_UP | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Hochschalten in den letzten Gang und Abfallen lassen bis zur Startgeschwindigkeit | x | *beide* |
+  | WAIT | Wenn sich die Drehzahl innerhalb der Hysterese Zeitspanne bei **idleRPM ± hysteresisRPM** eingependelt hat | Warten... | x | *beide* |
+  | READY | Bei **einmaligem** Erreichen (**≥**) von **startRPM** | Gas geben! | x | *beide* |
+  | MEASURE | Bei **einmaligem** Erreichen (**≤**) von **startRPM** | Bei der Höchstdrehzahl abfallen lassen | MESSEN | **DROP-RPM** |
+  | MEASURE | Bei **einmaligem** Erreichen (**≥**) von **stopRPM** | Nach eigenem Ermessen (schonend) runterschalten | MESSEN | **Start-Stop** |
   | FINISH | Nach dem Ende der Berechnung -> Ende des Messvorgangs | Warten... | BERECHNEN |
   
   *Anmerkungen*: Wenn die Motordrehzahl nicht gemessen wird, erfolgt das Switchen der States sowie das Einpendeln über die Geschwindigkeit der Walze. Wenn ein Zweirad mit Automatik-Getriebe gemessen wird, ist der erste State *SHIFT_UP* nicht notwendig und wird übersprungen.  
