@@ -7,6 +7,7 @@ import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
 import development.gui.MeasurementValuesPane;
 import gui.AboutDialog;
+import gui.DiagramSetDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
 import gui.ResultDialog;
@@ -73,6 +74,7 @@ public class BESDyno extends javax.swing.JFrame {
     private DevInfoPane infoPane = new DevInfoPane(this, false);
     private LoggedCommPane commPane = new LoggedCommPane(this, false);
     private ResultDialog result = new ResultDialog(this, true);
+    private DiagramSetDialog diagramSet = new DiagramSetDialog(this, true);
 
     //Object-Variables
     private File file;
@@ -83,7 +85,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Variables
     private static boolean devMode = false;
     private static OS os = OS.OTHER;
-    private boolean connection = false;
+    private boolean connection = true;
     private boolean secondTry = true;
     private double reqArduVers = 1.4;
 
@@ -1231,10 +1233,15 @@ public class BESDyno extends javax.swing.JFrame {
             if (vehicle.isPressedOK()) {
                 measure.setAppearance(Config.getInstance().isDark());
                 measure.setVisible(true);
+                
                 if (measure.isFinished()) {
                     result.setAppearance(Config.getInstance().isDark());
                     result.setValues();
                     result.setVisible(true);
+                    
+                    diagramSet.setAppearance(Config.getInstance().isDark());
+                    diagramSet.refreshGui();
+                    diagramSet.setVisible(true);
                 }
             }
         } else {

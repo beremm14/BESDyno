@@ -43,7 +43,7 @@ public class AboutDialog extends javax.swing.JDialog {
     public void writeDevice (String dn) {
         jLabelDevice.setText(dn);
         if (Config.getInstance().getArduinoVersion() > 0) {
-            jLabelArduino.setText(String.format("BESMeasurement v%.1f", Config.getInstance().getArduinoVersion()));
+            jLabelArduino.setText(String.format("BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
         }
     }
     
@@ -85,6 +85,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelWarning.setForeground(Color.white);
             jLabelArduinoT.setForeground(Color.white);
             jLabelArduino.setForeground(Color.white);
+            jLabelMade.setForeground(Color.white);
         } else {
             jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128.png")));
             jPanAuthor.setBackground(Color.white);
@@ -122,6 +123,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelWarning.setForeground(Color.black);
             jLabelArduinoT.setForeground(Color.black);
             jLabelArduino.setForeground(Color.black);
+            jLabelMade.setForeground(Color.black);
         }
     }
     

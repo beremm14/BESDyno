@@ -1,5 +1,6 @@
 package gui;
 
+import data.Bike;
 import data.Config;
 import data.Config.Velocity;
 import data.Database;
@@ -30,7 +31,7 @@ public class ResultDialog extends javax.swing.JDialog {
     }
 
     public void setValues() {
-        
+        jLabelTitle.setText(Bike.getInstance().getVehicleName());
         power = Database.getInstance().getBikePower();
         velocity = Database.getInstance().getBikeVelo();
         torque = Database.getInstance().getBikeTorque();
@@ -55,10 +56,16 @@ public class ResultDialog extends javax.swing.JDialog {
             jPanBut.setBackground(Color.DARK_GRAY);
             jPanResult.setBackground(Color.DARK_GRAY);
             jLabelResult.setForeground(Color.WHITE);
+            jLabelTitle.setForeground(Color.WHITE);
+            jLabelResult.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 3), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+            jLabelTitle.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 3), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         } else {
             jPanBut.setBackground(Color.WHITE);
             jPanResult.setBackground(Color.WHITE);
             jLabelResult.setForeground(Color.BLACK);
+            jLabelTitle.setForeground(Color.BLACK);
+            jLabelResult.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+            jLabelTitle.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         }
 
     }
@@ -71,9 +78,11 @@ public class ResultDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanResult = new javax.swing.JPanel();
         jLabelResult = new javax.swing.JLabel();
+        jLabelTitle = new javax.swing.JLabel();
         jPanBut = new javax.swing.JPanel();
         jbutOk = new javax.swing.JButton();
 
@@ -85,7 +94,15 @@ public class ResultDialog extends javax.swing.JDialog {
         jLabelResult.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabelResult.setText("<html>1000 PS<br/>200 mi/h<br/>500 Nm</html>");
         jLabelResult.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        jPanResult.add(jLabelResult, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanResult.add(jLabelResult, gridBagConstraints);
+
+        jLabelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabelTitle.setText("MMMMMMMMMMMMMMMMMMMMMMMMM");
+        jLabelTitle.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        jPanResult.add(jLabelTitle, new java.awt.GridBagConstraints());
 
         getContentPane().add(jPanResult, java.awt.BorderLayout.CENTER);
 
@@ -157,6 +174,7 @@ public class ResultDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelResult;
+    private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanBut;
     private javax.swing.JPanel jPanResult;
     private javax.swing.JButton jbutOk;

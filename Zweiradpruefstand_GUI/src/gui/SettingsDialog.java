@@ -47,7 +47,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         if (Config.getInstance().getArduinoVersion() == 0) {
             jLabelArduino2.setText("Kein Prüfstand verbunden...");
         } else {
-            jLabelArduino2.setText(String.format("BESMeasurement v%.1f", Config.getInstance().getArduinoVersion()));
+            jLabelArduino2.setText(String.format("BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
         }
     }
 
