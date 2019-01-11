@@ -16,17 +16,6 @@ import main.BESDyno.MyTelegram;
  */
 public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
-    /**
-     * **************************************************************
-     * Ablauf des Messvorgangs: * * 1) Hochschalten in den letzten Gang und
-     * abfallen lassen * -> ab Erreichen der Startgeschwindigkeit: Einpendeln *
-     * 2) Einpendeln um die Leerlaufgeschwindigkeit * -> solange wie
-     * HysteresisTime * 3) Gas geben * -> ab Erreichen der
-     * Start-Geschwindigkeit: Messen * 4) Bei Höchstdrehzahl abfallen lassen *
-     * -> ab wieder Erreichn der Start-Geschwindigkeit: Stoppen * * Anmerkung:
-     * Bei Automatik-Zweirädern ist der * erste State SHIFT_UP nicht notwendig.
-     * * **************************************************************
-     */
     private static final Logger LOG = Logger.getLogger(MeasurementWorker.class.getName());
 
     private final BESDyno main = BESDyno.getInstance();
@@ -96,11 +85,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageShiftUp() throws Exception {
         if (bike.isMeasRpm()) {
             do {
-                publish(measure());
+                publish(measure(Status.SHIFT_UP));
             } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm());
         } else {
             do {
-                publish(measureno());
+                publish(measureno(Status.SHIFT_UP));
             } while (data.getVelList().get(data.getVelList().size() - 1) <= config.getStartVelo());
         }
         return Status.WAIT;
@@ -114,7 +103,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             int rpm;
             int accepted = 0;
             do {
-                publish(measure());
+                publish(measure(Status.WAIT));
                 rpm = data.getEngRpmList().get(data.getEngRpmList().size() - 1);
                 if (rpm > hysteresisMin && rpm < hysteresisMax) {
                     accepted++;
@@ -127,7 +116,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             double velocity;
             int accepted = 0;
             do {
-                publish(measure());
+                publish(measure(Status.WAIT));
                 velocity = data.getVelList().get(data.getVelList().size() - 1);
                 if (velocity > hysteresisMin && velocity < hysteresisMax) {
                     accepted++;
@@ -142,11 +131,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageReady() throws Exception {
         if (bike.isMeasRpm()) {
             do {
-                publish(measure());
+                publish(measure(Status.READY));
             } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStartRpm());
         } else {
             do {
-                publish(measureno());
+                publish(measureno(Status.READY));
             } while (data.getVelList().get(data.getVelList().size() - 1) >= config.getStartVelo());
         }
         return Status.MEASURE;
@@ -161,7 +150,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             if (bike.isMeasRpm()) {
                 int stopCount = 0;
                 do {
-                    publish(measure());
+                    publish(measure(Status.MEASURE));
                     if (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStopRpm()) {
                         stopCount++;
                     }
@@ -169,7 +158,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             } else {
                 int stopCount = 0;
                 do {
-                    publish(measureno());
+                    publish(measureno(Status.MEASURE));
                     if (data.getVelList().get(data.getVelList().size() - 1) >= config.getStopRpm()) {
                         stopCount++;
                     }
@@ -179,7 +168,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             if (bike.isMeasRpm()) {
                 int stopCount = 0;
                 do {
-                    publish(measure());
+                    publish(measure(Status.MEASURE));
                     if (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm()) {
                         stopCount++;
                     }
@@ -187,7 +176,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             } else {
                 int stopCount = 0;
                 do {
-                    publish(measureno());
+                    publish(measureno(Status.MEASURE));
                     if (data.getVelList().get(data.getVelList().size() - 1) <= config.getStartVelo()) {
                         stopCount++;
                     }
@@ -203,7 +192,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     }
 
     //Measurement-Methods
-    public DialData measure() throws Exception {
+    public DialData measure(Status status) throws Exception {
         Datapoint dp;
 
         main.addPendingRequest(telegram.measure());
@@ -231,10 +220,10 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             }
         }
 
-        return new DialData(dp);
+        return new DialData(status, dp);
     }
 
-    public DialData measureno() throws Exception {
+    public DialData measureno(Status status) throws Exception {
         Datapoint dp;
 
         main.addPendingRequest(telegram.measureno());
@@ -260,7 +249,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             }
         }
 
-        return new DialData(data.getVelList().get(data.getVelList().size() - 1));
+        return new DialData(status, data.getVelList().get(data.getVelList().size() - 1));
     }
 
     public Status getStatus() {

@@ -39,12 +39,15 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jPanRPM.setBackground(Color.darkGray);
             jPanStroke.setBackground(Color.darkGray);
             jPanTransmission.setBackground(Color.darkGray);
+            jPanMethod.setBackground(Color.darkGray);
 
             jcbEnableRPM.setForeground(Color.white);
             jrb2Stroke.setForeground(Color.white);
             jrb4Stroke.setForeground(Color.white);
             jrbAutomatic.setForeground(Color.white);
             jrbManual.setForeground(Color.white);
+            jrbStartStop.setForeground(Color.white);
+            jrbDrop.setForeground(Color.darkGray);
 
             jtfVehicleName.setBackground(Color.darkGray);
 
@@ -57,13 +60,16 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jPanRPM.setBackground(Color.white);
             jPanStroke.setBackground(Color.white);
             jPanTransmission.setBackground(Color.white);
+            jPanMethod.setBackground(Color.white);
 
             jcbEnableRPM.setForeground(Color.black);
             jrb2Stroke.setForeground(Color.black);
             jrb4Stroke.setForeground(Color.black);
             jrbAutomatic.setForeground(Color.black);
             jrbManual.setForeground(Color.black);
-
+            jrbStartStop.setForeground(Color.black);
+            jrbDrop.setForeground(Color.black);
+            
             jtfVehicleName.setBackground(Color.white);
 
             jtfVehicleName.setForeground(Color.black);
@@ -133,7 +139,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jtfVehicleName = new javax.swing.JTextField();
         jPanMethod = new javax.swing.JPanel();
         jrbStartStop = new javax.swing.JRadioButton();
-        jrbStop = new javax.swing.JRadioButton();
+        jrbDrop = new javax.swing.JRadioButton();
         jPanRPM = new javax.swing.JPanel();
         jcbEnableRPM = new javax.swing.JCheckBox();
         jPanStroke = new javax.swing.JPanel();
@@ -185,13 +191,13 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanMethod.add(jrbStartStop, gridBagConstraints);
 
-        bgMethod.add(jrbStop);
-        jrbStop.setText("Drop-RPM (ohne Enddrehzahl)");
+        bgMethod.add(jrbDrop);
+        jrbDrop.setText("Drop-RPM (ohne Enddrehzahl)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanMethod.add(jrbStop, gridBagConstraints);
+        jPanMethod.add(jrbDrop, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -377,9 +383,9 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton jrb2Stroke;
     private javax.swing.JRadioButton jrb4Stroke;
     private javax.swing.JRadioButton jrbAutomatic;
+    private javax.swing.JRadioButton jrbDrop;
     private javax.swing.JRadioButton jrbManual;
     private javax.swing.JRadioButton jrbStartStop;
-    private javax.swing.JRadioButton jrbStop;
     private javax.swing.JTextField jtfVehicleName;
     // End of variables declaration//GEN-END:variables
 }

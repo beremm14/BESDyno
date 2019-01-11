@@ -2,6 +2,7 @@ package data;
 
 import data.Config.Velocity;
 import measure.Calculate;
+import measure.MeasurementWorker.Status;
 
 /**
  *
@@ -12,14 +13,17 @@ public class DialData {
     private double wheelVelo;
     private int engRpm;
     private Velocity unit;
+    
+    private Status status;
 
-    public DialData(double wheelVelo, int engRpm) {
+    public DialData(Status status, double wheelVelo, int engRpm) {
         this.wheelVelo = wheelVelo;
         this.engRpm = engRpm;
         this.unit = Config.getInstance().getVelocity();
+        this.status = status;
     }
 
-    public DialData(Datapoint dp) {
+    public DialData(Status status, Datapoint dp) {
         Calculate calc = new Calculate();
         this.engRpm = dp.getEngRpm();
         this.unit = Config.getInstance().getVelocity();
@@ -34,12 +38,14 @@ public class DialData {
                 this.wheelVelo = calc.calcMph(dp);
                 break;
         }
+        this.status = status;
     }
     
-    public DialData(double wheelVelo) {
+    public DialData(Status status, double wheelVelo) {
         this.engRpm = 0;
         this.wheelVelo = wheelVelo;
         this.unit = Config.getInstance().getVelocity();
+        this.status = status;
     }
 
     public double getWheelVelo() {

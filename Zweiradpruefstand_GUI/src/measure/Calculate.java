@@ -22,18 +22,18 @@ public class Calculate {
         int wheelRpm;
         int engRpm;
 
-        wheelRpm = (rdp.getWheelCount() / rdp.getTime() * totalImpulse);
+        wheelRpm = (rdp.getWheelCount() / (rdp.getTime() * totalImpulse)) * 60000;
         if (Bike.getInstance().isTwoStroke()) {
-            engRpm = rdp.getEngCount() / rdp.getTime();
+            engRpm = (rdp.getEngCount() / rdp.getTime()) * 60000;
         } else {
-            engRpm = (rdp.getEngCount() * 2) / rdp.getTime();
+            engRpm = ((rdp.getEngCount() * 2) / rdp.getTime()) * 60000;
         }
         return new Datapoint(engRpm, wheelRpm, rdp.getTime());
     }
 
     public Datapoint calcWheelOnly(RawDatapoint rdp) {
         int totalImpulse = 26;
-        return new Datapoint(rdp.getWheelCount() / rdp.getTime() * totalImpulse, rdp.getTime());
+        return new Datapoint(rdp.getWheelCount() / (rdp.getTime() * totalImpulse), rdp.getTime());
     }
 
     //Calculates One Point
@@ -47,7 +47,7 @@ public class Calculate {
     }
 
     public double calcMph(Datapoint dp) {
-        return calcMps(dp) * 2.237;
+        return calcMps(dp) * 2.2369362920544;
     }
 
     //Calculates All
@@ -56,7 +56,7 @@ public class Calculate {
         //Engine
         for (int i = 0; i < data.getEngRpmList().size(); i++) {
             double dOmega = 2 * Math.PI * (data.getEngRpmList().get(i) / 60);
-            double alpha = dOmega / (data.getTimeList().get(i) / 1000);
+            double alpha = dOmega / (data.getTimeList().get(i) * 1000);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
 
@@ -73,7 +73,7 @@ public class Calculate {
         //Wheel
         for (int i = 0; i < data.getWheelRpmList().size(); i++) {
             double dOmega = 2 * Math.PI * (data.getWheelRpmList().get(i) / 60);
-            double alpha = dOmega / (data.getTimeList().get(i) / 1000);
+            double alpha = dOmega / (data.getTimeList().get(i) * 1000);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
 

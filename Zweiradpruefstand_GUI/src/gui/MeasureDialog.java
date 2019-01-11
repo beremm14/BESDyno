@@ -5,10 +5,28 @@ import data.Config;
 import data.DialData;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Point;
+import java.text.NumberFormat;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.dial.DialBackground;
+import org.jfree.chart.plot.dial.DialPlot;
+import org.jfree.chart.plot.dial.DialPointer;
+import org.jfree.chart.plot.dial.DialTextAnnotation;
+import org.jfree.chart.plot.dial.DialValueIndicator;
+import org.jfree.chart.plot.dial.StandardDialFrame;
+import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.data.general.DefaultValueDataset;
+import org.jfree.ui.GradientPaintTransformType;
+import org.jfree.ui.StandardGradientPaintTransformer;
 
 /**
  *
@@ -18,30 +36,35 @@ public class MeasureDialog extends javax.swing.JDialog {
     
     private boolean finished;
     
-//    private final DefaultValueDataset kmh = new DefaultValueDataset(0);
-//    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
+    private final DefaultValueDataset velo = new DefaultValueDataset(0);
+    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     
     private MyMeasurementWorker worker;
+
     /**
      * Creates new form MeasureDialog
      */
-    
     public MeasureDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
         
         setTitle("Messung läuft...");
         setLocationRelativeTo(null);
         setResizable(false);
         setMinimumSize(new Dimension(620, 450));
         
+        initComponents();
+        jPanDial.remove(jFrameRPM);
+        jPanDial.remove(jFrameSpeed);
         
-        //createDial(kmh, "km/h", jFrameSpeed, 0, 150, 10);
+        createDial(velo, "km/h", jFrameSpeed, 0, 150, 10);
         if (Bike.getInstance().isMeasRpm()) {
-            //createDial(rpm, "U/min*1000", jFrameRPM, 0, 13, 1);
+            rpm.setValue(0);
+            createDial(rpm, "U/min x 1000", jFrameRPM, 0, 13, 1);
         } else {
             jPanDial.remove(jFrameRPM);
         }
+        
+        handleMeasurementChain();
         
     }
     
@@ -52,6 +75,59 @@ public class MeasureDialog extends javax.swing.JDialog {
         worker.execute();
     }
     
+    private void createDial(DefaultValueDataset set, String title, JInternalFrame frame, int min, int max, int tick) {
+        
+        DialPlot plot = new DialPlot(set);
+        plot.setDialFrame(new StandardDialFrame());
+        plot.addLayer(new DialPointer.Pointer());
+
+        /*
+        DialTextAnnotation annotation = new DialTextAnnotation(title);
+        annotation.setFont(new Font(null, Font.BOLD, 17));
+        if (Config.getInstance().isDark()) {
+            annotation.setPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
+        } else {
+            annotation.setPaint(new GradientPaint(new Point(), Color.BLACK, new Point(), Color.BLACK));
+        }
+        plot.addLayer(annotation);
+         */
+        GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(170, 170, 220));
+        DialBackground dialbackground = new DialBackground(gradientpaint);
+        
+        dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
+        plot.setBackground(dialbackground);
+        
+        StandardDialScale scale = new StandardDialScale(min, max, -120, -300, tick, 4);
+        scale.setTickRadius(0.88);
+        scale.setTickLabelOffset(0.20);
+        scale.setTickLabelFormatter(NumberFormat.getIntegerInstance());
+        plot.addScale(0, scale);
+        
+        JFreeChart chart = new JFreeChart(plot);
+        if (Config.getInstance().isDark()) {
+            chart.setBackgroundPaint(new GradientPaint(new Point(), Color.DARK_GRAY, new Point(), Color.DARK_GRAY));
+        } else {
+            chart.setBackgroundPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
+        }
+        
+        chart.setTitle(title);
+        if (Config.getInstance().isDark()) {
+            chart.getTitle().setPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
+        } else {
+            chart.getTitle().setPaint(new GradientPaint(new Point(), Color.BLACK, new Point(), Color.BLACK));
+        }
+        ChartPanel chartPanel = new ChartPanel(chart);
+        
+        jPanDial.add(chartPanel);
+
+        /*
+        frame.setUI(null);
+        frame.add(new ChartPanel(new JFreeChart(plot)));
+        frame.pack();
+        frame.setSize(500, 500);
+         */
+    }
+
     //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
         if (dark == true) {
@@ -86,30 +162,7 @@ public class MeasureDialog extends javax.swing.JDialog {
     public boolean isFinished() {
         return finished;
     }
-    
-    //Creates Dial from Data
-    /*private void createDial (DefaultValueDataset set, String title, JInternalFrame frame, int min, int max, int tick) {
-        DialPlot plot = new DialPlot(set);
-        plot.setDialFrame(new StandardDialFrame());
-        plot.addLayer(new DialPointer.Pointer());
-        
-        DialTextAnnotation annotation = new DialTextAnnotation(title);
-        annotation.setFont(new Font(null, Font.BOLD, 17));
-        plot.addLayer(annotation);
-        
-        StandardDialScale scale = new StandardDialScale(min, max, -120, -300, tick, 4);
-        scale.setTickRadius(0.88);
-        scale.setTickLabelOffset(0.20);
-        plot.addScale(0, scale);
-        
-        frame.setUI(null);
-        frame.add(new ChartPanel(new JFreeChart(plot)));
-        frame.pack();
-        frame.setSize(new Dimension(500, 500));
-    }*/
-    
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,6 +207,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanStatusText.add(jLabelCount, gridBagConstraints);
 
         jpbMeasure.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jpbMeasure.setIndeterminate(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
@@ -185,11 +239,11 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanDial.setLayout(new java.awt.GridLayout(1, 0));
 
         jFrameSpeed.setVisible(true);
-        jFrameSpeed.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+        jFrameSpeed.getContentPane().setLayout(new java.awt.GridLayout(1, 1));
         jPanDial.add(jFrameSpeed);
 
         jFrameRPM.setVisible(true);
-        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout(1, 1));
         jPanDial.add(jFrameRPM);
 
         jPanMain.add(jPanDial, java.awt.BorderLayout.CENTER);
@@ -226,20 +280,19 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
         int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (answ == JOptionPane.YES_OPTION) {
-                worker.cancel(true);
-                finished = false;
-                dispose();
-            }
+        if (answ == JOptionPane.YES_OPTION) {
+            worker.cancel(true);
+            finished = false;
+            dispose();
+        }
     }//GEN-LAST:event_jbutCancelActionPerformed
-
     
     private class MyMeasurementWorker extends MeasurementWorker {
         
         @Override
         protected void done() {
         }
-
+        
         @Override
         protected void process(List<DialData> chunks) {
             for (DialData dd : chunks) {
@@ -248,8 +301,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         }
         
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */

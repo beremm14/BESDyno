@@ -69,12 +69,13 @@ public class BESDyno extends javax.swing.JFrame {
     private AboutDialog about = new AboutDialog(this, false);
     private HelpDialog help = new HelpDialog(this, false);
     private VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
-    private MeasureDialog measure = new MeasureDialog(this, true);
     private SettingsDialog settings = new SettingsDialog(this, true);
     private DevInfoPane infoPane = new DevInfoPane(this, false);
     private LoggedCommPane commPane = new LoggedCommPane(this, false);
     private ResultDialog result = new ResultDialog(this, true);
     private DiagramSetDialog diagramSet = new DiagramSetDialog(this, true);
+    
+    private MeasureDialog measure;
 
     //Object-Variables
     private File file;
@@ -1231,6 +1232,7 @@ public class BESDyno extends javax.swing.JFrame {
             userLog("Start der Simulation", LogLevel.INFO);
 
             if (vehicle.isPressedOK()) {
+                measure = new MeasureDialog(this, true);
                 measure.setAppearance(Config.getInstance().isDark());
                 measure.setVisible(true);
                 
