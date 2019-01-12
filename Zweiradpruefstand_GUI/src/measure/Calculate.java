@@ -14,7 +14,7 @@ public class Calculate {
 
     private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
-    private final Database data = new Database();
+    private final Database data = Database.getInstance();
 
     //Calculates One Point
     public Datapoint calcRpm(RawDatapoint rdp) {

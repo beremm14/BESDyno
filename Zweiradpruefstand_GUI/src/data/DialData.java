@@ -59,5 +59,16 @@ public class DialData {
     public Velocity getUnit() {
         return unit;
     }
+    
+    public String getStatusText() throws Exception {
+        switch(status) {
+            case SHIFT_UP: return "HOCHSCHALTEN";
+            case WAIT: return "WARTEN...";
+            case READY: return "BEREIT";
+            case MEASURE: return "MESSUNG GESTARTET";
+            case FINISH : return "FERTIG";
+            default: throw new Exception("Wrong Status");
+        }
+    }
 
 }

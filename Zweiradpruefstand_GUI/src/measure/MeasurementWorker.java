@@ -194,9 +194,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //Measurement-Methods
     public DialData measure(Status status) throws Exception {
         Datapoint dp;
-
+        LOG.debug("measure()");
         main.addPendingRequest(telegram.measure());
-
+        LOG.debug("MEASURE added to pendingRequests");
         synchronized (data.syncObj) {
 
             data.syncObj.wait(1000);

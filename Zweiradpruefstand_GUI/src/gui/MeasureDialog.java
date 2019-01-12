@@ -10,6 +10,7 @@ import java.awt.GradientPaint;
 import java.awt.Point;
 import java.text.NumberFormat;
 import java.util.List;
+import logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -33,7 +34,9 @@ import org.jfree.ui.StandardGradientPaintTransformer;
  * @author emil
  */
 public class MeasureDialog extends javax.swing.JDialog {
-    
+
+    private static final Logger LOG = Logger.getLogger(MeasureDialog.class.getName());
+
     private boolean finished;
     
     private final DefaultValueDataset velo = new DefaultValueDataset(0);
@@ -91,6 +94,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         }
         plot.addLayer(annotation);
          */
+        
         GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(170, 170, 220));
         DialBackground dialbackground = new DialBackground(gradientpaint);
         
@@ -296,7 +300,13 @@ public class MeasureDialog extends javax.swing.JDialog {
         @Override
         protected void process(List<DialData> chunks) {
             for (DialData dd : chunks) {
-                
+                rpm.setValue(dd.getEngRpm());
+                velo.setValue(dd.getWheelVelo());
+                try {
+                    dd.getStatusText();
+                } catch (Exception ex) {
+                    LOG.warning(ex);
+                }
             }
         }
         

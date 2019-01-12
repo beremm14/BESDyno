@@ -18,7 +18,7 @@ public class RequestMeasureno extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
-    
+
     private String response;
 
     @Override
@@ -39,33 +39,33 @@ public class RequestMeasureno extends Request {
 
     @Override
     public void handleResponse(String res) {
-        response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
-
-        String response = res.replaceAll(":", "");
-        response = response.replaceAll(";", "");
-
-        // :rearCount#rearTime>crc;
-        String values[] = response.split("#");
-        values[1] = removeCRC(values[1]);
-        
-        RawDatapoint dp = new RawDatapoint(values[0], values[1]);
-        if (dp.getTime() > 0) {
-            Database.getInstance().addRawDP(dp);
-            LOG.debug("MEASURENO: wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
-        } else {
-            LOG.warning("MEASURENO: Time = 0");
-        }
-        
         synchronized (Database.getInstance().syncObj) {
+            response = res;
+            COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+
+            String response = res.replaceAll(":", "");
+            response = response.replaceAll(";", "");
+
+            // :rearCount#rearTime>crc;
+            String values[] = response.split("#");
+            values[1] = removeCRC(values[1]);
+
+            RawDatapoint dp = new RawDatapoint(values[0], values[1]);
+            if (dp.getTime() > 0) {
+                Database.getInstance().addRawDP(dp);
+                LOG.debug("MEASURENO: wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+            } else {
+                LOG.warning("MEASURENO: Time = 0");
+            }
+
             Database.getInstance().syncObj.notifyAll();
             LOG.debug("Measurement-syncObj notified");
-        }
-        
-        if (checkCRC(res) && dp.getTime() > 0) {
-            status = Status.DONE;
-        } else {
-            status = Status.ERROR;
+
+            if (checkCRC(res) && dp.getTime() > 0) {
+                status = Status.DONE;
+            } else {
+                status = Status.ERROR;
+            }
         }
     }
 

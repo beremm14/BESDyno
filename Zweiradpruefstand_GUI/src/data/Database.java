@@ -56,10 +56,9 @@ public class Database {
     private double bikeTorque;
     
     //Sync-Object
-    public final Object syncObj;
+    public final Object syncObj = new Object();
 
-    public Database() {
-        syncObj = new Object();
+    private Database() {
     }
     
     //Getter
