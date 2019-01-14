@@ -84,7 +84,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             rpm.setValue(0);
             createDial(rpm, engRef, "U/min x 1000", 0, 15, 1);
         }
-        testDials();
+        testDials(Status.READY);
         //handleMeasurementChain();
 
     }
@@ -92,7 +92,6 @@ public class MeasureDialog extends javax.swing.JDialog {
     private void handleMeasurementChain() {
         jpbMeasure.setIndeterminate(true);
         worker = new MyMeasurementWorker();
-        worker.setStatus(Status.WAIT);
         worker.execute();
     }
 
@@ -162,11 +161,31 @@ public class MeasureDialog extends javax.swing.JDialog {
          */
     }
 
-    private void testDials() {
+    private void testDials(Status status) {
         rpm.setValue(0);
         velo.setValue(0);
+        jLabelRPM.setText("0");
+        jLabelVelo.setText("0.0");
         engRef.setValue(Config.getInstance().getStopRpm() / 1000);
-        wheelRef.setValue(Config.getInstance().getStopVelo() / 1000);
+        wheelRef.setValue(Config.getInstance().getStopVelo());
+
+        switch (status) {
+            case SHIFT_UP:
+                jPanStatusColour.setBackground(Color.CYAN);
+                break;
+            case WAIT:
+                jPanStatusColour.setBackground(Color.ORANGE);
+                break;
+            case READY:
+                jPanStatusColour.setBackground(new Color(30, 200, 30));
+                break;
+            case MEASURE:
+                jPanStatusColour.setBackground(new Color(30, 200, 30));
+                break;
+            case FINISH:
+                jPanStatusColour.setBackground(Color.RED);
+                break;
+        }
     }
 
     //Sets Appearance like at the Main-GUI
@@ -176,7 +195,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanDial.setBackground(Color.darkGray);
             jPanMain.setBackground(Color.darkGray);
             jPanStatus.setBackground(Color.darkGray);
-            jPanStatusColour.setBackground(Color.darkGray);
+            //jPanStatusColour.setBackground(Color.darkGray);
             jPanStatusText.setBackground(Color.darkGray);
             jPanVelo.setBackground(Color.darkGray);
             jPanRPM.setBackground(Color.darkGray);
@@ -194,7 +213,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanDial.setBackground(Color.white);
             jPanMain.setBackground(Color.white);
             jPanStatus.setBackground(Color.white);
-            jPanStatusColour.setBackground(Color.white);
+            //jPanStatusColour.setBackground(Color.white);
             jPanStatusText.setBackground(Color.white);
             jPanVelo.setBackground(Color.white);
             jPanRPM.setBackground(Color.white);
@@ -393,18 +412,37 @@ public class MeasureDialog extends javax.swing.JDialog {
                 velo.setValue(dd.getWheelVelo());
                 engRef.setValue(dd.getEngRef() / 1000);
                 wheelRef.setValue(dd.getWheelRef());
-                
+
                 jLabelVelo.setText(String.format("%.1f", dd.getWheelVelo()));
-                
+
                 if (Bike.getInstance().isMeasRpm()) {
                     jLabelRPM.setText(String.format("%d", dd.getEngRpm()));
                 }
-                
+
                 try {
                     jLabelStatus.setText(dd.getStatusText());
                 } catch (Exception ex) {
                     LOG.warning(ex);
                 }
+
+                switch (dd.getStatus()) {
+                    case SHIFT_UP:
+                        jPanStatusColour.setBackground(Color.CYAN);
+                        break;
+                    case WAIT:
+                        jPanStatusColour.setBackground(Color.ORANGE);
+                        break;
+                    case READY:
+                        jPanStatusColour.setBackground(new Color(30, 200, 30));
+                        break;
+                    case MEASURE:
+                        jPanStatusColour.setBackground(new Color(30, 200, 30));
+                        break;
+                    case FINISH:
+                        jPanStatusColour.setBackground(Color.RED);
+                        break;
+                }
+
             }
         }
 

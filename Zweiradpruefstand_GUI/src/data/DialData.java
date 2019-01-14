@@ -98,6 +98,10 @@ public class DialData {
         }
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public String getUnitToString() {
         return unitToString;
     }
