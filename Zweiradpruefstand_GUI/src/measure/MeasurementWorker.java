@@ -85,11 +85,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageShiftUp() throws Exception {
         if (bike.isMeasRpm()) {
             do {
-                publish(measure(Status.SHIFT_UP));
+                publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
             } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm());
         } else {
             do {
-                publish(measureno(Status.SHIFT_UP));
+                publish(new DialData(Status.SHIFT_UP, measureno(), config.getStartVelo()));
             } while (data.getVelList().get(data.getVelList().size() - 1) <= config.getStartVelo());
         }
         return Status.WAIT;
@@ -103,7 +103,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             int rpm;
             int accepted = 0;
             do {
-                publish(measure(Status.WAIT));
+                publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm()));
                 rpm = data.getEngRpmList().get(data.getEngRpmList().size() - 1);
                 if (rpm > hysteresisMin && rpm < hysteresisMax) {
                     accepted++;
@@ -116,7 +116,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             double velocity;
             int accepted = 0;
             do {
-                publish(measure(Status.WAIT));
+                publish(new DialData(Status.WAIT, measureno(), config.getIdleVelo()));
                 velocity = data.getVelList().get(data.getVelList().size() - 1);
                 if (velocity > hysteresisMin && velocity < hysteresisMax) {
                     accepted++;
@@ -131,11 +131,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageReady() throws Exception {
         if (bike.isMeasRpm()) {
             do {
-                publish(measure(Status.READY));
+                publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm()));
             } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStartRpm());
         } else {
             do {
-                publish(measureno(Status.READY));
+                publish(new DialData(Status.READY, measureno(), config.getStartVelo()));
             } while (data.getVelList().get(data.getVelList().size() - 1) >= config.getStartVelo());
         }
         return Status.MEASURE;
@@ -150,7 +150,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             if (bike.isMeasRpm()) {
                 int stopCount = 0;
                 do {
-                    publish(measure(Status.MEASURE));
+                    publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm()));
                     if (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStopRpm()) {
                         stopCount++;
                     }
@@ -158,7 +158,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             } else {
                 int stopCount = 0;
                 do {
-                    publish(measureno(Status.MEASURE));
+                    publish(new DialData(Status.MEASURE, measureno(), config.getStopVelo()));
                     if (data.getVelList().get(data.getVelList().size() - 1) >= config.getStopRpm()) {
                         stopCount++;
                     }
@@ -168,7 +168,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             if (bike.isMeasRpm()) {
                 int stopCount = 0;
                 do {
-                    publish(measure(Status.MEASURE));
+                    publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm()));
                     if (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm()) {
                         stopCount++;
                     }
@@ -176,7 +176,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             } else {
                 int stopCount = 0;
                 do {
-                    publish(measureno(Status.MEASURE));
+                    publish(new DialData(Status.MEASURE, measureno(), config.getStartVelo()));
                     if (data.getVelList().get(data.getVelList().size() - 1) <= config.getStartVelo()) {
                         stopCount++;
                     }
@@ -192,7 +192,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     }
 
     //Measurement-Methods
-    public DialData measure(Status status) throws Exception {
+    public Datapoint measure() throws Exception {
         Datapoint dp;
         LOG.debug("measure()");
         main.addPendingRequest(telegram.measure());
@@ -220,10 +220,10 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             }
         }
 
-        return new DialData(status, dp);
+        return dp;
     }
 
-    public DialData measureno(Status status) throws Exception {
+    public double measureno() throws Exception {
         Datapoint dp;
 
         main.addPendingRequest(telegram.measureno());
@@ -249,7 +249,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             }
         }
 
-        return new DialData(status, data.getVelList().get(data.getVelList().size() - 1));
+        return data.getVelList().get(data.getVelList().size()-1);
     }
 
     public Status getStatus() {

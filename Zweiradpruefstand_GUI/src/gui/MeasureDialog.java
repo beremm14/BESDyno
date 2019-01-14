@@ -19,8 +19,10 @@ import measure.MeasurementWorker.Status;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.DialBackground;
+import org.jfree.chart.plot.dial.DialCap;
 import org.jfree.chart.plot.dial.DialPlot;
 import org.jfree.chart.plot.dial.DialPointer;
+import org.jfree.chart.plot.dial.DialPointer.Pin;
 import org.jfree.chart.plot.dial.DialTextAnnotation;
 import org.jfree.chart.plot.dial.DialValueIndicator;
 import org.jfree.chart.plot.dial.StandardDialFrame;
@@ -38,10 +40,12 @@ public class MeasureDialog extends javax.swing.JDialog {
     private static final Logger LOG = Logger.getLogger(MeasureDialog.class.getName());
 
     private boolean finished;
-    
+
     private final DefaultValueDataset velo = new DefaultValueDataset(0);
     private final DefaultValueDataset rpm = new DefaultValueDataset(0);
-    
+    private final DefaultValueDataset engRef = new DefaultValueDataset(0);
+    private final DefaultValueDataset wheelRef = new DefaultValueDataset(0);
+
     private MyMeasurementWorker worker;
 
     /**
@@ -49,40 +53,63 @@ public class MeasureDialog extends javax.swing.JDialog {
      */
     public MeasureDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        
+
         setTitle("Messung läuft...");
         setLocationRelativeTo(null);
         setResizable(false);
         setMinimumSize(new Dimension(620, 450));
-        
+
         initComponents();
         jPanDial.remove(jFrameRPM);
         jPanDial.remove(jFrameSpeed);
-        
-        createDial(velo, "km/h", jFrameSpeed, 0, 150, 10);
+
+        String unit = null;
+        int highScaleEnd = 150;
+        switch (Config.getInstance().getVelocity()) {
+            case MPS:
+                unit = "m/s";
+                highScaleEnd = 70;
+                break;
+            case MIH:
+                unit = "mi/h";
+                highScaleEnd = 120;
+                break;
+            case KMH:
+                unit = "km/h";
+                highScaleEnd = 150;
+                break;
+        }
+
+        createDial(velo, wheelRef, unit, jFrameSpeed, 0, highScaleEnd, 10);
         if (Bike.getInstance().isMeasRpm()) {
             rpm.setValue(0);
-            createDial(rpm, "U/min x 1000", jFrameRPM, 0, 13, 1);
+            createDial(rpm, engRef, "U/min x 1000", jFrameRPM, 0, 15, 1);
         } else {
             jPanDial.remove(jFrameRPM);
         }
-        
-        handleMeasurementChain();
-        
+        testDials();
+        //handleMeasurementChain();
+
     }
-    
+
     private void handleMeasurementChain() {
         jpbMeasure.setIndeterminate(true);
         worker = new MyMeasurementWorker();
         worker.setStatus(Status.WAIT);
         worker.execute();
     }
-    
-    private void createDial(DefaultValueDataset set, String title, JInternalFrame frame, int min, int max, int tick) {
-        
-        DialPlot plot = new DialPlot(set);
+
+    private void createDial(DefaultValueDataset value, DefaultValueDataset ref, String title, JInternalFrame frame, int min, int max, int tick) {
+
+        DialPlot plot = new DialPlot();
+        plot.setDataset(0, value);
+        plot.setDataset(1, ref);
         plot.setDialFrame(new StandardDialFrame());
-        plot.addLayer(new DialPointer.Pointer());
+        plot.addLayer(new DialPointer.Pointer(0));
+
+        DialPointer.Pin pin = new DialPointer.Pin(1);
+        pin.setRadius(0.55000000000000004D);
+        plot.addPointer(pin);
 
         /*
         DialTextAnnotation annotation = new DialTextAnnotation(title);
@@ -94,26 +121,32 @@ public class MeasureDialog extends javax.swing.JDialog {
         }
         plot.addLayer(annotation);
          */
-        
         GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(170, 170, 220));
         DialBackground dialbackground = new DialBackground(gradientpaint);
-        
+
         dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
         plot.setBackground(dialbackground);
-        
-        StandardDialScale scale = new StandardDialScale(min, max, -120, -300, tick, 4);
-        scale.setTickRadius(0.88);
-        scale.setTickLabelOffset(0.20);
-        scale.setTickLabelFormatter(NumberFormat.getIntegerInstance());
-        plot.addScale(0, scale);
-        
+
+        StandardDialScale scale0 = new StandardDialScale(min, max, -120, -300, tick, 4);
+        scale0.setTickRadius(0.88);
+        scale0.setTickLabelOffset(0.20);
+        scale0.setMajorTickPaint(Color.RED);
+        scale0.setMinorTickPaint(Color.BLACK);
+        scale0.setTickLabelFormatter(NumberFormat.getIntegerInstance());
+
+        plot.addScale(0, scale0);
+
+        DialCap dialcap = new DialCap();
+        dialcap.setRadius(0.10000000000000001D);
+        plot.setCap(dialcap);
+
         JFreeChart chart = new JFreeChart(plot);
         if (Config.getInstance().isDark()) {
             chart.setBackgroundPaint(new GradientPaint(new Point(), Color.DARK_GRAY, new Point(), Color.DARK_GRAY));
         } else {
             chart.setBackgroundPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
         }
-        
+
         chart.setTitle(title);
         if (Config.getInstance().isDark()) {
             chart.getTitle().setPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
@@ -121,7 +154,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             chart.getTitle().setPaint(new GradientPaint(new Point(), Color.BLACK, new Point(), Color.BLACK));
         }
         ChartPanel chartPanel = new ChartPanel(chart);
-        
+
         jPanDial.add(chartPanel);
 
         /*
@@ -130,6 +163,13 @@ public class MeasureDialog extends javax.swing.JDialog {
         frame.pack();
         frame.setSize(500, 500);
          */
+    }
+
+    private void testDials() {
+        rpm.setValue(0);
+        velo.setValue(0);
+        engRef.setValue(Config.getInstance().getStopRpm() / 1000);
+        wheelRef.setValue(Config.getInstance().getStopVelo() / 1000);
     }
 
     //Sets Appearance like at the Main-GUI
@@ -143,7 +183,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanStatusText.setBackground(Color.darkGray);
             jFrameRPM.setBackground(Color.darkGray);
             jFrameSpeed.setBackground(Color.darkGray);
-            
+
             jLabelCount.setForeground(Color.white);
             jLabelStatus.setForeground(Color.white);
             jLabelStatusT.setForeground(Color.white);
@@ -156,13 +196,13 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanStatusText.setBackground(Color.white);
             jFrameRPM.setBackground(Color.white);
             jFrameSpeed.setBackground(Color.white);
-            
+
             jLabelCount.setForeground(Color.black);
             jLabelStatus.setForeground(Color.black);
             jLabelStatusT.setForeground(Color.black);
         }
     }
-    
+
     public boolean isFinished() {
         return finished;
     }
@@ -290,18 +330,20 @@ public class MeasureDialog extends javax.swing.JDialog {
             dispose();
         }
     }//GEN-LAST:event_jbutCancelActionPerformed
-    
+
     private class MyMeasurementWorker extends MeasurementWorker {
-        
+
         @Override
         protected void done() {
         }
-        
+
         @Override
         protected void process(List<DialData> chunks) {
             for (DialData dd : chunks) {
-                rpm.setValue(dd.getEngRpm());
+                rpm.setValue(dd.getEngRpm() / 1000);
                 velo.setValue(dd.getWheelVelo());
+                engRef.setValue(dd.getEngRef() / 1000);
+                wheelRef.setValue(dd.getWheelRef());
                 try {
                     dd.getStatusText();
                 } catch (Exception ex) {
@@ -309,7 +351,7 @@ public class MeasureDialog extends javax.swing.JDialog {
                 }
             }
         }
-        
+
     }
 
     /**

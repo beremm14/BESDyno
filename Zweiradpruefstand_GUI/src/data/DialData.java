@@ -13,17 +13,28 @@ public class DialData {
     private double wheelVelo;
     private int engRpm;
     private Velocity unit;
+    private String unitToString;
+    private int wheelRef;
+    private int engRef;
     
     private Status status;
 
-    public DialData(Status status, double wheelVelo, int engRpm) {
+    public DialData(Status status, double wheelVelo, int engRpm, int wheelRef, int engRef) {
         this.wheelVelo = wheelVelo;
         this.engRpm = engRpm;
         this.unit = Config.getInstance().getVelocity();
         this.status = status;
+        this.wheelRef = wheelRef;
+        this.engRef = engRef;
+        
+        switch(this.unit) {
+            case MPS: this.unitToString = "m/s"; break;
+            case MIH: this.unitToString = "mi/h"; break;
+            case KMH: this.unitToString = "km/h"; break;
+        }
     }
 
-    public DialData(Status status, Datapoint dp) {
+    public DialData(Status status, Datapoint dp, int wheelRef, int engRef) {
         Calculate calc = new Calculate();
         this.engRpm = dp.getEngRpm();
         this.unit = Config.getInstance().getVelocity();
@@ -38,14 +49,30 @@ public class DialData {
                 this.wheelVelo = calc.calcMph(dp);
                 break;
         }
+        
         this.status = status;
+        
+        switch(this.unit) {
+            case MPS: this.unitToString = "m/s"; break;
+            case MIH: this.unitToString = "mi/h"; break;
+            case KMH: this.unitToString = "km/h"; break;
+        }
+        
+        this.wheelRef = wheelRef;
+        this.engRef = engRef;
     }
     
-    public DialData(Status status, double wheelVelo) {
+    public DialData(Status status, double wheelVelo, int wheelRef) {
         this.engRpm = 0;
         this.wheelVelo = wheelVelo;
         this.unit = Config.getInstance().getVelocity();
         this.status = status;
+        switch(this.unit) {
+            case MPS: this.unitToString = "m/s"; break;
+            case MIH: this.unitToString = "mi/h"; break;
+            case KMH: this.unitToString = "km/h"; break;
+        }
+        this.wheelRef = wheelRef;
     }
 
     public double getWheelVelo() {
@@ -69,6 +96,18 @@ public class DialData {
             case FINISH : return "FERTIG";
             default: throw new Exception("Wrong Status");
         }
+    }
+
+    public String getUnitToString() {
+        return unitToString;
+    }
+
+    public int getWheelRef() {
+        return wheelRef;
+    }
+
+    public int getEngRef() {
+        return engRef;
     }
 
 }
