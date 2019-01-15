@@ -84,8 +84,8 @@ public class MeasureDialog extends javax.swing.JDialog {
             rpm.setValue(0);
             createDial(rpm, engRef, "U/min x 1000", 0, 15, 1);
         }
-        testDials(Status.READY);
-        //handleMeasurementChain();
+        
+        handleMeasurementChain();
 
     }
 
@@ -160,7 +160,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         frame.setSize(500, 500);
          */
     }
-
+    
     private void testDials(Status status) {
         rpm.setValue(0);
         velo.setValue(0);
@@ -168,7 +168,9 @@ public class MeasureDialog extends javax.swing.JDialog {
         jLabelVelo.setText("0.0");
         engRef.setValue(Config.getInstance().getStopRpm() / 1000);
         wheelRef.setValue(Config.getInstance().getStopVelo());
-
+        
+        rpm.setValue(2);
+        
         switch (status) {
             case SHIFT_UP:
                 jPanStatusColour.setBackground(Color.CYAN);
@@ -202,6 +204,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanDials.setBackground(Color.darkGray);
 
             jLabelCount.setForeground(Color.white);
+            jLabelCountT.setForeground(Color.white);
             jLabelStatus.setForeground(Color.white);
             jLabelStatusT.setForeground(Color.white);
             jLabelVelo.setForeground(Color.white);
@@ -220,6 +223,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanDials.setBackground(Color.white);
 
             jLabelCount.setForeground(Color.black);
+            jLabelCountT.setForeground(Color.black);
             jLabelStatus.setForeground(Color.black);
             jLabelStatusT.setForeground(Color.black);
             jLabelVelo.setForeground(Color.black);
@@ -246,10 +250,11 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanMain = new javax.swing.JPanel();
         jPanStatus = new javax.swing.JPanel();
         jPanStatusText = new javax.swing.JPanel();
-        jLabelCount = new javax.swing.JLabel();
+        jLabelCountT = new javax.swing.JLabel();
         jpbMeasure = new javax.swing.JProgressBar();
         jLabelStatusT = new javax.swing.JLabel();
         jLabelStatus = new javax.swing.JLabel();
+        jLabelCount = new javax.swing.JLabel();
         jPanStatusColour = new javax.swing.JPanel();
         jPanDial = new javax.swing.JPanel();
         jPanVelo = new javax.swing.JPanel();
@@ -275,15 +280,17 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanStatusText.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatusText.setLayout(new java.awt.GridBagLayout());
 
-        jLabelCount.setText("Anzahl der Messpunkte: ");
-        jLabelCount.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jLabelCountT.setText("Anzahl der Messpunkte: ");
+        jLabelCountT.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        jPanStatusText.add(jLabelCount, gridBagConstraints);
+        jPanStatusText.add(jLabelCountT, gridBagConstraints);
 
         jpbMeasure.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jpbMeasure.setIndeterminate(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
@@ -293,14 +300,24 @@ public class MeasureDialog extends javax.swing.JDialog {
         jLabelStatusT.setText("Status: ");
         jLabelStatusT.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanStatusText.add(jLabelStatusT, gridBagConstraints);
 
         jLabelStatus.setText("HOCHSCHALTEN");
         jLabelStatus.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanStatusText.add(jLabelStatus, gridBagConstraints);
+
+        jLabelCount.setText("jLabel1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanStatusText.add(jLabelCount, gridBagConstraints);
 
         jPanStatus.add(jPanStatusText);
 
@@ -348,7 +365,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanDial.add(jPanRPM, gridBagConstraints);
 
         jPanDials.setBackground(new java.awt.Color(255, 255, 255));
-        jPanDials.setLayout(new java.awt.GridLayout());
+        jPanDials.setLayout(new java.awt.GridLayout(1, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -407,13 +424,17 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         @Override
         protected void process(List<DialData> chunks) {
+            int count = 0;
+            
             for (DialData dd : chunks) {
                 rpm.setValue(dd.getEngRpm() / 1000);
                 velo.setValue(dd.getWheelVelo());
                 engRef.setValue(dd.getEngRef() / 1000);
                 wheelRef.setValue(dd.getWheelRef());
-
+                
                 jLabelVelo.setText(String.format("%.1f", dd.getWheelVelo()));
+                count++;
+                jLabelCount.setText(String.format("%d", count));
 
                 if (Bike.getInstance().isMeasRpm()) {
                     jLabelRPM.setText(String.format("%d", dd.getEngRpm()));
@@ -497,6 +518,7 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelCount;
+    private javax.swing.JLabel jLabelCountT;
     private javax.swing.JLabel jLabelRPM;
     private javax.swing.JLabel jLabelRPM1;
     private javax.swing.JLabel jLabelStatus;

@@ -19,7 +19,7 @@ public class Bike {
 
     private static Bike instance = null;
     
-    private String vehicleName;
+    private String vehicleName = "BESDyno";
 
     private boolean twoStroke;
     private boolean automatic;

@@ -2,6 +2,8 @@ package main;
 
 import data.Bike;
 import data.Config;
+import data.Database;
+import data.Diagram;
 import development.CommunicationLogger;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
@@ -13,9 +15,11 @@ import gui.MeasureDialog;
 import gui.ResultDialog;
 import gui.SettingsDialog;
 import gui.VehicleSetDialog;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -47,6 +51,18 @@ import jssc.SerialPortException;
 import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.Layer;
+import org.jfree.ui.TextAnchor;
 import serial.ConnectPortWorker;
 import serial.DisconnectPortWorker;
 import serial.requests.Request;
@@ -74,7 +90,7 @@ public class BESDyno extends javax.swing.JFrame {
     private LoggedCommPane commPane = new LoggedCommPane(this, false);
     private ResultDialog result = new ResultDialog(this, true);
     private DiagramSetDialog diagramSet = new DiagramSetDialog(this, true);
-    
+
     private MeasureDialog measure;
 
     //Object-Variables
@@ -135,12 +151,15 @@ public class BESDyno extends javax.swing.JFrame {
 
         jcbmiDarkMode.setState(Config.getInstance().isDark());
         userLog(getSalutation() + "Bitte verbinden Sie Ihr Gerät...", LogLevel.INFO);
+
+        LineChart lc = new LineChart();
+        lc.initChart();
     }
 
     private void refreshGui() {
         devMode = jcbmiDevMode.getState();
         LOG.setDebugMode(jcbmiDebugLogging.getState());
-        
+
         jmiSave.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
@@ -412,7 +431,6 @@ public class BESDyno extends javax.swing.JFrame {
 //        }
 //
 //    }
-
     // Saves the Communication Log
     public void saveComm() throws Exception {
         JFileChooser chooser = new JFileChooser();
@@ -531,7 +549,6 @@ public class BESDyno extends javax.swing.JFrame {
 //            }
 //        }
 //    }
-
     //Config
     private void loadConfig() throws FileNotFoundException, IOException, Exception {
         File home;
@@ -697,7 +714,7 @@ public class BESDyno extends javax.swing.JFrame {
         });
         commPane.setVisible(true);
     }
-    
+
     public void showMeasurementData() {
         MeasurementValuesPane valuesPane = new MeasurementValuesPane(this, false);
         valuesPane.setAppearance(Config.getInstance().isDark());
@@ -778,18 +795,7 @@ public class BESDyno extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanChart.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout jPanChartLayout = new javax.swing.GroupLayout(jPanChart);
-        jPanChart.setLayout(jPanChartLayout);
-        jPanChartLayout.setHorizontalGroup(
-            jPanChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 611, Short.MAX_VALUE)
-        );
-        jPanChartLayout.setVerticalGroup(
-            jPanChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
-        );
-
+        jPanChart.setLayout(new java.awt.GridLayout());
         getContentPane().add(jPanChart, java.awt.BorderLayout.CENTER);
 
         jPanStatus.setBackground(new java.awt.Color(255, 255, 255));
@@ -1235,12 +1241,12 @@ public class BESDyno extends javax.swing.JFrame {
                 measure = new MeasureDialog(this, true);
                 measure.setAppearance(Config.getInstance().isDark());
                 measure.setVisible(true);
-                
+
                 if (measure.isFinished()) {
                     result.setAppearance(Config.getInstance().isDark());
                     result.setValues();
                     result.setVisible(true);
-                    
+
                     diagramSet.setAppearance(Config.getInstance().isDark());
                     diagramSet.refreshGui();
                     diagramSet.setVisible(true);
@@ -1602,6 +1608,105 @@ public class BESDyno extends javax.swing.JFrame {
                     }
                 }
             }
+        }
+    }
+
+    private class LineChart {
+
+        private final Diagram diagram = Diagram.getInstance();
+
+        private final Database data = Database.getInstance();
+        private final Bike bike = Bike.getInstance();
+        private final Config config = Config.getInstance();
+
+        private final Font font = new Font("sansserif", Font.BOLD, 15);
+
+        private final ValueMarker maxPowerMarker = new ValueMarker(data.getBikePower());
+        private final ValueMarker maxTorqueMarker = new ValueMarker(data.getBikeTorque());
+
+        private XYSeries seriesTorque = new XYSeries("Drehmoment");
+        private XYSeries seriesPower = new XYSeries("Leistung");
+        private XYSeries series1 = new XYSeries("tempLeistung series");
+        private XYSeries series2 = new XYSeries("tempDrehmoment series");
+        private XYSeriesCollection dataset1 = new XYSeriesCollection();
+        private XYSeriesCollection dataset2 = new XYSeriesCollection();
+
+        public void initChart() {
+            JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart(bike.getVehicleName(),
+                    "Motordrehzahl [U/min]",
+                    "Leistung [" + config.getPowerUnit() + "]",
+                    dataset1,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    true,
+                    false);
+
+            ValueAxis torqueAxis = new NumberAxis("Drehmoment [Nm]");
+            torqueAxis.setLabelFont(chart.getXYPlot().getDomainAxis().getLabelFont());
+
+            seriesPower.setKey("Leistung");
+
+            chart.getXYPlot().setDataset(1, dataset2);
+            chart.getXYPlot().setRangeAxis(1, torqueAxis);
+            chart.getXYPlot().mapDatasetToRangeAxis(0, 0);//1st dataset to 1st y-axis
+            chart.getXYPlot().mapDatasetToRangeAxis(1, 1); //2nd dataset to 2nd y-axis
+
+            // Hinzufuegen von series zu der Datenmenge dataset
+            dataset1.addSeries(seriesPower);
+            dataset2.addSeries(seriesTorque);
+
+            maxPowerMarker.setPaint(Color.darkGray);
+            maxPowerMarker.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    1.0f, new float[]{
+                        6.0f, 7.0f
+                    }, 0.0f));
+
+            maxPowerMarker.setLabelTextAnchor(TextAnchor.BASELINE_LEFT);
+            maxPowerMarker.setLabelFont(font);
+
+            maxTorqueMarker.setPaint(Color.darkGray);
+            maxTorqueMarker.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    1.0f, new float[]{
+                        6.0f, 7.0f
+                    }, 0.0f));
+
+            maxTorqueMarker.setLabelTextAnchor(TextAnchor.TOP_LEFT);
+            maxTorqueMarker.setLabelFont(font);
+
+            XYLineAndShapeRenderer r1 = new XYLineAndShapeRenderer();
+            r1.setSeriesPaint(0, Color.blue);
+            r1.setSeriesShapesVisible(0, false);
+            r1.setSeriesStroke(0, new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            XYLineAndShapeRenderer r2 = new XYLineAndShapeRenderer();
+            r2.setSeriesPaint(0, Color.red);
+            r2.setSeriesShapesVisible(0, false);
+            r2.setSeriesStroke(0, new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            chart.getXYPlot().setRenderer(0, r1);
+            chart.getXYPlot().setRenderer(1, r2);
+
+            chart.getXYPlot().addRangeMarker(0, maxPowerMarker, Layer.BACKGROUND);
+            chart.getXYPlot().addRangeMarker(1, maxTorqueMarker, Layer.BACKGROUND);
+
+            ChartPanel chartPanel = new ChartPanel(chart);
+
+            TextTitle eco = new TextTitle("Temperatur: NaN "
+                    + "Luftdruck: NaN "
+                    + "Seehöhe: NaN");
+            TextTitle eng = new TextTitle("Motortemperatur : NaN "
+                    + "Abgastemperatur: NaN");
+            TextTitle val = new TextTitle("Pmax: NaN "
+                    + "Mmax: NaN "
+                    + "Vmax: NaN");
+
+            chart.addSubtitle(eco);
+            chart.addSubtitle(eng);
+            chart.addSubtitle(val);
+
+            jPanChart.add(chartPanel);
+
+            chart.fireChartChanged();
         }
     }
 

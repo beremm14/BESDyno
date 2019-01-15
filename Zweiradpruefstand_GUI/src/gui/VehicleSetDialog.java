@@ -47,7 +47,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jrbAutomatic.setForeground(Color.white);
             jrbManual.setForeground(Color.white);
             jrbStartStop.setForeground(Color.white);
-            jrbDrop.setForeground(Color.darkGray);
+            jrbDrop.setForeground(Color.white);
 
             jtfVehicleName.setBackground(Color.darkGray);
 
@@ -232,6 +232,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jPanStroke.setLayout(new java.awt.GridBagLayout());
 
         bgStroke.add(jrb2Stroke);
+        jrb2Stroke.setSelected(true);
         jrb2Stroke.setText("2 Takt");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -258,6 +259,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jPanTransmission.setLayout(new java.awt.GridBagLayout());
 
         bgTransmission.add(jrbManual);
+        jrbManual.setSelected(true);
         jrbManual.setText("Schaltgetriebe");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
