@@ -84,7 +84,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             rpm.setValue(0);
             createDial(rpm, engRef, "U/min x 1000", 0, 15, 1);
         }
-        
+        LOG.info("Start Measurement Chain");
         handleMeasurementChain();
 
     }

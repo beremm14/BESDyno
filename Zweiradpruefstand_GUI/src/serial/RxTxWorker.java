@@ -35,6 +35,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     LOG.severe(ex);
                 }
             });
+        } else if (this.port != null) {
+            this.port.removeEventListener();
         }
     }
 
@@ -48,6 +50,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
             LOG.debug("SerialPort Event happened!!! :)");
             while (true) {
                 try {
+                    LOG.info("----> Port: " + port);
                     final byte[] b = port.readBytes(1);
                     if (b == null || b.length == 0) {
                         break;

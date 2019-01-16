@@ -11,7 +11,6 @@ import jssc.SerialPort;
 public class ConnectPortWorker extends SwingWorker<Object, jssc.SerialPort> {
 
     private static final Logger LOG = Logger.getLogger(ConnectPortWorker.class.getName());
-    private static ConnectPortWorker instance = null;
 
     private final String port;
     

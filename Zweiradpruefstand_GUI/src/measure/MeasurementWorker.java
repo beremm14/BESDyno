@@ -39,7 +39,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             status = Status.SHIFT_UP;
         }
 
-        LOG.info("Measurement started...");
+        LOG.info("MeasurementWorker started...");
         while (!isCancelled()) {
             try {
                 switch (status) {
@@ -195,6 +195,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     public Datapoint measure() throws Exception {
         Datapoint dp;
         LOG.debug("measure()");
+        if (telegram == null) {
+            LOG.severe("Telegram is null");
+        }
         main.addPendingRequest(telegram.measure());
         LOG.debug("MEASURE added to pendingRequests");
         synchronized (data.syncObj) {

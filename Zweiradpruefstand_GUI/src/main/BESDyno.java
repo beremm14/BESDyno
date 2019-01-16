@@ -1266,10 +1266,10 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             MyConnectPortWorker w = new MyConnectPortWorker((String) jcbSerialDevices.getSelectedItem());
             w.execute();
-            jtfStatus.setText("Port erfolgreich geöffnet");
+            jtfStatus.setText("Port wird geöffnet");
             activeWorker = w;
             refreshGui();
-            userLog("Connected with " + jcbSerialDevices.getSelectedItem(), LogLevel.FINE);
+            //userLog("Connected with " + jcbSerialDevices.getSelectedItem(), LogLevel.FINE);
         } catch (Throwable ex) {
             userLog(ex, "Fehler beim Verbinden", LogLevel.SEVERE);
         }
@@ -1497,6 +1497,15 @@ public class BESDyno extends javax.swing.JFrame {
                 port = null;
             } catch (Throwable th) {
                 userLog(th, "Fehler beim Trennen des Geräts!", LogLevel.WARNING);
+            } finally {
+                if (telegram != null) {
+                    try {
+                        telegram.setSerialPort(null);
+                    } catch (SerialPortException ex) {
+                        LOG.warning(ex);
+                    }
+                    telegram = null;
+                }
             }
             try {
                 userLog("Gerät erfolgreich getrennt!", LogLevel.FINE);
@@ -1739,7 +1748,7 @@ public class BESDyno extends javax.swing.JFrame {
                 //LOG.severe(ex);
             }
             javax.swing.SwingUtilities.invokeLater(() -> {
-                BESDyno besDyno = new BESDyno();
+                BESDyno besDyno = BESDyno.getInstance();
                 besDyno.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
@@ -1765,7 +1774,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
 
             java.awt.EventQueue.invokeLater(() -> {
-                BESDyno besDyno = new BESDyno();
+                BESDyno besDyno = BESDyno.getInstance();
                 besDyno.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
@@ -1790,7 +1799,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
 
             java.awt.EventQueue.invokeLater(() -> {
-                BESDyno besDyno = new BESDyno();
+                BESDyno besDyno = BESDyno.getInstance();
                 besDyno.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
@@ -1815,7 +1824,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
 
             java.awt.EventQueue.invokeLater(() -> {
-                BESDyno besDyno = new BESDyno();
+                BESDyno besDyno = BESDyno.getInstance();
                 besDyno.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
