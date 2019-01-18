@@ -118,6 +118,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 rpm = data.getEngRpmList().get(data.getEngRpmList().size() - 1);
                 if (rpm > hysteresisMin && rpm < hysteresisMax) {
                     accepted++;
+                    LOG.info("Hysteresis Loop: Try " + accepted + "/" + hysCount);
                 }
             } while (accepted < hysCount);
         } else {

@@ -46,11 +46,11 @@ public class RequestMeasure extends Request {
             String response = res.replaceAll(":", "");
             response = response.replaceAll(";", "");
 
-            // :engCount#engTime#rearCount#rearTime>crc;
+            // :engCount#rearCount#Time>crc;
             String values[] = response.split("#");
-            values[3] = removeCRC(values[3]);
+            values[2] = removeCRC(values[2]);
 
-            RawDatapoint dp = new RawDatapoint(values[0], values[2], values[1]);
+            RawDatapoint dp = new RawDatapoint(values[0], values[1], values[2]);
             if (dp.getTime() > 0) {
                 Database.getInstance().addRawDP(dp);
                 LOG.debug("MEASURE: engCount: " + dp.getEngCount() + " wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
@@ -60,7 +60,7 @@ public class RequestMeasure extends Request {
 
             Database.getInstance().getRawList().notifyAll();
 
-            if (checkCRC(res) && dp.getTime() == Integer.parseInt(values[3]) && dp.getTime() > 0) {
+            if (checkCRC(res) && dp.getTime() > 0) {
                 status = Status.DONE;
             } else {
                 status = Status.ERROR;

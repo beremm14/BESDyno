@@ -46,7 +46,7 @@ public class RequestMeasureno extends Request {
             String response = res.replaceAll(":", "");
             response = response.replaceAll(";", "");
 
-            // :rearCount#rearTime>crc;
+            // :rearCount#Time>crc;
             String values[] = response.split("#");
             values[1] = removeCRC(values[1]);
 

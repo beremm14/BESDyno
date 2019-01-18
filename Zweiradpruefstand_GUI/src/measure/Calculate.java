@@ -20,7 +20,7 @@ public class Calculate {
     public Datapoint calcRpm(RawDatapoint rdp) {
         double engCount = (double) rdp.getEngCount();
         double wheelCount = (double) rdp.getWheelCount();
-        double time = (double) rdp.getTime();
+        double time = (double) rdp.getTime() / 1000.0;
 
         double totalImpulse = 26.0;
         double engRpm;
@@ -40,7 +40,7 @@ public class Calculate {
     public Datapoint calcWheelOnly(RawDatapoint rdp) {
         double totalImpulse = 26.0;
         double wheelCount = (double) rdp.getWheelCount();
-        double time = (double) rdp.getTime();
+        double time = (double) rdp.getTime() / 1000.0;
 
         double wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
 

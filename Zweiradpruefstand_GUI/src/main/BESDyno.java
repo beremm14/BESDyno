@@ -104,7 +104,7 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean connection = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
-    private double reqArduVers = 1.4;
+    private double reqArduVers = 2.0;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();

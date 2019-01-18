@@ -17,7 +17,7 @@ int workingPin1 = 7;
 int workingPin2 = 8;
 
 //Version
-float progvers = 2.1;
+float progvers = 2.0;
 
 //-Declarations----------------------------------------------------------//
 void serialEvent();
@@ -194,10 +194,17 @@ void toggleWorkingLed2() {
   digitalWrite(workingPin2, !digitalRead(workingPin2));
 }
 
+//Task Machine
+void callTaskMachine() {
+  //for more machines -> else if(){}
+}
+
 //Reset Variables
 void resetMeasurement() {
   engCount = 0;
   rearCount = 0;
+  engTime = 0;
+  rearTime = 0;
   refMicros = micros();
 }
 
