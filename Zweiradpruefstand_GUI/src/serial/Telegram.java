@@ -20,17 +20,9 @@ public class Telegram extends RxTxWorker {
     public Request init() {
         synchronized (requestList) {
             final Request request = new RequestInit();
-            LOG.debug("new: RequestInit();");
-            
             request.setStatus(Request.Status.WAITINGTOSEND);
-            LOG.debug("Request INIT: WAITING-TO-SEND");
-            
             requestList.add(request);
-            LOG.debug("Request INIT added to synchronized LinkedList<>():requestList");
-            
             requestList.notifyAll();
-            LOG.debug("synchronized LinkedList<>():requestList notified");
-            
             return request;
         }
     }
@@ -38,17 +30,9 @@ public class Telegram extends RxTxWorker {
     public Request start() {
         synchronized (requestList) {
             final Request request = new RequestStart();
-            LOG.debug("new: requestStart();");
-            
             request.setStatus(Request.Status.WAITINGTOSEND);
-            LOG.debug("Request START: WAITING-TO-SEND");
-            
             requestList.add(request);
-            LOG.debug("Request START added to synchronized LinkedList<>():requestList");
-            
             requestList.notifyAll();
-            LOG.debug("synchronized LinkedList<>():requestList notified");
-            
             return request;
         }
     }

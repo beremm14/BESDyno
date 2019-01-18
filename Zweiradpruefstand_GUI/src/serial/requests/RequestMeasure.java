@@ -39,7 +39,7 @@ public class RequestMeasure extends Request {
 
     @Override
     public void handleResponse(String res) {
-        synchronized (Database.getInstance().syncObj) {
+        synchronized (Database.getInstance().getRawList()) {
             response = res;
             COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
 
@@ -58,8 +58,7 @@ public class RequestMeasure extends Request {
                 LOG.warning("MEASURE: Time = 0");
             }
 
-            Database.getInstance().syncObj.notifyAll();
-            LOG.debug("Measurement-syncObj notified");
+            Database.getInstance().getRawList().notifyAll();
 
             if (checkCRC(res) && dp.getTime() == Integer.parseInt(values[3]) && dp.getTime() > 0) {
                 status = Status.DONE;

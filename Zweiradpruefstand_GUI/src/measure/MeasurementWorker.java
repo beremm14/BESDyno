@@ -5,6 +5,7 @@ import data.Database;
 import data.Config;
 import data.Datapoint;
 import data.DialData;
+import data.RawDatapoint;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;
@@ -67,7 +68,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                     case FINISH:
                         LOG.info("Measurement finished");
                         manageFinish();
-
                         return null;
 
                     default:
@@ -83,14 +83,25 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //State-Methods
     //Lower than Start-Speed reached once -> hysteresis loop
     private Status manageShiftUp() throws Exception {
+        main.addPendingRequest(telegram.start());
+        
+        //INIT -> time to get higher than Start-Speed
+        for (int i=0; i<10; i++) {
+            if (bike.isMeasRpm()) {
+                publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
+            } else {
+                publish(new DialData(Status.SHIFT_UP, measureno(), config.getStartVelo()));
+            }
+        }
+
         if (bike.isMeasRpm()) {
             do {
                 publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
-            } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm());
+            } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStartRpm());
         } else {
             do {
                 publish(new DialData(Status.SHIFT_UP, measureno(), config.getStartVelo()));
-            } while (data.getVelList().get(data.getVelList().size() - 1) <= config.getStartVelo());
+            } while (data.getVelList().get(data.getVelList().size() - 1) >= config.getStartVelo());
         }
         return Status.WAIT;
     }
@@ -108,7 +119,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 if (rpm > hysteresisMin && rpm < hysteresisMax) {
                     accepted++;
                 }
-                Thread.sleep(config.getPeriod());
             } while (accepted < hysCount);
         } else {
             int hysteresisMin = config.getIdleVelo() - config.getHysteresisVelo();
@@ -121,7 +131,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 if (velocity > hysteresisMin && velocity < hysteresisMax) {
                     accepted++;
                 }
-                Thread.sleep(config.getPeriod());
             } while (accepted < hysCount);
         }
         return Status.READY;
@@ -132,15 +141,16 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         if (bike.isMeasRpm()) {
             do {
                 publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm()));
-            } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStartRpm());
+            } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm());
         } else {
             do {
                 publish(new DialData(Status.READY, measureno(), config.getStartVelo()));
-            } while (data.getVelList().get(data.getVelList().size() - 1) >= config.getStartVelo());
+            } while (data.getVelList().get(data.getVelList().size() - 1) <= config.getStartVelo());
         }
         return Status.MEASURE;
     }
 
+    //Higher than Stop-Speed reached 5 times -> finish
     //Lower than Start-Speed reached 5 times -> finish
     private Status manageMeasure() throws Exception {
         //Clear all Lists for good Data ;)
@@ -193,35 +203,40 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Measurement-Methods
     public Datapoint measure() throws Exception {
-        Datapoint dp;
-        LOG.debug("measure()");
-        if (telegram == null) {
-            LOG.severe("Telegram is null");
-        }
+        Datapoint dp = null;
+
         main.addPendingRequest(telegram.measure());
-        LOG.debug("MEASURE added to pendingRequests");
-        synchronized (data.syncObj) {
 
-            data.syncObj.wait(1000);
+        Thread.sleep(config.getPeriod());
 
-            dp = calc.calcRpm(data.getRawList().get(data.getRawList().size() - 1));
-            data.addWR(dp.getWheelRpm());
-            data.addER(dp.getEngRpm());
+        synchronized (Database.getInstance().getRawList()) {
+            RawDatapoint rdp = data.getRawList().get(data.getRawList().size() - 1);
 
-            switch (config.getVelocity()) {
-                case MPS:
-                    data.addVel(calc.calcMps(dp));
-                    break;
-                case KMH:
-                    data.addVel(calc.calcKmh(dp));
-                    break;
-                case MIH:
-                    data.addVel(calc.calcMph(dp));
-                    break;
-                default:
-                    throw new Exception("No Velocity Unit...");
-            }
+            LOG.debug("---->          Counts: " + rdp.getEngCount());
+            LOG.debug("---->            Time: " + rdp.getTime());
+
+            dp = calc.calcRpm(rdp);
         }
+        data.addWR(dp.getWheelRpm());
+        data.addER(dp.getEngRpm());
+
+        LOG.debug("---->   Motordrehzahl: " + data.getEngRpmList().get(data.getEngRpmList().size() - 1));
+
+        switch (config.getVelocity()) {
+            case MPS:
+                data.addVel(calc.calcMps(dp));
+                break;
+            case KMH:
+                data.addVel(calc.calcKmh(dp));
+                break;
+            case MIH:
+                data.addVel(calc.calcMph(dp));
+                break;
+            default:
+                throw new Exception("No Velocity Unit...");
+        }
+
+        LOG.debug("----> Geschwindigkeit: " + data.getVelList().get(data.getVelList().size() - 1));
 
         return dp;
     }
@@ -231,28 +246,27 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         main.addPendingRequest(telegram.measureno());
 
-        synchronized (data.syncObj) {
-            data.syncObj.wait(1000);
+        synchronized (Database.getInstance().syncObj) {
+            Database.getInstance().syncObj.wait();
+        }
+        dp = calc.calcRpm(data.getRawList().get(data.getRawList().size() - 1));
+        data.addWR(dp.getWheelRpm());
 
-            dp = calc.calcRpm(data.getRawList().get(data.getRawList().size() - 1));
-            data.addWR(dp.getWheelRpm());
-
-            switch (config.getVelocity()) {
-                case MPS:
-                    data.addVel(calc.calcMps(dp));
-                    break;
-                case KMH:
-                    data.addVel(calc.calcKmh(dp));
-                    break;
-                case MIH:
-                    data.addVel(calc.calcMph(dp));
-                    break;
-                default:
-                    throw new Exception("No Velocity Unit...");
-            }
+        switch (config.getVelocity()) {
+            case MPS:
+                data.addVel(calc.calcMps(dp));
+                break;
+            case KMH:
+                data.addVel(calc.calcKmh(dp));
+                break;
+            case MIH:
+                data.addVel(calc.calcMph(dp));
+                break;
+            default:
+                throw new Exception("No Velocity Unit...");
         }
 
-        return data.getVelList().get(data.getVelList().size()-1);
+        return data.getVelList().get(data.getVelList().size() - 1);
     }
 
     public Status getStatus() {

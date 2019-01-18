@@ -296,6 +296,7 @@ void rearISR() {
 
 void serialEvent() {
   while (Serial.available()) {
+    
     char req = (char)Serial.read();
 
     if (req == 'i') {

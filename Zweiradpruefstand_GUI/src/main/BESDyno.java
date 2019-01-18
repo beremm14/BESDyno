@@ -4,6 +4,7 @@ import data.Bike;
 import data.Config;
 import data.Database;
 import data.Diagram;
+import data.Environment;
 import development.CommunicationLogger;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
@@ -23,13 +24,11 @@ import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -102,12 +101,14 @@ public class BESDyno extends javax.swing.JFrame {
     //Variables
     private static boolean devMode = false;
     private static OS os = OS.OTHER;
-    private boolean connection = true;
+    private boolean connection = false;
     private boolean secondTry = true;
+    private boolean measurementFinished = false;
     private double reqArduVers = 1.4;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
+    private final Object syncObj = new Object();
 
     /**
      * Creates new form BESDyno
@@ -161,9 +162,10 @@ public class BESDyno extends javax.swing.JFrame {
         LOG.setDebugMode(jcbmiDebugLogging.getState());
 
         jmiSave.setEnabled(false);
+        jmiExport.setEnabled(false);
         jmiPrint.setEnabled(false);
         jmiStartSim.setEnabled(false);
-        jbutStartSim.setEnabled(true);
+        jbutStartSim.setEnabled(false);
         jmiConnect.setEnabled(false);
         jbutConnect.setEnabled(false);
         jmiDisconnect.setEnabled(false);
@@ -213,8 +215,17 @@ public class BESDyno extends javax.swing.JFrame {
             jbutRefresh.setEnabled(false);
             jmiConnect.setEnabled(false);
             jbutConnect.setEnabled(false);
+        }
+
+        if (connection) {
             jmiStartSim.setEnabled(true);
             jbutStartSim.setEnabled(true);
+        }
+
+        if (measurementFinished) {
+            jmiSave.setEnabled(false);
+            jmiExport.setEnabled(false);
+            jmiPrint.setEnabled(false);
         }
     }
 
@@ -759,6 +770,8 @@ public class BESDyno extends javax.swing.JFrame {
         jmiYellow = new javax.swing.JMenuItem();
         jmiRed = new javax.swing.JMenuItem();
         jmiYellowRed = new javax.swing.JMenuItem();
+        jmiEnvironment = new javax.swing.JMenuItem();
+        jmiEngineTemp = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jmiRefresh = new javax.swing.JMenuItem();
         jmiConnect = new javax.swing.JMenuItem();
@@ -795,7 +808,7 @@ public class BESDyno extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanChart.setBackground(new java.awt.Color(255, 255, 255));
-        jPanChart.setLayout(new java.awt.GridLayout());
+        jPanChart.setLayout(new java.awt.GridLayout(1, 0));
         getContentPane().add(jPanChart, java.awt.BorderLayout.CENTER);
 
         jPanStatus.setBackground(new java.awt.Color(255, 255, 255));
@@ -969,6 +982,22 @@ public class BESDyno extends javax.swing.JFrame {
         jmenuStatus.add(jmiYellowRed);
 
         jmenuSimulation.add(jmenuStatus);
+
+        jmiEnvironment.setText("Umweltdaten aktualisieren");
+        jmiEnvironment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onEnvironment(evt);
+            }
+        });
+        jmenuSimulation.add(jmiEnvironment);
+
+        jmiEngineTemp.setText("Zweiradtemperaturen messen");
+        jmiEngineTemp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onEngineTemp(evt);
+            }
+        });
+        jmenuSimulation.add(jmiEngineTemp);
         jmenuSimulation.add(jSeparator3);
 
         jmiRefresh.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.META_MASK));
@@ -1243,6 +1272,8 @@ public class BESDyno extends javax.swing.JFrame {
                 measure.setVisible(true);
 
                 if (measure.isFinished()) {
+                    measurementFinished = true;
+
                     result.setAppearance(Config.getInstance().isDark());
                     result.setValues();
                     result.setVisible(true);
@@ -1255,6 +1286,7 @@ public class BESDyno extends javax.swing.JFrame {
         } else {
             userLogPane("Fehler beim Starten: Es wurde noch keine Verbindung aufgebaut...", LogLevel.SEVERE);
         }
+        refreshGui();
     }//GEN-LAST:event_onStartSim
 
     private void onRefresh(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onRefresh
@@ -1461,6 +1493,39 @@ public class BESDyno extends javax.swing.JFrame {
         showMeasurementData();
     }//GEN-LAST:event_onShowMeasurementValues
 
+    private void onEnvironment(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onEnvironment
+        addPendingRequest(telegram.start());
+        synchronized (syncObj) {
+            try {
+                syncObj.wait(1000);
+            } catch (InterruptedException ex) {
+                LOG.warning(ex);
+            }
+            JOptionPane.showMessageDialog(this, String.format("Umweltdaten gemessen:\n"
+                    + "Temperatur: %.2f\n"
+                    + "Luftdruck: %.2f\n"
+                    + "Seehöhe: %.2f",
+                    Environment.getInstance().getEnvTemp(), Environment.getInstance().getAirPress(), Environment.getInstance().getAltitude()),
+                    "Umweltdaten aktualisiert", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_onEnvironment
+
+    private void onEngineTemp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onEngineTemp
+        addPendingRequest(telegram.engine());
+        synchronized (syncObj) {
+            try {
+                syncObj.wait(1000);
+            } catch (Exception ex) {
+                LOG.warning(ex);
+            }
+            JOptionPane.showMessageDialog(this, String.format("Temperaturen gemessen:\n"
+                    + "Motortemperatur: %.2f\n"
+                    + "Abgastemperatur: %.2f\n",
+                    Environment.getInstance().getEngTemp(), Environment.getInstance().getFumeTemp()),
+                    "Zweiradtemperaturen aktualisiert", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_onEngineTemp
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1537,6 +1602,9 @@ public class BESDyno extends javax.swing.JFrame {
             for (Request r : chunks) {
                 if (r.getStatus() == Status.DONE) {
                     LOG.debug("Request " + r.getReqName() + ": DONE");
+                    synchronized (syncObj) {
+                        syncObj.notifyAll();
+                    }
                 } else if (r.getStatus() == Status.ERROR) {
                     LOG.debug("Request: " + r.getReqName() + ": ERROR");
                 } else {
@@ -1893,6 +1961,8 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiEngine;
+    private javax.swing.JMenuItem jmiEngineTemp;
+    private javax.swing.JMenuItem jmiEnvironment;
     private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenuItem jmiFine;
     private javax.swing.JMenuItem jmiHelp;

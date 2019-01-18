@@ -6,9 +6,9 @@ package data;
  */
 public class RawDatapoint {
     
-    private int engCount;   //Counts/time
-    private int wheelCount; //Counts/time
-    private int time;       //ms (dt)
+    private final int engCount;   //Counts/time
+    private final int wheelCount; //Counts/time
+    private final int time;       //ms (dt)
 
     public RawDatapoint(String engCount, String wheelCount, String time) {
         this.engCount = Integer.parseInt(engCount);
@@ -44,18 +44,6 @@ public class RawDatapoint {
 
     public int getTime() {
         return time;
-    }
-
-    public void setEngCount(int engCount) {
-        this.engCount = engCount;
-    }
-
-    public void setWheelCount(int wheelCount) {
-        this.wheelCount = wheelCount;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
     }
 
 }

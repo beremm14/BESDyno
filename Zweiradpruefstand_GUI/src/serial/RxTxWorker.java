@@ -50,19 +50,16 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
             LOG.debug("SerialPort Event happened!!! :)");
             while (true) {
                 try {
-                    LOG.info("----> Port: " + port);
                     final byte[] b = port.readBytes(1);
                     if (b == null || b.length == 0) {
                         break;
                     }
                     String s = new String(b).trim();
                     //String s = port.readString().trim();
-                    LOG.debug("Response-String: " + s);
                     synchronized (receivedFrame) {
                         receivedFrame.append(s);
                         if (";".equals(s)) {
                             receivedFrame.notifyAll();
-                            LOG.debug("Response-String built -> synchronized receivedFrame notified");
                         }
                     }
                 } catch (SerialPortException ex) {
@@ -81,7 +78,6 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
                 synchronized (receivedFrame) {
                     receivedFrame.delete(0, receivedFrame.length());
-                    LOG.debug("synchronized receivedFrame deleted");
                 }
 
                 Request req = null;
@@ -103,11 +99,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 }
 
                 req.setStatus(Status.WAITINGTOSEND);
-                LOG.debug("Request " + req.getReqName() + " WAITING-TO-SEND");
 
-                LOG.debug("Request " + req.getReqName() + " on the way...");
                 req.sendRequest(port);
-                LOG.debug("Request " + req.getReqName() + ": sending completed");
 
                 String res;
                 synchronized (receivedFrame) {
@@ -115,7 +108,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         receivedFrame.wait();
                     }
                     res = receivedFrame.toString();
-                    LOG.debug("Response: toString(): " + res);
+                    LOG.debug("Response: " + res);
                     receivedFrame.delete(0, receivedFrame.length() - 1);
                 }
 

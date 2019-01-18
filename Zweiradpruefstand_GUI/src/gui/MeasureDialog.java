@@ -5,15 +5,16 @@ import data.Config;
 import data.DialData;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.util.List;
 import logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
 import org.jfree.chart.ChartPanel;
@@ -22,9 +23,6 @@ import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialCap;
 import org.jfree.chart.plot.dial.DialPlot;
 import org.jfree.chart.plot.dial.DialPointer;
-import org.jfree.chart.plot.dial.DialPointer.Pin;
-import org.jfree.chart.plot.dial.DialTextAnnotation;
-import org.jfree.chart.plot.dial.DialValueIndicator;
 import org.jfree.chart.plot.dial.StandardDialFrame;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.data.general.DefaultValueDataset;
@@ -39,12 +37,14 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private static final Logger LOG = Logger.getLogger(MeasureDialog.class.getName());
 
-    private boolean finished;
+    private boolean finished = false;
 
     private final DefaultValueDataset velo = new DefaultValueDataset(0);
     private final DefaultValueDataset rpm = new DefaultValueDataset(0);
     private final DefaultValueDataset engRef = new DefaultValueDataset(0);
     private final DefaultValueDataset wheelRef = new DefaultValueDataset(0);
+
+    private int count = 0;
 
     private MyMeasurementWorker worker;
 
@@ -55,9 +55,19 @@ public class MeasureDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         setTitle("Messung läuft...");
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(parent);
         setResizable(false);
-        setMinimumSize(new Dimension(620, 450));
+        setDefaultCloseOperation(0);
+        setMinimumSize(new Dimension(620, 500));
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (!finished) {
+                    handleCanceling();
+                }
+            }
+        });
 
         initComponents();
 
@@ -79,10 +89,12 @@ public class MeasureDialog extends javax.swing.JDialog {
         }
         jLabelVelo1.setText(unit);
 
-        createDial(velo, wheelRef, unit, 0, highScaleEnd, 10);
+        createDial(jFrameVelo, velo, wheelRef, unit, 0, highScaleEnd, 10);
         if (Bike.getInstance().isMeasRpm()) {
             rpm.setValue(0);
-            createDial(rpm, engRef, "U/min x 1000", 0, 15, 1);
+            createDial(jFrameRPM, rpm, engRef, "U/min x 1000", 0, 15, 1);
+        } else {
+            jPanDial.remove(jFrameRPM);
         }
         LOG.info("Start Measurement Chain");
         handleMeasurementChain();
@@ -95,7 +107,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         worker.execute();
     }
 
-    private void createDial(DefaultValueDataset value, DefaultValueDataset ref, String title, int min, int max, int tick) {
+    private void createDial(JInternalFrame frame, DefaultValueDataset value, DefaultValueDataset ref, String title, int min, int max, int tick) {
 
         DialPlot plot = new DialPlot();
         plot.setDataset(0, value);
@@ -107,16 +119,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         pin.setRadius(0.55000000000000004D);
         plot.addPointer(pin);
 
-        /*
-        DialTextAnnotation annotation = new DialTextAnnotation(title);
-        annotation.setFont(new Font(null, Font.BOLD, 17));
-        if (Config.getInstance().isDark()) {
-            annotation.setPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
-        } else {
-            annotation.setPaint(new GradientPaint(new Point(), Color.BLACK, new Point(), Color.BLACK));
-        }
-        plot.addLayer(annotation);
-         */
         GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(170, 170, 220));
         DialBackground dialbackground = new DialBackground(gradientpaint);
 
@@ -151,16 +153,12 @@ public class MeasureDialog extends javax.swing.JDialog {
         }
         ChartPanel chartPanel = new ChartPanel(chart);
 
-        jPanDials.add(chartPanel);
-
-        /*
         frame.setUI(null);
-        frame.add(new ChartPanel(new JFreeChart(plot)));
+        frame.add(chartPanel);
         frame.pack();
         frame.setSize(500, 500);
-         */
     }
-    
+
     private void testDials(Status status) {
         rpm.setValue(0);
         velo.setValue(0);
@@ -168,9 +166,9 @@ public class MeasureDialog extends javax.swing.JDialog {
         jLabelVelo.setText("0.0");
         engRef.setValue(Config.getInstance().getStopRpm() / 1000);
         wheelRef.setValue(Config.getInstance().getStopVelo());
-        
+
         rpm.setValue(2);
-        
+
         switch (status) {
             case SHIFT_UP:
                 jPanStatusColour.setBackground(Color.CYAN);
@@ -197,7 +195,6 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanDial.setBackground(Color.darkGray);
             jPanMain.setBackground(Color.darkGray);
             jPanStatus.setBackground(Color.darkGray);
-            //jPanStatusColour.setBackground(Color.darkGray);
             jPanStatusText.setBackground(Color.darkGray);
             jPanVelo.setBackground(Color.darkGray);
             jPanRPM.setBackground(Color.darkGray);
@@ -216,7 +213,6 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanDial.setBackground(Color.white);
             jPanMain.setBackground(Color.white);
             jPanStatus.setBackground(Color.white);
-            //jPanStatusColour.setBackground(Color.white);
             jPanStatusText.setBackground(Color.white);
             jPanVelo.setBackground(Color.white);
             jPanRPM.setBackground(Color.white);
@@ -235,6 +231,15 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    private void handleCanceling() {
+        int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (answ == JOptionPane.YES_OPTION) {
+            worker.cancel(true);
+            finished = false;
+            dispose();
+        }
     }
 
     /**
@@ -256,6 +261,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         jLabelStatus = new javax.swing.JLabel();
         jLabelCount = new javax.swing.JLabel();
         jPanStatusColour = new javax.swing.JPanel();
+        jLabelDo = new javax.swing.JLabel();
         jPanDial = new javax.swing.JPanel();
         jPanVelo = new javax.swing.JPanel();
         jLabelVelo = new javax.swing.JLabel();
@@ -264,6 +270,8 @@ public class MeasureDialog extends javax.swing.JDialog {
         jLabelRPM = new javax.swing.JLabel();
         jLabelRPM1 = new javax.swing.JLabel();
         jPanDials = new javax.swing.JPanel();
+        jFrameRPM = new javax.swing.JInternalFrame();
+        jFrameVelo = new javax.swing.JInternalFrame();
         jPanControls = new javax.swing.JPanel();
         jbutCancel = new javax.swing.JButton();
         jbutFinish = new javax.swing.JButton();
@@ -312,8 +320,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanStatusText.add(jLabelStatus, gridBagConstraints);
-
-        jLabelCount.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -323,6 +329,11 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         jPanStatusColour.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatusColour.setLayout(new java.awt.GridLayout(1, 0));
+
+        jLabelDo.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jLabelDo.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanStatusColour.add(jLabelDo);
+
         jPanStatus.add(jPanStatusColour);
 
         jPanMain.add(jPanStatus, java.awt.BorderLayout.NORTH);
@@ -333,7 +344,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanVelo.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabelVelo.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jLabelVelo.setText("50");
         jPanVelo.add(jLabelVelo);
 
         jLabelVelo1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
@@ -341,7 +351,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanVelo.add(jLabelVelo1);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -350,7 +360,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanRPM.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabelRPM.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jLabelRPM.setText("12000");
         jPanRPM.add(jLabelRPM);
 
         jLabelRPM1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
@@ -358,7 +367,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanRPM.add(jLabelRPM1);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -366,6 +375,15 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         jPanDials.setBackground(new java.awt.Color(255, 255, 255));
         jPanDials.setLayout(new java.awt.GridLayout(1, 0));
+
+        jFrameRPM.setVisible(true);
+        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+        jPanDials.add(jFrameRPM);
+
+        jFrameVelo.setVisible(true);
+        jFrameVelo.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+        jPanDials.add(jFrameVelo);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -408,30 +426,31 @@ public class MeasureDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jbutFinishActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
-        int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (answ == JOptionPane.YES_OPTION) {
-            worker.cancel(true);
-            finished = false;
-            dispose();
-        }
+        handleCanceling();
     }//GEN-LAST:event_jbutCancelActionPerformed
 
     private class MyMeasurementWorker extends MeasurementWorker {
 
         @Override
         protected void done() {
+            if (!isCancelled()) {
+                int answ = JOptionPane.showConfirmDialog(MeasureDialog.this, "Möchten Sie die Messung abschließen?", "Fertigstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (answ == JOptionPane.YES_OPTION) {
+                    finished = true;
+                    dispose();
+                }
+            }
         }
 
         @Override
         protected void process(List<DialData> chunks) {
-            int count = 0;
-            
+
             for (DialData dd : chunks) {
-                rpm.setValue(dd.getEngRpm() / 1000);
+                rpm.setValue(dd.getEngRpm() / 1000.0);
                 velo.setValue(dd.getWheelVelo());
-                engRef.setValue(dd.getEngRef() / 1000);
+                engRef.setValue(dd.getEngRef() / 1000.0);
                 wheelRef.setValue(dd.getWheelRef());
-                
+
                 jLabelVelo.setText(String.format("%.1f", dd.getWheelVelo()));
                 count++;
                 jLabelCount.setText(String.format("%d", count));
@@ -449,15 +468,27 @@ public class MeasureDialog extends javax.swing.JDialog {
                 switch (dd.getStatus()) {
                     case SHIFT_UP:
                         jPanStatusColour.setBackground(Color.CYAN);
+                        if (count < 10) {
+                            jLabelDo.setText("Gas geben und in den letzten Gang schalten...");
+                        } else {
+                            jLabelDo.setText("Fortsetzen: UNTER Referenzwert gelangen (roter Zeiger)!");
+                        }
                         break;
                     case WAIT:
                         jPanStatusColour.setBackground(Color.ORANGE);
+                        jLabelDo.setText("Initialisieren... Drehzahl UNTER Referenzwert halten!");
                         break;
                     case READY:
                         jPanStatusColour.setBackground(new Color(30, 200, 30));
+                        jLabelDo.setText("Bereit - Gas geben!");
                         break;
                     case MEASURE:
                         jPanStatusColour.setBackground(new Color(30, 200, 30));
+                        if (Bike.getInstance().isStartStopMethod()) {
+                            jLabelDo.setText("Abschließen: ÜBER Referenzwert gelangen!");
+                        } else {
+                            jLabelDo.setText("Abschließen: UNTER Referenzwert gelangen!");
+                        }
                         break;
                     case FINISH:
                         jPanStatusColour.setBackground(Color.RED);
@@ -517,8 +548,11 @@ public class MeasureDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JInternalFrame jFrameRPM;
+    private javax.swing.JInternalFrame jFrameVelo;
     private javax.swing.JLabel jLabelCount;
     private javax.swing.JLabel jLabelCountT;
+    private javax.swing.JLabel jLabelDo;
     private javax.swing.JLabel jLabelRPM;
     private javax.swing.JLabel jLabelRPM1;
     private javax.swing.JLabel jLabelStatus;

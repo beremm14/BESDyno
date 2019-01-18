@@ -18,28 +18,40 @@ public class Calculate {
 
     //Calculates One Point
     public Datapoint calcRpm(RawDatapoint rdp) {
-        int totalImpulse = 26;
-        int wheelRpm;
-        int engRpm;
+        double engCount = (double) rdp.getEngCount();
+        double wheelCount = (double) rdp.getWheelCount();
+        double time = (double) rdp.getTime();
 
-        wheelRpm = (rdp.getWheelCount() / (rdp.getTime() * totalImpulse)) * 60000;
+        double totalImpulse = 26.0;
+        double engRpm;
+        double wheelRpm;
+
+        wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
+
         if (Bike.getInstance().isTwoStroke()) {
-            engRpm = (rdp.getEngCount() / rdp.getTime()) * 60000;
+            engRpm = (engCount / time) * 60000.0;
         } else {
-            engRpm = ((rdp.getEngCount() * 2) / rdp.getTime()) * 60000;
+            engRpm = ((engCount * 2.0) / time) * 60000.0;
         }
-        return new Datapoint(engRpm, wheelRpm, rdp.getTime());
+
+        return new Datapoint((int) Math.round(engRpm), (int) Math.round(wheelRpm), rdp.getTime());
     }
 
     public Datapoint calcWheelOnly(RawDatapoint rdp) {
-        int totalImpulse = 26;
-        return new Datapoint(rdp.getWheelCount() / (rdp.getTime() * totalImpulse), rdp.getTime());
+        double totalImpulse = 26.0;
+        double wheelCount = (double) rdp.getWheelCount();
+        double time = (double) rdp.getTime();
+
+        double wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
+
+        return new Datapoint((int) Math.round(wheelRpm), rdp.getTime());
     }
 
     //Calculates One Point
     public double calcMps(Datapoint dp) {
         double r = 0.35;
-        return r * 2 * Math.PI * (dp.getWheelRpm() / 60);
+        double wheelRpm = (double) dp.getWheelRpm();
+        return r * 2.0 * Math.PI * (wheelRpm / 60.0);
     }
 
     public double calcKmh(Datapoint dp) {
@@ -55,15 +67,15 @@ public class Calculate {
 
         //Engine
         for (int i = 0; i < data.getEngRpmList().size(); i++) {
-            double dOmega = 2 * Math.PI * (data.getEngRpmList().get(i) / 60);
-            double alpha = dOmega / (data.getTimeList().get(i) * 1000);
+            double dOmega = 2 * Math.PI * ((double) data.getEngRpmList().get(i) / 60.0);
+            double alpha = dOmega / ((double) data.getTimeList().get(i) * 1000.0);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
 
             if (config.isPs()) {
-                currPower = currPower * 1.359621617 / 1000;
+                currPower = currPower * 1.359621617 / 1000.0;
             } else {
-                currPower = currPower / 1000;
+                currPower = currPower / 1000.0;
             }
 
             data.addEP(currPower);
@@ -72,15 +84,15 @@ public class Calculate {
 
         //Wheel
         for (int i = 0; i < data.getWheelRpmList().size(); i++) {
-            double dOmega = 2 * Math.PI * (data.getWheelRpmList().get(i) / 60);
-            double alpha = dOmega / (data.getTimeList().get(i) * 1000);
+            double dOmega = 2 * Math.PI * ((double) data.getWheelRpmList().get(i) / 60.0);
+            double alpha = dOmega / ((double) data.getTimeList().get(i) * 1000.0);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
 
             if (config.isPs()) {
-                currPower = currPower * 1.359621617 / 1000;
+                currPower = currPower * 1.359621617 / 1000.0;
             } else {
-                currPower = currPower / 1000;
+                currPower = currPower / 1000.0;
             }
 
             data.addWP(currPower);
