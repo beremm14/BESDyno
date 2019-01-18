@@ -35,7 +35,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | START | `s` | Umweltdaten (Temperatur, Luftdruck, Seehöhe) | `:Temperatur#Luftdruck#Seehöhe>CRC;` oder `:BMP-ERROR>CRC;` |
 | ENGINE | `e` | Motor- & Abgastemperatur | `:Motortemp.#Abgastemp.>CRC;` |
 | KILL | `k` | *setzt RPM-Counter auf 0* | `:KILL>CRC;` |
-| MEASURE | `m` | Motor- & Walzendrehzahl | `:Motor-Counts#Motorzeit#Walzen-Counts#Walzenzeit>CRC;` |
+| MEASURE | `m` | Motor- & Walzendrehzahl | `:Motor-Counts#Walzen-Counts#Zeit>CRC;` |
 | MEASURENO | `n` | Nur Walzendrehzahl | `:Walzen-Counts#Zeit>CRC;` |
 | FINE | `f` | *setzt grüne LED* | `:FINE>CRC;` |
 | WARNING | `w` | *setzt gelbe LED* | `:WARNING>CRC;` |
