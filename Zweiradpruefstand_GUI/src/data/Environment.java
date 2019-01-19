@@ -44,6 +44,26 @@ public class Environment {
     public double getAltitude() {
         return altitude;
     }
+    
+    public String envTempToString() {
+        return envTemp + "°C";
+    }
+    
+    public String engTempToString() {
+        return engTemp + "°C";
+    }
+    
+    public String fumeTempToString() {
+        return fumeTemp + "°C";
+    }
+    
+    public String airPressToString() {
+        return airPress + "hPa";
+    }
+    
+    public String altitudeToString() {
+        return altitude + "m";
+    }
 
     //Setter
     public void setEnvTemp(double envTemp) {

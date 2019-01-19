@@ -94,7 +94,9 @@ public class MeasureDialog extends javax.swing.JDialog {
             rpm.setValue(0);
             createDial(jFrameRPM, rpm, engRef, "U/min x 1000", 0, 15, 1);
         } else {
-            jPanDial.remove(jFrameRPM);
+            jPanDials.remove(jFrameRPM);
+            jPanDial.remove(jPanRPM);
+            jPanDials.remove(jPanVelo);
         }
         LOG.info("Start Measurement Chain");
         handleMeasurementChain();
@@ -471,12 +473,21 @@ public class MeasureDialog extends javax.swing.JDialog {
                         if (count < 10) {
                             jLabelDo.setText("Gas geben und in den letzten Gang schalten...");
                         } else {
-                            jLabelDo.setText("Fortsetzen: UNTER Referenzwert gelangen (roter Zeiger)!");
+                            if (Bike.getInstance().isMeasRpm()) {
+                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen (roter Zeiger)!");
+                            } else {
+                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit()+ " gelangen (roter Zeiger)!");
+                            }
                         }
                         break;
                     case WAIT:
                         jPanStatusColour.setBackground(Color.ORANGE);
-                        jLabelDo.setText("Initialisieren... Drehzahl UNTER Referenzwert halten!");
+                        if (Bike.getInstance().isMeasRpm()) {
+                            jLabelDo.setText("Initialisieren... Drehzahl UNTER " + Config.getInstance().getIdleRpm() + " U/min halten, ±" + Config.getInstance().getHysteresisRpm() + " U/min");
+                        } else {
+                            jLabelDo.setText("Initialisieren... Drehzahl UNTER " + Config.getInstance().getIdleVelo() + " " 
+                                    + Config.getInstance().getVeloUnit() + " halten, ±" + Config.getInstance().getHysteresisVelo() + " " + Config.getInstance().getVeloUnit());
+                        }
                         break;
                     case READY:
                         jPanStatusColour.setBackground(new Color(30, 200, 30));
@@ -485,9 +496,17 @@ public class MeasureDialog extends javax.swing.JDialog {
                     case MEASURE:
                         jPanStatusColour.setBackground(new Color(30, 200, 30));
                         if (Bike.getInstance().isStartStopMethod()) {
-                            jLabelDo.setText("Abschließen: ÜBER Referenzwert gelangen!");
+                            if (Bike.getInstance().isMeasRpm()) {
+                                jLabelDo.setText("Abschließen: ÜBER " + Config.getInstance().getStopRpm() + " U/min gelangen!");
+                            } else {
+                                jLabelDo.setText("Abschließen: ÜBER " + Config.getInstance().getStopVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen!");
+                            }
                         } else {
-                            jLabelDo.setText("Abschließen: UNTER Referenzwert gelangen!");
+                            if (Bike.getInstance().isMeasRpm()) {
+                                jLabelDo.setText("Abschließen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen!");
+                            } else {
+                                jLabelDo.setText("Abschließen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen!");
+                            }
                         }
                         break;
                     case FINISH:

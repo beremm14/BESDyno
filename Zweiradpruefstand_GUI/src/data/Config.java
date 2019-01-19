@@ -79,6 +79,15 @@ public class Config {
     public String getPowerUnit() {
         return ps ? "PS" : "kW";
     }
+    
+    public String getVeloUnit() {
+        switch(velocity) {
+            case MPS: return "m/s";
+            case MIH: return "mi/h";
+            case KMH: return "km/h";
+            default: throw new RuntimeException("No Velocity Unit defined...");
+        }
+    }
 
     public int getPngHeight() {
         return pngHeight;

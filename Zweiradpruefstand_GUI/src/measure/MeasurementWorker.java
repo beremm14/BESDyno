@@ -84,9 +84,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //Lower than Start-Speed reached once -> hysteresis loop
     private Status manageShiftUp() throws Exception {
         main.addPendingRequest(telegram.start());
-        
+
         //INIT -> time to get higher than Start-Speed
-        for (int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             if (bike.isMeasRpm()) {
                 publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
             } else {
@@ -246,11 +246,12 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         Datapoint dp;
 
         main.addPendingRequest(telegram.measureno());
+        
+        Thread.sleep(config.getPeriod());
 
         synchronized (Database.getInstance().syncObj) {
-            Database.getInstance().syncObj.wait();
+            dp = calc.calcWheelOnly(data.getRawList().get(data.getRawList().size() - 1));
         }
-        dp = calc.calcRpm(data.getRawList().get(data.getRawList().size() - 1));
         data.addWR(dp.getWheelRpm());
 
         switch (config.getVelocity()) {
