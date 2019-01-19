@@ -21,6 +21,19 @@ Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle
   **/Zweiradpruefstand_Arduino**: Protoyp-Software, die zur Demonstration der Funktionsfähigkeit sowie für erste Messungen im Rahmen der Diplomarbeit angefertigt wird.  
 
 ## Dokumentation
+### Wichtigste Funktionen
+  * Einlesen der Sensordaten  
+  * Übertragung der Daten per UART  
+  * Auswertung der Daten
+  * Live-Ansicht von Drehzahl und Geschwindigkeit  
+  * Berechnung von Leistung und Drehmoment über die Drehzahlen  
+
+### Arten von Daten und deren Erfassung
+  * Umgebungstemperatur und -luftdruck: BMP180 (I2C)  
+  * Motor- und Abgastemperatur: Thermoelemente (OPV-Verstärker, AnalogIn)  
+  * Walzendrehzahl: Induktiver Näherungsschalter (InterruptPin)  
+  * Motordrehzahl: Strommesszange am Zündkabel (Schmitt-Trigger, InterruptPin)  
+
 ### Protokoll
 Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientiert.
 #### Aufbau:
