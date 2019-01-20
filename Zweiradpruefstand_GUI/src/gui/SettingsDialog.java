@@ -1,6 +1,7 @@
 package gui;
 
 import data.Config;
+import development.CommunicationLogger;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -9,8 +10,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import javax.swing.JFileChooser;
 import logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -64,6 +72,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanWest.setBackground(Color.darkGray);
             jPanVelocity.setBackground(Color.darkGray);
             jPanDevice.setBackground(Color.darkGray);
+            jPanLoad.setBackground(Color.darkGray);
+            jPanConfirm.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setBackground(Color.darkGray);
             jtfHysteresisRpm.setBackground(Color.darkGray);
@@ -135,6 +145,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelStopKmh2.setForeground(Color.white);
             jLabelStopRpm.setForeground(Color.white);
             jLabelStopRpm2.setForeground(Color.white);
+            jLabelHelp.setForeground(Color.white);
         } else {
             jPanAppearance.setBackground(Color.white);
             jPanButtons.setBackground(Color.white);
@@ -147,6 +158,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanWest.setBackground(Color.white);
             jPanVelocity.setBackground(Color.white);
             jPanDevice.setBackground(Color.white);
+            jPanLoad.setBackground(Color.white);
+            jPanConfirm.setBackground(Color.white);
 
             jtfInertia.setBackground(Color.white);
             jtfInertia.setForeground(Color.black);
@@ -220,6 +233,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelStopKmh2.setForeground(Color.black);
             jLabelStopRpm.setForeground(Color.black);
             jLabelStopRpm2.setForeground(Color.black);
+            jLabelHelp.setForeground(Color.black);
         }
     }
 
@@ -232,7 +246,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     //Sets the Config-File
-    private void confirm(Config c) {
+    private void confirm(Config c, boolean save) {
 
         boolean error = false;
 
@@ -372,6 +386,9 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         if (!error) {
             try {
+                if (save) {
+                    saveBikeConfig(Config.getInstance());
+                }
                 saveConfig(Config.getInstance());
             } catch (Exception e) {
                 error = true;
@@ -500,6 +517,82 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.info("Config-File updated");
         }
     }
+    
+    //Loads Config from Config-Files Folder
+    public void loadBikeConfig () throws Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Config (*.json)", "json"));
+
+        File file = null;
+        File home;
+        File folder;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + "Bike-Files" + File.separator + "Config_Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            file = new File(folder + File.separator + "_Config" + ".json");
+        }
+
+        chooser.setSelectedFile(file);
+
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+
+            if (file.exists()) {
+                Config.getInstance().readJson(new FileInputStream(file));
+                setSwingValues(Config.getInstance());
+            }
+        }
+    }
+    
+    //Saves Config for special Bikes into Config-Files Folder
+    public void saveBikeConfig (Config config) throws Exception {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Config (*.json)", "json"));
+
+        File file = null;
+        File home;
+        File folder;
+
+        try {
+            home = new File(System.getProperty("user.home"));
+        } catch (Exception e) {
+            home = null;
+        }
+
+        if (home != null && home.exists()) {
+            folder = new File(home + File.separator + "Bike-Files" + File.separator + "Config_Files");
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    throw new Exception("Internal Error");
+                }
+            }
+            file = new File(folder + File.separator + "_Config" + ".json");
+        }
+
+        chooser.setSelectedFile(file);
+
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+                config.writeJson(w);
+                LOG.info("New Config-File saved: " + file.getPath());
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -573,8 +666,12 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelStopKmh2 = new javax.swing.JLabel();
         jLabelHelp = new javax.swing.JLabel();
         jPanButtons = new javax.swing.JPanel();
+        jPanConfirm = new javax.swing.JPanel();
         jbutCancel = new javax.swing.JButton();
         jbutOK = new javax.swing.JButton();
+        jPanLoad = new javax.swing.JPanel();
+        jbutLoad = new javax.swing.JButton();
+        jbutSave = new javax.swing.JButton();
         jPanDevice = new javax.swing.JPanel();
         jLabelDevice1 = new javax.swing.JLabel();
         jLabelDevice2 = new javax.swing.JLabel();
@@ -1053,6 +1150,9 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanButtons.setBackground(new java.awt.Color(255, 255, 255));
         jPanButtons.setLayout(new java.awt.GridBagLayout());
 
+        jPanConfirm.setBackground(new java.awt.Color(255, 255, 255));
+        jPanConfirm.setLayout(new java.awt.GridBagLayout());
+
         jbutCancel.setText("Abbrechen");
         jbutCancel.setAlignmentX(1.0F);
         jbutCancel.setPreferredSize(new java.awt.Dimension(125, 29));
@@ -1063,7 +1163,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanButtons.add(jbutCancel, gridBagConstraints);
+        jPanConfirm.add(jbutCancel, gridBagConstraints);
 
         jbutOK.setText("Übernehmen");
         jbutOK.setAlignmentX(1.0F);
@@ -1075,7 +1175,34 @@ public class SettingsDialog extends javax.swing.JDialog {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanButtons.add(jbutOK, gridBagConstraints);
+        jPanConfirm.add(jbutOK, gridBagConstraints);
+
+        jPanButtons.add(jPanConfirm, new java.awt.GridBagConstraints());
+
+        jPanLoad.setBackground(new java.awt.Color(255, 255, 255));
+        jPanLoad.setLayout(new java.awt.GridBagLayout());
+
+        jbutLoad.setText("Laden");
+        jbutLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onLoad(evt);
+            }
+        });
+        jPanLoad.add(jbutLoad, new java.awt.GridBagConstraints());
+
+        jbutSave.setText("Speichern");
+        jbutSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onSave(evt);
+            }
+        });
+        jPanLoad.add(jbutSave, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanButtons.add(jPanLoad, gridBagConstraints);
 
         getContentPane().add(jPanButtons, java.awt.BorderLayout.SOUTH);
 
@@ -1125,7 +1252,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jrbNightmodeActionPerformed
 
     private void jbutOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutOKActionPerformed
-        confirm(Config.getInstance());
+        confirm(Config.getInstance(), false);
     }//GEN-LAST:event_jbutOKActionPerformed
 
     private void jbutCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCancelActionPerformed
@@ -1150,6 +1277,18 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelStartKmh2.setText("mi/h");
         jLabelHysteresisKmh2.setText("mi/h");
     }//GEN-LAST:event_jrbMPHActionPerformed
+
+    private void onLoad(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onLoad
+        try {
+            loadBikeConfig();
+        } catch (Exception ex) {
+            LOG.warning(ex);
+        }
+    }//GEN-LAST:event_onLoad
+
+    private void onSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSave
+        confirm(Config.getInstance(), true);
+    }//GEN-LAST:event_onSave
 
     /**
      * @param args the command line arguments
@@ -1232,9 +1371,11 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelTorque;
     private javax.swing.JPanel jPanAppearance;
     private javax.swing.JPanel jPanButtons;
+    private javax.swing.JPanel jPanConfirm;
     private javax.swing.JPanel jPanCorr;
     private javax.swing.JPanel jPanDevice;
     private javax.swing.JPanel jPanEast;
+    private javax.swing.JPanel jPanLoad;
     private javax.swing.JPanel jPanMain;
     private javax.swing.JPanel jPanPNG;
     private javax.swing.JPanel jPanPower;
@@ -1245,7 +1386,9 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.ButtonGroup jbgPower;
     private javax.swing.ButtonGroup jbgVelocity;
     private javax.swing.JButton jbutCancel;
+    private javax.swing.JButton jbutLoad;
     private javax.swing.JButton jbutOK;
+    private javax.swing.JButton jbutSave;
     private javax.swing.JRadioButton jrbDaymode;
     private javax.swing.JRadioButton jrbKMH;
     private javax.swing.JRadioButton jrbKW;

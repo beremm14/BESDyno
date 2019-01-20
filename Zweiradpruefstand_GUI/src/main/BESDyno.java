@@ -471,12 +471,6 @@ public class BESDyno extends javax.swing.JFrame {
 
         chooser.setSelectedFile(comfile);
 
-        //Later maybe - native OS-specific File Dialog
-//        FileDialog fileDialog = new FileDialog(this);
-//                fileDialog.setMode(FileDialog.SAVE);
-//                fileDialog.setDirectory(comfile.getPath());
-//                fileDialog.setTitle(chooser.getDialogTitle());
-//                fileDialog.setVisible(true);
         int rv = chooser.showSaveDialog(this);
         if (rv == JFileChooser.APPROVE_OPTION) {
             comfile = chooser.getSelectedFile();
