@@ -1,5 +1,6 @@
 package gui;
 
+import data.Bike;
 import data.Config;
 import development.CommunicationLogger;
 import java.awt.Color;
@@ -564,6 +565,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         File file = null;
         File home;
         File folder;
+        Date date = Calendar.getInstance().getTime();
+        DateFormat df = new SimpleDateFormat("yy.MM.dd-HH.mm");
 
         try {
             home = new File(System.getProperty("user.home"));
@@ -578,7 +581,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                     throw new Exception("Internal Error");
                 }
             }
-            file = new File(folder + File.separator + "_Config" + ".json");
+            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + "_Config_" + df.format(date) + ".json");
         }
 
         chooser.setSelectedFile(file);

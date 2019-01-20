@@ -38,7 +38,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -102,6 +101,7 @@ public class BESDyno extends javax.swing.JFrame {
     private static boolean devMode = false;
     private static OS os = OS.OTHER;
     private boolean connection = false;
+    private boolean activity = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
     private double reqArduVers = 2.0;
@@ -192,10 +192,19 @@ public class BESDyno extends javax.swing.JFrame {
 
         if (activeWorker != null) {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            jpbStatus.setIndeterminate(true);
             return;
         } else {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            jpbStatus.setIndeterminate(false);
         }
+        
+        if (activity) {
+            jpbStatus.setIndeterminate(true);
+        } else {
+            jpbStatus.setIndeterminate(false);
+        }
+        
         jmiRefresh.setEnabled(true);
         jbutRefresh.setEnabled(true);
 
@@ -1261,6 +1270,8 @@ public class BESDyno extends javax.swing.JFrame {
             userLog("Start der Simulation", LogLevel.INFO);
 
             if (vehicle.isPressedOK()) {
+                activity = true;
+                
                 measure = new MeasureDialog(this, true);
                 measure.setAppearance(Config.getInstance().isDark());
                 measure.setVisible(true);
@@ -1275,6 +1286,9 @@ public class BESDyno extends javax.swing.JFrame {
                     diagramSet.setAppearance(Config.getInstance().isDark());
                     diagramSet.refreshGui();
                     diagramSet.setVisible(true);
+                    activity = false;
+                } else {
+                    activity = false;
                 }
             }
         } else {
@@ -1541,6 +1555,7 @@ public class BESDyno extends javax.swing.JFrame {
                 userLog(e, "Gerät konnte nicht verbunden werden...", LogLevel.SEVERE);
             } finally {
                 activeWorker = null;
+                activity = true;
                 refreshGui();
             }
         }
@@ -1589,6 +1604,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         @Override
         protected void done() {
+            activity = false;
         }
 
         @Override
@@ -1624,7 +1640,7 @@ public class BESDyno extends javax.swing.JFrame {
                             addPendingRequest(telegram.warning());
                         }
                     }
-
+                    
                 } else if (r.getVariety() == Variety.START) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
@@ -1677,6 +1693,8 @@ public class BESDyno extends javax.swing.JFrame {
                             LOG.warning("VERSION returns ERROR: " + r.getResponse());
                         }
                     }
+                    activity = false;
+                    refreshGui();
                 }
             }
         }
