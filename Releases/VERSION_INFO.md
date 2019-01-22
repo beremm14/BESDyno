@@ -5,6 +5,7 @@
 ## C++ Arduino Software
   Version **2.0** or higher required, newest recommended!  
 
+  * **v2.1**: Implemented Debug-Interface, req = *'d'*  
   * **v2.0**: Uses microseconds for measurement (instead of milliseconds)  
 
   **Don't use:**  
