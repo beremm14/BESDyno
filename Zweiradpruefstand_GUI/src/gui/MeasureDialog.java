@@ -4,6 +4,15 @@ import data.Bike;
 import data.Config;
 import data.DialData;
 import development.TestCSV;
+import eu.hansolo.steelseries.gauges.Radial;
+import eu.hansolo.steelseries.tools.ColorDef;
+import eu.hansolo.steelseries.tools.FrameDesign;
+import eu.hansolo.steelseries.tools.KnobStyle;
+import eu.hansolo.steelseries.tools.KnobType;
+import eu.hansolo.steelseries.tools.ThresholdType;
+import eu.hansolo.steelseries.tools.TicklabelOrientation;
+import eu.hansolo.steelseries.tools.TickmarkType;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -15,6 +24,7 @@ import java.util.List;
 import logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import main.BESDyno;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
@@ -40,10 +50,13 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private boolean finished = false;
 
-    private final DefaultValueDataset velo = new DefaultValueDataset(0);
-    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
-    private final DefaultValueDataset engRef = new DefaultValueDataset(0);
-    private final DefaultValueDataset wheelRef = new DefaultValueDataset(0);
+//    private final DefaultValueDataset velo = new DefaultValueDataset(0);
+//    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
+//    private final DefaultValueDataset engRef = new DefaultValueDataset(0);
+//    private final DefaultValueDataset wheelRef = new DefaultValueDataset(0);
+    
+    private final Radial veloGauge = new Radial();
+    private final Radial rpmGauge = new Radial();
 
     private int count = 0;
 
@@ -88,16 +101,14 @@ public class MeasureDialog extends javax.swing.JDialog {
                 highScaleEnd = 150;
                 break;
         }
-        jLabelVelo1.setText(unit);
 
-        createDial(jFrameVelo, velo, wheelRef, unit, 0, highScaleEnd, 10);
+        //createJFCDial(jFrameVelo, velo, wheelRef, unit, 0, highScaleEnd, 10);
+        createVelocityGauge(highScaleEnd, unit);
         if (Bike.getInstance().isMeasRpm()) {
-            rpm.setValue(0);
-            createDial(jFrameRPM, rpm, engRef, "U/min x 1000", 0, 15, 1);
+            //createJFCDial(jFrameRPM, rpm, engRef, "U/min x 1000", 0, 15, 1);
+            createRPMGauge();
         } else {
-            jPanDials.remove(jFrameRPM);
             jPanDial.remove(jPanRPM);
-            jPanDials.remove(jPanVelo);
         }
         LOG.info("Start Measurement Chain");
         handleMeasurementChain();
@@ -109,8 +120,92 @@ public class MeasureDialog extends javax.swing.JDialog {
         worker = new MyMeasurementWorker();
         worker.execute();
     }
+    
+    private void updateGaugeValue(Radial gauge, double value, double ref) {
+        gauge.setValueAnimated(value);
+        gauge.setLcdValue(value);
+        gauge.setThreshold(ref);
+    }
+    
+    private void createVelocityGauge(double maxValue, String unit) {
+        
+        veloGauge.setTitle("Velocity");
+        veloGauge.setUnitString(unit);
+        
+        veloGauge.setArea3DEffectVisible(true);
+        
+        if (Config.getInstance().isDark()) {
+            veloGauge.setFrameDesign(FrameDesign.CHROME);
+        } else {
+            veloGauge.setFrameDesign(FrameDesign.BLACK_METAL);
+        }
+        
+        veloGauge.setNiceScale(true);
+        veloGauge.setLedVisible(false);
+        
+        veloGauge.setKnobStyle(KnobStyle.SILVER);
+        veloGauge.setKnobType(KnobType.METAL_KNOB);
+        
+        veloGauge.setMaxValue(maxValue);
+        veloGauge.setMajorTickSpacing(10);
+        veloGauge.setMinorTickSpacing(5);
+        veloGauge.setMajorTickmarkType(TickmarkType.TRIANGLE);
+        veloGauge.setTickmarkColor(Color.RED);
+        veloGauge.setTicklabelOrientation(TicklabelOrientation.HORIZONTAL);
+        veloGauge.setLabelNumberFormat(eu.hansolo.steelseries.tools.NumberFormat.STANDARD);
+        veloGauge.setLabelColor(Color.RED);
+        veloGauge.setMaxMeasuredValueVisible(true);
+        veloGauge.setMinMeasuredValueVisible(true);
+        
+        veloGauge.setThresholdColor(ColorDef.ORANGE);
+        veloGauge.setThresholdType(ThresholdType.ARROW);
+        veloGauge.setThresholdVisible(true);
 
-    private void createDial(JInternalFrame frame, DefaultValueDataset value, DefaultValueDataset ref, String title, int min, int max, int tick) {
+        jPanVelo.setSize(new Dimension(500, 500));
+        jPanVelo.add(veloGauge, BorderLayout.CENTER);
+    }
+    
+    private void createRPMGauge() {
+        
+        rpmGauge.setTitle("RPM");
+        rpmGauge.setUnitString("U/min x 1000");
+        
+        rpmGauge.setArea3DEffectVisible(true);
+        
+        if (Config.getInstance().isDark()) {
+            rpmGauge.setFrameDesign(FrameDesign.CHROME);
+        } else {
+            rpmGauge.setFrameDesign(FrameDesign.BLACK_METAL);
+        }
+        
+        rpmGauge.setNiceScale(true);
+        rpmGauge.setLedVisible(false);
+        
+        rpmGauge.setKnobStyle(KnobStyle.SILVER);
+        rpmGauge.setKnobType(KnobType.METAL_KNOB);
+        
+        rpmGauge.setMaxValue(15);
+        rpmGauge.setMajorTickSpacing(1);
+        rpmGauge.setMinorTickSpacing(0.1);
+        rpmGauge.setMajorTickmarkType(TickmarkType.TRIANGLE);
+        rpmGauge.setTickmarkColor(Color.RED);
+        rpmGauge.setTicklabelOrientation(TicklabelOrientation.HORIZONTAL);
+        rpmGauge.setLabelNumberFormat(eu.hansolo.steelseries.tools.NumberFormat.STANDARD);
+        rpmGauge.setLabelColor(Color.RED);
+        rpmGauge.setMaxMeasuredValueVisible(true);
+        rpmGauge.setMinMeasuredValueVisible(true);
+        
+        rpmGauge.setLcdDecimals(3);
+        
+        rpmGauge.setThresholdColor(ColorDef.ORANGE);
+        rpmGauge.setThresholdType(ThresholdType.ARROW);
+        rpmGauge.setThresholdVisible(true);
+        
+        jPanRPM.setSize(new Dimension(500, 500));
+        jPanRPM.add(rpmGauge, BorderLayout.CENTER);
+    }
+
+    private void createJFCDial(JInternalFrame frame, DefaultValueDataset value, DefaultValueDataset ref, String title, int min, int max, int tick) {
 
         DialPlot plot = new DialPlot();
         plot.setDataset(0, value);
@@ -122,7 +217,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         pin.setRadius(0.55000000000000004D);
         plot.addPointer(pin);
 
-        GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(170, 170, 220));
+        GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(170, 170, 170), new Point(), new Color(120, 120, 120));
         DialBackground dialbackground = new DialBackground(gradientpaint);
 
         dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
@@ -162,35 +257,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         frame.setSize(500, 500);
     }
 
-    private void testDials(Status status) {
-        rpm.setValue(0);
-        velo.setValue(0);
-        jLabelRPM.setText("0");
-        jLabelVelo.setText("0.0");
-        engRef.setValue(Config.getInstance().getStopRpm() / 1000);
-        wheelRef.setValue(Config.getInstance().getStopVelo());
-
-        rpm.setValue(2);
-
-        switch (status) {
-            case SHIFT_UP:
-                jPanStatusColour.setBackground(Color.CYAN);
-                break;
-            case WAIT:
-                jPanStatusColour.setBackground(Color.ORANGE);
-                break;
-            case READY:
-                jPanStatusColour.setBackground(new Color(30, 200, 30));
-                break;
-            case MEASURE:
-                jPanStatusColour.setBackground(new Color(30, 200, 30));
-                break;
-            case FINISH:
-                jPanStatusColour.setBackground(Color.RED);
-                break;
-        }
-    }
-
     //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
         if (dark == true) {
@@ -201,16 +267,11 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanStatusText.setBackground(Color.darkGray);
             jPanVelo.setBackground(Color.darkGray);
             jPanRPM.setBackground(Color.darkGray);
-            jPanDials.setBackground(Color.darkGray);
 
             jLabelCount.setForeground(Color.white);
             jLabelCountT.setForeground(Color.white);
             jLabelStatus.setForeground(Color.white);
             jLabelStatusT.setForeground(Color.white);
-            jLabelVelo.setForeground(Color.white);
-            jLabelVelo1.setForeground(Color.white);
-            jLabelRPM.setForeground(Color.white);
-            jLabelRPM1.setForeground(Color.white);
         } else {
             jPanControls.setBackground(Color.white);
             jPanDial.setBackground(Color.white);
@@ -219,16 +280,11 @@ public class MeasureDialog extends javax.swing.JDialog {
             jPanStatusText.setBackground(Color.white);
             jPanVelo.setBackground(Color.white);
             jPanRPM.setBackground(Color.white);
-            jPanDials.setBackground(Color.white);
 
             jLabelCount.setForeground(Color.black);
             jLabelCountT.setForeground(Color.black);
             jLabelStatus.setForeground(Color.black);
             jLabelStatusT.setForeground(Color.black);
-            jLabelVelo.setForeground(Color.black);
-            jLabelVelo1.setForeground(Color.black);
-            jLabelRPM.setForeground(Color.black);
-            jLabelRPM1.setForeground(Color.black);
         }
     }
 
@@ -266,15 +322,8 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanStatusColour = new javax.swing.JPanel();
         jLabelDo = new javax.swing.JLabel();
         jPanDial = new javax.swing.JPanel();
-        jPanVelo = new javax.swing.JPanel();
-        jLabelVelo = new javax.swing.JLabel();
-        jLabelVelo1 = new javax.swing.JLabel();
         jPanRPM = new javax.swing.JPanel();
-        jLabelRPM = new javax.swing.JLabel();
-        jLabelRPM1 = new javax.swing.JLabel();
-        jPanDials = new javax.swing.JPanel();
-        jFrameRPM = new javax.swing.JInternalFrame();
-        jFrameVelo = new javax.swing.JInternalFrame();
+        jPanVelo = new javax.swing.JPanel();
         jPanControls = new javax.swing.JPanel();
         jbutCancel = new javax.swing.JButton();
         jbutFinish = new javax.swing.JButton();
@@ -342,59 +391,15 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanMain.add(jPanStatus, java.awt.BorderLayout.NORTH);
 
         jPanDial.setBackground(new java.awt.Color(255, 255, 255));
-        jPanDial.setLayout(new java.awt.GridBagLayout());
-
-        jPanVelo.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabelVelo.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jPanVelo.add(jLabelVelo);
-
-        jLabelVelo1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jLabelVelo1.setText("km/h");
-        jPanVelo.add(jLabelVelo1);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        jPanDial.add(jPanVelo, gridBagConstraints);
+        jPanDial.setLayout(new java.awt.GridLayout());
 
         jPanRPM.setBackground(new java.awt.Color(255, 255, 255));
+        jPanRPM.setLayout(new java.awt.BorderLayout());
+        jPanDial.add(jPanRPM);
 
-        jLabelRPM.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jPanRPM.add(jLabelRPM);
-
-        jLabelRPM1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jLabelRPM1.setText("U/min");
-        jPanRPM.add(jLabelRPM1);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        jPanDial.add(jPanRPM, gridBagConstraints);
-
-        jPanDials.setBackground(new java.awt.Color(255, 255, 255));
-        jPanDials.setLayout(new java.awt.GridLayout(1, 0));
-
-        jFrameRPM.setVisible(true);
-        jFrameRPM.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
-        jPanDials.add(jFrameRPM);
-
-        jFrameVelo.setVisible(true);
-        jFrameVelo.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
-        jPanDials.add(jFrameVelo);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanDial.add(jPanDials, gridBagConstraints);
+        jPanVelo.setBackground(new java.awt.Color(255, 255, 255));
+        jPanVelo.setLayout(new java.awt.BorderLayout());
+        jPanDial.add(jPanVelo);
 
         jPanMain.add(jPanDial, java.awt.BorderLayout.CENTER);
 
@@ -453,17 +458,14 @@ public class MeasureDialog extends javax.swing.JDialog {
         protected void process(List<DialData> chunks) {
 
             for (DialData dd : chunks) {
-                rpm.setValue(dd.getEngRpm() / 1000.0);
-                velo.setValue(dd.getWheelVelo());
-                engRef.setValue(dd.getEngRef() / 1000.0);
-                wheelRef.setValue(dd.getWheelRef());
-
-                jLabelVelo.setText(String.format("%.1f", dd.getWheelVelo()));
+                
+                updateGaugeValue(rpmGauge, dd.getEngRpm() / 1000.0, dd.getEngRef() / 1000.0);
+                updateGaugeValue(veloGauge, dd.getWheelVelo(), dd.getWheelRef());
+                
                 count++;
                 jLabelCount.setText(String.format("%d", count));
 
                 if (Bike.getInstance().isMeasRpm()) {
-                    jLabelRPM.setText(String.format("%d", dd.getEngRpm()));
                 }
 
                 try {
@@ -479,9 +481,9 @@ public class MeasureDialog extends javax.swing.JDialog {
                             jLabelDo.setText("Gas geben und in den letzten Gang schalten...");
                         } else {
                             if (Bike.getInstance().isMeasRpm()) {
-                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen (roter Zeiger)!");
+                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen (oranger Pfeil)!");
                             } else {
-                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit()+ " gelangen (roter Zeiger)!");
+                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit()+ " gelangen (oranger Pfeil)!");
                             }
                         }
                         break;
@@ -572,20 +574,13 @@ public class MeasureDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JInternalFrame jFrameRPM;
-    private javax.swing.JInternalFrame jFrameVelo;
     private javax.swing.JLabel jLabelCount;
     private javax.swing.JLabel jLabelCountT;
     private javax.swing.JLabel jLabelDo;
-    private javax.swing.JLabel jLabelRPM;
-    private javax.swing.JLabel jLabelRPM1;
     private javax.swing.JLabel jLabelStatus;
     private javax.swing.JLabel jLabelStatusT;
-    private javax.swing.JLabel jLabelVelo;
-    private javax.swing.JLabel jLabelVelo1;
     private javax.swing.JPanel jPanControls;
     private javax.swing.JPanel jPanDial;
-    private javax.swing.JPanel jPanDials;
     private javax.swing.JPanel jPanMain;
     private javax.swing.JPanel jPanRPM;
     private javax.swing.JPanel jPanStatus;
