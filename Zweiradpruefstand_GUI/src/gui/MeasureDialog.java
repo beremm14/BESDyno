@@ -3,6 +3,7 @@ package gui;
 import data.Bike;
 import data.Config;
 import data.DialData;
+import development.TestCSV;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -14,7 +15,7 @@ import java.util.List;
 import logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
+import main.BESDyno;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
 import org.jfree.chart.ChartPanel;
@@ -435,6 +436,10 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         @Override
         protected void done() {
+            if (BESDyno.getInstance().isTestMode()) {
+                new TestCSV();
+            }
+            
             if (!isCancelled()) {
                 int answ = JOptionPane.showConfirmDialog(MeasureDialog.this, "Möchten Sie die Messung abschließen?", "Fertigstellen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (answ == JOptionPane.YES_OPTION) {

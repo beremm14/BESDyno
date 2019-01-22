@@ -5,12 +5,19 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import main.BESDyno.OS;
 import data.Config;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import logging.Logger;
 
 /**
  *
  * @author emil
  */
 public class AboutDialog extends javax.swing.JDialog {
+
+    private static final Logger LOG = Logger.getLogger(AboutDialog.class.getName());
 
     /**
      * Creates new form about
@@ -26,10 +33,26 @@ public class AboutDialog extends javax.swing.JDialog {
         setTitle("Zweiradprüfstand - About");
         setLocationRelativeTo(null);
         setSize(new Dimension(1300, 800));
+
     }
-    
-    
-    private void writeVersion () {
+
+    private static void openURL(String url) {
+        URI uri = null;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException ex) {
+            LOG.warning(ex);
+        }
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(uri);
+            } catch (IOException ex) {
+                LOG.warning(ex);
+            }
+        }
+    }
+
+    private void writeVersion() {
         jLabelVersion.setText("BES Dyno v1.0");
         jLabelOsName.setText(System.getProperty("os.name"));
         jLabelOsVersion.setText(System.getProperty("os.version"));
@@ -39,14 +62,14 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelRtName.setText(System.getProperty("java.runtime.name"));
         jLabelRtVersion.setText(System.getProperty("java.runtime.version"));
     }
-    
-    public void writeDevice (String dn) {
+
+    public void writeDevice(String dn) {
         jLabelDevice.setText(dn);
         if (Config.getInstance().getArduinoVersion() > 0) {
             jLabelArduino.setText(String.format("BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
         }
     }
-    
+
     public void setAppearance(boolean dark) {
         if (dark == true) {
             jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128_white.png")));
@@ -60,7 +83,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jPanRuntime.setBackground(Color.darkGray);
             jPanSysInfo.setBackground(Color.darkGray);
             jPanVersion.setBackground(Color.darkGray);
-            
+
             jLabelAuthor.setForeground(Color.white);
             jLabelDevelopers.setForeground(Color.white);
             jLabelDevice.setForeground(Color.white);
@@ -98,7 +121,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jPanRuntime.setBackground(Color.white);
             jPanSysInfo.setBackground(Color.white);
             jPanVersion.setBackground(Color.white);
-            
+
             jLabelAuthor.setForeground(Color.black);
             jLabelDevelopers.setForeground(Color.black);
             jLabelDevice.setForeground(Color.black);
@@ -126,7 +149,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelMade.setForeground(Color.black);
         }
     }
-    
+
     public void setOSIcon(OS os) {
         switch (os) {
             case MACOS:
@@ -140,7 +163,6 @@ public class AboutDialog extends javax.swing.JDialog {
                 break;
         }
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -188,6 +210,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jPanCopyright = new javax.swing.JPanel();
         jLabelAuthor = new javax.swing.JLabel();
         jLabelMade = new javax.swing.JLabel();
+        jbutSourceLink = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -371,14 +394,32 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jLabelAuthor.setText("© Emil Berger 2018-2019");
         jLabelAuthor.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanCopyright.add(jLabelAuthor, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanCopyright.add(jLabelAuthor, gridBagConstraints);
 
         jLabelMade.setText("Made with love in Europe on  macOS");
         jLabelMade.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         jPanCopyright.add(jLabelMade, gridBagConstraints);
+
+        jbutSourceLink.setText("Quellcode");
+        jbutSourceLink.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onSourceLink(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        jPanCopyright.add(jbutSourceLink, gridBagConstraints);
 
         jPanAuthor.add(jPanCopyright, java.awt.BorderLayout.PAGE_END);
 
@@ -386,6 +427,10 @@ public class AboutDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void onSourceLink(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSourceLink
+        openURL("https://github.com/beremm14/Zweiradpruefstand");
+    }//GEN-LAST:event_onSourceLink
 
     /**
      * @param args the command line arguments
@@ -472,5 +517,6 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanRuntime;
     private javax.swing.JPanel jPanSysInfo;
     private javax.swing.JPanel jPanVersion;
+    private javax.swing.JButton jbutSourceLink;
     // End of variables declaration//GEN-END:variables
 }

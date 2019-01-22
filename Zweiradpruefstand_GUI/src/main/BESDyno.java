@@ -99,6 +99,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     //Variables
     private static boolean devMode = false;
+    private boolean testMode = false;
     private static OS os = OS.OTHER;
     private boolean connection = false;
     private boolean activity = false;
@@ -173,12 +174,15 @@ public class BESDyno extends javax.swing.JFrame {
         jcbSerialDevices.setEnabled(false);
         jmiRefresh.setEnabled(false);
         jbutRefresh.setEnabled(false);
+        jmiEnvironment.setEnabled(false);
+        jmiEngineTemp.setEnabled(false);
 
         //Development Tools
         jmiShowPendingRequests.setEnabled(false);
         jmiShowLoggedComm.setEnabled(false);
         jcbmiSaveLoggedComm.setEnabled(false);
         jcbmiDebugLogging.setEnabled(false);
+        jcbmiTestMode.setEnabled(false);
         jmenuRequests.setEnabled(false);
         jmiShowMeasurementValues.setEnabled(false);
         if (devMode) {
@@ -186,6 +190,7 @@ public class BESDyno extends javax.swing.JFrame {
             jmiShowLoggedComm.setEnabled(true);
             jcbmiSaveLoggedComm.setEnabled(true);
             jcbmiDebugLogging.setEnabled(true);
+            jcbmiTestMode.setEnabled(true);
             jmenuRequests.setEnabled(true);
             jmiShowMeasurementValues.setEnabled(true);
         }
@@ -198,13 +203,13 @@ public class BESDyno extends javax.swing.JFrame {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             jpbStatus.setIndeterminate(false);
         }
-        
+
         if (activity) {
             jpbStatus.setIndeterminate(true);
         } else {
             jpbStatus.setIndeterminate(false);
         }
-        
+
         jmiRefresh.setEnabled(true);
         jbutRefresh.setEnabled(true);
 
@@ -229,6 +234,8 @@ public class BESDyno extends javax.swing.JFrame {
         if (connection) {
             jmiStartSim.setEnabled(true);
             jbutStartSim.setEnabled(true);
+            jmiEnvironment.setEnabled(true);
+            jmiEngineTemp.setEnabled(true);
         }
 
         if (measurementFinished) {
@@ -661,6 +668,10 @@ public class BESDyno extends javax.swing.JFrame {
     public static boolean isDevMode() {
         return devMode;
     }
+    
+    public boolean isTestMode() {
+        return testMode;
+    }
 
     public OS getOs() {
         return os;
@@ -783,6 +794,7 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
         jcbmiDevMode = new javax.swing.JCheckBoxMenuItem();
+        jcbmiTestMode = new javax.swing.JCheckBoxMenuItem();
         jcbmiDebugLogging = new javax.swing.JCheckBoxMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jmiShowPendingRequests = new javax.swing.JMenuItem();
@@ -1047,6 +1059,11 @@ public class BESDyno extends javax.swing.JFrame {
         jMenuBar.add(jmenuAppearance);
 
         jmenuDeveloper.setText("Entwicklungstools");
+        jmenuDeveloper.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleTestMode(evt);
+            }
+        });
 
         jcbmiDevMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.META_MASK));
         jcbmiDevMode.setSelected(true);
@@ -1057,6 +1074,10 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuDeveloper.add(jcbmiDevMode);
+
+        jcbmiTestMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.META_MASK));
+        jcbmiTestMode.setText("Testmodus");
+        jmenuDeveloper.add(jcbmiTestMode);
 
         jcbmiDebugLogging.setText("Debug Logging");
         jcbmiDebugLogging.addActionListener(new java.awt.event.ActionListener() {
@@ -1271,7 +1292,7 @@ public class BESDyno extends javax.swing.JFrame {
 
             if (vehicle.isPressedOK()) {
                 activity = true;
-                
+
                 measure = new MeasureDialog(this, true);
                 measure.setAppearance(Config.getInstance().isDark());
                 measure.setVisible(true);
@@ -1402,6 +1423,8 @@ public class BESDyno extends javax.swing.JFrame {
             LOG.info("Switched to User-Mode");
             jcbmiDebugLogging.setState(false);
             LOG.setDebugMode(false);
+            jcbmiTestMode.setState(false);
+            testMode = false;
         }
         refreshGui();
     }//GEN-LAST:event_toggleDevMode
@@ -1534,6 +1557,11 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_onEngineTemp
 
+    private void toggleTestMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleTestMode
+        testMode = jcbmiTestMode.getState();
+        LOG.info("Switched to Test-Mode");
+    }//GEN-LAST:event_toggleTestMode
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1640,7 +1668,7 @@ public class BESDyno extends javax.swing.JFrame {
                             addPendingRequest(telegram.warning());
                         }
                     }
-                    
+
                 } else if (r.getVariety() == Variety.START) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
@@ -1797,6 +1825,7 @@ public class BESDyno extends javax.swing.JFrame {
 
             chart.fireChartChanged();
         }
+
     }
 
     /**
@@ -1962,6 +1991,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jcbmiDebugLogging;
     private javax.swing.JCheckBoxMenuItem jcbmiDevMode;
     private javax.swing.JMenuItem jcbmiSaveLoggedComm;
+    private javax.swing.JCheckBoxMenuItem jcbmiTestMode;
     private javax.swing.JMenu jmenuAbout;
     private javax.swing.JMenu jmenuAppearance;
     private javax.swing.JMenu jmenuDeveloper;

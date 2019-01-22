@@ -6,6 +6,7 @@ import data.Config;
 import data.Datapoint;
 import data.DialData;
 import data.RawDatapoint;
+import development.TestCSV;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;
@@ -200,6 +201,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //Calculates Power -> end of measurement
     private void manageFinish() {
         calc.calcPower();
+        if (main.isTestMode()) {
+            new TestCSV();
+        }
     }
 
     //Measurement-Methods

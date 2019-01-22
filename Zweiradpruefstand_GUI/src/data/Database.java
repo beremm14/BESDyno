@@ -44,7 +44,7 @@ public class Database {
     //Velocity (m/s or km/h or mi/h)
     private final List<Double> velList = new ArrayList<>();
     
-    //Time (ms)
+    //Time (µs)
     private final List<Integer> timeList = new LinkedList<>();
     
     //Uncalculated List
