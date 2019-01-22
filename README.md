@@ -20,27 +20,27 @@ Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle
   **/Zweiradpruefstand_GUI**: Das PC-Interface wurde in NetBeans geschrieben, es wird die IDE benötigt, sowie [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html).  
   **/Zweiradpruefstand_Arduino**: Protoyp-Software, die zur Demonstration der Funktionsfähigkeit sowie für erste Messungen im Rahmen der Diplomarbeit angefertigt wird.  
 
-## Dokumentation
-### Wichtigste Funktionen
+# Dokumentation
+## Wichtigste Funktionen
   * Einlesen der Sensordaten  
   * Übertragung der Daten per UART  
   * Auswertung der Daten
   * Live-Ansicht von Drehzahl und Geschwindigkeit  
   * Berechnung von Leistung und Drehmoment über die Drehzahlen  
 
-### Arten von Daten und deren Erfassung
+## Arten von Daten und deren Erfassung
   * Umgebungstemperatur und -luftdruck: BMP180 (I2C)  
   * Motor- und Abgastemperatur: Thermoelemente (OPV-Verstärker, AnalogIn)  
   * Walzendrehzahl: Induktiver Näherungsschalter (InterruptPin)  
   * Motordrehzahl: Strommesszange am Zündkabel (Schmitt-Trigger, InterruptPin)  
 
-### Protokoll
+## Protokoll
 Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientiert.
-#### Aufbau:
+### Aufbau:
 | Doppelpunkt `:` | Daten, bei mehreren Werten mit Hash `#` getrennt | Bigger than `>` | CRC32-Prüfsumme | Semicolon `;` |
 | --------------- | ------------------------------------------------ | ----------- | --------------- | ------------- |
 
-#### Requests (mit Response-Beispielen)
+### Requests (mit Response-Beispielen)
 | Request | Request-String Rx | Response | Response-String Tx |
 | ------- | ------------- | -------- | ------------------ |
 | INIT | `i` | Initialisierungs-Antwort | `:BESDyno>CRC;` |
@@ -57,17 +57,21 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | DEBUG *(nicht Teil des Protokolls)* | `d` | *gibt am Terminal eine Übersicht über alle aktuellen Messwerte* | *nur zum Debuggen, für den Menschen lesbar* |
 
   **DEBUG** gibt am Terminal bzw. Monitor eine Liste mit den aktuellen Messwerten aus. Diese Response ist nicht vom Java-Programm decodierbar und wird deshalb auch nicht von jenem angefordert. Das `d` wird in die Eingabezeile des Monitors eingegeben, ein spezielles Zeilenende ist wie auch für die anderen Requests nicht erforderlich.  
+  
+### Idle-RQ
+  Das Protokoll verzichtet auf weitere Sicherungsvorkehrungen, wie zum Beispiel *Idle-RQ*, neben der CRC-Prüfsumme.  
+  Die Datenübertragung würde mit so einem System viel langsamer vonstattengehen, es wird aber vorausgesetzt, dass so viele Messwerte wie möglich eingelesen werden. Im Endeffekt würde *Idle-RQ* auch keinen Sinn machen, weil fehlerhafte/fehlende Daten - deren Chance aufzutreten im unteren Prozentbereich liegen - verworfen, bzw nicht auffallen würden, da das Diagramm am Ende über die erhaltenen Daten interpoliert wird.  
 
-### CommLog-Files
+## CommLog-Files
   Im Entwicklunsmodus wird beim Schließen des Hauptfensters die gesamte Kommunikation als .log-Datei in das Verzeichnis `User/Bike-Files/Service_Files` gespeichert - wie auch das Logging-Protokoll.  
   
   Diese Datei ist so zu lesen:  
-#### REQUESTS
+### REQUESTS
 `Zeitstempel : Name des Requests`
-#### RESPONSES
+### RESPONSES
 `Zeitstempel : Response CRC: *empfangener CRC* <-> *berechneter CRC*`
 
-### Messvorgang
+## Messvorgang
   Im Einstellungs-Dialogfenster werden u.A. folgende Parameter eingegeben:  
   * Hysterese Zeitspanne (hysteresisTime)  
   * Geschwindigkeit wenn bereit (idleVelocity)  
