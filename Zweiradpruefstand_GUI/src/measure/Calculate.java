@@ -68,7 +68,7 @@ public class Calculate {
         //Engine
         for (int i = 0; i < data.getEngRpmList().size(); i++) {
             double dOmega = 2 * Math.PI * ((double) data.getEngRpmList().get(i) / 60.0);
-            double alpha = dOmega / ((double) data.getTimeList().get(i) * 1000.0);
+            double alpha = dOmega / ((double) data.getRawList().get(i).getTime() * 1000.0);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
 
@@ -85,7 +85,7 @@ public class Calculate {
         //Wheel
         for (int i = 0; i < data.getWheelRpmList().size(); i++) {
             double dOmega = 2 * Math.PI * ((double) data.getWheelRpmList().get(i) / 60.0);
-            double alpha = dOmega / ((double) data.getTimeList().get(i) * 1000.0);
+            double alpha = dOmega / ((double) data.getRawList().get(i).getTime() * 1000.0);
             double torque = config.getInertia() * alpha;
             double currPower = torque * dOmega;
 

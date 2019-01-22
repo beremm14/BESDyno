@@ -102,10 +102,8 @@ public class MeasureDialog extends javax.swing.JDialog {
                 break;
         }
 
-        //createJFCDial(jFrameVelo, velo, wheelRef, unit, 0, highScaleEnd, 10);
         createVelocityGauge(highScaleEnd, unit);
         if (Bike.getInstance().isMeasRpm()) {
-            //createJFCDial(jFrameRPM, rpm, engRef, "U/min x 1000", 0, 15, 1);
             createRPMGauge();
         } else {
             jPanDial.remove(jPanRPM);
@@ -203,58 +201,6 @@ public class MeasureDialog extends javax.swing.JDialog {
         
         jPanRPM.setSize(new Dimension(500, 500));
         jPanRPM.add(rpmGauge, BorderLayout.CENTER);
-    }
-
-    private void createJFCDial(JInternalFrame frame, DefaultValueDataset value, DefaultValueDataset ref, String title, int min, int max, int tick) {
-
-        DialPlot plot = new DialPlot();
-        plot.setDataset(0, value);
-        plot.setDataset(1, ref);
-        plot.setDialFrame(new StandardDialFrame());
-        plot.addLayer(new DialPointer.Pointer(0));
-
-        DialPointer.Pin pin = new DialPointer.Pin(1);
-        pin.setRadius(0.55000000000000004D);
-        plot.addPointer(pin);
-
-        GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(170, 170, 170), new Point(), new Color(120, 120, 120));
-        DialBackground dialbackground = new DialBackground(gradientpaint);
-
-        dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
-        plot.setBackground(dialbackground);
-
-        StandardDialScale scale0 = new StandardDialScale(min, max, -120, -300, tick, 4);
-        scale0.setTickRadius(0.88);
-        scale0.setTickLabelOffset(0.20);
-        scale0.setMajorTickPaint(Color.RED);
-        scale0.setMinorTickPaint(Color.BLACK);
-        scale0.setTickLabelFormatter(NumberFormat.getIntegerInstance());
-
-        plot.addScale(0, scale0);
-
-        DialCap dialcap = new DialCap();
-        dialcap.setRadius(0.10000000000000001D);
-        plot.setCap(dialcap);
-
-        JFreeChart chart = new JFreeChart(plot);
-        if (Config.getInstance().isDark()) {
-            chart.setBackgroundPaint(new GradientPaint(new Point(), Color.DARK_GRAY, new Point(), Color.DARK_GRAY));
-        } else {
-            chart.setBackgroundPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
-        }
-
-        chart.setTitle(title);
-        if (Config.getInstance().isDark()) {
-            chart.getTitle().setPaint(new GradientPaint(new Point(), Color.WHITE, new Point(), Color.WHITE));
-        } else {
-            chart.getTitle().setPaint(new GradientPaint(new Point(), Color.BLACK, new Point(), Color.BLACK));
-        }
-        ChartPanel chartPanel = new ChartPanel(chart);
-
-        frame.setUI(null);
-        frame.add(chartPanel);
-        frame.pack();
-        frame.setSize(500, 500);
     }
 
     //Sets Appearance like at the Main-GUI
@@ -442,7 +388,8 @@ public class MeasureDialog extends javax.swing.JDialog {
         @Override
         protected void done() {
             if (BESDyno.getInstance().isTestMode()) {
-                new TestCSV();
+                TestCSV csv = new TestCSV();
+                csv.writeFiles();
             }
             
             if (!isCancelled()) {

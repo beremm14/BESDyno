@@ -6,6 +6,7 @@ import data.Database;
 import data.Diagram;
 import data.Environment;
 import development.CommunicationLogger;
+import development.TestCSV;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
 import development.gui.MeasurementValuesPane;
@@ -794,9 +795,11 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
         jcbmiDevMode = new javax.swing.JCheckBoxMenuItem();
-        jcbmiTestMode = new javax.swing.JCheckBoxMenuItem();
         jcbmiDebugLogging = new javax.swing.JCheckBoxMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        jcbmiTestMode = new javax.swing.JCheckBoxMenuItem();
+        jmiSaveCSV = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jmiShowPendingRequests = new javax.swing.JMenuItem();
         jmiShowLoggedComm = new javax.swing.JMenuItem();
         jcbmiSaveLoggedComm = new javax.swing.JMenuItem();
@@ -1075,10 +1078,6 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuDeveloper.add(jcbmiDevMode);
 
-        jcbmiTestMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.META_MASK));
-        jcbmiTestMode.setText("Testmodus");
-        jmenuDeveloper.add(jcbmiTestMode);
-
         jcbmiDebugLogging.setText("Debug Logging");
         jcbmiDebugLogging.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1087,6 +1086,19 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuDeveloper.add(jcbmiDebugLogging);
         jmenuDeveloper.add(jSeparator5);
+
+        jcbmiTestMode.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.META_MASK));
+        jcbmiTestMode.setText("Testmodus");
+        jmenuDeveloper.add(jcbmiTestMode);
+
+        jmiSaveCSV.setText("Test-Daten speichern");
+        jmiSaveCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onSaveCSV(evt);
+            }
+        });
+        jmenuDeveloper.add(jmiSaveCSV);
+        jmenuDeveloper.add(jSeparator7);
 
         jmiShowPendingRequests.setText("Unfertige Requests anzeigen");
         jmiShowPendingRequests.addActionListener(new java.awt.event.ActionListener() {
@@ -1562,6 +1574,11 @@ public class BESDyno extends javax.swing.JFrame {
         LOG.info("Switched to Test-Mode");
     }//GEN-LAST:event_toggleTestMode
 
+    private void onSaveCSV(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveCSV
+        TestCSV csv = new TestCSV();
+        csv.writeFiles();
+    }//GEN-LAST:event_onSaveCSV
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1981,6 +1998,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JPopupMenu.Separator jSeparator7;
     private javax.swing.JSlider jSlider;
     private javax.swing.JButton jbutConnect;
     private javax.swing.JButton jbutDisconnect;
@@ -2019,6 +2037,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiRed;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;
+    private javax.swing.JMenuItem jmiSaveCSV;
     private javax.swing.JMenuItem jmiSettings;
     private javax.swing.JMenuItem jmiSevere;
     private javax.swing.JMenuItem jmiShowLoggedComm;

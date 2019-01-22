@@ -1,5 +1,6 @@
 package development;
 
+import data.Bike;
 import data.Database;
 import data.RawDatapoint;
 import java.io.BufferedWriter;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import logging.Logger;
+import measure.Calculate;
 
 /**
  *
@@ -22,13 +24,17 @@ public class TestCSV {
     private static final Logger LOG = Logger.getLogger(TestCSV.class.getName());
 
     private final Database data = Database.getInstance();
+    private final Calculate calc = new Calculate();
 
     private Date date;
     private DateFormat df = new SimpleDateFormat("yy.MM.dd-HH.mm.ss.SSS");
     
     public TestCSV() {
         this.date = Calendar.getInstance().getTime();
-        
+        calc.calcPower();
+    }
+    
+    public void writeFiles() {
         //Engine
         try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Engine")))) {
             writeEngine(w);
@@ -65,7 +71,7 @@ public class TestCSV {
                     throw new Exception("Internal Error");
                 }
             }
-            file = new File(folder + File.separator + name + "_" + df.format(date) + ".csv");
+            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + "_" + name + "_" + df.format(date) + ".csv");
         }
 
         return file;
@@ -74,12 +80,12 @@ public class TestCSV {
     private void writeEngine(BufferedWriter w) throws IOException {
         //engPower;engTorque;engRpm
 
-        for (int i = 0; i < data.getEngPowerList().size(); i++) {
-            w.write(String.format("%.2f", data.getEngPowerList().get(i)));
-            w.write(";");
-            w.write(String.format("%.2f", data.getEngTorList().get(i)));
-            w.write(";");
-            w.write(data.getEngRpmList().get(i));
+        for (int i = 0; i < data.getEngRpmList().size(); i++) {
+            w.write(data.getEngPowerList().get(i) + "");
+            w.write(",");
+            w.write(data.getEngTorList().get(i) + "");
+            w.write(",");
+            w.write(data.getEngRpmList().get(i) + "");
             w.newLine();
         }
     }
@@ -87,14 +93,14 @@ public class TestCSV {
     private void writeWheel(BufferedWriter w) throws IOException {
         //velocity;wheelPower;wheelTorque;wheelRpm
 
-        for (int i = 0; i < data.getWheelPowerList().size(); i++) {
-            w.write(String.format("%.2f", data.getVelList().get(i)));
-            w.write(";");
-            w.write(String.format("%.2f", data.getWheelPowerList().get(i)));
-            w.write(";");
-            w.write(String.format("%.2f", data.getWheelTorList().get(i)));
-            w.write(";");
-            w.write(data.getWheelRpmList().get(i));
+        for (int i = 0; i < data.getWheelRpmList().size(); i++) {
+            w.write(data.getVelList().get(i) + "");
+            w.write(",");
+            w.write(data.getWheelPowerList().get(i) + "");
+            w.write(",");
+            w.write(data.getWheelTorList().get(i) + "");
+            w.write(",");
+            w.write(data.getWheelRpmList().get(i) + "");
             w.newLine();
         }
     }
@@ -103,11 +109,11 @@ public class TestCSV {
         //engCounts;wheelCounts;time
 
         for (RawDatapoint rdp : data.getRawList()) {
-            w.write(rdp.getEngCount());
-            w.write(";");
-            w.write(rdp.getWheelCount());
-            w.write(";");
-            w.write(rdp.getTime());
+            w.write(rdp.getEngCount() + "");
+            w.write(",");
+            w.write(rdp.getWheelCount() + "");
+            w.write(",");
+            w.write(rdp.getTime() + "");
             w.newLine();
         }
     }

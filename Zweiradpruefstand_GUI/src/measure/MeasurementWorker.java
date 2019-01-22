@@ -202,7 +202,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private void manageFinish() {
         calc.calcPower();
         if (main.isTestMode()) {
-            new TestCSV();
+            TestCSV csv = new TestCSV();
+            csv.writeFiles();
         }
     }
 
