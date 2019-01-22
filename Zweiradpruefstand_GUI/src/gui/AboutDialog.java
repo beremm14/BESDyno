@@ -9,6 +9,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import logging.Logger;
 
 /**
@@ -27,7 +28,7 @@ public class AboutDialog extends javax.swing.JDialog {
         //jLabelTitle.setIcon(
         //new javax.swing.ImageIcon(
         Object x = getClass();
-        Object y = getClass().getResource("/icons/logo128.png");
+        Object y = getClass().getResource("/icons/eagle128.png");
         initComponents();
         writeVersion();
         setTitle("Zweiradprüfstand - About");
@@ -66,13 +67,13 @@ public class AboutDialog extends javax.swing.JDialog {
     public void writeDevice(String dn) {
         jLabelDevice.setText(dn);
         if (Config.getInstance().getArduinoVersion() > 0) {
-            jLabelArduino.setText(String.format("BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
+            jLabelArduino.setText(String.format(Locale.UK, "BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
         }
     }
 
     public void setAppearance(boolean dark) {
         if (dark == true) {
-            jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128_white.png")));
+            jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/eagle128_white.png")));
             jPanAuthor.setBackground(Color.darkGray);
             jPanCopyright.setBackground(Color.darkGray);
             jPanDevice.setBackground(Color.darkGray);
@@ -110,7 +111,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelArduino.setForeground(Color.white);
             jLabelMade.setForeground(Color.white);
         } else {
-            jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128.png")));
+            jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/eagle128.png")));
             jPanAuthor.setBackground(Color.white);
             jPanCopyright.setBackground(Color.white);
             jPanDevice.setBackground(Color.white);
@@ -219,8 +220,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jLabelTitle.setFont(new java.awt.Font("Lucida Grande", 0, 48)); // NOI18N
         jLabelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo128.png"))); // NOI18N
-        jLabelTitle.setText("Zweiradprüfstand");
+        jLabelTitle.setText("BESDyno - Zweiradprüfstand");
         jLabelTitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 15, 15, 15));
         jPanHeader.add(jLabelTitle, java.awt.BorderLayout.PAGE_START);
 

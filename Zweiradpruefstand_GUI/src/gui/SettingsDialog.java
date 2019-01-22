@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import logging.Logger;
@@ -56,7 +57,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         if (Config.getInstance().getArduinoVersion() == 0) {
             jLabelArduino2.setText("Kein Prüfstand verbunden...");
         } else {
-            jLabelArduino2.setText(String.format("BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
+            jLabelArduino2.setText(String.format(Locale.UK, "BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
         }
     }
 
