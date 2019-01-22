@@ -54,6 +54,9 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | WARNING | `w` | *setzt gelbe LED* | `:WARNING>CRC;` |
 | SEVERE | `v` | *setzt rote LED* | `:SEVERE>CRC;` |
 | MAXPROBLEMS | `x` | *setzt gelbe & rote LED* | `:MAXPROBLEMS>CRC;` |
+| DEBUG *(nicht Teil des Protokolls)* | `d` | *gibt am Terminal eine Übersicht über alle aktuellen Messwerte* | *nur zum Debuggen, für den Menschen lesbar* |
+
+  **DEBUG** gibt am Terminal bzw. Monitor eine Liste mit den aktuellen Messwerten aus. Diese Response ist nicht vom Java-Programm decodierbar und wird deshalb auch nicht von jenem angefordert. Das `d` wird in die Eingabezeile des Monitors eingegeben, ein spezielles Zeilenende ist wie auch für die anderen Requests nicht erforderlich.  
 
 ### CommLog-Files
   Im Entwicklunsmodus wird beim Schließen des Hauptfensters die gesamte Kommunikation als .log-Datei in das Verzeichnis `User/Bike-Files/Service_Files` gespeichert - wie auch das Logging-Protokoll.  
