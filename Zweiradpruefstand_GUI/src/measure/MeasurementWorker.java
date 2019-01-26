@@ -112,7 +112,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         if (bike.isMeasRpm()) {
             int hysteresisMin = config.getIdleRpm() - config.getHysteresisRpm();
             int hysteresisMax = config.getIdleRpm() + config.getHysteresisRpm();
-            int rpm;
+            double rpm;
             int accepted = 0;
             do {
                 publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm()));

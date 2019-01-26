@@ -1,62 +1,37 @@
 package data;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-
 /**
  *
  * @author emil
  */
 public class Datapoint {
     
-    private int engRpm;   //U/min
-    private int wheelRpm; //U/min
-    private int time;     //ms
+    private final double engRpm;   //U/min
+    private final double wheelRpm; //U/min
+    private final double time;     //seconds
 
-    public Datapoint(int engRpm, int wheelRpm, int time) {
+    public Datapoint(double engRpm, double wheelRpm, double time) {
         this.engRpm = engRpm;
         this.wheelRpm = wheelRpm;
         this.time = time;
     }
     
-    public Datapoint(int wheelRpm, int time) {
+    public Datapoint(double wheelRpm, double time) {
         this.engRpm = 0;
         this.wheelRpm = wheelRpm;
         this.time = time;
     }
 
-    public int getEngRpm() {
+    public double getEngRpm() {
         return engRpm;
     }
 
-    public int getWheelRpm() {
+    public double getWheelRpm() {
         return wheelRpm;
     }
 
-    public int getTime() {
+    public double getTime() {
         return time;
     }
 
-    public void setEngRpm(int engRpm) {
-        this.engRpm = engRpm;
-    }
-
-    public void setWheelRpm(int wheelRpm) {
-        this.wheelRpm = wheelRpm;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-
-    
-    public void writeLine(BufferedWriter w) throws IOException {
-        w.write(String.format("%d", time));
-        w.write("\t");
-        w.write(String.format("%d", engRpm));
-        w.write("\t");
-        w.write(String.format("%d", wheelRpm));
-    }
-    
 }

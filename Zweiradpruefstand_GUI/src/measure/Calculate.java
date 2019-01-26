@@ -34,7 +34,7 @@ public class Calculate {
             engRpm = ((engCount * 2.0) / time) * 60000.0;
         }
 
-        return new Datapoint((int) Math.round(engRpm), (int) Math.round(wheelRpm), rdp.getTime());
+        return new Datapoint(engRpm, wheelRpm, (((double)rdp.getTime()) / 1000.0));
     }
 
     public Datapoint calcWheelOnly(RawDatapoint rdp) {
@@ -44,7 +44,7 @@ public class Calculate {
 
         double wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
 
-        return new Datapoint((int) Math.round(wheelRpm), rdp.getTime());
+        return new Datapoint(wheelRpm, (((double)rdp.getTime()) / 1000.0));
     }
 
     //Calculates One Point

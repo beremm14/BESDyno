@@ -34,8 +34,8 @@ public class Database {
     private final List<Double> wheelPowerList = new LinkedList<>();
     
     //RPM (U/min)
-    private final List<Integer> engRpmList = new ArrayList<>();
-    private final List<Integer> wheelRpmList = new ArrayList<>();
+    private final List<Double> engRpmList = new ArrayList<>();
+    private final List<Double> wheelRpmList = new ArrayList<>();
     
     //Torque (Nm)
     private final List<Double> engTorList = new LinkedList<>();
@@ -70,11 +70,11 @@ public class Database {
         return wheelPowerList;
     }
 
-    public List<Integer> getEngRpmList() {
+    public List<Double> getEngRpmList() {
         return engRpmList;
     }
 
-    public List<Integer> getWheelRpmList() {
+    public List<Double> getWheelRpmList() {
         return wheelRpmList;
     }
 
@@ -137,11 +137,11 @@ public class Database {
         return wheelPowerList.add(p);
     }
     
-    public boolean addER(Integer n) {
+    public boolean addER(Double n) {
         return engRpmList.add(n);
     }
     
-    public boolean addWR(Integer n) {
+    public boolean addWR(Double n) {
         return wheelRpmList.add(n);
     }
     

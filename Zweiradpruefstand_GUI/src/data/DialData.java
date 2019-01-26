@@ -11,7 +11,7 @@ import measure.MeasurementWorker.Status;
 public class DialData {
     
     private double wheelVelo;
-    private int engRpm;
+    private double engRpm;
     private Velocity unit;
     private String unitToString;
     private int wheelRef;
@@ -19,7 +19,7 @@ public class DialData {
     
     private Status status;
 
-    public DialData(Status status, double wheelVelo, int engRpm, int wheelRef, int engRef) {
+    public DialData(Status status, double wheelVelo, double engRpm, int wheelRef, int engRef) {
         this.wheelVelo = wheelVelo;
         this.engRpm = engRpm;
         this.unit = Config.getInstance().getVelocity();
@@ -79,7 +79,7 @@ public class DialData {
         return wheelVelo;
     }
 
-    public int getEngRpm() {
+    public double getEngRpm() {
         return engRpm;
     }
 
