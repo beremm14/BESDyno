@@ -85,8 +85,9 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   
   Es gibt zwei Modi:
   * **DROP-RPM**: Messen bis zur Höchstdrehzahl, Abfallen lassen und Messung bei Erreichen der Startdrehzahl stoppen  
+    * *Diese Methode bietet die Möglichkeit um mit Hilfe der Schleppleistung - die beim Abfallen der Drehzahl gemessen wird - auf die reale Motorleistung zurückschließen zu können.*  
   * **Start-Stop**: Messen bis zu einer eingegeben Enddrehzahl  
-  *Die zweite Methode wurde eingeführt, weil es für Zweitaktmotoren problematisch sein kann die Drehzahl im letzten Gang so weit abfallen zu lassen.*  
+    * *Mit dieser Methode kann nur die Hinterradleistung gemessen werden, sie ist aber für den Motor schonender (für Zweitaktmotoren wird diese Methode ausdrücklich empfohlen!).*  
   
   Der Messvorgang besteht aus folgenden Zuständen:  
   
