@@ -104,5 +104,31 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   | FINISH | Nach dem Ende der Berechnung -> Ende des Messvorgangs | Warten... | BERECHNEN | *beide* |
   
   *Anmerkungen*: Wenn die Motordrehzahl nicht gemessen wird, erfolgt das Switchen der States sowie das Einpendeln über die Geschwindigkeit der Walze. Wenn ein Zweirad mit Automatik-Getriebe gemessen wird, ist der erste State *SHIFT_UP* nicht notwendig und wird übersprungen.  
+
+## Numerische Simulation
+  *Variablen und Einheiten:*  
+  * Leistung **P** (W)  
+  * Moment **M** (Nm)  
+  * Trägheitsmoment **I** (kgm^2)  
+  * Drehzahl **n** (U/min)  
+  * Winkelgeschwindigkeit **ω** (rad/s)  
+  * Winkelbeschleunigung **α** (rad/s^2)  
+  * Bahngeschwindigkeit **v** (m/s)  
+  * Zeit **t** (µs)  
+  * Counts **x** (1)  
+  * Radius **r** (m)  
+  * Luftdruck **p** (hPa)  
+  * Umgebungstemperatur **T** (°C)  
   
-  
+| Wert | Formel |
+| ---- | ------ |
+| n_motor = | (x_motor/t) \* 60,000,000 |
+| n_walze = | (x_walze/(t\*26)) \* 60,000,000 |
+| ω_motor = | (2π/60) \* n_motor |
+| ω_walze = | (2π/60) \* n_walze |
+| v_walze = | ω_walze \* r_walze |
+| Δω = | ω_walze(i) - ω_walze(i-1) |
+| α_walze = | Δω / t(i) |
+| P_Rad = | I_Walze \* α_walze \* ω_walze |
+| P_Motor = | P_Rad + P_Schlepp |
+| P_Norm = | (1013 / p_Luft) \* sqrt((T_Luft+273.15)/293.15) \* P_Motor |
