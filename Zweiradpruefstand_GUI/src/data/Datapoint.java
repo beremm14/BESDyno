@@ -6,32 +6,66 @@ package data;
  */
 public class Datapoint {
     
-    private final double engRpm;   //U/min
-    private final double wheelRpm; //U/min
-    private final double time;     //seconds
+    private final double powerNoFilter; //Watt, no Filter
+    private final double power;         //Watt, with DIN70020
+    
+    private final double torque;        //Nm
+    // -> if schlepp: from engPower
+    // -> if BMP? ok: from normPower
+    // ->       else: from wheelPower
 
-    public Datapoint(double engRpm, double wheelRpm, double time) {
-        this.engRpm = engRpm;
-        this.wheelRpm = wheelRpm;
-        this.time = time;
+    
+    /**
+     * Calculation of Power and Torque incl Schlepp-Power
+     * if norm -> Calculation DIN70020
+     * omega = engOmega -> torque = engTorque
+     * omega = wheelOmega -> torque = wheelTorque
+     * @param wheelPower
+     * @param schleppPower
+     * @param omega
+     */
+    public Datapoint(double wheelPower, double schleppPower, double omega) {        
+        this.powerNoFilter = wheelPower + Math.abs(schleppPower);
+        
+        if(Environment.getInstance().isNormEnable()) {
+            double press = Environment.getInstance().getAirPress() / 100;  //hPa
+            double temp = Environment.getInstance().getEnvTemp() + 273.15; //K
+            this.power = ((1013.0/press) * Math.sqrt(temp / 293.15)) * powerNoFilter;
+        } else {
+            this.power = powerNoFilter;
+        }
+        
+        this.torque = power / omega;
     }
     
-    public Datapoint(double wheelRpm, double time) {
-        this.engRpm = 0;
-        this.wheelRpm = wheelRpm;
-        this.time = time;
+    /**
+     * Calculation of Power and Torque excl Schlepp-Power
+     * if norm -> Calculation DIN70020
+     * omega = engOmega -> torque = engTorque
+     * omega = wheelOmega -> torque = wheelTorque
+     * @param wheelPower
+     * @param omega
+     */
+    public Datapoint(double wheelPower, double omega) {
+        this.powerNoFilter = wheelPower;
+        
+        if(Environment.getInstance().isNormEnable()) {
+            double press = Environment.getInstance().getAirPress() / 100;  //hPa
+            double temp = Environment.getInstance().getEnvTemp() + 273.15; //K
+            this.power = ((1013.0/press) * Math.sqrt(temp / 293.15)) * powerNoFilter;
+        } else {
+            this.power = powerNoFilter;
+        }
+        
+        this.torque = power / omega;
     }
 
-    public double getEngRpm() {
-        return engRpm;
+    public double getPower() {
+        return power;
     }
 
-    public double getWheelRpm() {
-        return wheelRpm;
-    }
-
-    public double getTime() {
-        return time;
+    public double getTorque() {
+        return torque;
     }
 
 }

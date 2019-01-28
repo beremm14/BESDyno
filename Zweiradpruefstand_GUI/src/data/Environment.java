@@ -11,8 +11,10 @@ public class Environment {
     private double envTemp; //°C
     private double engTemp; //°C
     private double fumeTemp; //°C
-    private double airPress;   //hPa
+    private double airPress;   //Pa
     private double altitude;   //m, wenn nicht eingegeben: Näherungswert
+    
+    private boolean normEnable; //enables DIN70020-Calculation
     
     public static Environment getInstance() {
         if (instance == null) {
@@ -64,6 +66,10 @@ public class Environment {
     public String altitudeToString() {
         return altitude + "m";
     }
+    
+    public boolean isNormEnable() {
+        return normEnable;
+    }
 
     //Setter
     public void setEnvTemp(double envTemp) {
@@ -84,6 +90,10 @@ public class Environment {
 
     public void setAltitude(double altitude) {
         this.altitude = altitude;
+    }
+    
+    public void setNormEnable(boolean normEnable) {
+        this.normEnable = normEnable;
     }
     
 }

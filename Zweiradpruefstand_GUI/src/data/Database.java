@@ -47,6 +47,12 @@ public class Database {
     //Time (µs)
     private final List<Integer> timeList = new LinkedList<>();
     
+    //Calculated List
+    private final List<Datapoint> dataList = new LinkedList<>();
+    
+    //Pre-Calculated List
+    private final List<PreDatapoint> preList = new LinkedList<>();
+    
     //Uncalculated List
     private final List<RawDatapoint> rawList = new ArrayList<>();
 
@@ -96,6 +102,14 @@ public class Database {
 
     public List<RawDatapoint> getRawList() {
         return rawList;
+    }
+    
+    public List<PreDatapoint> getPreList() {
+        return preList;
+    }
+    
+    public List<Datapoint> getDataList() {
+        return dataList;
     }
 
     public double getBikePower() {
@@ -153,8 +167,16 @@ public class Database {
         return wheelTorList.add(m);
     }
     
-    public boolean addRawDP(RawDatapoint dp) {
-        return rawList.add(dp);
+    public boolean addRawDP(RawDatapoint rdp) {
+        return rawList.add(rdp);
+    }
+    
+    public boolean addPreDP(PreDatapoint pdp) {
+        return preList.add(pdp);
+    }
+    
+    public boolean addDP(Datapoint dp) {
+        return dataList.add(dp);
     }
     
     public boolean addVel(Double v) {
@@ -163,6 +185,10 @@ public class Database {
     
     public boolean addTime(Integer t) {
         return timeList.add(t);
+    }
+    
+    public void rmFirstDP() {
+        dataList.remove(0);
     }
     
     public void clearLists() {

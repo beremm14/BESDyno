@@ -34,19 +34,19 @@ public class DialData {
         }
     }
 
-    public DialData(Status status, Datapoint dp, int wheelRef, int engRef) {
+    public DialData(Status status, PreDatapoint pdp, int wheelRef, int engRef) {
         Calculate calc = new Calculate();
-        this.engRpm = dp.getEngRpm();
+        this.engRpm = pdp.getEngRpm();
         this.unit = Config.getInstance().getVelocity();
         switch(this.unit) {
             case MPS:
-                this.wheelVelo = calc.calcMps(dp);
+                this.wheelVelo = calc.calcMps(pdp);
                 break;
             case KMH:
-                this.wheelVelo = calc.calcKmh(dp);
+                this.wheelVelo = calc.calcKmh(pdp);
                 break;
             case MIH:
-                this.wheelVelo = calc.calcMph(dp);
+                this.wheelVelo = calc.calcMih(pdp);
                 break;
         }
         

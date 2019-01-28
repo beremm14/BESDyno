@@ -3,7 +3,7 @@ package measure;
 import data.Bike;
 import data.Database;
 import data.Config;
-import data.Datapoint;
+import data.PreDatapoint;
 import data.DialData;
 import data.RawDatapoint;
 import development.TestCSV;
@@ -208,8 +208,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     }
 
     //Measurement-Methods
-    public Datapoint measure() throws Exception {
-        Datapoint dp = null;
+    public PreDatapoint measure() throws Exception {
+        PreDatapoint pdp;
 
         main.addPendingRequest(telegram.measure());
 
@@ -221,22 +221,21 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             LOG.debug("---->          Counts: " + rdp.getEngCount());
             LOG.debug("---->            Time: " + rdp.getTime());
 
-            dp = calc.calcRpm(rdp);
+            pdp = calc.calcRpm(rdp);
         }
-        data.addWR(dp.getWheelRpm());
-        data.addER(dp.getEngRpm());
+        data.addPreDP(pdp);
 
         LOG.debug("---->   Motordrehzahl: " + data.getEngRpmList().get(data.getEngRpmList().size() - 1));
 
         switch (config.getVelocity()) {
             case MPS:
-                data.addVel(calc.calcMps(dp));
+                data.addVel(calc.calcMps(pdp));
                 break;
             case KMH:
-                data.addVel(calc.calcKmh(dp));
+                data.addVel(calc.calcKmh(pdp));
                 break;
             case MIH:
-                data.addVel(calc.calcMph(dp));
+                data.addVel(calc.calcMih(pdp));
                 break;
             default:
                 throw new Exception("No Velocity Unit...");
@@ -244,30 +243,30 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         LOG.debug("----> Geschwindigkeit: " + data.getVelList().get(data.getVelList().size() - 1));
 
-        return dp;
+        return pdp;
     }
 
     public double measureno() throws Exception {
-        Datapoint dp;
+        PreDatapoint pdp;
 
         main.addPendingRequest(telegram.measureno());
         
         Thread.sleep(config.getPeriod());
 
         synchronized (Database.getInstance().syncObj) {
-            dp = calc.calcWheelOnly(data.getRawList().get(data.getRawList().size() - 1));
+            pdp = calc.calcWheelOnly(data.getRawList().get(data.getRawList().size() - 1));
         }
-        data.addWR(dp.getWheelRpm());
+        data.addPreDP(pdp);
 
         switch (config.getVelocity()) {
             case MPS:
-                data.addVel(calc.calcMps(dp));
+                data.addVel(calc.calcMps(pdp));
                 break;
             case KMH:
-                data.addVel(calc.calcKmh(dp));
+                data.addVel(calc.calcKmh(pdp));
                 break;
             case MIH:
-                data.addVel(calc.calcMph(dp));
+                data.addVel(calc.calcMih(pdp));
                 break;
             default:
                 throw new Exception("No Velocity Unit...");

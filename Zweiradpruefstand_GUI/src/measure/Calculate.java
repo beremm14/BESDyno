@@ -4,6 +4,7 @@ import data.Bike;
 import data.Database;
 import data.Config;
 import data.Datapoint;
+import data.PreDatapoint;
 import data.RawDatapoint;
 
 /**
@@ -17,10 +18,10 @@ public class Calculate {
     private final Database data = Database.getInstance();
 
     //Calculates One Point
-    public Datapoint calcRpm(RawDatapoint rdp) {
+    public PreDatapoint calcRpm(RawDatapoint rdp) {
         double engCount = (double) rdp.getEngCount();
         double wheelCount = (double) rdp.getWheelCount();
-        double time = (double) rdp.getTime() / 1000.0;
+        double time = (double) rdp.getTime() / 1000.0; //ms
 
         double totalImpulse = 26.0;
         double engRpm;
@@ -34,117 +35,91 @@ public class Calculate {
             engRpm = ((engCount * 2.0) / time) * 60000.0;
         }
 
-        return new Datapoint(engRpm, wheelRpm, (((double)rdp.getTime()) / 1000.0));
+        return new PreDatapoint(engRpm, wheelRpm, (((double) rdp.getTime()) / 1000.0));
     }
 
-    public Datapoint calcWheelOnly(RawDatapoint rdp) {
+    public PreDatapoint calcWheelOnly(RawDatapoint rdp) {
         double totalImpulse = 26.0;
         double wheelCount = (double) rdp.getWheelCount();
         double time = (double) rdp.getTime() / 1000.0;
 
         double wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
 
-        return new Datapoint(wheelRpm, (((double)rdp.getTime()) / 1000.0));
+        return new PreDatapoint(wheelRpm, (((double) rdp.getTime()) / 1000.0));
     }
 
     //Calculates One Point
-    public double calcMps(Datapoint dp) {
-        double r = 0.35;
-        double wheelRpm = (double) dp.getWheelRpm();
-        return r * 2.0 * Math.PI * (wheelRpm / 60.0);
+    public double calcMps(PreDatapoint pdp) {
+        return 0.35 * Math.PI * (pdp.getWheelRpm() / 60.0);
     }
 
-    public double calcKmh(Datapoint dp) {
-        return calcMps(dp) * 3.6;
+    public double calcKmh(PreDatapoint pdp) {
+        return calcMps(pdp) * 3.6;
     }
 
-    public double calcMph(Datapoint dp) {
-        return calcMps(dp) * 2.2369362920544;
+    public double calcMih(PreDatapoint pdp) {
+        return calcMps(pdp) * 2.2369362920544;
     }
 
-    //Calculates All
     public void calcPower() {
 
-        //Engine
-        for (int i = 0; i < data.getEngRpmList().size(); i++) {
-            double dOmega = 2 * Math.PI * ((double) data.getEngRpmList().get(i) / 60.0);
-            double alpha = dOmega / ((double) data.getRawList().get(i).getTime() * 1000.0);
-            double torque = config.getInertia() * alpha;
-            double currPower = torque * dOmega;
+        //Calculation without Schlepp-Power
+        if (bike.isStartStopMethod()) {
 
-            if (config.isPs()) {
-                currPower = currPower * 1.359621617 / 1000.0;
-            } else {
-                currPower = currPower / 1000.0;
+            double lastOmega = 0;
+
+            for (PreDatapoint pdp : data.getPreList()) {
+                double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
+                double dOmega = omega - lastOmega;
+                double alpha = dOmega / pdp.getTime();
+                double wheelPower = omega * alpha * config.getInertia();
+
+                data.addDP(new Datapoint(wheelPower, omega));
+
+                lastOmega = omega;
             }
 
-            data.addEP(currPower);
-            data.addET(torque);
-        }
-
-        //Wheel
-        for (int i = 0; i < data.getWheelRpmList().size(); i++) {
-            double dOmega = 2 * Math.PI * ((double) data.getWheelRpmList().get(i) / 60.0);
-            double alpha = dOmega / ((double) data.getRawList().get(i).getTime() * 1000.0);
-            double torque = config.getInertia() * alpha;
-            double currPower = torque * dOmega;
-
-            if (config.isPs()) {
-                currPower = currPower * 1.359621617 / 1000.0;
-            } else {
-                currPower = currPower / 1000.0;
-            }
-
-            data.addWP(currPower);
-            data.addWT(torque);
-        }
-
-        //MAX-Power
-        if (bike.isMeasRpm()) {
-            double power = data.getEngPowerList().get(0);
-            for (Double p : data.getEngPowerList()) {
-                if (p > power) {
-                    power = p;
-                }
-            }
-            data.setBikePower(power);
+         //Calculation within Schlepp-Power
         } else {
-            double power = data.getWheelPowerList().get(0);
-            for (Double p : data.getWheelPowerList()) {
-                if (p > power) {
-                    power = p;
-                }
-            }
-            data.setBikePower(power);
+            
         }
 
-        //MAX-Velocity
-        double velo = data.getVelList().get(0);
-        for (Double v : data.getVelList()) {
-            if (v > velo) {
-                velo = v;
-            }
-        }
-        data.setBikeVelo(velo);
+        //Evaluation of Maximum-Values
+        data.rmFirstDP();
 
-        //MAX-Torque
-        if (bike.isMeasRpm()) {
-            double torque = data.getEngTorList().get(0);
-            for (Double m : data.getEngTorList()) {
-                if (m > torque) {
-                    torque = m;
-                }
+        //Torque and Power
+        double maxTorque = data.getDataList().get(0).getTorque();
+        double maxPower = data.getDataList().get(0).getPower();
+        for (Datapoint dp : data.getDataList()) {
+            if (dp.getTorque() > maxTorque) {
+                maxTorque = dp.getTorque();
             }
-            data.setBikeTorque(torque);
-        } else {
-            double torque = data.getWheelTorList().get(0);
-            for (Double m : data.getWheelTorList()) {
-                if (m > torque) {
-                    torque = m;
-                }
+            if (dp.getPower() > maxPower) {
+                maxPower = dp.getPower();
             }
-            data.setBikeTorque(torque);
         }
+        data.setBikePower(maxPower);
+        data.setBikeTorque(maxTorque);
+
+        //Velocity
+        double maxVelocity = calcMps(data.getPreList().get(0));
+        for (PreDatapoint pdp : data.getPreList()) {
+            if (calcMps(pdp) > maxVelocity) {
+                maxVelocity = calcMps(pdp);
+            }
+        }
+        switch (config.getVelocity()) {
+            case MPS:
+                data.setBikeVelo(maxVelocity);
+                break;
+            case MIH:
+                data.setBikeVelo(maxVelocity * 2.2369362920544);
+                break;
+            case KMH:
+                data.setBikeVelo(maxVelocity * 3.6);
+                break;
+        }
+
     }
 
 }

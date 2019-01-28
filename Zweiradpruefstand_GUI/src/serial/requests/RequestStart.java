@@ -54,6 +54,7 @@ public class RequestStart extends Request {
 
         if (removeCRC(response).equals("BMP-ERROR")) {
             LOG.severe("ERROR at START: BMP180");
+            Environment.getInstance().setNormEnable(false);
             status = Status.ERROR;
             return;
         }
@@ -77,8 +78,10 @@ public class RequestStart extends Request {
 
         if (Environment.getInstance().getAirPress() > 0 && checkCRC(res)) {
             status = Status.DONE;
+            Environment.getInstance().setNormEnable(true);
         } else {
             status = Status.ERROR;
+            Environment.getInstance().setNormEnable(false);
         }
 
     }
