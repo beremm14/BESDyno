@@ -132,3 +132,4 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | P_Rad = | I_Walze \* α_walze \* ω_walze |
 | P_Motor = | P_Rad + P_Schlepp |
 | P_Norm = | (1013 / p_Luft) \* sqrt((T_Luft+273.15)/293.15) \* P_Motor |
+| M_Motor = | P_Norm / ω_motor |
