@@ -96,6 +96,7 @@ public class BESDyno extends javax.swing.JFrame {
     private SwingWorker activeWorker;
     private MyTelegram telegram;
     private jssc.SerialPort port;
+    private JFreeChart chart;
 
     //Variables
     private static boolean devMode = false;
@@ -155,7 +156,7 @@ public class BESDyno extends javax.swing.JFrame {
         userLog(getSalutation() + "Bitte verbinden Sie Ihr Gerät...", LogLevel.INFO);
 
         LineChart lc = new LineChart();
-        lc.initChart();
+        chart = lc.initChart();
     }
 
     private void refreshGui() {
@@ -666,7 +667,7 @@ public class BESDyno extends javax.swing.JFrame {
     public static boolean isDevMode() {
         return devMode;
     }
-    
+
     public boolean isTestMode() {
         return testMode;
     }
@@ -1726,6 +1727,7 @@ public class BESDyno extends javax.swing.JFrame {
         private final Diagram diagram = Diagram.getInstance();
 
         private final Database data = Database.getInstance();
+        private final Environment environment = Environment.getInstance();
         private final Bike bike = Bike.getInstance();
         private final Config config = Config.getInstance();
 
@@ -1741,7 +1743,7 @@ public class BESDyno extends javax.swing.JFrame {
         private XYSeriesCollection dataset1 = new XYSeriesCollection();
         private XYSeriesCollection dataset2 = new XYSeriesCollection();
 
-        public void initChart() {
+        public JFreeChart initChart() {
             JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart(bike.getVehicleName(),
                     "Motordrehzahl [U/min]",
                     "Leistung [" + config.getPowerUnit() + "]",
@@ -1816,6 +1818,51 @@ public class BESDyno extends javax.swing.JFrame {
 
             jPanChart.add(chartPanel);
 
+            chart.fireChartChanged();
+            
+            return chart;
+        }
+
+        public void updateChartLabels() {
+            maxPowerMarker.setValue(data.getBikePower());
+            maxTorqueMarker.setValue(data.getBikeTorque());
+
+            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm", 
+                    environment.getEnvTemp(), environment.getAirPress()/100, (int)Math.round(environment.getAltitude())));
+
+            TextTitle eng = new TextTitle(String.format("Motortemperatur: %d°C Abgastemperatur: %d°C",
+                    (int)Math.round(environment.getEngTemp()), (int)Math.round(environment.getFumeTemp())));
+            TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
+                    data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
+
+            chart.clearSubtitles();
+            chart.addSubtitle(eco);
+            chart.addSubtitle(eng);
+            chart.addSubtitle(val);
+
+            String strMaxPower = String.format("Maximale Leistung: %.2f %s ", data.getBikePower(), config.getPowerUnit());
+            String strMaxTorque = String.format("Maximales Drehmoment: %.2f Nm", data.getBikeTorque());
+            maxPowerMarker.setLabel(strMaxPower);
+            maxTorqueMarker.setLabel(strMaxTorque);
+            chart.getXYPlot().getRangeAxis().setLabel("Leistung [" + config.getPowerUnit() + "]");
+            seriesPower.setKey("Leistung");
+
+            chart.fireChartChanged();
+        }
+        
+        public void updateSubtitles() {
+            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm", 
+                    environment.getEnvTemp(), environment.getAirPress()/100, (int)Math.round(environment.getAltitude())));
+
+            TextTitle eng = new TextTitle(String.format("Motortemperatur: %d°C Abgastemperatur: %d°C",
+                    (int)Math.round(environment.getEngTemp()), (int)Math.round(environment.getFumeTemp())));
+            TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
+                    data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
+
+            chart.clearSubtitles();
+            chart.addSubtitle(eco);
+            chart.addSubtitle(eng);
+            chart.addSubtitle(val);
             chart.fireChartChanged();
         }
 

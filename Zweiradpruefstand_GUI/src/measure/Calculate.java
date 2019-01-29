@@ -79,9 +79,34 @@ public class Calculate {
                 lastOmega = omega;
             }
 
-         //Calculation within Schlepp-Power
+            //Calculation within Schlepp-Power
         } else {
-            
+
+            double lastOmega = 0;
+            double lastSchleppOmega = 0;
+
+            for (PreDatapoint pdp : data.getPreList()) {
+                double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
+                double dOmega = omega - lastOmega;
+                double alpha = dOmega / pdp.getTime();
+                double wheelPower = omega * alpha * config.getInertia();
+
+                double schleppPower = 0;
+                for (PreDatapoint schleppPDP : data.getSchleppPreList()) {
+                    double schleppOmega = (2 * Math.PI / 60) * schleppPDP.getWheelRpm();
+                    if (schleppOmega < omega) {
+                        double schleppDOmega = schleppOmega - lastSchleppOmega;
+                        double schleppAlpha = schleppDOmega / schleppPDP.getTime();
+                        schleppPower = schleppOmega * schleppAlpha * config.getInertia();
+                        break;
+                    }
+                    lastSchleppOmega = schleppOmega;
+                }
+
+                data.addDP(new Datapoint(wheelPower, schleppPower, omega));
+
+                lastOmega = omega;
+            }
         }
 
         //Evaluation of Maximum-Values

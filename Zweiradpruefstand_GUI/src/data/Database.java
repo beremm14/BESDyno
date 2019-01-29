@@ -50,8 +50,12 @@ public class Database {
     //Calculated List
     private final List<Datapoint> dataList = new LinkedList<>();
     
+    //Schlepp-Lists for Drop-RPM
+    private final List<PreDatapoint> schleppPreList = new LinkedList<>();
+    private final List<Datapoint> schleppDataList = new LinkedList<>();
+    
     //Pre-Calculated List
-    private final List<PreDatapoint> preList = new LinkedList<>();
+    private final List<PreDatapoint> preList = new ArrayList<>();
     
     //Uncalculated List
     private final List<RawDatapoint> rawList = new ArrayList<>();
@@ -110,6 +114,14 @@ public class Database {
     
     public List<Datapoint> getDataList() {
         return dataList;
+    }
+    
+    public List<PreDatapoint> getSchleppPreList() {
+        return schleppPreList;
+    }
+    
+    public List<Datapoint> getSchleppDataList() {
+        return schleppDataList;
     }
 
     public double getBikePower() {
@@ -175,6 +187,14 @@ public class Database {
         return preList.add(pdp);
     }
     
+    public boolean addPreSchlepp(PreDatapoint pdp) {
+        return schleppPreList.add(pdp);
+    }
+    
+    public boolean addSchleppDP(Datapoint dp) {
+        return schleppDataList.add(dp);
+    }
+
     public boolean addDP(Datapoint dp) {
         return dataList.add(dp);
     }

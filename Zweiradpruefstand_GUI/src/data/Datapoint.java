@@ -14,6 +14,7 @@ public class Datapoint {
     // -> if BMP? ok: from normPower
     // ->       else: from wheelPower
 
+    private final double omega;         //For Schlepp-Calculating
     
     /**
      * Calculation of Power and Torque incl Schlepp-Power
@@ -34,7 +35,7 @@ public class Datapoint {
         } else {
             this.power = powerNoFilter;
         }
-        
+        this.omega = omega;
         this.torque = power / omega;
     }
     
@@ -56,7 +57,7 @@ public class Datapoint {
         } else {
             this.power = powerNoFilter;
         }
-        
+        this.omega = omega;
         this.torque = power / omega;
     }
 

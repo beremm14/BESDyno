@@ -12,7 +12,7 @@ public class Environment {
     private double engTemp; //°C
     private double fumeTemp; //°C
     private double airPress;   //Pa
-    private double altitude;   //m, wenn nicht eingegeben: Näherungswert
+    private double altitude;   //m
     
     private boolean normEnable; //enables DIN70020-Calculation
     

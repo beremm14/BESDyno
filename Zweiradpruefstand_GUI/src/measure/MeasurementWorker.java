@@ -223,7 +223,24 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
             pdp = calc.calcRpm(rdp);
         }
-        data.addPreDP(pdp);
+
+        if (bike.isStartStopMethod()) {
+            data.addPreDP(pdp);
+        } else {
+            if (bike.isMeasRpm()) {
+                if (pdp.getEngRpm() > data.getPreList().get(data.getPreList().size()-1).getEngRpm()) {
+                    data.addPreDP(pdp);
+                } else {
+                    data.addPreSchlepp(pdp);
+                }
+            } else {
+                if (pdp.getWheelRpm() > data.getPreList().get(data.getPreList().size()-1).getWheelRpm()) {
+                    data.addPreDP(pdp);
+                } else {
+                    data.addPreSchlepp(pdp);
+                }
+            }
+        }
 
         LOG.debug("---->   Motordrehzahl: " + data.getEngRpmList().get(data.getEngRpmList().size() - 1));
 
@@ -250,7 +267,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         PreDatapoint pdp;
 
         main.addPendingRequest(telegram.measureno());
-        
+
         Thread.sleep(config.getPeriod());
 
         synchronized (Database.getInstance().syncObj) {
