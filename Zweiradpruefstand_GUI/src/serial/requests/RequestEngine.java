@@ -69,11 +69,6 @@ public class RequestEngine extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.ENGINE;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

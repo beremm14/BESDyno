@@ -1,7 +1,10 @@
 package development;
 
 import data.Bike;
+import data.Config;
 import data.Database;
+import data.Datapoint;
+import data.PreDatapoint;
 import data.RawDatapoint;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,7 +14,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
 import logging.Logger;
 import measure.Calculate;
 
@@ -25,6 +27,7 @@ public class TestCSV {
 
     private final Database data = Database.getInstance();
     private final Calculate calc = new Calculate();
+    private final Config config = Config.getInstance();
 
     private Date date;
     private DateFormat df = new SimpleDateFormat("yy.MM.dd-HH.mm.ss.SSS");
@@ -35,23 +38,30 @@ public class TestCSV {
     }
     
     public void writeFiles() {
-        //Engine
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Engine")))) {
-            writeEngine(w);
+        //Datapoint
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Datapoint")))) {
+            writeDP(w);
         } catch (Exception ex) {
             LOG.warning(ex);
         }
         
-        //Wheel
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Wheel")))) {
-            writeWheel(w);
+        //PreDatapoint
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("PreDatapoint")))) {
+            writePDP(w);
         } catch (Exception ex) {
             LOG.warning(ex);
         }
         
-        //Raw
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Raw")))) {
-            writeRaw(w);
+        //RawDatapoint
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("RawDatapoint")))) {
+            writeRDP(w);
+        } catch (Exception ex) {
+            LOG.warning(ex);
+        }
+        
+        //Velocity
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Velocity")))) {
+            writeVel(w);
         } catch (Exception ex) {
             LOG.warning(ex);
         }
@@ -77,37 +87,29 @@ public class TestCSV {
         return file;
     }
 
-    private void writeEngine(BufferedWriter w) throws IOException {
-        //engPower;engTorque;engRpm
-
-        for (int i = 0; i < data.getEngRpmList().size(); i++) {
-            w.write(data.getEngPowerList().get(i) + "");
+    private void writeDP(BufferedWriter w) throws IOException {
+        //power,torque
+        for (Datapoint dp : data.getDataList()) {
+            w.write(String.format("%.2fW", dp.getPower()));
             w.write(",");
-            w.write(data.getEngTorList().get(i) + "");
-            w.write(",");
-            w.write(data.getEngRpmList().get(i) + "");
+            w.write(String.format("%.2fNm", dp.getTorque()));
             w.newLine();
         }
     }
 
-    private void writeWheel(BufferedWriter w) throws IOException {
-        //velocity;wheelPower;wheelTorque;wheelRpm
-
-        for (int i = 0; i < data.getWheelRpmList().size(); i++) {
-            w.write(data.getVelList().get(i) + "");
+    private void writePDP(BufferedWriter w) throws IOException {
+        //engRpm,wheelRpm,time
+        for (PreDatapoint pdp : data.getPreList()) {
+            w.write(String.format("%.2fU/min", pdp.getEngRpm()));
             w.write(",");
-            w.write(data.getWheelPowerList().get(i) + "");
+            w.write(String.format("%.2fU/min", pdp.getWheelRpm()));
             w.write(",");
-            w.write(data.getWheelTorList().get(i) + "");
-            w.write(",");
-            w.write(data.getWheelRpmList().get(i) + "");
-            w.newLine();
+            w.write(String.format("%.2fms", pdp.getTime() * 1000));
         }
     }
 
-    private void writeRaw(BufferedWriter w) throws IOException {
+    private void writeRDP(BufferedWriter w) throws IOException {
         //engCounts;wheelCounts;time
-
         for (RawDatapoint rdp : data.getRawList()) {
             w.write(rdp.getEngCount() + "");
             w.write(",");
@@ -115,6 +117,13 @@ public class TestCSV {
             w.write(",");
             w.write(rdp.getTime() + "");
             w.newLine();
+        }
+    }
+    
+    private void writeVel(BufferedWriter w) throws IOException {
+        //velocity
+        for (Double vel : data.getVelList()) {
+            w.write(String.format("%.2f" + config.getVeloUnit(), vel));
         }
     }
 

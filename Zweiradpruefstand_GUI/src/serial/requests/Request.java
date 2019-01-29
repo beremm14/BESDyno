@@ -14,10 +14,6 @@ public abstract class Request {
         WAITINGTOSEND, WAITINGFORRESPONSE, DONE, ERROR
     };
     
-    public static enum Variety {
-        INIT, START, MEASURE, MEASURENO, ENGINE, FINE, WARNING, SEVERE, MAXPROBLEMS, KILL, VERSION
-    };
-
     protected Status status;
 
     public Request() {
@@ -28,7 +24,6 @@ public abstract class Request {
     
     public abstract String getReqMessage();
     public abstract String getReqName();
-    public abstract Variety getVariety();
     public abstract void handleResponse(String res);
     public abstract String getResponse();
 

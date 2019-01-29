@@ -65,7 +65,13 @@ import serial.ConnectPortWorker;
 import serial.DisconnectPortWorker;
 import serial.requests.Request;
 import serial.requests.Request.Status;
-import serial.requests.Request.Variety;
+import serial.requests.RequestEngine;
+import serial.requests.RequestInit;
+import serial.requests.RequestKill;
+import serial.requests.RequestMeasure;
+import serial.requests.RequestMeasureno;
+import serial.requests.RequestStart;
+import serial.requests.RequestVersion;
 import serial.Telegram;
 
 /**
@@ -1648,7 +1654,7 @@ public class BESDyno extends javax.swing.JFrame {
                     removePendingRequest(r);
                 }
 
-                if (r.getVariety() == Variety.INIT) {
+                if (r instanceof RequestInit) {
                     if (r.getStatus() == Status.DONE) {
                         addPendingRequest(telegram.version());
                     } else if (r.getStatus() == Status.ERROR) {
@@ -1663,7 +1669,7 @@ public class BESDyno extends javax.swing.JFrame {
                         }
                     }
 
-                } else if (r.getVariety() == Variety.START) {
+                } else if (r instanceof RequestStart) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
@@ -1671,7 +1677,7 @@ public class BESDyno extends javax.swing.JFrame {
                         LOG.warning("START returns ERROR: " + r.getResponse());
                     }
 
-                } else if (r.getVariety() == Variety.ENGINE) {
+                } else if (r instanceof RequestEngine) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Motorradtemperaturen abgeschlossen", LogLevel.FINE);
                         addPendingRequest(telegram.fine());
@@ -1681,17 +1687,17 @@ public class BESDyno extends javax.swing.JFrame {
                         addPendingRequest(telegram.warning());
                     }
 
-                } else if (r.getVariety() == Variety.MEASURE) {
+                } else if (r instanceof RequestMeasure) {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURE returns ERROR: " + r.getResponse());
                     }
 
-                } else if (r.getVariety() == Variety.MEASURENO) {
+                } else if (r instanceof RequestMeasureno) {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURENO returns ERROR: " + r.getResponse());
                     }
 
-                } else if (r.getVariety() == Variety.KILL) {
+                } else if (r instanceof RequestKill) {
                     if (r.getStatus() == Status.DONE) {
                         if (Bike.getInstance().isMeasRpm()) {
                             addPendingRequest(telegram.measure());
@@ -1701,7 +1707,7 @@ public class BESDyno extends javax.swing.JFrame {
                             LOG.info("KILL sent MEASURENO");
                         }
                     }
-                } else if (r.getVariety() == Variety.VERSION) {
+                } else if (r instanceof RequestVersion) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
                         LOG.info("Arduino-Version: " + Config.getInstance().getArduinoVersion());
@@ -1865,6 +1871,8 @@ public class BESDyno extends javax.swing.JFrame {
             chart.addSubtitle(val);
             chart.fireChartChanged();
         }
+        
+        
 
     }
 

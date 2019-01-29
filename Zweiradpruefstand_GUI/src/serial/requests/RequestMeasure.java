@@ -79,11 +79,6 @@ public class RequestMeasure extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.MEASURE;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

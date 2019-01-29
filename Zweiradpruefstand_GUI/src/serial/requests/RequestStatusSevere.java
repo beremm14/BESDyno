@@ -58,11 +58,6 @@ public class RequestStatusSevere extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.SEVERE;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

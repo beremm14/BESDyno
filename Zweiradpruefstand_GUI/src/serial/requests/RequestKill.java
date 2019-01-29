@@ -59,11 +59,6 @@ public class RequestKill extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.KILL;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

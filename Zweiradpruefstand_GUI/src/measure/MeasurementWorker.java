@@ -98,7 +98,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         if (bike.isMeasRpm()) {
             do {
                 publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
-            } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStartRpm());
+            } while (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() >= config.getStartRpm());
         } else {
             do {
                 publish(new DialData(Status.SHIFT_UP, measureno(), config.getStartVelo()));
@@ -116,7 +116,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             int accepted = 0;
             do {
                 publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm()));
-                rpm = data.getEngRpmList().get(data.getEngRpmList().size() - 1);
+                rpm = data.getPreList().get(data.getPreList().size() - 1).getEngRpm();
                 if (rpm > hysteresisMin && rpm < hysteresisMax) {
                     accepted++;
                     LOG.info("Hysteresis Loop: Try " + accepted + "/" + hysCount);
@@ -143,7 +143,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         if (bike.isMeasRpm()) {
             do {
                 publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm()));
-            } while (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm());
+            } while (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() <= config.getStartRpm());
         } else {
             do {
                 publish(new DialData(Status.READY, measureno(), config.getStartVelo()));
@@ -163,7 +163,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 int stopCount = 0;
                 do {
                     publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm()));
-                    if (data.getEngRpmList().get(data.getEngRpmList().size() - 1) >= config.getStopRpm()) {
+                    if (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() >= config.getStopRpm()) {
                         stopCount++;
                     }
                 } while (stopCount < 5);
@@ -181,7 +181,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 int stopCount = 0;
                 do {
                     publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm()));
-                    if (data.getEngRpmList().get(data.getEngRpmList().size() - 1) <= config.getStartRpm()) {
+                    if (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() <= config.getStartRpm()) {
                         stopCount++;
                     }
                 } while (stopCount < 5);
@@ -227,22 +227,16 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         if (bike.isStartStopMethod()) {
             data.addPreDP(pdp);
         } else {
-            if (bike.isMeasRpm()) {
-                if (pdp.getEngRpm() > data.getPreList().get(data.getPreList().size()-1).getEngRpm()) {
-                    data.addPreDP(pdp);
-                } else {
-                    data.addPreSchlepp(pdp);
-                }
+
+            if (pdp.getEngRpm() > data.getPreList().get(data.getPreList().size() - 1).getEngRpm()) {
+                data.addPreDP(pdp);
             } else {
-                if (pdp.getWheelRpm() > data.getPreList().get(data.getPreList().size()-1).getWheelRpm()) {
-                    data.addPreDP(pdp);
-                } else {
-                    data.addPreSchlepp(pdp);
-                }
+                data.addPreSchlepp(pdp);
             }
+
         }
 
-        LOG.debug("---->   Motordrehzahl: " + data.getEngRpmList().get(data.getEngRpmList().size() - 1));
+        LOG.debug("---->   Motordrehzahl: " + data.getPreList().get(data.getPreList().size() - 1).getEngRpm());
 
         switch (config.getVelocity()) {
             case MPS:
@@ -270,10 +264,18 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         Thread.sleep(config.getPeriod());
 
-        synchronized (Database.getInstance().syncObj) {
+        synchronized (Database.getInstance().getRawList()) {
             pdp = calc.calcWheelOnly(data.getRawList().get(data.getRawList().size() - 1));
         }
-        data.addPreDP(pdp);
+        if (bike.isStartStopMethod()) {
+            data.addPreDP(pdp);
+        } else {
+            if (pdp.getWheelRpm() > data.getPreList().get(data.getPreList().size() - 1).getWheelRpm()) {
+                data.addPreDP(pdp);
+            } else {
+                data.addPreSchlepp(pdp);
+            }
+        }
 
         switch (config.getVelocity()) {
             case MPS:

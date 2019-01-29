@@ -97,11 +97,6 @@ public class RequestStart extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.START;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

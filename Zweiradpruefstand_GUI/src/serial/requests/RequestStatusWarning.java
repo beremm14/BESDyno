@@ -58,11 +58,6 @@ public class RequestStatusWarning extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.WARNING;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

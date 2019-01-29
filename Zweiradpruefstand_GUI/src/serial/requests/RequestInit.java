@@ -70,11 +70,6 @@ public class RequestInit extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.INIT;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

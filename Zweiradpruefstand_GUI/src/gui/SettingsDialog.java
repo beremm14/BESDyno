@@ -443,10 +443,10 @@ public class SettingsDialog extends javax.swing.JDialog {
                 jrbMPS.setSelected(false);
                 jrbMPH.setSelected(false);
                 jrbKMH.setSelected(true);
-                jLabelIdleKmh2.setText("Km/h");
-                jLabelStartKmh2.setText("Km/h");
-                jLabelHysteresisKmh2.setText("Km/h");
-                jLabelStopKmh2.setText("Km/h");
+                jLabelIdleKmh2.setText("km/h");
+                jLabelStartKmh2.setText("km/h");
+                jLabelHysteresisKmh2.setText("km/h");
+                jLabelStopKmh2.setText("km/h");
                 break;
             case MIH:
                 jrbMPS.setSelected(false);
@@ -670,12 +670,12 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelStopKmh2 = new javax.swing.JLabel();
         jLabelHelp = new javax.swing.JLabel();
         jPanButtons = new javax.swing.JPanel();
-        jPanConfirm = new javax.swing.JPanel();
-        jbutCancel = new javax.swing.JButton();
-        jbutOK = new javax.swing.JButton();
         jPanLoad = new javax.swing.JPanel();
         jbutLoad = new javax.swing.JButton();
         jbutSave = new javax.swing.JButton();
+        jPanConfirm = new javax.swing.JPanel();
+        jbutCancel = new javax.swing.JButton();
+        jbutOK = new javax.swing.JButton();
         jPanDevice = new javax.swing.JPanel();
         jLabelDevice1 = new javax.swing.JLabel();
         jLabelDevice2 = new javax.swing.JLabel();
@@ -1152,7 +1152,30 @@ public class SettingsDialog extends javax.swing.JDialog {
         getContentPane().add(jPanMain, java.awt.BorderLayout.CENTER);
 
         jPanButtons.setBackground(new java.awt.Color(255, 255, 255));
-        jPanButtons.setLayout(new java.awt.GridBagLayout());
+        jPanButtons.setLayout(new java.awt.GridLayout());
+
+        jPanLoad.setBackground(new java.awt.Color(255, 255, 255));
+        jPanLoad.setLayout(new java.awt.GridBagLayout());
+
+        jbutLoad.setText("Laden");
+        jbutLoad.setPreferredSize(new java.awt.Dimension(125, 29));
+        jbutLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onLoad(evt);
+            }
+        });
+        jPanLoad.add(jbutLoad, new java.awt.GridBagConstraints());
+
+        jbutSave.setText("Speichern");
+        jbutSave.setPreferredSize(new java.awt.Dimension(125, 29));
+        jbutSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onSave(evt);
+            }
+        });
+        jPanLoad.add(jbutSave, new java.awt.GridBagConstraints());
+
+        jPanButtons.add(jPanLoad);
 
         jPanConfirm.setBackground(new java.awt.Color(255, 255, 255));
         jPanConfirm.setLayout(new java.awt.GridBagLayout());
@@ -1181,32 +1204,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         jPanConfirm.add(jbutOK, gridBagConstraints);
 
-        jPanButtons.add(jPanConfirm, new java.awt.GridBagConstraints());
-
-        jPanLoad.setBackground(new java.awt.Color(255, 255, 255));
-        jPanLoad.setLayout(new java.awt.GridBagLayout());
-
-        jbutLoad.setText("Laden");
-        jbutLoad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onLoad(evt);
-            }
-        });
-        jPanLoad.add(jbutLoad, new java.awt.GridBagConstraints());
-
-        jbutSave.setText("Speichern");
-        jbutSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onSave(evt);
-            }
-        });
-        jPanLoad.add(jbutSave, new java.awt.GridBagConstraints());
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanButtons.add(jPanLoad, gridBagConstraints);
+        jPanButtons.add(jPanConfirm);
 
         getContentPane().add(jPanButtons, java.awt.BorderLayout.SOUTH);
 
@@ -1271,9 +1269,9 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jrbMPSActionPerformed
 
     private void jrbKMHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbKMHActionPerformed
-        jLabelIdleKmh2.setText("Km/h");
-        jLabelStartKmh2.setText("Km/h");
-        jLabelHysteresisKmh2.setText("Km/h");
+        jLabelIdleKmh2.setText("km/h");
+        jLabelStartKmh2.setText("km/h");
+        jLabelHysteresisKmh2.setText("km/h");
     }//GEN-LAST:event_jrbKMHActionPerformed
 
     private void jrbMPHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMPHActionPerformed

@@ -2,6 +2,7 @@ package gui;
 
 import data.Bike;
 import data.Config;
+import data.Database;
 import data.DialData;
 import development.TestCSV;
 import eu.hansolo.steelseries.gauges.Radial;
@@ -15,30 +16,13 @@ import eu.hansolo.steelseries.tools.TickmarkType;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.NumberFormat;
 import java.util.List;
 import logging.Logger;
-import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import main.BESDyno;
 import measure.MeasurementWorker;
-import measure.MeasurementWorker.Status;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.dial.DialBackground;
-import org.jfree.chart.plot.dial.DialCap;
-import org.jfree.chart.plot.dial.DialPlot;
-import org.jfree.chart.plot.dial.DialPointer;
-import org.jfree.chart.plot.dial.StandardDialFrame;
-import org.jfree.chart.plot.dial.StandardDialScale;
-import org.jfree.data.general.DefaultValueDataset;
-import org.jfree.ui.GradientPaintTransformType;
-import org.jfree.ui.StandardGradientPaintTransformer;
 
 /**
  *
@@ -68,7 +52,7 @@ public class MeasureDialog extends javax.swing.JDialog {
     public MeasureDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
-        setTitle("Messung läuft...");
+        setTitle("Messung: " + Bike.getInstance().getVehicleName());
         setLocationRelativeTo(parent);
         setResizable(false);
         setDefaultCloseOperation(0);
@@ -456,15 +440,24 @@ public class MeasureDialog extends javax.swing.JDialog {
                                 jLabelDo.setText("Abschließen: ÜBER " + Config.getInstance().getStopVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen!");
                             }
                         } else {
-                            if (Bike.getInstance().isMeasRpm()) {
-                                jLabelDo.setText("Abschließen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen!");
+                            String preText;
+                            if (Database.getInstance().getSchleppPreList().size() > 0) {
+                                preText = "Abfallen lassen!";
                             } else {
-                                jLabelDo.setText("Abschließen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen!");
+                                preText = "Gas geben!";
                             }
+                            
+                            if (Bike.getInstance().isMeasRpm()) {
+                                jLabelDo.setText(preText + " | Abschließen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen!");
+                            } else {
+                                jLabelDo.setText(preText + " | Abschließen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen!");
+                            }
+
                         }
                         break;
                     case FINISH:
                         jPanStatusColour.setBackground(Color.RED);
+                        jLabelDo.setText("Messung des Zweirads " + Bike.getInstance().getVehicleName() + " ist abgeschlossen...");
                         break;
                 }
 

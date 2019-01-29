@@ -37,7 +37,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
     }
 
-    private static void openURL(String url) {
+    private void openURL(String url) {
         URI uri = null;
         try {
             uri = new URI(url);
@@ -72,7 +72,7 @@ public class AboutDialog extends javax.swing.JDialog {
     }
 
     public void setAppearance(boolean dark) {
-        if (dark == true) {
+        if (dark) {
             jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/eagle128_white.png")));
             jPanAuthor.setBackground(Color.darkGray);
             jPanCopyright.setBackground(Color.darkGray);
@@ -97,7 +97,7 @@ public class AboutDialog extends javax.swing.JDialog {
             jLabelRtNameT.setForeground(Color.white);
             jLabelRtVersion.setForeground(Color.white);
             jLabelRtVersionT.setForeground(Color.white);
-            jLabelTitle.setForeground(Color.white);
+            jLabelTitle.setForeground(Color.yellow);
             jLabelVersion.setForeground(Color.white);
             jLabelVersionT.setForeground(Color.white);
             jLabelVmName.setForeground(Color.white);

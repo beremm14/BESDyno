@@ -58,11 +58,6 @@ public class RequestStatusFine extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.FINE;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

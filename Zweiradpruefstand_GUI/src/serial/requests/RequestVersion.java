@@ -65,11 +65,6 @@ public class RequestVersion extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.VERSION;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

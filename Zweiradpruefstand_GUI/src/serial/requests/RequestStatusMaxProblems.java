@@ -58,11 +58,6 @@ public class RequestStatusMaxProblems extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.MAXPROBLEMS;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }

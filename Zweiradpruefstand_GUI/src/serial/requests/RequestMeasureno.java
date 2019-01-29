@@ -80,11 +80,6 @@ public class RequestMeasureno extends Request {
     }
 
     @Override
-    public Variety getVariety() {
-        return Variety.MEASURENO;
-    }
-
-    @Override
     public String getResponse() {
         return response;
     }
