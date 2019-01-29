@@ -35,7 +35,8 @@ Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle
   * Motordrehzahl: Strommesszange am Zündkabel (Schmitt-Trigger, InterruptPin)  
 
 ## Protokoll
-Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientiert.
+Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientiert. Die Datenübertragung erfolgt textuell, die CRC32-Prüfsumme wird mit einer im Arduino gespeicherte Tabelle realisiert und nur über die Daten berechnet (nicht über `:`, `;`, `>`), der Hash `#` wird aber berücksichtigt und sieht sich als Teil der Daten.
+
 ### Aufbau:
 | Doppelpunkt `:` | Daten, bei mehreren Werten mit Hash `#` getrennt | Bigger than `>` | CRC32-Prüfsumme | Semicolon `;` |
 | --------------- | ------------------------------------------------ | ----------- | --------------- | ------------- |
