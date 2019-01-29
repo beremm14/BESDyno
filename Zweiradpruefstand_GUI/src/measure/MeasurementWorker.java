@@ -26,6 +26,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private final Calculate calc = new Calculate();
     private final Config config = Config.getInstance();
     private final MyTelegram telegram = BESDyno.getInstance().getTelegram();
+    
+    private final CalculationThread calcThread = new CalculationThread();
 
     private Status status;
 
@@ -84,8 +86,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //State-Methods
     //Lower than Start-Speed reached once -> hysteresis loop
     private Status manageShiftUp() throws Exception {
-        main.addPendingRequest(telegram.start());
-
         //INIT -> time to get higher than Start-Speed
         for (int i = 0; i < 10; i++) {
             if (bike.isMeasRpm()) {
@@ -109,6 +109,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Stabilize in Hysteresis loop -> ready
     private Status manageWait(int hysCount) throws Exception {
+        main.addPendingRequest(telegram.start());
         if (bike.isMeasRpm()) {
             int hysteresisMin = config.getIdleRpm() - config.getHysteresisRpm();
             int hysteresisMax = config.getIdleRpm() + config.getHysteresisRpm();
@@ -200,11 +201,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Calculates Power -> end of measurement
     private void manageFinish() {
-        calc.calcPower();
-        if (main.isTestMode()) {
-            TestCSV csv = new TestCSV();
-            csv.writeFiles();
+        calcThread.start();
+        try {
+            calcThread.join();
+        } catch (InterruptedException ex) {
+            LOG.warning(ex);
         }
+        LOG.info("Calculation Thread stopped");
     }
 
     //Measurement-Methods
@@ -300,6 +303,20 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    private class CalculationThread extends Thread {
+
+        @Override
+        public void run() {
+            LOG.info("Calculation Thread started...");
+            calc.calcPower();
+            if (main.isTestMode()) {
+                TestCSV csv = new TestCSV();
+                csv.writeFiles();
+            }
+        }
+
     }
 
 }

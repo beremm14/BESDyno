@@ -65,6 +65,8 @@ public class TestCSV {
         } catch (Exception ex) {
             LOG.warning(ex);
         }
+        
+        LOG.info("Test files written");
     }
 
     private File createFile(String name) throws Exception {
