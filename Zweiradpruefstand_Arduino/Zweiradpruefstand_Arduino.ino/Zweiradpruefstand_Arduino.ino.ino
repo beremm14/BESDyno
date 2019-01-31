@@ -17,7 +17,7 @@ int workingPin1 = 7;
 int workingPin2 = 8;
 
 //Version
-float progvers = 2.1;
+float progvers = 2.2;
 
 //-Declarations----------------------------------------------------------//
 void serialEvent();
@@ -213,7 +213,7 @@ void setup() {
   pinMode(statusPinS, OUTPUT);
 
   pinMode(engRPMPin, INPUT_PULLUP);
-  pinMode(rearRPMPin, INPUT_PULLUP);
+  pinMode(rearRPMPin, INPUT);
 
   digitalWrite(workingPin1, LOW);
   digitalWrite(workingPin2, LOW);
@@ -281,11 +281,10 @@ void serialEvent() {
       if (readEnvironment()) {
         String environment = String(envTemp) + '#' + String(envPress) + '#' + String(envAlt);
         Serial.println(createTelegram(environment));
-        Serial.flush();
       } else {
         Serial.println(createTelegram("BMP-ERROR"));
-        Serial.flush();
       }
+      Serial.flush();
       resetMeasurement();
 
     } else if (req == 'e') {

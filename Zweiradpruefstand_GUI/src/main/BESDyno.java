@@ -113,6 +113,7 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean secondTry = true;
     private boolean measurementFinished = false;
     private double reqArduVers = 2.0;
+    private int timeouts = 0;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
@@ -1646,12 +1647,21 @@ public class BESDyno extends javax.swing.JFrame {
                 } else if (r.getStatus() == Status.ERROR) {
                     LOG.debug("Request: " + r.getReqName() + ": ERROR");
                 } else {
-                    continue;
+                    //continue;
                 }
 
                 if (r.getStatus() == Status.DONE || r.getStatus() == Status.ERROR) {
                     LOG.debug("Request " + r.getReqName() + " removed from pendingRequests");
                     removePendingRequest(r);
+                } else if (r.getStatus() == Status.TIMEOUT) {
+                    timeouts++;
+                    removePendingRequest(r);
+                    if (r.timeOutIsComp()) {
+                        LOG.warning("Timed out, second try... All Timeouts: " + timeouts);
+                        addPendingRequest(retryRequest(r));
+                    } else {
+                        LOG.severe("Request " + r.getReqName() + " timed out 2 times! All Timeouts: " + timeouts);
+                    }
                 }
 
                 if (r instanceof RequestInit) {
@@ -1667,14 +1677,18 @@ public class BESDyno extends javax.swing.JFrame {
                             LOG.warning("INIT returns ERROR: " + r.getResponse());
                             addPendingRequest(telegram.warning());
                         }
+                    } else if (r.getStatus() == Status.TIMEOUT) {
+                        userLogPane("Time-out bei der Initialisierung - Gerät defekt oder nicht verbunden...", LogLevel.SEVERE);
                     }
 
                 } else if (r instanceof RequestStart) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
-                        userLogPane("Umweltdaten möglicherweise fehlerhaft oder unvollständig...", LogLevel.WARNING);
+                        userLog("Umweltdaten möglicherweise fehlerhaft oder unvollständig...", LogLevel.WARNING);
                         LOG.warning("START returns ERROR: " + r.getResponse());
+                    } else if (r.getStatus() == Status.TIMEOUT) {
+                        userLog("Time-out beim Messen der Umweltdaten!", LogLevel.SEVERE);
                     }
 
                 } else if (r instanceof RequestEngine) {
@@ -1685,12 +1699,14 @@ public class BESDyno extends javax.swing.JFrame {
                         userLog("Motorradtemperaturen fehlerhaft - Thermoelemente überprüfen!", LogLevel.WARNING);
                         LOG.warning("ENGINE returns ERROR: " + r.getResponse());
                         addPendingRequest(telegram.warning());
+                    } else if (r.getStatus() == Status.TIMEOUT) {
+                        userLog("Time-out beim Messen der Zweirad-Temperaturen!", LogLevel.SEVERE);
                     }
 
                 } else if (r instanceof RequestMeasure) {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURE returns ERROR: " + r.getResponse());
-                    }
+                    } 
 
                 } else if (r instanceof RequestMeasureno) {
                     if (r.getStatus() == Status.ERROR) {

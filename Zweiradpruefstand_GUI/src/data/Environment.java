@@ -14,7 +14,7 @@ public class Environment {
     private double airPress;   //Pa
     private double altitude;   //m
     
-    private boolean normEnable; //enables DIN70020-Calculation
+    private boolean normEnable = false; //enables DIN70020-Calculation
     
     public static Environment getInstance() {
         if (instance == null) {

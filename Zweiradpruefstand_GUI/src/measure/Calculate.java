@@ -21,7 +21,7 @@ public class Calculate {
     public PreDatapoint calcRpm(RawDatapoint rdp) {
         double engCount = (double) rdp.getEngCount();
         double wheelCount = (double) rdp.getWheelCount();
-        double time = (double) rdp.getTime() / 1000.0; //ms
+        double time = ((double) rdp.getTime()) / 1000.0; //ms
 
         double totalImpulse = 26.0;
         double engRpm;
@@ -74,7 +74,7 @@ public class Calculate {
                 double alpha = dOmega / pdp.getTime();
                 double wheelPower = omega * alpha * config.getInertia();
 
-                data.addDP(new Datapoint(wheelPower, omega));
+                data.addDP(new Datapoint(wheelPower, dOmega));
 
                 lastOmega = omega;
             }
@@ -103,7 +103,7 @@ public class Calculate {
                     lastSchleppOmega = schleppOmega;
                 }
 
-                data.addDP(new Datapoint(wheelPower, schleppPower, omega));
+                data.addDP(new Datapoint(wheelPower, schleppPower, dOmega));
 
                 lastOmega = omega;
             }

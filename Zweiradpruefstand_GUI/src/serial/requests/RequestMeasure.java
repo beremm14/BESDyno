@@ -39,33 +39,34 @@ public class RequestMeasure extends Request {
 
     @Override
     public void handleResponse(String res) {
+
+        response = res;
+        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+
+        String response = res.replaceAll(":", "");
+        response = response.replaceAll(";", "");
+
+        // :engCount#rearCount#Time>crc;
+        String values[] = response.split("#");
+        values[2] = removeCRC(values[2]);
+
+        RawDatapoint rdp;
         synchronized (Database.getInstance().getRawList()) {
-            response = res;
-            COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
-
-            String response = res.replaceAll(":", "");
-            response = response.replaceAll(";", "");
-
-            // :engCount#rearCount#Time>crc;
-            String values[] = response.split("#");
-            values[2] = removeCRC(values[2]);
-
-            RawDatapoint dp = new RawDatapoint(values[0], values[1], values[2]);
-            if (dp.getTime() > 0) {
-                Database.getInstance().addRawDP(dp);
-                LOG.debug("MEASURE: engCount: " + dp.getEngCount() + " wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+            rdp = new RawDatapoint(values[0], values[1], values[2]);
+            if (rdp.getTime() > 0) {
+                Database.getInstance().addRawDP(rdp);
+                LOG.info("MEASURE: engCount: " + rdp.getEngCount() + " wheelCount: " + rdp.getWheelCount() + " time: " + rdp.getTime());
             } else {
                 LOG.warning("MEASURE: Time = 0");
             }
-
-            Database.getInstance().getRawList().notifyAll();
-
-            if (checkCRC(res) && dp.getTime() > 0) {
-                status = Status.DONE;
-            } else {
-                status = Status.ERROR;
-            }
         }
+
+        if (checkCRC(res) && rdp.getTime() > 0) {
+            status = Status.DONE;
+        } else {
+            status = Status.ERROR;
+        }
+
     }
 
     @Override

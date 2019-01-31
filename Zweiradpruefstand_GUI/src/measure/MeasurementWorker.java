@@ -7,6 +7,7 @@ import data.PreDatapoint;
 import data.DialData;
 import data.RawDatapoint;
 import development.TestCSV;
+import java.util.logging.Level;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;
@@ -27,7 +28,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private final Config config = Config.getInstance();
     private final MyTelegram telegram = BESDyno.getInstance().getTelegram();
     
-    private final CalculationThread calcThread = new CalculationThread();
+    private CalculationThread calcThread;
 
     private Status status;
 
@@ -37,6 +38,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     @Override
     protected Object doInBackground() {
+        //main.addPendingRequest(telegram.start());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            LOG.warning(ex);
+        }
+        
         if (bike.isAutomatic()) {
             status = Status.WAIT;
         } else {
@@ -71,6 +79,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                     case FINISH:
                         LOG.info("Measurement finished");
                         manageFinish();
+                        main.addPendingRequest(telegram.engine());
                         return null;
 
                     default:
@@ -109,7 +118,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Stabilize in Hysteresis loop -> ready
     private Status manageWait(int hysCount) throws Exception {
-        main.addPendingRequest(telegram.start());
         if (bike.isMeasRpm()) {
             int hysteresisMin = config.getIdleRpm() - config.getHysteresisRpm();
             int hysteresisMax = config.getIdleRpm() + config.getHysteresisRpm();
@@ -201,6 +209,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Calculates Power -> end of measurement
     private void manageFinish() {
+        calcThread = new CalculationThread();
         calcThread.start();
         try {
             calcThread.join();
@@ -218,7 +227,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         Thread.sleep(config.getPeriod());
 
-        synchronized (Database.getInstance().getRawList()) {
+        synchronized (data.getRawList()) {
+            if(data.getRawList().isEmpty()) {
+                LOG.warning("RawList empty");
+                return new PreDatapoint(0,0,0);
+            }
             RawDatapoint rdp = data.getRawList().get(data.getRawList().size() - 1);
 
             LOG.debug("---->          Counts: " + rdp.getEngCount());

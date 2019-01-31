@@ -1,7 +1,6 @@
 package serial;
 
 import serial.requests.Request;
-import logging.Logger;
 import serial.requests.*;
 
 /**
@@ -10,12 +9,19 @@ import serial.requests.*;
  */
 public class Telegram extends RxTxWorker {
 
-    private static final Logger LOG = Logger.getLogger(Telegram.class.getName());
-
     public Telegram() {
 
     }
     
+    public Request retryRequest(Request request) {
+        synchronized (requestList) {
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setTimeOutComp(false);
+            return request;
+        }
+    }
     
     public Request init() {
         synchronized (requestList) {
@@ -23,6 +29,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(true);
             return request;
         }
     }
@@ -33,6 +40,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(true);
             return request;
         }
     }
@@ -43,6 +51,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(true);
             return request;
         }
     }
@@ -53,6 +62,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -63,6 +73,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -73,6 +84,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -83,6 +95,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -93,6 +106,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -103,6 +117,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -113,6 +128,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(false);
             return request;
         }
     }
@@ -123,6 +139,7 @@ public class Telegram extends RxTxWorker {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
+            request.setTimeOutComp(true);
             return request;
         }
     }

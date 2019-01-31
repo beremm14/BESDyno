@@ -34,14 +34,9 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private boolean finished = false;
 
-//    private final DefaultValueDataset velo = new DefaultValueDataset(0);
-//    private final DefaultValueDataset rpm = new DefaultValueDataset(0);
-//    private final DefaultValueDataset engRef = new DefaultValueDataset(0);
-//    private final DefaultValueDataset wheelRef = new DefaultValueDataset(0);
-    
     private final Radial veloGauge = new Radial();
     private final Radial rpmGauge = new Radial();
-
+    
     private int count = 0;
 
     private MyMeasurementWorker worker;
@@ -104,7 +99,7 @@ public class MeasureDialog extends javax.swing.JDialog {
     }
     
     private void updateGaugeValue(Radial gauge, double value, double ref) {
-        gauge.setValueAnimated(value);
+        gauge.setValue(value);
         gauge.setLcdValue(value);
         gauge.setThreshold(ref);
     }
@@ -114,7 +109,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         veloGauge.setTitle("Velocity");
         veloGauge.setUnitString(unit);
         
-        veloGauge.setArea3DEffectVisible(true);
+        //veloGauge.setArea3DEffectVisible(true);
         
         if (Config.getInstance().isDark()) {
             veloGauge.setFrameDesign(FrameDesign.CHROME);

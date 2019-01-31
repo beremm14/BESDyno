@@ -7,7 +7,9 @@ import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
+import serial.Response.ResponseStatus;
 import serial.requests.Request.Status;
+import serial.requests.RequestInit;
 
 /**
  *
@@ -20,7 +22,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     private jssc.SerialPort port;
     protected final List<Request> requestList = new LinkedList<>();
 
-    private final StringBuilder receivedFrame = new StringBuilder(1024);
+    private final Response response = new Response();
 
     public RxTxWorker() {
     }
@@ -41,7 +43,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     }
 
     public void clearReceivedFrames() {
-        receivedFrame.delete(0, receivedFrame.length());
+        response.getReceivedFrame().delete(0, response.getReceivedFrame().length());
         LOG.debug("synchronized receivedFrame deleted");
     }
 
@@ -56,10 +58,10 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     }
                     String s = new String(b).trim();
                     //String s = port.readString().trim();
-                    synchronized (receivedFrame) {
-                        receivedFrame.append(s);
+                    synchronized (response) {
+                        response.getReceivedFrame().append(s);
                         if (";".equals(s)) {
-                            receivedFrame.notifyAll();
+                            response.notifyAll();
                         }
                     }
                 } catch (SerialPortException ex) {
@@ -76,8 +78,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
             LOG.info("RxTxWorker started");
             while (!isCancelled()) {
 
-                synchronized (receivedFrame) {
-                    receivedFrame.delete(0, receivedFrame.length());
+                synchronized (response.getReceivedFrame()) {
+                    response.getReceivedFrame().delete(0, response.getReceivedFrame().length());
                 }
 
                 Request req = null;
@@ -101,20 +103,55 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 req.setStatus(Status.WAITINGTOSEND);
 
                 req.sendRequest(port);
+                response.setStartTime();
 
+                int timeoutMillis;
+                if (req instanceof RequestInit) {
+                    timeoutMillis = 3000;
+                } else {
+                    timeoutMillis = 1000;
+                }
+                
                 String res;
-                synchronized (receivedFrame) {
-                    while (receivedFrame.length() == 0 || receivedFrame.charAt(receivedFrame.length() - 1) != ';') {
-                        receivedFrame.wait();
+                synchronized (response) {
+                    do {
+                        response.wait(100);
+                        LOG.debug("Waits for response: " + (System.currentTimeMillis() - response.getStartTime()) + "ms/" + timeoutMillis + "ms");
+                    } while (response.getStartTime() + timeoutMillis > System.currentTimeMillis() && response.getReceivedFrame().length() == 0);
+
+                    if (response.getReceivedFrame().length() > 0 && response.getReceivedFrame().charAt(response.getReceivedFrame().length()-1) == ';') {
+                        response.setReturnValue(ResponseStatus.FINISHED);
+                    } else if (response.getStartTime() + timeoutMillis < System.currentTimeMillis()) {
+                        LOG.debug("Timeout!");
+                        response.setReturnValue(ResponseStatus.TIMEOUT);
                     }
-                    res = receivedFrame.toString();
-                    LOG.debug("Response: " + res);
-                    receivedFrame.delete(0, receivedFrame.length() - 1);
+
+                    if (response.getReturnValue() == ResponseStatus.FINISHED) {
+                        res = response.getReceivedFrame().toString();
+                        LOG.debug("Response: " + res);
+                        response.getReceivedFrame().delete(0, response.getReceivedFrame().length() - 1);
+                    } else {
+                        res = null;
+                    }
                 }
 
-                req.handleResponse(res);
+                if (null != response.getReturnValue()) switch (response.getReturnValue()) {
+                    case FINISHED:
+                        req.handleResponse(res);
+                        break;
+                    case TIMEOUT:
+                        LOG.debug("REQUEST-Status set: Timeout!");
+                        req.setStatus(Status.TIMEOUT);
+                        break;
+                    case ERROR:
+                        req.setStatus(Status.ERROR);
+                        break;
+                    default:
+                        break;
+                }
 
                 publish(req);
+                LOG.debug("Request published");
 
                 synchronized (requestList) {
                     requestList.remove(req);

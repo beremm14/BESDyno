@@ -107,6 +107,7 @@ public class TestCSV {
             w.write(String.format("%.2fU/min", pdp.getWheelRpm()));
             w.write(",");
             w.write(String.format("%.2fms", pdp.getTime() * 1000));
+            w.newLine();
         }
     }
 
@@ -126,6 +127,7 @@ public class TestCSV {
         //velocity
         for (Double vel : data.getVelList()) {
             w.write(String.format("%.2f" + config.getVeloUnit(), vel));
+            w.newLine();
         }
     }
 

@@ -11,10 +11,11 @@ import serial.CommunicationException;
 public abstract class Request {
 
     public static enum Status {
-        WAITINGTOSEND, WAITINGFORRESPONSE, DONE, ERROR
+        WAITINGTOSEND, WAITINGFORRESPONSE, DONE, ERROR, TIMEOUT
     };
     
     protected Status status;
+    private boolean timeOutComp = true;
 
     public Request() {
         status = Status.WAITINGTOSEND;
@@ -31,8 +32,16 @@ public abstract class Request {
         return status;
     }
     
+    public boolean timeOutIsComp() {
+        return timeOutComp;
+    }
+    
     public void setStatus(Status status) {
         this.status = status;
+    }
+    
+    public void setTimeOutComp(boolean timeOutComp) {
+        this.timeOutComp = timeOutComp;
     }
 
     protected boolean checkCRC(String res) {
