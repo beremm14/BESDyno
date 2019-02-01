@@ -3,12 +3,13 @@
 ## JAVA PC-Client
 
 ## C++ Arduino Software
-  Version **2.0** or higher required, newest recommended!  
+  Version **2.2** or higher required, newest recommended!  
 
-  * **v2.1**: Implemented Debug-Interface, req = *'d'*  
-  * **v2.0**: Uses microseconds for measurement (instead of milliseconds)  
+  * **v2.2**: Closed Measurement Issue: Internal Pull-up (Engine) and External Pull-down (Wheel)  
 
   **Don't use:**  
+  * **v2.1**: Implemented Debug-Interface, req = *'d'*  
+  * **v2.0**: Uses microseconds for measurement (instead of milliseconds)  
   * **v1.5**: Supports: Working-LEDs
   * **v1.4**: Supports: Version-Checkt for Java-Software
   * **v1.3**: Supports: BMP-Check before measurement
