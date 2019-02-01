@@ -3,14 +3,12 @@ package main;
 import data.Bike;
 import data.Config;
 import data.Database;
-import data.Diagram;
 import data.Environment;
 import development.CommunicationLogger;
 import development.TestCSV;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
 import gui.AboutDialog;
-import gui.DiagramSetDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
 import gui.ResultDialog;
@@ -93,7 +91,6 @@ public class BESDyno extends javax.swing.JFrame {
     private DevInfoPane infoPane = new DevInfoPane(this, false);
     private LoggedCommPane commPane = new LoggedCommPane(this, false);
     private ResultDialog result = new ResultDialog(this, true);
-    private DiagramSetDialog diagramSet = new DiagramSetDialog(this, true);
 
     private MeasureDialog measure;
 
@@ -112,12 +109,15 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean activity = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
-    private double reqArduVers = 2.0;
+    private double reqArduVers = 2.2;
     private int timeouts = 0;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
     private final Object syncObj = new Object();
+    
+    //LineChart
+    private final LineChart lc = new LineChart();
 
     /**
      * Creates new form BESDyno
@@ -162,7 +162,6 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode.setState(Config.getInstance().isDark());
         userLog(getSalutation() + "Bitte verbinden Sie Ihr Gerät...", LogLevel.INFO);
 
-        LineChart lc = new LineChart();
         chart = lc.initChart();
     }
 
@@ -1304,9 +1303,8 @@ public class BESDyno extends javax.swing.JFrame {
                     result.setValues();
                     result.setVisible(true);
 
-                    diagramSet.setAppearance(Config.getInstance().isDark());
-                    diagramSet.refreshGui();
-                    diagramSet.setVisible(true);
+                    lc.updateChartValues();
+                    
                     activity = false;
                 } else {
                     activity = false;
@@ -1706,7 +1704,7 @@ public class BESDyno extends javax.swing.JFrame {
                 } else if (r instanceof RequestMeasure) {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURE returns ERROR: " + r.getResponse());
-                    } 
+                    }
 
                 } else if (r instanceof RequestMeasureno) {
                     if (r.getStatus() == Status.ERROR) {
@@ -1746,8 +1744,6 @@ public class BESDyno extends javax.swing.JFrame {
 
     private class LineChart {
 
-        private final Diagram diagram = Diagram.getInstance();
-
         private final Database data = Database.getInstance();
         private final Environment environment = Environment.getInstance();
         private final Bike bike = Bike.getInstance();
@@ -1762,14 +1758,14 @@ public class BESDyno extends javax.swing.JFrame {
         private XYSeries seriesPower = new XYSeries("Leistung");
         private XYSeries series1 = new XYSeries("tempLeistung series");
         private XYSeries series2 = new XYSeries("tempDrehmoment series");
-        private XYSeriesCollection dataset1 = new XYSeriesCollection();
-        private XYSeriesCollection dataset2 = new XYSeriesCollection();
+        private XYSeriesCollection datasetPower = new XYSeriesCollection();
+        private XYSeriesCollection datasetTorque = new XYSeriesCollection();
 
         public JFreeChart initChart() {
             JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart(bike.getVehicleName(),
                     "Motordrehzahl [U/min]",
                     "Leistung [" + config.getPowerUnit() + "]",
-                    dataset1,
+                    datasetPower,
                     PlotOrientation.VERTICAL,
                     true,
                     true,
@@ -1780,14 +1776,14 @@ public class BESDyno extends javax.swing.JFrame {
 
             seriesPower.setKey("Leistung");
 
-            chart.getXYPlot().setDataset(1, dataset2);
+            chart.getXYPlot().setDataset(1, datasetTorque);
             chart.getXYPlot().setRangeAxis(1, torqueAxis);
             chart.getXYPlot().mapDatasetToRangeAxis(0, 0);//1st dataset to 1st y-axis
             chart.getXYPlot().mapDatasetToRangeAxis(1, 1); //2nd dataset to 2nd y-axis
 
             // Hinzufuegen von series zu der Datenmenge dataset
-            dataset1.addSeries(seriesPower);
-            dataset2.addSeries(seriesTorque);
+            datasetPower.addSeries(seriesPower);
+            datasetTorque.addSeries(seriesTorque);
 
             maxPowerMarker.setPaint(Color.darkGray);
             maxPowerMarker.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
@@ -1841,7 +1837,7 @@ public class BESDyno extends javax.swing.JFrame {
             jPanChart.add(chartPanel);
 
             chart.fireChartChanged();
-            
+
             return chart;
         }
 
@@ -1849,11 +1845,11 @@ public class BESDyno extends javax.swing.JFrame {
             maxPowerMarker.setValue(data.getBikePower());
             maxTorqueMarker.setValue(data.getBikeTorque());
 
-            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm", 
-                    environment.getEnvTemp(), environment.getAirPress()/100, (int)Math.round(environment.getAltitude())));
+            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm",
+                    environment.getEnvTemp(), environment.getAirPress() / 100, (int) Math.round(environment.getAltitude())));
 
             TextTitle eng = new TextTitle(String.format("Motortemperatur: %d°C Abgastemperatur: %d°C",
-                    (int)Math.round(environment.getEngTemp()), (int)Math.round(environment.getFumeTemp())));
+                    (int) Math.round(environment.getEngTemp()), (int) Math.round(environment.getFumeTemp())));
             TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
                     data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
 
@@ -1871,13 +1867,13 @@ public class BESDyno extends javax.swing.JFrame {
 
             chart.fireChartChanged();
         }
-        
+
         public void updateSubtitles() {
-            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm", 
-                    environment.getEnvTemp(), environment.getAirPress()/100, (int)Math.round(environment.getAltitude())));
+            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm",
+                    environment.getEnvTemp(), environment.getAirPress() / 100, (int) Math.round(environment.getAltitude())));
 
             TextTitle eng = new TextTitle(String.format("Motortemperatur: %d°C Abgastemperatur: %d°C",
-                    (int)Math.round(environment.getEngTemp()), (int)Math.round(environment.getFumeTemp())));
+                    (int) Math.round(environment.getEngTemp()), (int) Math.round(environment.getFumeTemp())));
             TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
                     data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
 
@@ -1887,8 +1883,30 @@ public class BESDyno extends javax.swing.JFrame {
             chart.addSubtitle(val);
             chart.fireChartChanged();
         }
-        
-        
+
+        public void updateChartValues() {
+            datasetPower.removeAllSeries();
+            datasetTorque.removeAllSeries();
+
+            seriesPower = Database.getInstance().getSeriesPower();
+            seriesTorque = Database.getInstance().getSeriesTorque();
+
+            seriesTorque.setKey("Drehmoment [Nm]");
+
+            datasetPower.addSeries(seriesPower);
+            datasetTorque.addSeries(seriesTorque);
+
+            if (bike.isMeasRpm()) {
+                chart.getXYPlot().getDomainAxis().setLabel("Motordrehzahl [U/min]");
+            } else {
+                chart.getXYPlot().getDomainAxis().setLabel("Walzendrehzahl [U/min]");
+            }
+
+            updateChartLabels();
+            
+            chart.fireChartChanged();
+
+        }
 
     }
 

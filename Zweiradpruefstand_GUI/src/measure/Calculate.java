@@ -73,8 +73,10 @@ public class Calculate {
                 double dOmega = omega - lastOmega;
                 double alpha = dOmega / pdp.getTime();
                 double wheelPower = omega * alpha * config.getInertia();
-
-                data.addDP(new Datapoint(wheelPower, dOmega));
+                
+                Datapoint dp = new Datapoint(wheelPower, omega);
+                data.addDP(dp);
+                data.addXYValues(dp, pdp);
 
                 lastOmega = omega;
             }
@@ -103,7 +105,9 @@ public class Calculate {
                     lastSchleppOmega = schleppOmega;
                 }
 
-                data.addDP(new Datapoint(wheelPower, schleppPower, dOmega));
+                Datapoint dp = new Datapoint(wheelPower, schleppPower, omega);
+                data.addDP(dp);
+                data.addXYValues(dp, pdp);
 
                 lastOmega = omega;
             }

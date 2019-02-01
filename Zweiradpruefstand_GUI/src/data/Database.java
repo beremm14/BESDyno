@@ -52,7 +52,7 @@ public class Database {
     private double bikePower;
     private double bikeVelo;
     private double bikeTorque;
-    
+
     //Max-Values-Indices
     private int maxPowerIndex;
     private int maxVeloIndex;
@@ -174,12 +174,18 @@ public class Database {
     public boolean addVel(Double v) {
         return velList.add(v);
     }
-    
+
     public void addXYValues(Datapoint dp, PreDatapoint pdp) {
-        seriesPower.add(pdp.getEngRpm(), dp.getPower());
-        seriesTorque.add(pdp.getEngRpm(), dp.getTorque());
+        if (Bike.getInstance().isMeasRpm()) {
+            seriesPower.add(pdp.getEngRpm(), dp.getPower());
+            seriesTorque.add(pdp.getEngRpm(), dp.getTorque());
+        } else {
+            seriesPower.add(pdp.getWheelRpm(), dp.getPower());
+            seriesTorque.add(pdp.getWheelRpm(), dp.getTorque());
+        }
+
     }
-    
+
     public void rmFirstDP() {
         dataList.remove(0);
     }
