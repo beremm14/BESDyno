@@ -329,10 +329,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfPngX.requestFocusInWindow();
         }
         try {
-            c.setPowerCorr(Integer.parseInt(jtfPower.getText()));
+            c.setPowerCorr(Double.parseDouble(jtfPower.getText()));
         } catch (NumberFormatException e) {
             error = true;
-            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace(System.err);
             jtfPower.requestFocusInWindow();
         }
@@ -417,7 +417,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfPeriod.setText(String.format("%d", c.getPeriod()));
         jtfPngX.setText(String.format("%d", c.getPngWidth()));
         jtfPngY.setText(String.format("%d", c.getPngHeight()));
-        jtfPower.setText(String.format("%d", c.getPowerCorr()));
+        jtfPower.setText(String.format(Double.toString(c.getPowerCorr())));
         jtfStartKmh.setText(String.format("%d", c.getStartVelo()));
         jtfStartRpm.setText(String.format("%d", c.getStartRpm()));
         jtfStopKmh.setText(String.format("%d", c.getStopVelo()));

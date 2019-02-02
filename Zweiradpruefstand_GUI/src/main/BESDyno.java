@@ -109,13 +109,13 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean activity = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
-    private double reqArduVers = 2.2;
+    private double reqArduVers = 2.3;
     private int timeouts = 0;
 
     //Communication
     public final List<Request> pendingRequests = new LinkedList<>();
     private final Object syncObj = new Object();
-    
+
     //LineChart
     private final LineChart lc = new LineChart();
 
@@ -1304,7 +1304,7 @@ public class BESDyno extends javax.swing.JFrame {
                     result.setVisible(true);
 
                     lc.updateChartValues();
-                    
+
                     activity = false;
                 } else {
                     activity = false;
@@ -1731,6 +1731,7 @@ public class BESDyno extends javax.swing.JFrame {
                         if (Config.getInstance().getArduinoVersion() >= reqArduVers) {
                             LOG.warning("VERSION returns ERROR: " + r.getResponse());
                         } else {
+                            addPendingRequest(telegram.maxProblems());
                             userLogPane("Die Firmware am Prüfstand ist veraltet, bitte laden Sie eine neue Version (mind. Version " + reqArduVers + ")!", LogLevel.SEVERE);
                             LOG.warning("VERSION returns ERROR: " + r.getResponse());
                         }
@@ -1805,12 +1806,12 @@ public class BESDyno extends javax.swing.JFrame {
 
             XYLineAndShapeRenderer r1 = new XYLineAndShapeRenderer();
             r1.setSeriesPaint(0, Color.blue);
-            r1.setSeriesShapesVisible(0, false);
+            r1.setSeriesShapesVisible(0, true);
             r1.setSeriesStroke(0, new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
             XYLineAndShapeRenderer r2 = new XYLineAndShapeRenderer();
             r2.setSeriesPaint(0, Color.red);
-            r2.setSeriesShapesVisible(0, false);
+            r2.setSeriesShapesVisible(0, true);
             r2.setSeriesStroke(0, new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
             chart.getXYPlot().setRenderer(0, r1);
@@ -1903,7 +1904,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
 
             updateChartLabels();
-            
+
             chart.fireChartChanged();
 
         }

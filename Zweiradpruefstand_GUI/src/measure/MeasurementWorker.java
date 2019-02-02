@@ -38,7 +38,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     @Override
     protected Object doInBackground() {
-        //main.addPendingRequest(telegram.start());
+        main.addPendingRequest(telegram.start());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -229,12 +229,12 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         synchronized (data.getRawList()) {
             if(data.getRawList().isEmpty()) {
-                LOG.warning("RawList empty");
+                LOG.severe("RawList empty");
                 return new PreDatapoint(0,0,0);
             }
             RawDatapoint rdp = data.getRawList().get(data.getRawList().size() - 1);
 
-            LOG.debug("---->          Counts: " + rdp.getEngCount());
+            LOG.debug("---->          Counts: " + rdp.getEngTime());
             LOG.debug("---->            Time: " + rdp.getTime());
 
             pdp = calc.calcRpm(rdp);
@@ -252,7 +252,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         }
 
-        LOG.debug("---->   Motordrehzahl: " + data.getPreList().get(data.getPreList().size() - 1).getEngRpm());
+        LOG.info("---->   Motordrehzahl: " + data.getPreList().get(data.getPreList().size() - 1).getEngRpm());
 
         switch (config.getVelocity()) {
             case MPS:
@@ -268,7 +268,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 throw new Exception("No Velocity Unit...");
         }
 
-        LOG.debug("----> Geschwindigkeit: " + data.getVelList().get(data.getVelList().size() - 1));
+        LOG.info("----> Geschwindigkeit: " + data.getVelList().get(data.getVelList().size() - 1));
 
         return pdp;
     }

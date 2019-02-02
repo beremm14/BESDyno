@@ -8,7 +8,7 @@ public class PreDatapoint {
     
     private final double engRpm;   //U/min
     private final double wheelRpm; //U/min
-    private final double time;     //seconds
+    private final double time;     //µs
 
     public PreDatapoint(double engRpm, double wheelRpm, double time) {
         this.engRpm = engRpm;

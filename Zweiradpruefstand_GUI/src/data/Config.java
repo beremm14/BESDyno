@@ -31,7 +31,7 @@ public class Config {
     private int pngHeight;
     private int pngWidth;
 
-    private int powerCorr;
+    private double powerCorr;
     private int torqueCorr;
     private double inertiaCorr;
 
@@ -97,7 +97,7 @@ public class Config {
         return pngWidth;
     }
 
-    public int getPowerCorr() {
+    public double getPowerCorr() {
         return powerCorr;
     }
 
@@ -174,7 +174,7 @@ public class Config {
         this.pngWidth = pngWidth;
     }
 
-    public void setPowerCorr(int powerCorr) {
+    public void setPowerCorr(double powerCorr) {
         this.powerCorr = powerCorr;
     }
 
@@ -316,7 +316,7 @@ public class Config {
         period = json.getInt("Period");
         pngHeight = json.getInt("PNG Height");
         pngWidth = json.getInt("PNG Width");
-        powerCorr = json.getInt("Power Correction Factor");
+        powerCorr = json.getJsonNumber("Power Correction Factor").doubleValue();
         ps = json.getBoolean("PS");
         startVelo = json.getInt("Start Velo");
         startRpm = json.getInt("Start Rpm");

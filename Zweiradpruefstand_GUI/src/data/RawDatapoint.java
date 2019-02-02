@@ -6,40 +6,40 @@ package data;
  */
 public class RawDatapoint {
     
-    private final int engCount;   //Counts/time
-    private final int wheelCount; //Counts/time
+    private final int engTime;   //µs (edge to edge)
+    private final int wheelTime; //µs (edge to edge)
     private final int time;       //µs (dt)
 
     public RawDatapoint(String engCount, String wheelCount, String time) {
-        this.engCount = Integer.parseInt(engCount);
-        this.wheelCount = Integer.parseInt(wheelCount);
+        this.engTime = Integer.parseInt(engCount);
+        this.wheelTime = Integer.parseInt(wheelCount);
         this.time = Integer.parseInt(time);
     }
 
     public RawDatapoint(int engCount, int wheelCount, int time) {
-        this.engCount = engCount;
-        this.wheelCount = wheelCount;
+        this.engTime = engCount;
+        this.wheelTime = wheelCount;
         this.time = time;
     }
     
     public RawDatapoint(String wheelCount, String time) {
-        this.engCount = 0;
-        this.wheelCount = Integer.parseInt(wheelCount);
+        this.engTime = 0;
+        this.wheelTime = Integer.parseInt(wheelCount);
         this.time = Integer.parseInt(time);
     }
     
     public RawDatapoint(int wheelCount, int time) {
-        this.engCount = 0;
-        this.wheelCount = wheelCount;
+        this.engTime = 0;
+        this.wheelTime = wheelCount;
         this.time = time;
     }
 
-    public int getEngCount() {
-        return engCount;
+    public int getEngTime() {
+        return engTime;
     }
 
-    public int getWheelCount() {
-        return wheelCount;
+    public int getWheelTime() {
+        return wheelTime;
     }
 
     public int getTime() {

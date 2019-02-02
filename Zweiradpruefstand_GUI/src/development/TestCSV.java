@@ -114,9 +114,9 @@ public class TestCSV {
     private void writeRDP(BufferedWriter w) throws IOException {
         //engCounts;wheelCounts;time
         for (RawDatapoint rdp : data.getRawList()) {
-            w.write(rdp.getEngCount() + "");
+            w.write(rdp.getEngTime() + "");
             w.write(",");
-            w.write(rdp.getWheelCount() + "");
+            w.write(rdp.getWheelTime() + "");
             w.write(",");
             w.write(rdp.getTime() + "");
             w.newLine();

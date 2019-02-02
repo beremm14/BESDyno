@@ -6,6 +6,7 @@ import data.Config;
 import data.Datapoint;
 import data.PreDatapoint;
 import data.RawDatapoint;
+import logging.Logger;
 
 /**
  *
@@ -13,39 +14,49 @@ import data.RawDatapoint;
  */
 public class Calculate {
 
+    private static final Logger LOG = Logger.getLogger(Calculate.class.getName());
+
     private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
     private final Database data = Database.getInstance();
 
     //Calculates One Point
     public PreDatapoint calcRpm(RawDatapoint rdp) {
-        double engCount = (double) rdp.getEngCount();
-        double wheelCount = (double) rdp.getWheelCount();
-        double time = ((double) rdp.getTime()) / 1000.0; //ms
+        double engTime = (double) rdp.getEngTime();
+        double wheelTime = (double) rdp.getWheelTime();
 
         double totalImpulse = 26.0;
         double engRpm;
         double wheelRpm;
 
-        wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
-
-        if (Bike.getInstance().isTwoStroke()) {
-            engRpm = (engCount / time) * 60000.0;
-        } else {
-            engRpm = ((engCount * 2.0) / time) * 60000.0;
+        double wheelOmega = (1000000.0 / (totalImpulse * wheelTime)) * 2.0 * Math.PI;
+        if (Double.isInfinite(wheelOmega)) {
+            wheelOmega = 0;
         }
+        wheelRpm = wheelOmega * 0.175;
+        
+        if (Bike.getInstance().isTwoStroke()) {
+            engRpm = 60000000.0 / engTime;
+        } else {
+            engRpm = 120000000.0 / engTime;
+        }
+        if (Double.isInfinite(engRpm)) {
+            engRpm = 0;
+        }
+        
+        LOG.info(String.format("--> engRpm: %.2f wheelRpm: %.2f", engRpm, wheelRpm));
 
-        return new PreDatapoint(engRpm, wheelRpm, (((double) rdp.getTime()) / 1000.0));
+        return new PreDatapoint(engRpm, wheelRpm, (double) rdp.getTime());
     }
 
     public PreDatapoint calcWheelOnly(RawDatapoint rdp) {
         double totalImpulse = 26.0;
-        double wheelCount = (double) rdp.getWheelCount();
-        double time = (double) rdp.getTime() / 1000.0;
+        double wheelCount = (double) rdp.getWheelTime();
+        double time = (double) rdp.getTime(); //µs
 
-        double wheelRpm = (wheelCount / (time * totalImpulse)) * 60000.0;
+        double wheelRpm = (wheelCount / (((double) time) * totalImpulse)) * 60000000.0;
 
-        return new PreDatapoint(wheelRpm, (((double) rdp.getTime()) / 1000.0));
+        return new PreDatapoint(wheelRpm, (double) rdp.getTime());
     }
 
     //Calculates One Point
@@ -67,18 +78,24 @@ public class Calculate {
         if (bike.isStartStopMethod()) {
 
             double lastOmega = 0;
+            double lastTime = 0;
 
             for (PreDatapoint pdp : data.getPreList()) {
                 double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
                 double dOmega = omega - lastOmega;
-                double alpha = dOmega / pdp.getTime();
-                double wheelPower = omega * alpha * config.getInertia();
-                
-                Datapoint dp = new Datapoint(wheelPower, omega);
-                data.addDP(dp);
-                data.addXYValues(dp, pdp);
+                double alpha = dOmega / ((pdp.getTime() + lastTime) / 1000000.0);
+                double wheelPower = omega * alpha * config.getInertia() * config.getPowerCorr();
 
-                lastOmega = omega;
+                if (wheelPower > 0 && dOmega > 0) {
+                    Datapoint dp = new Datapoint(wheelPower, omega);
+                    data.addDP(dp);
+                    if (pdp.getEngRpm() > config.getStartRpm() && pdp.getEngRpm() < config.getStopRpm()) {
+                        data.addXYValues(dp, pdp);
+                    }
+                    lastOmega = omega;
+                } else {
+                    lastTime = pdp.getTime();
+                }
             }
 
             //Calculation within Schlepp-Power
@@ -90,7 +107,7 @@ public class Calculate {
             for (PreDatapoint pdp : data.getPreList()) {
                 double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
                 double dOmega = omega - lastOmega;
-                double alpha = dOmega / pdp.getTime();
+                double alpha = dOmega / (pdp.getTime() / 1000000.0);
                 double wheelPower = omega * alpha * config.getInertia();
 
                 double schleppPower = 0;

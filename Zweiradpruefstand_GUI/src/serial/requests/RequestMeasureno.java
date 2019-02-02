@@ -53,7 +53,7 @@ public class RequestMeasureno extends Request {
             RawDatapoint dp = new RawDatapoint(values[0], values[1]);
             if (dp.getTime() > 0) {
                 Database.getInstance().addRawDP(dp);
-                LOG.debug("MEASURENO: wheelCount: " + dp.getWheelCount() + " time: " + dp.getTime());
+                LOG.debug("MEASURENO: wheelCount: " + dp.getWheelTime() + " time: " + dp.getTime());
             } else {
                 LOG.warning("MEASURENO: Time = 0");
             }

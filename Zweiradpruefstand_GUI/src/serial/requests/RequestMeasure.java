@@ -55,7 +55,6 @@ public class RequestMeasure extends Request {
             rdp = new RawDatapoint(values[0], values[1], values[2]);
             if (rdp.getTime() > 0) {
                 Database.getInstance().addRawDP(rdp);
-                LOG.info("MEASURE: engCount: " + rdp.getEngCount() + " wheelCount: " + rdp.getWheelCount() + " time: " + rdp.getTime());
             } else {
                 LOG.warning("MEASURE: Time = 0");
             }

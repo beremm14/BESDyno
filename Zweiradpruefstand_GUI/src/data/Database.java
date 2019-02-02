@@ -176,11 +176,17 @@ public class Database {
     }
 
     public void addXYValues(Datapoint dp, PreDatapoint pdp) {
+        double power;
+        if (Config.getInstance().isPs()) {
+                power = (dp.getPower() / 1000) * 1.36;
+            } else {
+                power = (dp.getPower() / 1000);
+            }
         if (Bike.getInstance().isMeasRpm()) {
-            seriesPower.add(pdp.getEngRpm(), dp.getPower());
+            seriesPower.add(pdp.getEngRpm(), power);
             seriesTorque.add(pdp.getEngRpm(), dp.getTorque());
         } else {
-            seriesPower.add(pdp.getWheelRpm(), dp.getPower());
+            seriesPower.add(pdp.getWheelRpm(), power);
             seriesTorque.add(pdp.getWheelRpm(), dp.getTorque());
         }
 

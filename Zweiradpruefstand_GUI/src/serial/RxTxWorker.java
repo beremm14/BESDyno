@@ -10,6 +10,7 @@ import jssc.SerialPortException;
 import serial.Response.ResponseStatus;
 import serial.requests.Request.Status;
 import serial.requests.RequestInit;
+import serial.requests.RequestVersion;
 
 /**
  *
@@ -106,8 +107,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 response.setStartTime();
 
                 int timeoutMillis;
-                if (req instanceof RequestInit) {
-                    timeoutMillis = 3000;
+                if (req instanceof RequestInit || req instanceof RequestVersion) {
+                    timeoutMillis = 5000;
                 } else {
                     timeoutMillis = 1000;
                 }

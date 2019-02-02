@@ -17,7 +17,7 @@ int workingPin1 = 7;
 int workingPin2 = 8;
 
 //Version
-float progvers = 2.2;
+float progvers = 3.0;
 
 //-Declarations----------------------------------------------------------//
 void serialEvent();
@@ -35,8 +35,8 @@ float engTemp;
 float exhTemp;
 
 //RPM
-int engCount;
-int rearCount;
+unsigned long dEngTime;
+unsigned long dWheelTime;
 long refMicros;
 
 //-Functions------------------------------------------------------------//
@@ -104,7 +104,7 @@ boolean readEnvironment () {
 void readThermos() {
   //ENGINE
   float u_eng = (analogRead(A0) * 4.94) / 1024;
-  engTemp = (u_eng - 1.248) / 0.005 + 2;
+  engTemp = (u_eng - 1.248) / 0.005;
 
   //EXHAUST
   float u_exh = (analogRead(A1) * 4.94) / 1024;
@@ -196,8 +196,6 @@ void toggleWorkingLed2() {
 
 //Reset Variables
 void resetMeasurement() {
-  engCount = 0;
-  rearCount = 0;
   refMicros = micros();
 }
 
@@ -224,6 +222,9 @@ void setup() {
   analogReference(EXTERNAL);
 
   resetMeasurement();
+  dEngTime = 0;
+  dWheelTime = 0;
+  
   attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
   attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
 }
@@ -231,19 +232,19 @@ void setup() {
 
 //-Main---------------------------------------------------------------------//
 void loop() {
+  dEngTime = pulseInLong(engRPMPin, LOW, 40000) + pulseInLong(engRPMPin, HIGH, 40000);
+  dWheelTime = pulseInLong(rearRPMPin, LOW, 40000) + pulseInLong(rearRPMPin, HIGH, 40000);
 }
 
 
 //-ISR-------------------------------------------------------------------//
 //ISR for Engine
 void engISR() {
-  engCount++;
   toggleWorkingLed1();
 }
 
 //ISR for Rear-Wheel
 void rearISR() {
-  rearCount++;
   toggleWorkingLed2();
 }
 
@@ -265,7 +266,7 @@ void rearISR() {
 
 void serialEvent() {
   while (Serial.available()) {
-    
+
     char req = (char)Serial.read();
 
     if (req == 'i') {
@@ -295,23 +296,24 @@ void serialEvent() {
       Serial.flush();
 
     } else if (req == 'm') {
-      if (engCount > 0 && rearCount > 0) {
+      if (dEngTime > 0 && dWheelTime > 0) {
         setStatusFine();
       } else {
         setStatusWarning();
       }
-      String measure = String(engCount) + '#' + String(rearCount) + '#' + String(micros()-refMicros);
+      
+      String measure = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(measure));
       Serial.flush();
       resetMeasurement();
 
     } else if (req == 'n') {
-      if (rearCount > 0) {
+      if (dWheelTime > 0) {
         setStatusFine();
       } else {
         setStatusWarning();
       }
-      String measureno = String(rearCount) + '#' + String(micros()-refMicros);
+      String measureno = String(dWheelTime) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(measureno));
       Serial.flush();
       resetMeasurement();
@@ -355,8 +357,8 @@ void serialEvent() {
       Serial.println("Höhenmeter: " + String(envAlt));
       Serial.println("A0 Motor:   " + String(engTemp));
       Serial.println("A1 Abgas:   " + String(exhTemp));
-      Serial.println("D2 Motor:   " + String(engCount));
-      Serial.println("D3 Walze:   " + String(rearCount));
+      Serial.println("D2 Motor:   " + String(dEngTime));
+      Serial.println("D3 Walze:   " + String(dWheelTime));
       Serial.println("Zeit (µs):  " + String(micros()-refMicros) + "\n");
       Serial.flush();
       resetMeasurement();
