@@ -3,11 +3,12 @@
 ## JAVA PC-Client
 
 ## C++ Arduino Software
-  Version **2.2** or higher required, newest recommended!  
+  Version **3.0** or higher required, newest recommended!  
 
-  * **v2.2**: Closed Measurement Issue: Internal Pull-up (Engine) and External Pull-down (Wheel)  
-
+  * **v3.0**: Changed Measurement: Uses period time instead of counts  
+  
   **Don't use:**  
+  * **v2.2**: Closed Measurement Issue: Internal Pull-up (Engine) and External Pull-down (Wheel)  
   * **v2.1**: Implemented Debug-Interface, req = *'d'*  
   * **v2.0**: Uses microseconds for measurement (instead of milliseconds)  
   * **v1.5**: Supports: Working-LEDs
