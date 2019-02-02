@@ -109,7 +109,7 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean activity = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
-    private double reqArduVers = 2.3;
+    private double reqArduVers = 3.0;
     private int timeouts = 0;
 
     //Communication
