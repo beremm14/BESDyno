@@ -5,6 +5,7 @@
 ## C++ Arduino Software
   Version **3.0** or higher required, newest recommended!  
 
+  * **v3.1**: Supports: Continous Temperature Measurement (Request: All)  
   * **v3.0**: Changed Measurement: Uses period time instead of counts  
   
   **Don't use:**  
