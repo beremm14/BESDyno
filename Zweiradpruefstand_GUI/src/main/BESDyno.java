@@ -95,7 +95,6 @@ public class BESDyno extends javax.swing.JFrame {
     private MeasureDialog measure;
 
     //Object-Variables
-    private File file;
     private SwingWorker activeWorker;
     private MyTelegram telegram;
     private jssc.SerialPort port;
@@ -602,6 +601,8 @@ public class BESDyno extends javax.swing.JFrame {
         if (configFile.exists()) {
             Config.getInstance().readJson(new FileInputStream(configFile));
             jcbmiDarkMode.setState(Config.getInstance().isDark());
+        } else {
+            Config.getInstance().createConfig(new BufferedWriter(new FileWriter(configFile)));
         }
     }
 

@@ -301,6 +301,30 @@ public class Config {
         }
     }
     
+    public void createConfig(BufferedWriter w) throws IOException {
+        setVelocity(Velocity.KMH);
+        setDark(false);
+        setPs(true);
+        setCelcius(true);
+        setPowerCorr(1);
+        setTorqueCorr(1);
+        setInertiaCorr(3.7017);
+        setPngWidth(1920);
+        setPngHeight(1080);
+        setPeriod(20);
+        setHysteresisTime(2500);
+        setIdleVelo(4);
+        setHysteresisVelo(4);
+        setStartVelo(4);
+        setStopVelo(80);
+        setIdleRpm(1800);
+        setHysteresisRpm(400);
+        setStartRpm(2500);
+        setStopRpm(9000);
+        setWarningEngTemp(95);
+        setWarningExhTemp(500);
+        writeJson(w);
+    }
 
     public void writeJson(BufferedWriter w) throws IOException {
 
