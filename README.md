@@ -117,17 +117,17 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   * Winkelbeschleunigung **α** (rad/s^2)  
   * Bahngeschwindigkeit **v** (m/s)  
   * Zeit **t** (µs)  
-  * Counts **x** (1)  
+  * Periodendauer **t_motor** & **t_walze** (µs)  
   * Radius **r** (m)  
   * Luftdruck **p** (hPa)  
   * Umgebungstemperatur **T** (°C)  
   
 | Wert | Formel |
 | ---- | ------ |
-| n_motor = | (x_motor/t) \* 60,000,000 |
-| n_walze = | (x_walze/(t\*26)) \* 60,000,000 |
+| n_motor = | 60,000,000 / t_motor |
+| n_walze = | ω_walze \* r |
 | ω_motor = | (2π/60) \* n_motor |
-| ω_walze = | (2π/60) \* n_walze |
+| ω_walze = | 2 \* π \* (1,000,000 / (26 \* t_walze)) |
 | v_walze = | ω_walze \* r_walze |
 | Δω = | ω_walze(i) - ω_walze(i-1) |
 | α_walze = | Δω / t(i) |
