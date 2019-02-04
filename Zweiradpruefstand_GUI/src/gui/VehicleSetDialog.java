@@ -3,7 +3,6 @@ package gui;
 import data.Bike;
 import java.awt.Color;
 import javax.swing.JOptionPane;
-import main.BESDyno;
 
 /**
  *
@@ -31,7 +30,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     
     //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
-        if (dark == true) {
+        if (dark) {
             jPanButtons.setBackground(Color.darkGray);
             jPanControls.setBackground(Color.darkGray);
             jPanMain.setBackground(Color.darkGray);
@@ -42,6 +41,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jPanMethod.setBackground(Color.darkGray);
 
             jcbEnableRPM.setForeground(Color.white);
+            jcbEnableTemp.setForeground(Color.white);
             jrb2Stroke.setForeground(Color.white);
             jrb4Stroke.setForeground(Color.white);
             jrbAutomatic.setForeground(Color.white);
@@ -63,6 +63,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jPanMethod.setBackground(Color.white);
 
             jcbEnableRPM.setForeground(Color.black);
+            jcbEnableTemp.setForeground(Color.black);
             jrb2Stroke.setForeground(Color.black);
             jrb4Stroke.setForeground(Color.black);
             jrbAutomatic.setForeground(Color.black);
@@ -142,6 +143,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         jrbDrop = new javax.swing.JRadioButton();
         jPanRPM = new javax.swing.JPanel();
         jcbEnableRPM = new javax.swing.JCheckBox();
+        jcbEnableTemp = new javax.swing.JCheckBox();
         jPanStroke = new javax.swing.JPanel();
         jrb2Stroke = new javax.swing.JRadioButton();
         jrb4Stroke = new javax.swing.JRadioButton();
@@ -217,6 +219,13 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanRPM.add(jcbEnableRPM, gridBagConstraints);
+
+        jcbEnableTemp.setSelected(true);
+        jcbEnableTemp.setText("Motor- & Abgastemperaturen messen");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanRPM.add(jcbEnableTemp, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -382,6 +391,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private javax.swing.JButton jbutCancel;
     private javax.swing.JButton jbutStart;
     private javax.swing.JCheckBox jcbEnableRPM;
+    private javax.swing.JCheckBox jcbEnableTemp;
     private javax.swing.JRadioButton jrb2Stroke;
     private javax.swing.JRadioButton jrb4Stroke;
     private javax.swing.JRadioButton jrbAutomatic;

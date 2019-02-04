@@ -7,7 +7,6 @@ import data.PreDatapoint;
 import data.DialData;
 import data.RawDatapoint;
 import development.TestCSV;
-import java.util.logging.Level;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;

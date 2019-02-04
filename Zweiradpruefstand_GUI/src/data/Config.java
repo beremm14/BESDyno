@@ -27,6 +27,7 @@ public class Config {
     private static final Logger LOG = Logger.getLogger(Config.class.getName());
 
     private boolean ps;
+    private boolean celcius;
 
     private int pngHeight;
     private int pngWidth;
@@ -49,6 +50,9 @@ public class Config {
     private int hysteresisRpm;
     private int startRpm;
     private int stopRpm;
+    
+    private int warningEngTemp;
+    private int warningExhTemp;
     
     private double arduinoVersion = 0;
     
@@ -75,9 +79,17 @@ public class Config {
     public boolean isPs() {
         return ps;
     }
+    
+    public boolean isCelcius() {
+        return celcius;
+    }
 
     public String getPowerUnit() {
         return ps ? "PS" : "kW";
+    }
+    
+    public String getTempUnit() {
+        return celcius ? "°C" : "°F";
     }
     
     public String getVeloUnit() {
@@ -161,9 +173,21 @@ public class Config {
         return stopRpm;
     }
 
+    public int getWarningExhTemp() {
+        return warningExhTemp;
+    }
+    
+    public int getWarningEngTemp() {
+        return warningEngTemp;
+    }
+
     //Setter
     public void setPs(boolean ps) {
         this.ps = ps;
+    }
+    
+    public void setCelcius(boolean celcius) {
+        this.celcius = celcius;
     }
 
     public void setPngHeight(int pngHeight) {
@@ -249,8 +273,15 @@ public class Config {
     public void setStopRpm(int stopRpm) {
         this.stopRpm = stopRpm;
     }
-    
-    
+
+    public void setWarningEngTemp(int warningEngTemp) {
+        this.warningEngTemp = warningEngTemp;
+    }
+
+    public void setWarningExhTemp(int warningExhTemp) {
+        this.warningExhTemp = warningExhTemp;
+    }
+
     
     public int writeVelocity() {
         switch(velocity) {
@@ -287,12 +318,15 @@ public class Config {
                 .add("PNG Width", pngWidth)
                 .add("Power Correction Factor", powerCorr)
                 .add("PS", ps)
+                .add("Celcius", celcius)
                 .add("Start Velo", startVelo)
                 .add("Start Rpm", startRpm)
                 .add("Stop Velo", stopVelo)
                 .add("Stop Rpm", stopRpm)
                 .add("Torque Correction Factor", torqueCorr)
-                .add("Velocity", writeVelocity());
+                .add("Velocity", writeVelocity())
+                .add("Engine Max Temp", warningEngTemp)
+                .add("Exhaust Max Temp", warningExhTemp);
 
         JsonObject obj = b.build();
         w.write(obj.toString());
@@ -318,12 +352,15 @@ public class Config {
         pngWidth = json.getInt("PNG Width");
         powerCorr = json.getJsonNumber("Power Correction Factor").doubleValue();
         ps = json.getBoolean("PS");
+        celcius = json.getBoolean("Celcius");
         startVelo = json.getInt("Start Velo");
         startRpm = json.getInt("Start Rpm");
         stopVelo = json.getInt("Stop Velo");
         stopRpm = json.getInt("Stop Rpm");
         torqueCorr = json.getInt("Torque Correction Factor");
         velocity = readVelocity(json.getInt("Velocity"));
+        warningEngTemp = json.getInt("Engine Max Temp");
+        warningExhTemp = json.getInt("Exhaust Max Temp");
     }
 
 }

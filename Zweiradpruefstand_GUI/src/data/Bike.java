@@ -1,16 +1,5 @@
 package data;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-
 /**
  *
  * @author emil
@@ -27,10 +16,8 @@ public class Bike {
     private boolean measRpm;
     
     private boolean startStopMethod;
-
-    private final Date date = Calendar.getInstance().getTime();
-    private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
-    private String timePoint = null;
+    
+    private boolean measTemp;
 
     public static Bike getInstance() {
         if (instance == null) {
@@ -59,6 +46,10 @@ public class Bike {
         return measRpm;
     }
     
+    public boolean isMeasTemp() {
+        return measTemp;
+    }
+    
     public boolean isStartStopMethod() {
         return startStopMethod;
     }
@@ -82,6 +73,10 @@ public class Bike {
     
     public void setStartStopMethode(boolean startStopMethod) {
         this.startStopMethod = startStopMethod;
+    }
+    
+    public void setMeasTemp(boolean measTemp) {
+        this.measTemp = measTemp;
     }
 
 }

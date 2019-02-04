@@ -2,6 +2,7 @@ package gui;
 
 import data.Bike;
 import data.Config;
+import data.Config.Velocity;
 import development.CommunicationLogger;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,6 +33,8 @@ public class SettingsDialog extends javax.swing.JDialog {
 
     private boolean pressedOK;
 
+    private Velocity lastVelocity;
+
     /**
      * Creates new form SettingsDialog
      *
@@ -50,9 +53,10 @@ public class SettingsDialog extends javax.swing.JDialog {
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
+        lastVelocity = Config.getInstance().getVelocity();
     }
-    
-    public void writeDevice (String dn) {
+
+    public void writeDevice(String dn) {
         jLabelDevice2.setText(dn);
         if (Config.getInstance().getArduinoVersion() == 0) {
             jLabelArduino2.setText("Kein Prüfstand verbunden...");
@@ -76,6 +80,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanDevice.setBackground(Color.darkGray);
             jPanLoad.setBackground(Color.darkGray);
             jPanConfirm.setBackground(Color.darkGray);
+            jPanTemp.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setBackground(Color.darkGray);
             jtfHysteresisRpm.setBackground(Color.darkGray);
@@ -92,6 +97,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfTorque.setBackground(Color.darkGray);
             jtfStopKmh.setBackground(Color.darkGray);
             jtfStopRpm.setBackground(Color.darkGray);
+            jtfEngWarning.setBackground(Color.darkGray);
+            jtfExhWarning.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setForeground(Color.white);
             jtfHysteresisRpm.setForeground(Color.white);
@@ -108,6 +115,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfTorque.setForeground(Color.white);
             jtfStopKmh.setForeground(Color.white);
             jtfStopRpm.setForeground(Color.white);
+            jtfEngWarning.setForeground(Color.white);
+            jtfExhWarning.setForeground(Color.white);
 
             jrbDaymode.setForeground(Color.white);
             jrbNightmode.setForeground(Color.white);
@@ -115,7 +124,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbPS.setForeground(Color.white);
             jrbMPS.setForeground(Color.white);
             jrbKMH.setForeground(Color.white);
-            jrbMPH.setForeground(Color.white);
+            jrbMIH.setForeground(Color.white);
+            jrbCelcius.setForeground(Color.white);
+            jrbFahrenheit.setForeground(Color.white);
 
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
@@ -148,6 +159,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelStopRpm.setForeground(Color.white);
             jLabelStopRpm2.setForeground(Color.white);
             jLabelHelp.setForeground(Color.white);
+            jLabelEngWarning.setForeground(Color.white);
+            jLabelEngWarning2.setForeground(Color.white);
+            jLabelExhWarning.setForeground(Color.white);
+            jLabelExhWarning2.setForeground(Color.white);
         } else {
             jPanAppearance.setBackground(Color.white);
             jPanButtons.setBackground(Color.white);
@@ -162,6 +177,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanDevice.setBackground(Color.white);
             jPanLoad.setBackground(Color.white);
             jPanConfirm.setBackground(Color.white);
+            jPanTemp.setBackground(Color.white);
 
             jtfInertia.setBackground(Color.white);
             jtfInertia.setForeground(Color.black);
@@ -181,6 +197,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfTorque.setBackground(Color.white);
             jtfStopKmh.setBackground(Color.white);
             jtfStopRpm.setBackground(Color.white);
+            jtfEngWarning.setBackground(Color.white);
+            jtfExhWarning.setBackground(Color.white);
 
             jtfHysteresisKmh.setForeground(Color.black);
             jtfHysteresisRpm.setForeground(Color.black);
@@ -197,13 +215,17 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfTorque.setForeground(Color.black);
             jtfStopKmh.setForeground(Color.black);
             jtfStopRpm.setForeground(Color.black);
+            jtfEngWarning.setForeground(Color.black);
+            jtfExhWarning.setForeground(Color.black);
 
             jrbDaymode.setForeground(Color.black);
             jrbNightmode.setForeground(Color.black);
             jrbKW.setForeground(Color.black);
             jrbPS.setForeground(Color.black);
             jrbKMH.setForeground(Color.black);
-            jrbMPH.setForeground(Color.black);
+            jrbMIH.setForeground(Color.black);
+            jrbCelcius.setForeground(Color.black);
+            jrbFahrenheit.setForeground(Color.black);
 
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);
@@ -236,6 +258,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelStopRpm.setForeground(Color.black);
             jLabelStopRpm2.setForeground(Color.black);
             jLabelHelp.setForeground(Color.black);
+            jLabelEngWarning.setForeground(Color.black);
+            jLabelEngWarning2.setForeground(Color.black);
+            jLabelExhWarning.setForeground(Color.black);
+            jLabelExhWarning2.setForeground(Color.black);
         }
     }
 
@@ -247,6 +273,47 @@ public class SettingsDialog extends javax.swing.JDialog {
         return jrbNightmode.isSelected();
     }
 
+    private String convertVelocity(Velocity from, Velocity to, int value) {
+        switch (from) {
+            case MIH:
+                switch (to) {
+                    case MIH:
+                        return String.format("%d", value);
+                    case KMH:
+                        return String.format("%d", Math.round(((double) value) * 1.609));
+                    case MPS:
+                        return String.format("%d", Math.round(((double) value) / 2.237));
+                }
+            case KMH:
+                switch (to) {
+                    case MIH:
+                        return String.format("%d", Math.round(((double) value) / 1.609));
+                    case KMH:
+                        return String.format("%d", value);
+                    case MPS:
+                        return String.format("%d", Math.round(((double) value) / 3.6));
+                }
+            case MPS:
+                switch (to) {
+                    case MIH:
+                        return String.format("%d", Math.round(((double) value) * 2.237));
+                    case KMH:
+                        return String.format("%d", Math.round(((double) value) * 3.6));
+                    case MPS:
+                        return String.format("%d", value);
+                }
+        }
+        return "";
+    }
+
+    private String convertTemperature(boolean toFahrenheit, int value) {
+        if (toFahrenheit) {
+            return String.format("%d", Math.round(((double) value) * (9.0 / 5.0) + 32.0));
+        } else {
+            return String.format("%d", Math.round((((double) value) - 32.0) * (5.0 / 9.0)));
+        }
+    }
+
     //Sets the Config-File
     private void confirm(Config c, boolean save) {
 
@@ -254,11 +321,12 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
+        c.setCelcius(jrbCelcius.isSelected());
         if (jrbKMH.isSelected()) {
             c.setVelocity(Config.Velocity.KMH);
         } else if (jrbMPS.isSelected()) {
             c.setVelocity(Config.Velocity.MPS);
-        } else if (jrbMPH.isSelected()) {
+        } else if (jrbMIH.isSelected()) {
             c.setVelocity(Config.Velocity.MIH);
         } else {
             c.setVelocity(Config.Velocity.KMH);
@@ -386,6 +454,24 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfInertia.requestFocusInWindow();
         }
 
+        try {
+            c.setWarningEngTemp(Integer.parseInt(jtfEngWarning.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfEngWarning.requestFocusInWindow();
+        }
+
+        try {
+            c.setWarningExhTemp(Integer.parseInt(jtfExhWarning.getText()));
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(System.err);
+            jtfExhWarning.requestFocusInWindow();
+        }
+
         if (!error) {
             try {
                 if (save) {
@@ -408,55 +494,63 @@ public class SettingsDialog extends javax.swing.JDialog {
 
     //Sets jTFs & jRBs from Config-File
     public void setSwingValues(Config c) {
-        jtfHysteresisKmh.setText(String.format("%d", c.getHysteresisVelo()));
-        jtfHysteresisRpm.setText(String.format("%d", c.getHysteresisRpm()));
-        jtfHysteresisTime.setText(String.format("%d", c.getHysteresisTime()));
-        jtfIdleKmh.setText(String.format("%d", c.getIdleVelo()));
-        jtfIdleRpm.setText(String.format("%d", c.getIdleRpm()));
-        jtfInertia.setText(Double.toString(c.getInertia()));
-        jtfPeriod.setText(String.format("%d", c.getPeriod()));
-        jtfPngX.setText(String.format("%d", c.getPngWidth()));
-        jtfPngY.setText(String.format("%d", c.getPngHeight()));
-        jtfPower.setText(String.format(Double.toString(c.getPowerCorr())));
-        jtfStartKmh.setText(String.format("%d", c.getStartVelo()));
-        jtfStartRpm.setText(String.format("%d", c.getStartRpm()));
-        jtfStopKmh.setText(String.format("%d", c.getStopVelo()));
-        jtfStopRpm.setText(String.format("%d", c.getStopRpm()));
-        jtfTorque.setText(String.format("%d", c.getTorqueCorr()));
+        try {
+            jtfHysteresisKmh.setText(String.format("%d", c.getHysteresisVelo()));
+            jtfHysteresisRpm.setText(String.format("%d", c.getHysteresisRpm()));
+            jtfHysteresisTime.setText(String.format("%d", c.getHysteresisTime()));
+            jtfIdleKmh.setText(String.format("%d", c.getIdleVelo()));
+            jtfIdleRpm.setText(String.format("%d", c.getIdleRpm()));
+            jtfInertia.setText(Double.toString(c.getInertia()));
+            jtfPeriod.setText(String.format("%d", c.getPeriod()));
+            jtfPngX.setText(String.format("%d", c.getPngWidth()));
+            jtfPngY.setText(String.format("%d", c.getPngHeight()));
+            jtfPower.setText(String.format(Double.toString(c.getPowerCorr())));
+            jtfStartKmh.setText(String.format("%d", c.getStartVelo()));
+            jtfStartRpm.setText(String.format("%d", c.getStartRpm()));
+            jtfStopKmh.setText(String.format("%d", c.getStopVelo()));
+            jtfStopRpm.setText(String.format("%d", c.getStopRpm()));
+            jtfTorque.setText(String.format("%d", c.getTorqueCorr()));
+            jtfEngWarning.setText(String.format("%d", c.getWarningEngTemp()));
+            jtfExhWarning.setText(String.format("%d", c.getWarningExhTemp()));
 
-        jrbDaymode.setSelected(!c.isDark());
-        jrbNightmode.setSelected(c.isDark());
-        jrbKW.setSelected(!c.isPs());
-        jrbPS.setSelected(c.isPs());
+            jrbDaymode.setSelected(!c.isDark());
+            jrbNightmode.setSelected(c.isDark());
+            jrbKW.setSelected(!c.isPs());
+            jrbPS.setSelected(c.isPs());
+            jrbCelcius.setSelected(c.isCelcius());
+            jrbFahrenheit.setSelected(!c.isCelcius());
 
-        switch (c.getVelocity()) {
-            case MPS:
-                jrbMPS.setSelected(true);
-                jrbMPH.setSelected(false);
-                jrbKMH.setSelected(false);
-                jLabelIdleKmh2.setText("m/s");
-                jLabelStartKmh2.setText("m/s");
-                jLabelHysteresisKmh2.setText("m/s");
-                jLabelStopKmh2.setText("m/s");
-                break;
-            case KMH:
-                jrbMPS.setSelected(false);
-                jrbMPH.setSelected(false);
-                jrbKMH.setSelected(true);
-                jLabelIdleKmh2.setText("km/h");
-                jLabelStartKmh2.setText("km/h");
-                jLabelHysteresisKmh2.setText("km/h");
-                jLabelStopKmh2.setText("km/h");
-                break;
-            case MIH:
-                jrbMPS.setSelected(false);
-                jrbMPH.setSelected(true);
-                jrbKMH.setSelected(false);
-                jLabelIdleKmh2.setText("mi/h");
-                jLabelStartKmh2.setText("mi/h");
-                jLabelHysteresisKmh2.setText("mi/h");
-                jLabelStopKmh2.setText("mi/h");
-                break;
+            switch (c.getVelocity()) {
+                case MPS:
+                    jrbMPS.setSelected(true);
+                    jrbMIH.setSelected(false);
+                    jrbKMH.setSelected(false);
+                    jLabelIdleKmh2.setText("m/s");
+                    jLabelStartKmh2.setText("m/s");
+                    jLabelHysteresisKmh2.setText("m/s");
+                    jLabelStopKmh2.setText("m/s");
+                    break;
+                case KMH:
+                    jrbMPS.setSelected(false);
+                    jrbMIH.setSelected(false);
+                    jrbKMH.setSelected(true);
+                    jLabelIdleKmh2.setText("km/h");
+                    jLabelStartKmh2.setText("km/h");
+                    jLabelHysteresisKmh2.setText("km/h");
+                    jLabelStopKmh2.setText("km/h");
+                    break;
+                case MIH:
+                    jrbMPS.setSelected(false);
+                    jrbMIH.setSelected(true);
+                    jrbKMH.setSelected(false);
+                    jLabelIdleKmh2.setText("mi/h");
+                    jLabelStartKmh2.setText("mi/h");
+                    jLabelHysteresisKmh2.setText("mi/h");
+                    jLabelStopKmh2.setText("mi/h");
+                    break;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Fehler in der Konfigurationsdatei!", "Config-Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -519,9 +613,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.info("Config-File updated");
         }
     }
-    
+
     //Loads Config from Config-Files Folder
-    public void loadBikeConfig () throws Exception {
+    public void loadBikeConfig() throws Exception {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Bike-Config (*.json)", "json"));
 
@@ -557,9 +651,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             }
         }
     }
-    
+
     //Saves Config for special Bikes into Config-Files Folder
-    public void saveBikeConfig (Config config) throws Exception {
+    public void saveBikeConfig(Config config) throws Exception {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Bike-Config (*.json)", "json"));
 
@@ -611,20 +705,22 @@ public class SettingsDialog extends javax.swing.JDialog {
         jbgAppearance = new javax.swing.ButtonGroup();
         jbgPower = new javax.swing.ButtonGroup();
         jbgVelocity = new javax.swing.ButtonGroup();
+        jbgTemperature = new javax.swing.ButtonGroup();
         jPanMain = new javax.swing.JPanel();
         jPanWest = new javax.swing.JPanel();
+        jPanAppearance = new javax.swing.JPanel();
+        jrbDaymode = new javax.swing.JRadioButton();
+        jrbNightmode = new javax.swing.JRadioButton();
         jPanVelocity = new javax.swing.JPanel();
         jrbMPS = new javax.swing.JRadioButton();
         jrbKMH = new javax.swing.JRadioButton();
-        jrbMPH = new javax.swing.JRadioButton();
+        jrbMIH = new javax.swing.JRadioButton();
         jPanPower = new javax.swing.JPanel();
         jrbPS = new javax.swing.JRadioButton();
         jrbKW = new javax.swing.JRadioButton();
-        jPanPNG = new javax.swing.JPanel();
-        jtfPngX = new javax.swing.JTextField();
-        jtfPngY = new javax.swing.JTextField();
-        jLabelPngX = new javax.swing.JLabel();
-        jLabelPngY = new javax.swing.JLabel();
+        jPanTemp = new javax.swing.JPanel();
+        jrbCelcius = new javax.swing.JRadioButton();
+        jrbFahrenheit = new javax.swing.JRadioButton();
         jPanCorr = new javax.swing.JPanel();
         jLabelPower = new javax.swing.JLabel();
         jtfPower = new javax.swing.JTextField();
@@ -634,9 +730,11 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfInertia = new javax.swing.JTextField();
         jLabelInertia2 = new javax.swing.JLabel();
         jPanEast = new javax.swing.JPanel();
-        jPanAppearance = new javax.swing.JPanel();
-        jrbDaymode = new javax.swing.JRadioButton();
-        jrbNightmode = new javax.swing.JRadioButton();
+        jPanPNG = new javax.swing.JPanel();
+        jtfPngX = new javax.swing.JTextField();
+        jtfPngY = new javax.swing.JTextField();
+        jLabelPngX = new javax.swing.JLabel();
+        jLabelPngY = new javax.swing.JLabel();
         jPanSerial = new javax.swing.JPanel();
         jLabelPeriod = new javax.swing.JLabel();
         jLabelPeriod2 = new javax.swing.JLabel();
@@ -668,6 +766,12 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelStopKmh = new javax.swing.JLabel();
         jtfStopKmh = new javax.swing.JTextField();
         jLabelStopKmh2 = new javax.swing.JLabel();
+        jLabelEngWarning = new javax.swing.JLabel();
+        jtfEngWarning = new javax.swing.JTextField();
+        jLabelEngWarning2 = new javax.swing.JLabel();
+        jLabelExhWarning = new javax.swing.JLabel();
+        jtfExhWarning = new javax.swing.JTextField();
+        jLabelExhWarning2 = new javax.swing.JLabel();
         jLabelHelp = new javax.swing.JLabel();
         jPanButtons = new javax.swing.JPanel();
         jPanLoad = new javax.swing.JPanel();
@@ -689,7 +793,54 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanMain.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanWest.setBackground(new java.awt.Color(255, 255, 255));
+        jPanWest.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanWest.setLayout(new java.awt.GridBagLayout());
+
+        jPanAppearance.setBackground(new java.awt.Color(255, 255, 255));
+        jPanAppearance.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Erscheinungsbild", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
+        jPanAppearance.setPreferredSize(new java.awt.Dimension(330, 70));
+        jPanAppearance.setLayout(new java.awt.GridBagLayout());
+
+        jbgAppearance.add(jrbDaymode);
+        jrbDaymode.setText("Hell");
+        jrbDaymode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbDaymodeActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanAppearance.add(jrbDaymode, gridBagConstraints);
+
+        jbgAppearance.add(jrbNightmode);
+        jrbNightmode.setText("Dunkel");
+        jrbNightmode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbNightmodeActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanAppearance.add(jrbNightmode, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanWest.add(jPanAppearance, gridBagConstraints);
 
         jPanVelocity.setBackground(new java.awt.Color(255, 255, 255));
         jPanVelocity.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Geschwindigkeitseinheit", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
@@ -719,24 +870,26 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanVelocity.add(jrbKMH, gridBagConstraints);
 
-        jbgVelocity.add(jrbMPH);
-        jrbMPH.setText("Meilen/Stunde (mi/h)");
-        jrbMPH.addActionListener(new java.awt.event.ActionListener() {
+        jbgVelocity.add(jrbMIH);
+        jrbMIH.setText("Meilen/Stunde (mi/h)");
+        jrbMIH.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jrbMPHActionPerformed(evt);
+                jrbMIHActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanVelocity.add(jrbMPH, gridBagConstraints);
+        jPanVelocity.add(jrbMIH, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         jPanWest.add(jPanVelocity, gridBagConstraints);
 
         jPanPower.setBackground(new java.awt.Color(255, 255, 255));
@@ -759,47 +912,42 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         jPanWest.add(jPanPower, gridBagConstraints);
 
-        jPanPNG.setBackground(new java.awt.Color(255, 255, 255));
-        jPanPNG.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "PNG Auflösung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
-        jPanPNG.setMinimumSize(new java.awt.Dimension(200, 50));
-        jPanPNG.setPreferredSize(new java.awt.Dimension(312, 80));
-        jPanPNG.setLayout(new java.awt.GridBagLayout());
+        jPanTemp.setBackground(new java.awt.Color(255, 255, 255));
+        jPanTemp.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Temperatureinheit", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
+        jPanTemp.setLayout(new java.awt.GridBagLayout());
 
-        jtfPngX.setText("1920");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanPNG.add(jtfPngX, gridBagConstraints);
+        jbgTemperature.add(jrbCelcius);
+        jrbCelcius.setText("Celcius °C");
+        jrbCelcius.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbCelciusActionPerformed(evt);
+            }
+        });
+        jPanTemp.add(jrbCelcius, new java.awt.GridBagConstraints());
 
-        jtfPngY.setText("1080");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanPNG.add(jtfPngY, gridBagConstraints);
-
-        jLabelPngX.setText("X");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanPNG.add(jLabelPngX, gridBagConstraints);
-
-        jLabelPngY.setText("Y");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanPNG.add(jLabelPngY, gridBagConstraints);
+        jbgTemperature.add(jrbFahrenheit);
+        jrbFahrenheit.setText("Fahrenheit °F");
+        jrbFahrenheit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbFahrenheitActionPerformed(evt);
+            }
+        });
+        jPanTemp.add(jrbFahrenheit, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanWest.add(jPanPNG, gridBagConstraints);
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanWest.add(jPanTemp, gridBagConstraints);
 
         jPanCorr.setBackground(new java.awt.Color(255, 255, 255));
         jPanCorr.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Korrekturfaktoren", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
@@ -854,51 +1002,59 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         jPanWest.add(jPanCorr, gridBagConstraints);
 
         jPanMain.add(jPanWest);
 
         jPanEast.setBackground(new java.awt.Color(255, 255, 255));
+        jPanEast.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanEast.setLayout(new java.awt.GridBagLayout());
 
-        jPanAppearance.setBackground(new java.awt.Color(255, 255, 255));
-        jPanAppearance.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Erscheinungsbild", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
-        jPanAppearance.setPreferredSize(new java.awt.Dimension(330, 70));
-        jPanAppearance.setLayout(new java.awt.GridBagLayout());
+        jPanPNG.setBackground(new java.awt.Color(255, 255, 255));
+        jPanPNG.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "PNG Auflösung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
+        jPanPNG.setMinimumSize(new java.awt.Dimension(200, 50));
+        jPanPNG.setPreferredSize(new java.awt.Dimension(312, 80));
+        jPanPNG.setLayout(new java.awt.GridBagLayout());
 
-        jbgAppearance.add(jrbDaymode);
-        jrbDaymode.setText("Hell");
-        jrbDaymode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jrbDaymodeActionPerformed(evt);
-            }
-        });
+        jtfPngX.setText("1920");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 44);
-        jPanAppearance.add(jrbDaymode, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanPNG.add(jtfPngX, gridBagConstraints);
 
-        jbgAppearance.add(jrbNightmode);
-        jrbNightmode.setText("Dunkel");
-        jrbNightmode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jrbNightmodeActionPerformed(evt);
-            }
-        });
+        jtfPngY.setText("1080");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanPNG.add(jtfPngY, gridBagConstraints);
+
+        jLabelPngX.setText("X");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 44);
-        jPanAppearance.add(jrbNightmode, gridBagConstraints);
+        jPanPNG.add(jLabelPngX, gridBagConstraints);
+
+        jLabelPngY.setText("Y");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanPNG.add(jLabelPngY, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanEast.add(jPanAppearance, gridBagConstraints);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanEast.add(jPanPNG, gridBagConstraints);
 
         jPanSerial.setBackground(new java.awt.Color(255, 255, 255));
         jPanSerial.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kommunikation", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
@@ -1134,17 +1290,66 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         jPanSerial.add(jLabelStopKmh2, gridBagConstraints);
 
+        jLabelEngWarning.setText("Max. Motortemperatur");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
+        jPanSerial.add(jLabelEngWarning, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanSerial.add(jtfEngWarning, gridBagConstraints);
+
+        jLabelEngWarning2.setText("°C");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        jPanSerial.add(jLabelEngWarning2, gridBagConstraints);
+
+        jLabelExhWarning.setText("Max. Abgastemperatur");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 13);
+        jPanSerial.add(jLabelExhWarning, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanSerial.add(jtfExhWarning, gridBagConstraints);
+
+        jLabelExhWarning2.setText("°C");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        jPanSerial.add(jLabelExhWarning2, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         jPanEast.add(jPanSerial, gridBagConstraints);
 
         jLabelHelp.setFont(new java.awt.Font("Lucida Grande", 2, 11)); // NOI18N
         jLabelHelp.setText("Hilfe beim Setzen der Parameter finden Sie im Help-Menü.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         jPanEast.add(jLabelHelp, gridBagConstraints);
 
         jPanMain.add(jPanEast);
@@ -1152,7 +1357,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         getContentPane().add(jPanMain, java.awt.BorderLayout.CENTER);
 
         jPanButtons.setBackground(new java.awt.Color(255, 255, 255));
-        jPanButtons.setLayout(new java.awt.GridLayout());
+        jPanButtons.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanLoad.setBackground(new java.awt.Color(255, 255, 255));
         jPanLoad.setLayout(new java.awt.GridBagLayout());
@@ -1265,20 +1470,44 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void jrbMPSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMPSActionPerformed
         jLabelIdleKmh2.setText("m/s");
         jLabelStartKmh2.setText("m/s");
+        jLabelStopKmh2.setText("m/s");
         jLabelHysteresisKmh2.setText("m/s");
+
+        jtfIdleKmh.setText(convertVelocity(lastVelocity, Velocity.MPS, Integer.parseInt(jtfIdleKmh.getText())));
+        jtfStartKmh.setText(convertVelocity(lastVelocity, Velocity.MPS, Integer.parseInt(jtfStartKmh.getText())));
+        jtfStopKmh.setText(convertVelocity(lastVelocity, Velocity.MPS, Integer.parseInt(jtfStopKmh.getText())));
+        jtfHysteresisKmh.setText(convertVelocity(lastVelocity, Velocity.MPS, Integer.parseInt(jtfHysteresisKmh.getText())));
+
+        lastVelocity = Velocity.MPS;
     }//GEN-LAST:event_jrbMPSActionPerformed
 
     private void jrbKMHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbKMHActionPerformed
         jLabelIdleKmh2.setText("km/h");
         jLabelStartKmh2.setText("km/h");
+        jLabelStopKmh2.setText("km/h");
         jLabelHysteresisKmh2.setText("km/h");
+
+        jtfIdleKmh.setText(convertVelocity(lastVelocity, Velocity.KMH, Integer.parseInt(jtfIdleKmh.getText())));
+        jtfStartKmh.setText(convertVelocity(lastVelocity, Velocity.KMH, Integer.parseInt(jtfStartKmh.getText())));
+        jtfStopKmh.setText(convertVelocity(lastVelocity, Velocity.KMH, Integer.parseInt(jtfStopKmh.getText())));
+        jtfHysteresisKmh.setText(convertVelocity(lastVelocity, Velocity.KMH, Integer.parseInt(jtfHysteresisKmh.getText())));
+
+        lastVelocity = Velocity.KMH;
     }//GEN-LAST:event_jrbKMHActionPerformed
 
-    private void jrbMPHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMPHActionPerformed
+    private void jrbMIHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbMIHActionPerformed
         jLabelIdleKmh2.setText("mi/h");
         jLabelStartKmh2.setText("mi/h");
+        jLabelStopKmh2.setText("mi/h");
         jLabelHysteresisKmh2.setText("mi/h");
-    }//GEN-LAST:event_jrbMPHActionPerformed
+
+        jtfIdleKmh.setText(convertVelocity(lastVelocity, Velocity.MIH, Integer.parseInt(jtfIdleKmh.getText())));
+        jtfStartKmh.setText(convertVelocity(lastVelocity, Velocity.MIH, Integer.parseInt(jtfStartKmh.getText())));
+        jtfStopKmh.setText(convertVelocity(lastVelocity, Velocity.MIH, Integer.parseInt(jtfStopKmh.getText())));
+        jtfHysteresisKmh.setText(convertVelocity(lastVelocity, Velocity.MIH, Integer.parseInt(jtfHysteresisKmh.getText())));
+
+        lastVelocity = Velocity.MIH;
+    }//GEN-LAST:event_jrbMIHActionPerformed
 
     private void onLoad(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onLoad
         try {
@@ -1291,6 +1520,22 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void onSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSave
         confirm(Config.getInstance(), true);
     }//GEN-LAST:event_onSave
+
+    private void jrbCelciusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbCelciusActionPerformed
+        jLabelEngWarning2.setText("°C");
+        jLabelExhWarning2.setText("°C");
+        
+        jtfEngWarning.setText(convertTemperature(false, Integer.parseInt(jtfEngWarning.getText())));
+        jtfExhWarning.setText(convertTemperature(false, Integer.parseInt(jtfExhWarning.getText())));
+    }//GEN-LAST:event_jrbCelciusActionPerformed
+
+    private void jrbFahrenheitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFahrenheitActionPerformed
+        jLabelEngWarning2.setText("°F");
+        jLabelExhWarning2.setText("°F");
+        
+        jtfEngWarning.setText(convertTemperature(true, Integer.parseInt(jtfEngWarning.getText())));
+        jtfExhWarning.setText(convertTemperature(true, Integer.parseInt(jtfExhWarning.getText())));
+    }//GEN-LAST:event_jrbFahrenheitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1344,6 +1589,10 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelArduino2;
     private javax.swing.JLabel jLabelDevice1;
     private javax.swing.JLabel jLabelDevice2;
+    private javax.swing.JLabel jLabelEngWarning;
+    private javax.swing.JLabel jLabelEngWarning2;
+    private javax.swing.JLabel jLabelExhWarning;
+    private javax.swing.JLabel jLabelExhWarning2;
     private javax.swing.JLabel jLabelHelp;
     private javax.swing.JLabel jLabelHysteresisKmh;
     private javax.swing.JLabel jLabelHysteresisKmh2;
@@ -1382,22 +1631,28 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanPNG;
     private javax.swing.JPanel jPanPower;
     private javax.swing.JPanel jPanSerial;
+    private javax.swing.JPanel jPanTemp;
     private javax.swing.JPanel jPanVelocity;
     private javax.swing.JPanel jPanWest;
     private javax.swing.ButtonGroup jbgAppearance;
     private javax.swing.ButtonGroup jbgPower;
+    private javax.swing.ButtonGroup jbgTemperature;
     private javax.swing.ButtonGroup jbgVelocity;
     private javax.swing.JButton jbutCancel;
     private javax.swing.JButton jbutLoad;
     private javax.swing.JButton jbutOK;
     private javax.swing.JButton jbutSave;
+    private javax.swing.JRadioButton jrbCelcius;
     private javax.swing.JRadioButton jrbDaymode;
+    private javax.swing.JRadioButton jrbFahrenheit;
     private javax.swing.JRadioButton jrbKMH;
     private javax.swing.JRadioButton jrbKW;
-    private javax.swing.JRadioButton jrbMPH;
+    private javax.swing.JRadioButton jrbMIH;
     private javax.swing.JRadioButton jrbMPS;
     private javax.swing.JRadioButton jrbNightmode;
     private javax.swing.JRadioButton jrbPS;
+    private javax.swing.JTextField jtfEngWarning;
+    private javax.swing.JTextField jtfExhWarning;
     private javax.swing.JTextField jtfHysteresisKmh;
     private javax.swing.JTextField jtfHysteresisRpm;
     private javax.swing.JTextField jtfHysteresisTime;
