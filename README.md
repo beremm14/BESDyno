@@ -125,9 +125,9 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 | Wert | Formel |
 | ---- | ------ |
 | n_motor = | 60,000,000 / t_motor |
-| n_walze = | ω_walze \* r |
 | ω_motor = | (2π/60) \* n_motor |
 | ω_walze = | 2 \* π \* (1,000,000 / (26 \* t_walze)) |
+| n_walze = | ω_walze \* r |
 | v_walze = | ω_walze \* r_walze |
 | Δω = | ω_walze(i) - ω_walze(i-1) |
 | α_walze = | Δω / t(i) |
