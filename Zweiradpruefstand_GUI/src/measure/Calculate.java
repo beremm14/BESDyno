@@ -15,8 +15,6 @@ import logging.Logger;
  */
 public class Calculate {
 
-    private static final Logger LOG = Logger.getLogger(Calculate.class.getName());
-
     private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
     private final Database data = Database.getInstance();
@@ -31,11 +29,10 @@ public class Calculate {
         double engRpm;
         double wheelRpm;
 
-        double wheelOmega = (1000000.0 / (totalImpulse * wheelTime)) * 2.0 * Math.PI;
-        if (Double.isInfinite(wheelOmega)) {
-            wheelOmega = 0;
+        wheelRpm = 60000000.0 / (totalImpulse * wheelTime);
+        if (Double.isInfinite(wheelRpm)) {
+            wheelRpm = 0;
         }
-        wheelRpm = wheelOmega * 0.175;
         
         if (Bike.getInstance().isTwoStroke()) {
             engRpm = 60000000.0 / engTime;
@@ -50,13 +47,14 @@ public class Calculate {
     }
 
     public PreDatapoint calcWheelOnly(RawDatapoint rdp) {
-        double totalImpulse = 26.0;
+        /*double totalImpulse = 26.0;
         double wheelCount = (double) rdp.getWheelTime();
         double time = (double) rdp.getTime(); //µs
 
         double wheelRpm = (wheelCount / (((double) time) * totalImpulse)) * 60000000.0;
 
-        return new PreDatapoint(wheelRpm, (double) rdp.getTime());
+        return new PreDatapoint(wheelRpm, (double) rdp.getTime());*/
+        throw new UnsupportedOperationException();
     }
 
     //Calculates One Point
