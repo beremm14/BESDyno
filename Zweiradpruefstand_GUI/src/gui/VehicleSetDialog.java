@@ -1,8 +1,10 @@
 package gui;
 
 import data.Bike;
+import data.Config;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+import main.BESDyno;
 
 /**
  *
@@ -27,7 +29,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     public boolean isPressedOK() {
         return pressedOK;
     }
-    
+
     //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
         if (dark) {
@@ -70,10 +72,17 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jrbManual.setForeground(Color.black);
             jrbStartStop.setForeground(Color.black);
             jrbDrop.setForeground(Color.black);
-            
+
             jtfVehicleName.setBackground(Color.white);
 
             jtfVehicleName.setForeground(Color.black);
+        }
+    }
+
+    public void checkSupportedOptions() {
+        if (Config.getInstance().getArduinoVersion() < 3.1) {
+            jcbEnableTemp.setSelected(false);
+            jcbEnableTemp.setEnabled(false);
         }
     }
 
@@ -81,13 +90,14 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     private void confirm() {
         boolean error = false;
 
-        if ((!jrb2Stroke.isSelected() && !jrb4Stroke.isSelected()) ||
-            (!jrbAutomatic.isSelected() && !jrbManual.isSelected())) {
+        if ((!jrb2Stroke.isSelected() && !jrb4Stroke.isSelected())
+                || (!jrbAutomatic.isSelected() && !jrbManual.isSelected())) {
             JOptionPane.showMessageDialog(this, "Bitte alle Felder anwählen...", "Eingabefehler...", JOptionPane.ERROR_MESSAGE);
             return;
-        } 
-        
+        }
+
         Bike.getInstance().setMeasRpm(jcbEnableRPM.isSelected());
+        Bike.getInstance().setMeasTemp(jcbEnableTemp.isSelected());
         Bike.getInstance().setTwoStroke(jrb2Stroke.isSelected());
         Bike.getInstance().setAutomatic(jrbAutomatic.isSelected());
         Bike.getInstance().setStartStopMethode(jrbStartStop.isSelected());
@@ -105,12 +115,34 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             if (jtfVehicleName.getText().isEmpty()) {
                 error = true;
                 JOptionPane.showMessageDialog(this,
-                    "Bitte Fahrzeugnamen eingeben!",
-                    "Kein Fahrzeugname eingegeben",
-                    JOptionPane.ERROR_MESSAGE);
-            jtfVehicleName.requestFocusInWindow();
+                        "Bitte Fahrzeugnamen eingeben!",
+                        "Kein Fahrzeugname eingegeben",
+                        JOptionPane.ERROR_MESSAGE);
+                jtfVehicleName.requestFocusInWindow();
             } else {
                 Bike.getInstance().setVehicleName(jtfVehicleName.getText());
+            }
+        }
+
+        if (Bike.getInstance().isMeasTemp()) {
+            int answ = JOptionPane.showConfirmDialog(VehicleSetDialog.this, "Die kontinuierliche Messung der Temperaturen am Motorrad\n"
+                    + "wird nur auf leistungsstarken Endgeräten empfohlen\n"
+                    + "und kann die Performance der Messung beeinflussen.\n\n"
+                    + "Möchten Sie die Temperaturen messen?", "Warnung: Eventueller Performance-Einbruch", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (answ == JOptionPane.NO_OPTION) {
+                Bike.getInstance().setMeasTemp(false);
+            }
+        }
+
+        if (Config.getInstance().getPeriod() < 20) {
+            int answ = JOptionPane.showConfirmDialog(VehicleSetDialog.this, "Ein Zeitintervall von <20ms trägt zu einer besseren Messung bei,\n"
+                    + "kann aber schwache Endgeräte stark auslasten und zum Absturz führen.\n\n"
+                    + "Möchten Sie fortfahren?", "Warnung: Eventueller Performance-Einbruch", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (answ == JOptionPane.NO_OPTION) {
+                BESDyno.getInstance().getSettingsDialog().setVisible(true);
+                BESDyno.getInstance().getSettingsDialog().changePeriodTime();
+                error = true;
+                dispose();
             }
         }
 
@@ -222,6 +254,11 @@ public class VehicleSetDialog extends javax.swing.JDialog {
 
         jcbEnableTemp.setSelected(true);
         jcbEnableTemp.setText("Motor- & Abgastemperaturen messen");
+        jcbEnableTemp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbEnableTempActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -328,6 +365,15 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         pressedOK = false;
         dispose();
     }//GEN-LAST:event_jbutCancelActionPerformed
+
+    private void jcbEnableTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbEnableTempActionPerformed
+        if (jcbEnableTemp.isSelected()) {
+            jcbEnableRPM.setSelected(true);
+            jcbEnableRPM.setEnabled(false);
+        } else {
+            jcbEnableRPM.setEnabled(true);
+        }
+    }//GEN-LAST:event_jcbEnableTempActionPerformed
 
     /**
      * @param args the command line arguments

@@ -56,6 +56,17 @@ public class Telegram extends RxTxWorker {
         }
     }
     
+    public Request all() {
+        synchronized (requestList) {
+            final Request request = new RequestAll();
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setTimeOutComp(false);
+            return request;
+        }
+    }
+    
     public Request measure() {
         synchronized (requestList) {
             final Request request = new RequestMeasure();

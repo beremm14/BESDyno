@@ -5,6 +5,7 @@ import data.Database;
 import data.Config;
 import data.PreDatapoint;
 import data.DialData;
+import data.Environment;
 import data.RawDatapoint;
 import development.TestCSV;
 import logging.Logger;
@@ -22,11 +23,12 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     private final BESDyno main = BESDyno.getInstance();
     private final Bike bike = Bike.getInstance();
-    private final Database data = Database.getInstance();
     private final Calculate calc = new Calculate();
     private final Config config = Config.getInstance();
+    private final Database data = Database.getInstance();
+    private final Environment environment = Environment.getInstance();
     private final MyTelegram telegram = BESDyno.getInstance().getTelegram();
-    
+
     private CalculationThread calcThread;
 
     private Status status;
@@ -39,11 +41,21 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     protected Object doInBackground() {
         main.addPendingRequest(telegram.start());
         try {
-            Thread.sleep(1000);
+            Thread.sleep(config.getPeriod());
         } catch (InterruptedException ex) {
             LOG.warning(ex);
         }
         
+        if (bike.isMeasTemp()) {
+            main.addPendingRequest(telegram.engine());
+            try {
+                Thread.sleep(config.getPeriod());
+            } catch (InterruptedException ex) {
+                LOG.warning(ex);
+            }
+            data.addTemperatures(environment.getEngTempC(), environment.getFumeTempC());
+        }
+
         if (bike.isAutomatic()) {
             status = Status.WAIT;
         } else {
@@ -97,7 +109,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         //INIT -> time to get higher than Start-Speed
         for (int i = 0; i < 10; i++) {
             if (bike.isMeasRpm()) {
-                publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
+                if (bike.isMeasTemp()) {
+                    double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                    double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                    publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                } else {
+                    publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
+                }
             } else {
                 publish(new DialData(Status.SHIFT_UP, measureno(), config.getStartVelo()));
             }
@@ -123,7 +141,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             double rpm;
             int accepted = 0;
             do {
-                publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm()));
+                if (bike.isMeasTemp()) {
+                    double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                    double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                    publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm(), engTemp, fumeTemp));
+                } else {
+                    publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm()));
+                }
                 rpm = data.getPreList().get(data.getPreList().size() - 1).getEngRpm();
                 if (rpm > hysteresisMin && rpm < hysteresisMax) {
                     accepted++;
@@ -150,7 +174,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageReady() throws Exception {
         if (bike.isMeasRpm()) {
             do {
-                publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm()));
+                if (bike.isMeasTemp()) {
+                    double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                    double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                    publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                } else {
+                    publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm()));
+                }
             } while (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() <= config.getStartRpm());
         } else {
             do {
@@ -170,7 +200,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             if (bike.isMeasRpm()) {
                 int stopCount = 0;
                 do {
-                    publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm()));
+                    if (bike.isMeasTemp()) {
+                        double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                        double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                        publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm(), engTemp, fumeTemp));
+                    } else {
+                        publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm()));
+                    }
                     if (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() >= config.getStopRpm()) {
                         stopCount++;
                     }
@@ -188,7 +224,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             if (bike.isMeasRpm()) {
                 int stopCount = 0;
                 do {
-                    publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm()));
+                    if (bike.isMeasTemp()) {
+                        double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                        double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                        publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                    } else {
+                        publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm()));
+                    }
                     if (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() <= config.getStartRpm()) {
                         stopCount++;
                     }
@@ -222,19 +264,20 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     public PreDatapoint measure() throws Exception {
         PreDatapoint pdp;
 
-        main.addPendingRequest(telegram.measure());
+        if (bike.isMeasTemp()) {
+            main.addPendingRequest(telegram.all());
+        } else {
+            main.addPendingRequest(telegram.measure());
+        }
 
         Thread.sleep(config.getPeriod());
 
         synchronized (data.getRawList()) {
-            if(data.getRawList().isEmpty()) {
+            if (data.getRawList().isEmpty()) {
                 LOG.severe("RawList empty");
-                return new PreDatapoint(0,0,0);
+                return new PreDatapoint(0, 0, 0);
             }
             RawDatapoint rdp = data.getRawList().get(data.getRawList().size() - 1);
-
-            LOG.debug("---->          Counts: " + rdp.getEngTime());
-            LOG.debug("---->            Time: " + rdp.getTime());
 
             pdp = calc.calcRpm(rdp);
         }
@@ -321,6 +364,15 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         @Override
         public void run() {
+            if (!bike.isMeasTemp()) {
+                main.addPendingRequest(telegram.engine());
+                LOG.info("CalculationThread added ENGINE to pendingRequests");
+                try {
+                    Thread.sleep(config.getPeriod());
+                } catch (InterruptedException ex) {
+                    LOG.severe(ex);
+                }
+            }
             LOG.info("Calculation Thread started...");
             calc.calcPower();
             if (main.isTestMode()) {

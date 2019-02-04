@@ -71,6 +71,7 @@ import serial.requests.RequestMeasureno;
 import serial.requests.RequestStart;
 import serial.requests.RequestVersion;
 import serial.Telegram;
+import serial.requests.RequestAll;
 
 /**
  *
@@ -695,6 +696,10 @@ public class BESDyno extends javax.swing.JFrame {
         return connection;
     }
 
+    public SettingsDialog getSettingsDialog() {
+        return settings;
+    }
+
     //Setter
     public void setConnection(boolean connection) {
         this.connection = connection;
@@ -1286,11 +1291,11 @@ public class BESDyno extends javax.swing.JFrame {
     private void onStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onStartSim
         if (connection) {
             vehicle.setAppearance(Config.getInstance().isDark());
+            vehicle.checkSupportedOptions();
             vehicle.setVisible(true);
 
-            userLog("Start der Simulation", LogLevel.INFO);
-
             if (vehicle.isPressedOK()) {
+                userLog("Start der Simulation", LogLevel.INFO);
                 activity = true;
 
                 measure = new MeasureDialog(this, true);
@@ -1702,6 +1707,11 @@ public class BESDyno extends javax.swing.JFrame {
                         userLog("Time-out beim Messen der Zweirad-Temperaturen!", LogLevel.SEVERE);
                     }
 
+                } else if (r instanceof RequestAll) {
+                    if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("MEASURE returns ERROR: " + r.getResponse());
+                    }
+
                 } else if (r instanceof RequestMeasure) {
                     if (r.getStatus() == Status.ERROR) {
                         LOG.warning("MEASURE returns ERROR: " + r.getResponse());
@@ -1826,8 +1836,8 @@ public class BESDyno extends javax.swing.JFrame {
             TextTitle eco = new TextTitle("Temperatur: NaN "
                     + "Luftdruck: NaN "
                     + "Seehöhe: NaN");
-            TextTitle eng = new TextTitle("Motortemperatur : NaN "
-                    + "Abgastemperatur: NaN");
+            TextTitle eng = new TextTitle("Max. Motortemperatur : NaN "
+                    + "Max. Abgastemperatur: NaN");
             TextTitle val = new TextTitle("Pmax: NaN "
                     + "Mmax: NaN "
                     + "Vmax: NaN");
@@ -1847,14 +1857,14 @@ public class BESDyno extends javax.swing.JFrame {
             double envTemp = config.isCelcius() ? environment.getEnvTempC() : environment.getEnvTempF();
             double engTemp = config.isCelcius() ? environment.getEngTempC() : environment.getEngTempF();
             double fumeTemp = config.isCelcius() ? environment.getFumeTempC() : environment.getFumeTempF();
-            
+
             maxPowerMarker.setValue(data.getBikePower());
             maxTorqueMarker.setValue(data.getBikeTorque());
 
             TextTitle eco = new TextTitle(String.format("Temperatur: %.1f" + config.getTempUnit() + " Luftdruck: %.1fhPa Seehöhe: %dm",
                     envTemp, environment.getAirPress() / 100, (int) Math.round(environment.getAltitude())));
 
-            TextTitle eng = new TextTitle(String.format("Motortemperatur: %d" + config.getTempUnit() + " Abgastemperatur: %d" + config.getTempUnit(),
+            TextTitle eng = new TextTitle(String.format("Max. Motortemperatur: %d" + config.getTempUnit() + " Max. Abgastemperatur: %d" + config.getTempUnit(),
                     (int) Math.round(engTemp), (int) Math.round(fumeTemp)));
             TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
                     data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));

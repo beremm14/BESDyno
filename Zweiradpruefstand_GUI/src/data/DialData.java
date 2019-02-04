@@ -16,6 +16,8 @@ public class DialData {
     private String unitToString;
     private int wheelRef;
     private int engRef;
+    private double engTemp;
+    private double fumeTemp;
     
     private Status status;
 
@@ -60,6 +62,36 @@ public class DialData {
         
         this.wheelRef = wheelRef;
         this.engRef = engRef;
+    }
+    
+    public DialData(Status status, PreDatapoint pdp, int wheelRef, int engRef, double engTemp, double fumeTemp) {
+        Calculate calc = new Calculate();
+        this.engRpm = pdp.getEngRpm();
+        this.unit = Config.getInstance().getVelocity();
+        switch(this.unit) {
+            case MPS:
+                this.wheelVelo = calc.calcMps(pdp);
+                break;
+            case KMH:
+                this.wheelVelo = calc.calcKmh(pdp);
+                break;
+            case MIH:
+                this.wheelVelo = calc.calcMih(pdp);
+                break;
+        }
+        
+        this.status = status;
+        
+        switch(this.unit) {
+            case MPS: this.unitToString = "m/s"; break;
+            case MIH: this.unitToString = "mi/h"; break;
+            case KMH: this.unitToString = "km/h"; break;
+        }
+        
+        this.wheelRef = wheelRef;
+        this.engRef = engRef;
+        this.engTemp = engTemp;
+        this.fumeTemp = fumeTemp;
     }
     
     public DialData(Status status, double wheelVelo, int wheelRef) {
@@ -112,6 +144,14 @@ public class DialData {
 
     public int getEngRef() {
         return engRef;
+    }
+
+    public double getEngTemp() {
+        return engTemp;
+    }
+
+    public double getFumeTemp() {
+        return fumeTemp;
     }
 
 }

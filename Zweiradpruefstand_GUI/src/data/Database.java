@@ -47,6 +47,10 @@ public class Database {
 
     //Uncalculated List
     private final List<RawDatapoint> rawList = new ArrayList<>();
+    
+    //Continous Temperature Measurement
+    private final List<Double> engTempList = new ArrayList<>();
+    private final List<Double> fumeTempList = new ArrayList<>();
 
     //MAX-Values
     private double bikePower;
@@ -89,6 +93,14 @@ public class Database {
         return schleppDataList;
     }
 
+    public List<Double> getEngTempList() {
+        return engTempList;
+    }
+
+    public List<Double> getFumeTempList() {
+        return fumeTempList;
+    }
+    
     public double getBikePower() {
         return bikePower;
     }
@@ -173,6 +185,14 @@ public class Database {
 
     public boolean addVel(Double v) {
         return velList.add(v);
+    }
+    
+    public boolean addTemperatures(String engTemp, String fumeTemp) {
+        return engTempList.add(Double.parseDouble(engTemp)) && fumeTempList.add(Double.parseDouble(fumeTemp));
+    }
+    
+    public boolean addTemperatures(double engTemp, double fumeTemp) {
+        return engTempList.add(engTemp) && fumeTempList.add(fumeTemp);
     }
 
     public void addXYValues(Datapoint dp, PreDatapoint pdp) {

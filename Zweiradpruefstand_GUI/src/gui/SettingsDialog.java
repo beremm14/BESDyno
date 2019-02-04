@@ -313,6 +313,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             return String.format("%d", Math.round((((double) value) - 32.0) * (5.0 / 9.0)));
         }
     }
+    
+    public void changePeriodTime() {
+        jtfPeriod.requestFocusInWindow();
+    }
 
     //Sets the Config-File
     private void confirm(Config c, boolean save) {

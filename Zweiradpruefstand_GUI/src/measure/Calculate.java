@@ -4,6 +4,7 @@ import data.Bike;
 import data.Database;
 import data.Config;
 import data.Datapoint;
+import data.Environment;
 import data.PreDatapoint;
 import data.RawDatapoint;
 import logging.Logger;
@@ -19,6 +20,7 @@ public class Calculate {
     private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
     private final Database data = Database.getInstance();
+    private final Environment environment = Environment.getInstance();
 
     //Calculates One Point
     public PreDatapoint calcRpm(RawDatapoint rdp) {
@@ -43,8 +45,6 @@ public class Calculate {
         if (Double.isInfinite(engRpm)) {
             engRpm = 0;
         }
-        
-        LOG.info(String.format("--> engRpm: %.2f wheelRpm: %.2f", engRpm, wheelRpm));
 
         return new PreDatapoint(engRpm, wheelRpm, (double) rdp.getTime());
     }
@@ -165,7 +165,24 @@ public class Calculate {
                 data.setBikeVelo(maxVelocity * 3.6);
                 break;
         }
-
+        
+        if (bike.isMeasTemp()) {
+            double maxEngTemp = data.getEngTempList().get(0);
+            for (Double engTemp : data.getEngTempList()) {
+                if (engTemp > maxEngTemp) {
+                    maxEngTemp = engTemp;
+                }
+            }
+            
+            double maxFumeTemp = data.getFumeTempList().get(0);
+            for (Double fumeTemp : data.getFumeTempList()) {
+                if (fumeTemp > maxFumeTemp) {
+                    maxFumeTemp = fumeTemp;
+                }
+            }
+            
+            environment.setEngTemp(maxEngTemp);
+            environment.setFumeTemp(maxFumeTemp);
+        }
     }
-
 }
