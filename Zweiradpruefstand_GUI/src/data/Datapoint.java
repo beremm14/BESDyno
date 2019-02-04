@@ -30,7 +30,7 @@ public class Datapoint {
         
         if(Environment.getInstance().isNormEnable()) {
             double press = Environment.getInstance().getAirPress() / 100;  //hPa
-            double temp = Environment.getInstance().getEnvTemp() + 273.15; //K
+            double temp = Environment.getInstance().getEnvTempC() + 273.15; //K
             this.power = ((1013.0/press) * Math.sqrt(temp / 293.15)) * powerNoFilter;
         } else {
             this.power = powerNoFilter;
@@ -52,7 +52,7 @@ public class Datapoint {
         
         if(Environment.getInstance().isNormEnable()) {
             double press = Environment.getInstance().getAirPress() / 100;  //hPa
-            double temp = Environment.getInstance().getEnvTemp() + 273.15; //K
+            double temp = Environment.getInstance().getEnvTempC() + 273.15; //K
             this.power = ((1013.0/press) * Math.sqrt(temp / 293.15)) * powerNoFilter;
         } else {
             this.power = powerNoFilter;

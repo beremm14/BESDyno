@@ -27,16 +27,28 @@ public class Environment {
     }
     
     //Getter
-    public double getEnvTemp() {
+    public double getEnvTempC() {
         return envTemp;
     }
 
-    public double getEngTemp() {
+    public double getEngTempC() {
         return engTemp;
     }
     
-    public double getFumeTemp() {
+    public double getFumeTempC() {
         return fumeTemp;
+    }
+    
+    public double getEnvTempF() {
+        return (envTemp * (9.0 / 5.0)) + 32;
+    }
+    
+    public double getEngTempF() {
+        return (engTemp * (9.0 / 5.0)) + 32;
+    }
+    
+    public double getFumeTempF() {
+        return (fumeTemp * (9.0 / 5.0)) + 32;
     }
 
     public double getAirPress() {
@@ -46,27 +58,7 @@ public class Environment {
     public double getAltitude() {
         return altitude;
     }
-    
-    public String envTempToString() {
-        return envTemp + "°C";
-    }
-    
-    public String engTempToString() {
-        return engTemp + "°C";
-    }
-    
-    public String fumeTempToString() {
-        return fumeTemp + "°C";
-    }
-    
-    public String airPressToString() {
-        return airPress + "hPa";
-    }
-    
-    public String altitudeToString() {
-        return altitude + "m";
-    }
-    
+
     public boolean isNormEnable() {
         return normEnable;
     }

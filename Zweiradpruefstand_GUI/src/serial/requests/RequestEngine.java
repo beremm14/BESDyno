@@ -46,10 +46,10 @@ public class RequestEngine extends Request {
         }
         Environment.getInstance().setEngTemp(Double.parseDouble(values[0]));
         Environment.getInstance().setFumeTemp(Double.parseDouble(values[1]));
-        LOG.info("engTemp = " + Environment.getInstance().getEngTemp()
-                + " fumeTemp = " + Environment.getInstance().getFumeTemp());
+        LOG.info("engTemp = " + Environment.getInstance().getEngTempC()
+                + " fumeTemp = " + Environment.getInstance().getFumeTempC());
         
-        if ((Environment.getInstance().getEngTemp() <= 0 || Environment.getInstance().getFumeTemp() <= 0)
+        if ((Environment.getInstance().getEngTempC() <= 0 || Environment.getInstance().getFumeTempC() <= 0)
              && checkCRC(res)) {
             status = Status.ERROR;
         } else {

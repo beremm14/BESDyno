@@ -1531,7 +1531,7 @@ public class BESDyno extends javax.swing.JFrame {
                     + "Temperatur: %.2f\n"
                     + "Luftdruck: %.2f\n"
                     + "Seehöhe: %.2f",
-                    Environment.getInstance().getEnvTemp(), Environment.getInstance().getAirPress(), Environment.getInstance().getAltitude()),
+                    Environment.getInstance().getEnvTempC(), Environment.getInstance().getAirPress(), Environment.getInstance().getAltitude()),
                     "Umweltdaten aktualisiert", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_onEnvironment
@@ -1547,7 +1547,7 @@ public class BESDyno extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, String.format("Temperaturen gemessen:\n"
                     + "Motortemperatur: %.2f\n"
                     + "Abgastemperatur: %.2f\n",
-                    Environment.getInstance().getEngTemp(), Environment.getInstance().getFumeTemp()),
+                    Environment.getInstance().getEngTempC(), Environment.getInstance().getFumeTempC()),
                     "Zweiradtemperaturen aktualisiert", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_onEngineTemp
@@ -1844,14 +1844,18 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         public void updateChartLabels() {
+            double envTemp = config.isCelcius() ? environment.getEnvTempC() : environment.getEnvTempF();
+            double engTemp = config.isCelcius() ? environment.getEngTempC() : environment.getEngTempF();
+            double fumeTemp = config.isCelcius() ? environment.getFumeTempC() : environment.getFumeTempF();
+            
             maxPowerMarker.setValue(data.getBikePower());
             maxTorqueMarker.setValue(data.getBikeTorque());
 
-            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm",
-                    environment.getEnvTemp(), environment.getAirPress() / 100, (int) Math.round(environment.getAltitude())));
+            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f" + config.getTempUnit() + " Luftdruck: %.1fhPa Seehöhe: %dm",
+                    envTemp, environment.getAirPress() / 100, (int) Math.round(environment.getAltitude())));
 
-            TextTitle eng = new TextTitle(String.format("Motortemperatur: %d°C Abgastemperatur: %d°C",
-                    (int) Math.round(environment.getEngTemp()), (int) Math.round(environment.getFumeTemp())));
+            TextTitle eng = new TextTitle(String.format("Motortemperatur: %d" + config.getTempUnit() + " Abgastemperatur: %d" + config.getTempUnit(),
+                    (int) Math.round(engTemp), (int) Math.round(fumeTemp)));
             TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
                     data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
 
@@ -1867,22 +1871,6 @@ public class BESDyno extends javax.swing.JFrame {
             chart.getXYPlot().getRangeAxis().setLabel("Leistung [" + config.getPowerUnit() + "]");
             seriesPower.setKey("Leistung");
 
-            chart.fireChartChanged();
-        }
-
-        public void updateSubtitles() {
-            TextTitle eco = new TextTitle(String.format("Temperatur: %.1f°C Luftdruck: %.1fhPa Seehöhe: %dm",
-                    environment.getEnvTemp(), environment.getAirPress() / 100, (int) Math.round(environment.getAltitude())));
-
-            TextTitle eng = new TextTitle(String.format("Motortemperatur: %d°C Abgastemperatur: %d°C",
-                    (int) Math.round(environment.getEngTemp()), (int) Math.round(environment.getFumeTemp())));
-            TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
-                    data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
-
-            chart.clearSubtitles();
-            chart.addSubtitle(eco);
-            chart.addSubtitle(eng);
-            chart.addSubtitle(val);
             chart.fireChartChanged();
         }
 

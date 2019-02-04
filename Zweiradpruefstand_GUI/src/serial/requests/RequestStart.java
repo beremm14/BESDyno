@@ -72,7 +72,7 @@ public class RequestStart extends Request {
         Environment.getInstance().setAirPress(Double.parseDouble(values[1]));
         Environment.getInstance().setAltitude(Double.parseDouble(values[2]));
         LOG.debug("START-Response: Values -> Environment");
-        LOG.info("envTemp = " + Environment.getInstance().getEnvTemp()
+        LOG.info("envTemp = " + Environment.getInstance().getEnvTempC()
                 + " envPress = " + Environment.getInstance().getAirPress()
                 + " envAltitude = " + Environment.getInstance().getAltitude());
 
