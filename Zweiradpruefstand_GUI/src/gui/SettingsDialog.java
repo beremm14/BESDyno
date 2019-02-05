@@ -1587,6 +1587,16 @@ public class SettingsDialog extends javax.swing.JDialog {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
                     }
+                } else if (System.getProperty("os.name").startsWith("Windows ")) {
+                    if ("com.sun.java.swing.plaf.windows.WindowsLookAndFeel".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                } else if (System.getProperty("os.name").startsWith("Linux")) {
+                    if ("Nimbus".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
                 } else {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
