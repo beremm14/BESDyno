@@ -53,9 +53,9 @@ public class Database {
     private final List<Double> fumeTempList = new ArrayList<>();
 
     //MAX-Values
-    private double bikePower;
-    private double bikeVelo;
-    private double bikeTorque;
+    private double bikePower;  //PS or kW
+    private double bikeVelo;   //m/s, mi/h or km/h
+    private double bikeTorque; //Nm
 
     //Max-Values-Indices
     private int maxPowerIndex;
@@ -103,6 +103,14 @@ public class Database {
     
     public double getBikePower() {
         return bikePower;
+    }
+    
+    public double getBikePowerPS() {
+        return bikePower * 1000.0 * 1.36;
+    }
+    
+    public double getBikePowerKW() {
+        return bikePower * 1000.0;
     }
 
     public double getBikeVelo() {

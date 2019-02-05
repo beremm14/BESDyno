@@ -1789,8 +1789,6 @@ public class BESDyno extends javax.swing.JFrame {
 
         private XYSeries seriesTorque = new XYSeries("Drehmoment");
         private XYSeries seriesPower = new XYSeries("Leistung");
-        private XYSeries series1 = new XYSeries("tempLeistung series");
-        private XYSeries series2 = new XYSeries("tempDrehmoment series");
         private XYSeriesCollection datasetPower = new XYSeriesCollection();
         private XYSeriesCollection datasetTorque = new XYSeriesCollection();
 
@@ -1874,10 +1872,12 @@ public class BESDyno extends javax.swing.JFrame {
             return chart;
         }
 
-        public void updateChartLabels() {
+        private void updateChartLabels() {
             double envTemp = config.isCelcius() ? environment.getEnvTempC() : environment.getEnvTempF();
             double engTemp = config.isCelcius() ? environment.getEngTempC() : environment.getEngTempF();
             double fumeTemp = config.isCelcius() ? environment.getFumeTempC() : environment.getFumeTempF();
+            
+            double bikePower = config.isPs() ? data.getBikePowerPS() : data.getBikePowerKW();
 
             maxPowerMarker.setValue(data.getBikePower());
             maxTorqueMarker.setValue(data.getBikeTorque());
@@ -1888,14 +1888,14 @@ public class BESDyno extends javax.swing.JFrame {
             TextTitle eng = new TextTitle(String.format("Max. Motortemperatur: %d" + config.getTempUnit() + " Max. Abgastemperatur: %d" + config.getTempUnit(),
                     (int) Math.round(engTemp), (int) Math.round(fumeTemp)));
             TextTitle val = new TextTitle(String.format("Pmax: %.2f" + config.getPowerUnit() + " Mmax: %.2fNm Vmax: %.2f" + config.getVeloUnit(),
-                    data.getBikePower(), data.getBikeTorque(), data.getBikeVelo()));
+                    bikePower, data.getBikeTorque(), data.getBikeVelo()));
 
             chart.clearSubtitles();
             chart.addSubtitle(eco);
             chart.addSubtitle(eng);
             chart.addSubtitle(val);
 
-            String strMaxPower = String.format("Maximale Leistung: %.2f %s ", data.getBikePower(), config.getPowerUnit());
+            String strMaxPower = String.format("Maximale Leistung: %.2f %s ", bikePower, config.getPowerUnit());
             String strMaxTorque = String.format("Maximales Drehmoment: %.2f Nm", data.getBikeTorque());
             maxPowerMarker.setLabel(strMaxPower);
             maxTorqueMarker.setLabel(strMaxTorque);
