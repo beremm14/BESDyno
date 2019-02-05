@@ -68,5 +68,5 @@ public class RequestVersion extends Request {
     public String getResponse() {
         return response;
     }
-    
+
 }

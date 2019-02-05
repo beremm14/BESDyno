@@ -49,11 +49,15 @@ public class SettingsDialog extends javax.swing.JDialog {
         } catch (Exception ex) {
             LOG.warning(ex);
         }
-        setSize(new Dimension(750, 470));
+        setSize(new Dimension(800, 500));
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
+        
         lastVelocity = Config.getInstance().getVelocity();
+        
+        jcbEnableInertiaEdit.setSelected(false);
+        jtfInertia.setEnabled(false);
     }
 
     public void writeDevice(String dn) {
@@ -127,6 +131,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setForeground(Color.white);
             jrbCelcius.setForeground(Color.white);
             jrbFahrenheit.setForeground(Color.white);
+            
+            jcbEnableInertiaEdit.setForeground(Color.white);
 
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
@@ -223,9 +229,12 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbKW.setForeground(Color.black);
             jrbPS.setForeground(Color.black);
             jrbKMH.setForeground(Color.black);
+            jrbMPS.setForeground(Color.black);
             jrbMIH.setForeground(Color.black);
             jrbCelcius.setForeground(Color.black);
             jrbFahrenheit.setForeground(Color.black);
+            
+            jcbEnableInertiaEdit.setForeground(Color.black);
 
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);
@@ -733,6 +742,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelInertia = new javax.swing.JLabel();
         jtfInertia = new javax.swing.JTextField();
         jLabelInertia2 = new javax.swing.JLabel();
+        jcbEnableInertiaEdit = new javax.swing.JCheckBox();
         jPanEast = new javax.swing.JPanel();
         jPanPNG = new javax.swing.JPanel();
         jtfPngX = new javax.swing.JTextField();
@@ -1003,6 +1013,18 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         jPanCorr.add(jLabelInertia2, gridBagConstraints);
+
+        jcbEnableInertiaEdit.setText("Trägheitsmoment bearbeiten");
+        jcbEnableInertiaEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbEnableInertiaEditActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanCorr.add(jcbEnableInertiaEdit, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1541,6 +1563,14 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfExhWarning.setText(convertTemperature(true, Integer.parseInt(jtfExhWarning.getText())));
     }//GEN-LAST:event_jrbFahrenheitActionPerformed
 
+    private void jcbEnableInertiaEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbEnableInertiaEditActionPerformed
+        if (jcbEnableInertiaEdit.isSelected()) {
+            jtfInertia.setEnabled(true);
+        } else {
+            jtfInertia.setEnabled(false);
+        }
+    }//GEN-LAST:event_jcbEnableInertiaEditActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1646,6 +1676,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JButton jbutLoad;
     private javax.swing.JButton jbutOK;
     private javax.swing.JButton jbutSave;
+    private javax.swing.JCheckBox jcbEnableInertiaEdit;
     private javax.swing.JRadioButton jrbCelcius;
     private javax.swing.JRadioButton jrbDaymode;
     private javax.swing.JRadioButton jrbFahrenheit;

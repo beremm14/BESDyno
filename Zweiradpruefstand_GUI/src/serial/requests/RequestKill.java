@@ -62,5 +62,5 @@ public class RequestKill extends Request {
     public String getResponse() {
         return response;
     }
-    
+
 }

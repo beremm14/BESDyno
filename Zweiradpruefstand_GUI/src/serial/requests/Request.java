@@ -15,6 +15,7 @@ public abstract class Request {
     };
     
     protected Status status;
+    protected boolean secondTryAllowed;
     private boolean timeOutComp = true;
 
     public Request() {
@@ -36,8 +37,16 @@ public abstract class Request {
         return timeOutComp;
     }
     
+    public boolean secondTryAllowed() {
+        return secondTryAllowed;
+    }
+    
     public void setStatus(Status status) {
         this.status = status;
+    }
+    
+    public void setSecondTryAllowed(boolean secondTryAllowed) {
+        this.secondTryAllowed = secondTryAllowed;
     }
     
     public void setTimeOutComp(boolean timeOutComp) {

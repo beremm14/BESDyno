@@ -1635,6 +1635,17 @@ public class BESDyno extends javax.swing.JFrame {
 
     public class MyTelegram extends Telegram {
 
+        private void handleInitError() {
+            if (port != null) {
+                MyDisconnectPortWorker w = new MyDisconnectPortWorker();
+                w.execute();
+                activeWorker = w;
+                refreshGui();
+            } else {
+                telegram.cancel(true);
+            }
+        }
+
         @Override
         protected void done() {
             activity = false;
@@ -1662,10 +1673,18 @@ public class BESDyno extends javax.swing.JFrame {
                     removePendingRequest(r);
                     if (r.timeOutIsComp()) {
                         LOG.warning("Timed out, second try... All Timeouts: " + timeouts);
-                        addPendingRequest(retryRequest(r));
+                        addPendingRequest(retryTimeoutRequest(r));
                     } else {
                         LOG.severe("Request " + r.getReqName() + " timed out 2 times! All Timeouts: " + timeouts);
+                        if (r instanceof RequestInit || r instanceof RequestVersion) {
+                            handleInitError();
+                        }
                     }
+                }
+
+                if (r.getStatus() == Status.ERROR && r.secondTryAllowed()) {
+                    LOG.warning("Second Try for: " + r.getReqName());
+                    retryErrorRequest(r);
                 }
 
                 if (r instanceof RequestInit) {
@@ -1681,6 +1700,7 @@ public class BESDyno extends javax.swing.JFrame {
                             LOG.warning("INIT returns ERROR: " + r.getResponse());
                             addPendingRequest(telegram.warning());
                         }
+                        addPendingRequest(telegram.warning());
                     } else if (r.getStatus() == Status.TIMEOUT) {
                         userLogPane("Time-out bei der Initialisierung - Gerät defekt oder nicht verbunden...", LogLevel.SEVERE);
                     }
@@ -1709,7 +1729,7 @@ public class BESDyno extends javax.swing.JFrame {
 
                 } else if (r instanceof RequestAll) {
                     if (r.getStatus() == Status.ERROR) {
-                        LOG.warning("MEASURE returns ERROR: " + r.getResponse());
+                        LOG.warning("ALL returns ERROR: " + r.getResponse());
                     }
 
                 } else if (r instanceof RequestMeasure) {
@@ -1741,6 +1761,7 @@ public class BESDyno extends javax.swing.JFrame {
                     } else if (r.getStatus() == Status.ERROR) {
                         if (Config.getInstance().getArduinoVersion() >= reqArduVers) {
                             LOG.warning("VERSION returns ERROR: " + r.getResponse());
+
                         } else {
                             addPendingRequest(telegram.maxProblems());
                             userLogPane("Die Firmware am Prüfstand ist veraltet, bitte laden Sie eine neue Version (mind. Version " + reqArduVers + ")!", LogLevel.SEVERE);

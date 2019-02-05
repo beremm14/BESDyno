@@ -39,11 +39,13 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private final Radial veloGauge = new Radial();
     private final Radial rpmGauge = new Radial();
-    
+
     private final Linear engThermo = new Linear();
     private final Linear exhThermo = new Linear();
 
     private int count = 0;
+
+    private boolean warningIgnored = false;
 
     private MyMeasurementWorker worker;
 
@@ -54,10 +56,9 @@ public class MeasureDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         setTitle("Messung: " + Bike.getInstance().getVehicleName());
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(0);
-        setMinimumSize(new Dimension(620, 500));
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -92,6 +93,14 @@ public class MeasureDialog extends javax.swing.JDialog {
             createRPMGauge();
         } else {
             jPanDial.remove(jPanRPM);
+            setSize(new Dimension(500, 500));
+        }
+        if (Bike.getInstance().isMeasTemp()) {
+            setSize(new Dimension(1000, 500));
+        } else {
+            jPanDial.remove(jPanEngThermo);
+            jPanDial.remove(jPanExhThermo);
+            setSize(new Dimension(620, 500));
         }
         LOG.info("Start Measurement Chain");
         handleMeasurementChain();
@@ -104,21 +113,50 @@ public class MeasureDialog extends javax.swing.JDialog {
         worker.execute();
     }
 
-    private void updateGaugeValue(Radial gauge, double value, double ref, Color color) {
+    private void updateGaugeValue(Radial gauge, double value, double ref, Color colour) {
         gauge.setValue(value);
         gauge.setLcdValue(value);
         gauge.setThreshold(ref);
-        gauge.setGlowColor(color);
+        gauge.setGlowColor(colour);
     }
-    
+
+    private void updateThermoValue(Linear thermo, double value, double max, Color colour) {
+        thermo.setValueAnimated(value);
+        thermo.setThreshold(max);
+        if (!warningIgnored) {
+            if (value > max) {
+                thermo.setGlowColor(Color.RED);
+                setWarningAppearance();
+                int answ = JOptionPane.showConfirmDialog(MeasureDialog.this, "Vorsicht! Das Motorrad wird zu heiß! Möchten Sie weitermachen?",
+                        "Warnung: Motor und/oder Ausstoßsystem überhitzt!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (answ == JOptionPane.YES_OPTION) {
+                    warningIgnored = true;
+                    setAppearance(Config.getInstance().isDark());
+                } else if (answ == JOptionPane.NO_OPTION) {
+                    worker.cancel(true);
+                    finished = false;
+                    dispose();
+                }
+            }
+        } else {
+            thermo.setGlowColor(colour);
+        }
+    }
+
     private Color updateColour(Status status) {
-        switch(status) {
-            case SHIFT_UP: return Color.CYAN;
-            case WAIT: return Color.ORANGE;
-            case READY: return new Color(30, 200, 30);
-            case MEASURE: return new Color(30, 200, 30);
-            case FINISH: return Color.RED;
-            default: return Color.CYAN;
+        switch (status) {
+            case SHIFT_UP:
+                return Color.CYAN;
+            case WAIT:
+                return Color.ORANGE;
+            case READY:
+                return new Color(30, 200, 30);
+            case MEASURE:
+                return new Color(30, 200, 30);
+            case FINISH:
+                return Color.RED;
+            default:
+                return Color.CYAN;
         }
     }
 
@@ -208,16 +246,16 @@ public class MeasureDialog extends javax.swing.JDialog {
     private void createEngThermo() {
         engThermo.setTitle("Motortemperatur");
         engThermo.setUnitString("°C");
-        
+
         if (Config.getInstance().isDark()) {
             engThermo.setFrameDesign(FrameDesign.CHROME);
         } else {
             engThermo.setFrameDesign(FrameDesign.BLACK_METAL);
         }
-        
+
         engThermo.setNiceScale(true);
         engThermo.setLedVisible(false);
-        
+
         engThermo.setMaxValue(150);
         engThermo.setMajorTickSpacing(10);
         engThermo.setMinorTickSpacing(5);
@@ -226,13 +264,23 @@ public class MeasureDialog extends javax.swing.JDialog {
         engThermo.setTicklabelsVisible(true);
         engThermo.setLabelNumberFormat(NumberFormat.STANDARD);
         engThermo.setLabelColor(Color.RED);
-        
+
         engThermo.setLcdDecimals(0);
-        
+
         jPanEngThermo.add(engThermo, BorderLayout.CENTER);
     }
 
-    
+    private void setWarningAppearance() {
+        jPanControls.setBackground(Color.RED);
+        jPanDial.setBackground(Color.RED);
+        jPanMain.setBackground(Color.RED);
+        jPanStatus.setBackground(Color.RED);
+        jPanStatusText.setBackground(Color.RED);
+        jPanVelo.setBackground(Color.RED);
+        jPanRPM.setBackground(Color.RED);
+        jPanEngThermo.setBackground(Color.RED);
+        jPanExhThermo.setBackground(Color.RED);
+    }
 
     //Sets Appearance like at the Main-GUI
     public void setAppearance(boolean dark) {
@@ -385,9 +433,11 @@ public class MeasureDialog extends javax.swing.JDialog {
         jPanDial.add(jPanVelo);
 
         jPanEngThermo.setBackground(new java.awt.Color(255, 255, 255));
+        jPanEngThermo.setLayout(new java.awt.BorderLayout());
         jPanDial.add(jPanEngThermo);
 
         jPanExhThermo.setBackground(new java.awt.Color(255, 255, 255));
+        jPanExhThermo.setLayout(new java.awt.BorderLayout());
         jPanDial.add(jPanExhThermo);
 
         jPanMain.add(jPanDial, java.awt.BorderLayout.CENTER);

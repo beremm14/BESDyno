@@ -61,4 +61,5 @@ public class RequestStatusMaxProblems extends Request {
     public String getResponse() {
         return response;
     }
+
 }

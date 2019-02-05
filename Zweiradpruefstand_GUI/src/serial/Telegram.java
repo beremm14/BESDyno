@@ -13,12 +13,22 @@ public class Telegram extends RxTxWorker {
 
     }
     
-    public Request retryRequest(Request request) {
+    public Request retryTimeoutRequest(Request request) {
         synchronized (requestList) {
             request.setStatus(Request.Status.WAITINGTOSEND);
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            return request;
+        }
+    }
+    
+    public Request retryErrorRequest(Request request) {
+        synchronized (requestList) {
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -30,6 +40,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
             return request;
         }
     }
@@ -41,6 +52,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
             return request;
         }
     }
@@ -52,6 +64,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
             return request;
         }
     }
@@ -63,6 +76,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -74,6 +88,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -85,6 +100,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -96,6 +112,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -107,6 +124,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -118,6 +136,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -129,6 +148,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -140,6 +160,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(false);
+            request.setSecondTryAllowed(false);
             return request;
         }
     }
@@ -151,6 +172,7 @@ public class Telegram extends RxTxWorker {
             requestList.add(request);
             requestList.notifyAll();
             request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
             return request;
         }
     }
