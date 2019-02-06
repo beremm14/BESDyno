@@ -77,6 +77,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 
 ## Messvorgang
   Im Einstellungs-Dialogfenster werden u.A. folgende Parameter eingegeben:  
+  * Intervall zwischen den Messpunkten (period)  
   * Hysterese Zeitspanne (hysteresisTime)  
   * Geschwindigkeit wenn bereit (idleVelocity)  
   * Hysterese Geschwindigkeit ± (hysteresisVelocity)  
@@ -86,6 +87,8 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
   * Hysterese Motordrehzahl ± (hysteresisRPM)  
   * Start-Motordrehazhl (startRPM)  
   * Stop-Motordrehzahl (stopRPM)  
+  * Max. Motortemperatur (warnignEngTemp)  
+  * Max. Abgastemperatur (warningExhTemp)  
   
   Es gibt zwei Modi:
   * **DROP-RPM**: Messen bis zur Höchstdrehzahl, Abfallen lassen und Messung bei Erreichen der Startdrehzahl stoppen  
