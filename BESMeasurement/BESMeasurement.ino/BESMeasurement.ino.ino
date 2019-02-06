@@ -13,7 +13,11 @@ int engRPMPin = 2;
 int statusPinF = 4;
 int statusPinW = 5;
 int statusPinS = 6;
-int resetPin = 12;
+int workingPin1 = 7;
+int workingPin2 = 8;
+
+//Version
+float progvers = 1.0;
 
 //-Declarations----------------------------------------------------------//
 void serialEvent();
@@ -29,15 +33,12 @@ float envAlt;
 //Thermos
 float engTemp;
 float exhTemp;
+uint8_t measCount;
 
 //RPM
-int engCount;
-int rearCount;
-int engTime;
-int rearTime;
-
-//Task-Machine
-long lastmillis;
+unsigned long dEngTime;
+unsigned long dWheelTime;
+long refMicros;
 
 //-Functions------------------------------------------------------------//
 
@@ -86,24 +87,25 @@ String createTelegram(String msg) {
 }
 
 //Measurement Functions
-void readEnvironment () {
+boolean readEnvironment () {
   if (!bmp.begin()) {
     setStatusSevere();
-    return;
+    return false;
   } else {
     envTemp = bmp.readTemperature();
     envPress = bmp.readPressure();
     envAlt = bmp.readAltitude();
-    if (envTemp == 0 || envPress == 0 || envAlt == 0) {
+    if (envPress == 0) {
       setStatusWarning();
     }
+    return true;
   }
 }
 
 void readThermos() {
   //ENGINE
   float u_eng = (analogRead(A0) * 4.94) / 1024;
-  engTemp = (u_eng - 1.248) / 0.005 + 2;
+  engTemp = (u_eng - 1.248) / 0.005;
 
   //EXHAUST
   float u_exh = (analogRead(A1) * 4.94) / 1024;
@@ -185,20 +187,17 @@ void visualizeInitComplete() {
   setStatusWarning();
 }
 
-//Task Machine
-void callTaskMachine() {
-  if (millis() - lastmillis == 1) {
-    task_1ms();
-  }
-  //for more machines -> else if(){}
+void toggleWorkingLed1() {
+  digitalWrite(workingPin1, !digitalRead(workingPin1));
+}
+
+void toggleWorkingLed2() {
+  digitalWrite(workingPin2, !digitalRead(workingPin2));
 }
 
 //Reset Variables
 void resetMeasurement() {
-  engCount = 0;
-  rearCount = 0;
-  engTime = 0;
-  rearTime = 0;
+  refMicros = micros();
 }
 
 
@@ -206,15 +205,17 @@ void resetMeasurement() {
 void setup() {
   Serial.begin(57600, SERIAL_8N1);
 
-  pinMode(resetPin, OUTPUT);
+  pinMode(workingPin1, OUTPUT);
+  pinMode(workingPin2, OUTPUT);
   pinMode(statusPinF, OUTPUT);
   pinMode(statusPinW, OUTPUT);
   pinMode(statusPinS, OUTPUT);
 
-  pinMode(engRPMPin, INPUT);
+  pinMode(engRPMPin, INPUT_PULLUP);
   pinMode(rearRPMPin, INPUT);
 
-  digitalWrite(resetPin, HIGH);
+  digitalWrite(workingPin1, LOW);
+  digitalWrite(workingPin2, LOW);
 
   visualizeInitialization();
   setNoStatus();
@@ -222,43 +223,31 @@ void setup() {
   analogReference(EXTERNAL);
 
   resetMeasurement();
+  dEngTime = 0;
+  dWheelTime = 0;
+  measCount = 9;
+  
+  attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
 }
 
 
 //-Main---------------------------------------------------------------------//
 void loop() {
-  attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
-  attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
-  callTaskMachine();
-  lastmillis = millis();
+  dEngTime = pulseInLong(engRPMPin, LOW, 40000) + pulseInLong(engRPMPin, HIGH, 40000);
+  dWheelTime = pulseInLong(rearRPMPin, LOW, 40000) + pulseInLong(rearRPMPin, HIGH, 40000);
 }
-
-
-//-Task-Machines----------------------------------------------------------//
-void task_1ms() {
-  engTime++;
-  rearTime++;
-}
-/*
-void task_2ms() {}
-void task_4ms() {}
-void task_8ms() {}
-void task_16ms() {}
-void task_32ms() {}
-void task_64ms() {}
-void task_128ms() {}
-*/
 
 
 //-ISR-------------------------------------------------------------------//
 //ISR for Engine
 void engISR() {
-  engCount++;
+  toggleWorkingLed1();
 }
 
 //ISR for Rear-Wheel
 void rearISR() {
-  rearCount++;
+  toggleWorkingLed2();
 }
 
 //ISR for Communication
@@ -266,19 +255,23 @@ void rearISR() {
 //INIT:        :BESDyno>crc;
 //START:       :envTemp#envPress#envAlt>crc;
 //ENGINE:      :engTemp#exhTemp>crc;
-//MEASURE:     :engCount#engTime#rearCount#rearTime>crc;
-//MEASURENO:   :rearCount#rearTime>crc;
+//ALL:         :engTime#rearTime#engTemp#exhTemp#Time>crc;
+//MEASURE:     :engTime#rearTime#Time>crc;
+//MEASURENO:   :rearTime#Time>crc;
 //FINE:        :FINE>crc;
 //WARNING:     :WARNING>crc;
 //SEVERE:      :SEVERE>crc;
 //MAXPROBLEMS: :MAXPROBLEMS>crc;
 //KILL:        :KILL>CRC;
+//VERSION:     :version>crc;
+//DEBUG:       readable message in the terminal
 
 //CRC is calculated without ':' and ';'
 //Every Response: :Message>Checksum;
 
 void serialEvent() {
   while (Serial.available()) {
+
     char req = (char)Serial.read();
 
     if (req == 'i') {
@@ -291,9 +284,12 @@ void serialEvent() {
 
     } else if (req == 's') {
       setStatusFine();
-      readEnvironment();
-      String environment = String(envTemp) + '#' + String(envPress) + '#' + String(envAlt);
-      Serial.println(createTelegram(environment));
+      if (readEnvironment()) {
+        String environment = String(envTemp) + '#' + String(envPress) + '#' + String(envAlt);
+        Serial.println(createTelegram(environment));
+      } else {
+        Serial.println(createTelegram("BMP-ERROR"));
+      }
       Serial.flush();
       resetMeasurement();
 
@@ -304,16 +300,43 @@ void serialEvent() {
       Serial.println(createTelegram(thermos));
       Serial.flush();
 
+    } else if (req == 'a') {
+      measCount++;
+      if (dEngTime > 0 && dWheelTime > 0) {
+        setStatusFine();
+      } else {
+        setStatusWarning();
+      }
+
+      if (measCount == 9) {
+        readThermos();
+        measCount = 0;
+      }
+
+      String all = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(engTemp) + '#' + String(exhTemp) + '#' + String(micros()-refMicros);
+      Serial.println(createTelegram(all));
+      Serial.flush();
+      resetMeasurement();
+      
     } else if (req == 'm') {
-      setStatusFine();
-      String measure = String(engCount) + '#' + String(engTime) + '#' + String(rearCount) + '#' + String(rearTime);
+      if (dEngTime > 0 && dWheelTime > 0) {
+        setStatusFine();
+      } else {
+        setStatusWarning();
+      }
+      
+      String measure = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(measure));
       Serial.flush();
       resetMeasurement();
 
     } else if (req == 'n') {
-      setStatusFine();
-      String measureno = String(rearCount) + '#' + String(rearTime);
+      if (dWheelTime > 0) {
+        setStatusFine();
+      } else {
+        setStatusWarning();
+      }
+      String measureno = String(dWheelTime) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(measureno));
       Serial.flush();
       resetMeasurement();
@@ -337,10 +360,29 @@ void serialEvent() {
       setStatusMaxProblems();
       Serial.println(createTelegram("MAXPROBLEMS"));
       Serial.flush();
-      
+
     } else if (req == 'k') {
       setStatusFine();
       Serial.println(createTelegram("KILL"));
+      Serial.flush();
+      resetMeasurement();
+      
+    } else if (req == 'p') {
+      setStatusFine();
+      Serial.println(createTelegram(String(progvers)));
+      Serial.flush();
+    } else if (req == 'd') {
+      setStatusWarning();
+      readEnvironment();
+      readThermos();
+      Serial.println("Temperatur: " + String(envTemp));
+      Serial.println("Luftdruck:  " + String(envPress));
+      Serial.println("Höhenmeter: " + String(envAlt));
+      Serial.println("A0 Motor:   " + String(engTemp));
+      Serial.println("A1 Abgas:   " + String(exhTemp));
+      Serial.println("D2 Motor:   " + String(dEngTime));
+      Serial.println("D3 Walze:   " + String(dWheelTime));
+      Serial.println("Zeit (µs):  " + String(micros()-refMicros) + "\n");
       Serial.flush();
       resetMeasurement();
     }

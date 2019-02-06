@@ -54,7 +54,7 @@ public class AboutDialog extends javax.swing.JDialog {
     }
 
     private void writeVersion() {
-        jLabelVersion.setText("BES Dyno v1.0");
+        jLabelVersion.setText("BES Dyno v1.0 alpha");
         jLabelOsName.setText(System.getProperty("os.name"));
         jLabelOsVersion.setText(System.getProperty("os.version"));
         jLabelVmName.setText(System.getProperty("java.vm.name"));

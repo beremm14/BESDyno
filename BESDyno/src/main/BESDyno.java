@@ -116,7 +116,7 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean activity = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
-    private double reqArduVers = 3.0;
+    private double reqArduVers = 1.0;
     private int timeouts = 0;
 
     //Communication
@@ -1289,7 +1289,6 @@ public class BESDyno extends javax.swing.JFrame {
     private void onStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onStartSim
         if (connection) {
             vehicle.setAppearance(Config.getInstance().isDark());
-            vehicle.checkSupportedOptions();
             vehicle.setVisible(true);
 
             if (vehicle.isPressedOK()) {

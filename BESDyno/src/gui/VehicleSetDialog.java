@@ -79,13 +79,6 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         }
     }
 
-    public void checkSupportedOptions() {
-        if (Config.getInstance().getArduinoVersion() < 3.1) {
-            jcbEnableTemp.setSelected(false);
-            jcbEnableTemp.setEnabled(false);
-        }
-    }
-
     //writeOut data
     private void confirm() {
         boolean error = false;
