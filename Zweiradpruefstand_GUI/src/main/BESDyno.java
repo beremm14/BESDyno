@@ -20,6 +20,8 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -42,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -138,6 +141,8 @@ public class BESDyno extends javax.swing.JFrame {
 
     private BESDyno() {
         initComponents();
+        
+        setOSNativeKeyStroke();
         
         //Check for multi-platform!!!
         //Works on: macOS, ?, ?
@@ -263,6 +268,40 @@ public class BESDyno extends javax.swing.JFrame {
     public enum OS {
         MACOS, LINUX, WINDOWS, OTHER
     };
+    
+    private void setOSNativeKeyStroke() {
+        if (os == OS.MACOS) {
+            jmiSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_MASK));
+            jmiExport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.META_MASK));
+            jmiPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.META_MASK));
+            jmiSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.META_MASK));
+            jmiStartSim.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_MASK));
+            jmiRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.META_MASK));
+            jmiConnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_MASK));
+            jmiDisconnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.META_MASK));
+            jcbmiDarkMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.META_MASK));
+            jcbmiDevMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.META_MASK));
+            jcbmiTestMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.META_MASK));
+            jcbmiSaveLoggedComm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.META_MASK));
+            jmiAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.META_MASK));
+            jmiHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        } else {
+            jmiSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+            jmiExport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
+            jmiPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
+            jmiSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_MASK));
+            jmiStartSim.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
+            jmiRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
+            jmiConnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK));
+            jmiDisconnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_MASK));
+            jcbmiDarkMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK));
+            jcbmiDevMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
+            jcbmiTestMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK));
+            jcbmiSaveLoggedComm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
+            jmiAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.CTRL_MASK));
+            jmiHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        }
+    }
 
     //Status-Textfeld: Logging for User
     public enum LogLevel {
@@ -787,14 +826,12 @@ public class BESDyno extends javax.swing.JFrame {
         jbutRefresh = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jmenuFile = new javax.swing.JMenu();
-        jmiOpen = new javax.swing.JMenuItem();
         jmiSave = new javax.swing.JMenuItem();
         jmiExport = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jmiPrint = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jmiSettings = new javax.swing.JMenuItem();
-        jmiQuit = new javax.swing.JMenuItem();
         jmenuSimulation = new javax.swing.JMenu();
         jmiStartSim = new javax.swing.JMenuItem();
         jmiEnvironment = new javax.swing.JMenuItem();
@@ -915,16 +952,6 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmenuFile.setText("Datei");
 
-        jmiOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.META_MASK));
-        jmiOpen.setText("Öffnen");
-        jmiOpen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onOpen(evt);
-            }
-        });
-        jmenuFile.add(jmiOpen);
-
-        jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.META_MASK));
         jmiSave.setText("Speichern");
         jmiSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -961,15 +988,6 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuFile.add(jmiSettings);
-
-        jmiQuit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_MASK));
-        jmiQuit.setText("Beenden");
-        jmiQuit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onQuit(evt);
-            }
-        });
-        jmenuFile.add(jmiQuit);
 
         jMenuBar.add(jmenuFile);
 
@@ -1268,10 +1286,6 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_onSettings
 
-    private void onQuit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onQuit
-
-    }//GEN-LAST:event_onQuit
-
     private void onStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onStartSim
         if (connection) {
             vehicle.setAppearance(Config.getInstance().isDark());
@@ -1377,15 +1391,6 @@ public class BESDyno extends javax.swing.JFrame {
     private void onExport(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onExport
         exportChart();
     }//GEN-LAST:event_onExport
-
-    private void onOpen(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onOpen
-        try {
-            //open();
-            userLog("Datei erfolgreich geöffnet", LogLevel.FINE);
-        } catch (Exception ex) {
-            userLog(ex, "Fehler beim Öffnen der Datei", LogLevel.WARNING);
-        }
-    }//GEN-LAST:event_onOpen
 
     private void onSaveLoggedComm(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveLoggedComm
         try {
@@ -2086,9 +2091,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiMaxProblems;
     private javax.swing.JMenuItem jmiMeasure;
     private javax.swing.JMenuItem jmiMeasureno;
-    private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
-    private javax.swing.JMenuItem jmiQuit;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSaveCSV;
