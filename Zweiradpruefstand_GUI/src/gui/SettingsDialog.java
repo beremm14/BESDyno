@@ -530,8 +530,17 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbNightmode.setSelected(c.isDark());
             jrbKW.setSelected(!c.isPs());
             jrbPS.setSelected(c.isPs());
+            
             jrbCelcius.setSelected(c.isCelcius());
             jrbFahrenheit.setSelected(!c.isCelcius());
+            
+            if (c.isCelcius()) {
+                jLabelEngWarning2.setText("°C");
+                jLabelExhWarning2.setText("°C");
+            } else {
+                jLabelEngWarning2.setText("°F");
+                jLabelExhWarning2.setText("°F");
+            }
 
             switch (c.getVelocity()) {
                 case MPS:

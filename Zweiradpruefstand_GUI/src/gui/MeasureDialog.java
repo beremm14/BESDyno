@@ -128,7 +128,6 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private void updateThermoValue(Linear thermo, double value, double max, Color colour) {
         thermo.setValue(value);
-        thermo.setLcdValue(value);
             if (value > max) {
                 thermo.setGlowColor(Color.RED);
                 setWarningAppearance();
@@ -246,11 +245,18 @@ public class MeasureDialog extends javax.swing.JDialog {
         
         engThermo.setNiceScale(true);
         engThermo.setLedVisible(false);
-        engThermo.setLcdVisible(true);
+        engThermo.setLcdVisible(false);
         
-        engThermo.setMaxValue(1000);
-        engThermo.setMajorTickSpacing(50);
-        engThermo.setMinorTickSpacing(25);
+        if (Config.getInstance().isCelcius()) {
+            engThermo.setMaxValue(150);
+            engThermo.setMajorTickSpacing(20);
+            engThermo.setMinorTickSpacing(10);
+        } else {
+            engThermo.setMaxValue(300);
+            engThermo.setMajorTickSpacing(50);
+            engThermo.setMinorTickSpacing(25);
+        }
+        
         engThermo.setMajorTickmarkType(TickmarkType.TRIANGLE);
         engThermo.setTickmarkColor(Color.RED);
         engThermo.setTicklabelsVisible(true);
@@ -272,11 +278,18 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         exhThermo.setNiceScale(true);
         exhThermo.setLedVisible(false);
-        exhThermo.setLcdVisible(true);
+        exhThermo.setLcdVisible(false);
         
-        exhThermo.setMaxValue(1000);
-        exhThermo.setMajorTickSpacing(50);
-        exhThermo.setMinorTickSpacing(25);
+        if (Config.getInstance().isCelcius()) {
+            exhThermo.setMaxValue(750);
+            exhThermo.setMajorTickSpacing(50);
+            exhThermo.setMinorTickSpacing(25);
+        } else {
+            exhThermo.setMaxValue(1300);
+            exhThermo.setMajorTickSpacing(100);
+            exhThermo.setMinorTickSpacing(50);
+        }
+        
         exhThermo.setMajorTickmarkType(TickmarkType.TRIANGLE);
         exhThermo.setTickmarkColor(Color.RED);
         exhThermo.setTicklabelsVisible(true);
