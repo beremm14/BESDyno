@@ -60,7 +60,7 @@ Das Protokoll ist verbindungslos und Request-Response- (Master-Slave) -orientier
 
   **DEBUG** gibt am Terminal bzw. Monitor eine Liste mit den aktuellen Messwerten aus. Diese Response ist nicht vom Java-Programm decodierbar und wird deshalb auch nicht von jenem angefordert. Das `d` wird in die Eingabezeile des Monitors eingegeben, ein spezielles Zeilenende ist wie auch für die anderen Requests nicht erforderlich.  
   
-  *Seit der Firmware Version BESMeasurement v3.0 werden nicht mehr Impulse pro Zeiteinheit gezählt, sondern die Periodendauer des ankommenden Rechtecksignals gemessen. Dadurch sind viel höhere Abtastraten möglich und die Messung wird genauer. Dabei muss beachtet werden, dass das Intervall zwischen den Messpunkten nicht beliebig klein werden darf, da sonst der Computer überlastet wird (bis 15ms dürften auf modernen Rechnern keine probleme auftreten, getestet am MacBook Pro 2016). Die gemessene Zeit zwischen den Messpunkten dient nun nur mehr zur Ermittlung der Winkelbeschleunigung alpha.*  
+  *Seit der Firmware Version BESMeasurement v3.0 werden nicht mehr Impulse pro Zeiteinheit gezählt, sondern die Periodendauer des ankommenden Rechtecksignals gemessen. Dadurch sind viel höhere Abtastraten möglich und die Messung wird genauer. Dabei muss beachtet werden, dass das Intervall zwischen den Messpunkten nicht beliebig klein werden darf, da sonst der Computer überlastet wird (ab 15ms (66,67Hz) dürften auf modernen Rechnern keine Probleme auftreten, getestet am MacBook Pro 2016). Die gemessene Zeit zwischen den Messpunkten dient nun nur mehr zur Ermittlung der Winkelbeschleunigung alpha.*  
   
 ### Idle-RQ
   Das Protokoll verzichtet auf weitere Sicherungsvorkehrungen, wie zum Beispiel *Idle-RQ*, neben der CRC-Prüfsumme.  
