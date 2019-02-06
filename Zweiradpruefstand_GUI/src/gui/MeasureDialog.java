@@ -97,6 +97,8 @@ public class MeasureDialog extends javax.swing.JDialog {
         }
         if (Bike.getInstance().isMeasTemp()) {
             setSize(new Dimension(1000, 500));
+            createEngThermo();
+            createExhThermo();
         } else {
             jPanDial.remove(jPanEngThermo);
             jPanDial.remove(jPanExhThermo);
@@ -245,7 +247,7 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private void createEngThermo() {
         engThermo.setTitle("Motortemperatur");
-        engThermo.setUnitString("°C");
+        engThermo.setUnitString(Config.getInstance().getTempUnit());
 
         if (Config.getInstance().isDark()) {
             engThermo.setFrameDesign(FrameDesign.CHROME);
@@ -255,6 +257,7 @@ public class MeasureDialog extends javax.swing.JDialog {
 
         engThermo.setNiceScale(true);
         engThermo.setLedVisible(false);
+        engThermo.setLcdVisible(false);
 
         engThermo.setMaxValue(150);
         engThermo.setMajorTickSpacing(10);
@@ -265,9 +268,37 @@ public class MeasureDialog extends javax.swing.JDialog {
         engThermo.setLabelNumberFormat(NumberFormat.STANDARD);
         engThermo.setLabelColor(Color.RED);
 
-        engThermo.setLcdDecimals(0);
-
         jPanEngThermo.add(engThermo, BorderLayout.CENTER);
+    }
+    
+    private void createExhThermo() {
+        exhThermo.setTitle("Abgastemperatur");
+        exhThermo.setUnitString(Config.getInstance().getTempUnit());
+
+        if (Config.getInstance().isDark()) {
+            exhThermo.setFrameDesign(FrameDesign.CHROME);
+        } else {
+            exhThermo.setFrameDesign(FrameDesign.BLACK_METAL);
+        }
+
+        exhThermo.setNiceScale(true);
+        exhThermo.setLedVisible(false);
+        exhThermo.setLcdVisible(false);
+
+        exhThermo.setMaxValue(150);
+        exhThermo.setMajorTickSpacing(10);
+        exhThermo.setMinorTickSpacing(5);
+        exhThermo.setMajorTickmarkType(TickmarkType.TRIANGLE);
+        exhThermo.setTickmarkColor(Color.RED);
+        exhThermo.setTicklabelsVisible(true);
+        exhThermo.setLabelNumberFormat(NumberFormat.STANDARD);
+        exhThermo.setLabelColor(Color.RED);
+
+        jPanExhThermo.add(exhThermo, BorderLayout.CENTER);
+    }
+    
+    private double convertToFahrenheit(double celcius) {
+        return (celcius * (9.0 / 5.0)) + 32.0;
     }
 
     private void setWarningAppearance() {
@@ -506,6 +537,10 @@ public class MeasureDialog extends javax.swing.JDialog {
                 jLabelCount.setText(String.format("%d", count));
 
                 if (Bike.getInstance().isMeasRpm()) {
+                    double engTemp = Config.getInstance().isCelcius() ? dd.getEngTemp() : convertToFahrenheit(dd.getEngTemp());
+                    double exhTemp = Config.getInstance().isCelcius() ? dd.getFumeTemp() : convertToFahrenheit(dd.getFumeTemp());
+                    updateThermoValue(engThermo, engTemp, Config.getInstance().getWarningEngTemp(), updateColour(dd.getStatus()));
+                    updateThermoValue(exhThermo, exhTemp, Config.getInstance().getWarningExhTemp(), updateColour(dd.getStatus()));
                 }
 
                 try {

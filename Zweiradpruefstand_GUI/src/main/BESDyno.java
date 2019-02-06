@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -151,7 +152,7 @@ public class BESDyno extends javax.swing.JFrame {
 
         try {
             loadConfig();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             userLogPane(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", LogLevel.WARNING);
         }
 
@@ -576,7 +577,7 @@ public class BESDyno extends javax.swing.JFrame {
 //        }
 //    }
     //Config
-    private void loadConfig() throws FileNotFoundException, IOException, Exception {
+    private void loadConfig() throws IOException{
         File home;
         File folder;
         File configFile;
@@ -591,7 +592,7 @@ public class BESDyno extends javax.swing.JFrame {
             folder = new File(home + File.separator + ".Bike");
             if (!folder.exists()) {
                 if (!folder.mkdir()) {
-                    throw new Exception("Internal Error");
+                    throw new IOException("Internal Error");
                 }
             }
             configFile = new File(folder + File.separator + "Config.json");
@@ -600,7 +601,11 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         if (configFile.exists()) {
-            Config.getInstance().readJson(new FileInputStream(configFile));
+            try {
+                Config.getInstance().readJson(new FileInputStream(configFile));
+            } catch (Exception ex) {
+                Config.getInstance().createConfig(new BufferedWriter (new FileWriter(configFile)));
+            }
             jcbmiDarkMode.setState(Config.getInstance().isDark());
         } else {
             Config.getInstance().createConfig(new BufferedWriter(new FileWriter(configFile)));
