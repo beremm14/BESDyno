@@ -25,7 +25,6 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,8 +34,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -49,6 +48,7 @@ import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
@@ -119,6 +119,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     //LineChart
     private final LineChart lc = new LineChart();
+    private ChartPanel chartPanel;
 
     /**
      * Creates new form BESDyno
@@ -577,7 +578,7 @@ public class BESDyno extends javax.swing.JFrame {
 //        }
 //    }
     //Config
-    private void loadConfig() throws IOException{
+    private void loadConfig() throws IOException {
         File home;
         File folder;
         File configFile;
@@ -604,7 +605,7 @@ public class BESDyno extends javax.swing.JFrame {
             try {
                 Config.getInstance().readJson(new FileInputStream(configFile));
             } catch (Exception ex) {
-                Config.getInstance().createConfig(new BufferedWriter (new FileWriter(configFile)));
+                Config.getInstance().createConfig(new BufferedWriter(new FileWriter(configFile)));
             }
             jcbmiDarkMode.setState(Config.getInstance().isDark());
         } else {
@@ -668,7 +669,70 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
+    //Files
+    private void exportChart() {
+        File file;
+
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Portable Network Graphic (*.png)", "png");
+        chooser.setFileFilter(filter);
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+            if (!file.getName().endsWith(".png")) {
+                file = new File(file.getPath() + ".png");
+            }
+
+            try {
+                ChartUtilities.saveChartAsPNG(file, chart, Config.getInstance().getPngWidth(), Config.getInstance().getPngHeight());
+                LOG.fine("PNG saved: " + file.getPath());
+            } catch (IOException ex) {
+                userLog("Fehler beim Speichern", LogLevel.WARNING);
+            } catch (NullPointerException ex)//Fehler beim Pfad
+            {
+                userLog("Fehler beim Pfad", LogLevel.WARNING);
+            } catch (Exception ex) {
+                userLog("Fehler aufgetreten!", LogLevel.SEVERE);
+            }
+        }
+    }
+
+    private void saveCSVData() {
+        File file;
+
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Comma Seperated Values (*.csv)", "csv");
+        chooser.setFileFilter(filter);
+        
+        int rv = chooser.showSaveDialog(this);
+        if (rv == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+            if (!file.getName().endsWith(".csv")) {
+                file = new File(file.getPath() + ".csv");
+            }
+            
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+                for (int i = 0; i < Database.getInstance().getDataList().size() - 1; i++) {
+                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getDataList().get(i).getPower()));
+                    w.write(',');
+                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getDataList().get(i).getTorque()));
+                    w.write(',');
+                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getPreList().get(i).getEngRpm()));
+                    w.write(',');
+                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getPreList().get(i).getWheelRpm()));
+                    w.newLine();
+                }
+                LOG.fine("CSV-Datei saved: " + file.getPath());
+            } catch (IOException ex) {
+                userLog("Fehler beim Speichern", LogLevel.WARNING);
+            }
+        }
+
+    }
     //Getter
+
     public MyTelegram getTelegram() {
         return telegram;
     }
@@ -1255,16 +1319,11 @@ public class BESDyno extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void onSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSave
-        try {
-            //save();
-            userLog("Datei erfolgreich gespeichert", LogLevel.FINE);
-        } catch (Exception ex) {
-            userLog(ex, "Fehler beim Speichern der Datei", LogLevel.WARNING);
-        }
+        saveCSVData();
     }//GEN-LAST:event_onSave
 
     private void onPrint(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onPrint
-
+        chartPanel.createChartPrintJob();
     }//GEN-LAST:event_onPrint
 
     private void onSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSettings
@@ -1396,7 +1455,7 @@ public class BESDyno extends javax.swing.JFrame {
     }//GEN-LAST:event_onDark
 
     private void onExport(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onExport
-
+        exportChart();
     }//GEN-LAST:event_onExport
 
     private void onOpen(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onOpen
@@ -1855,7 +1914,7 @@ public class BESDyno extends javax.swing.JFrame {
             chart.getXYPlot().addRangeMarker(0, maxPowerMarker, Layer.BACKGROUND);
             chart.getXYPlot().addRangeMarker(1, maxTorqueMarker, Layer.BACKGROUND);
 
-            ChartPanel chartPanel = new ChartPanel(chart);
+            chartPanel = new ChartPanel(chart);
 
             TextTitle eco = new TextTitle("Temperatur: NaN "
                     + "Luftdruck: NaN "
@@ -1881,7 +1940,7 @@ public class BESDyno extends javax.swing.JFrame {
             double envTemp = config.isCelcius() ? environment.getEnvTempC() : environment.getEnvTempF();
             double engTemp = config.isCelcius() ? environment.getEngTempC() : environment.getEngTempF();
             double fumeTemp = config.isCelcius() ? environment.getFumeTempC() : environment.getFumeTempF();
-            
+
             double bikePower = config.isPs() ? data.getBikePowerPS() : data.getBikePowerKW();
 
             maxPowerMarker.setValue(data.getBikePower());

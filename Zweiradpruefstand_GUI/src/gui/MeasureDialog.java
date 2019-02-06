@@ -96,7 +96,7 @@ public class MeasureDialog extends javax.swing.JDialog {
             setSize(new Dimension(500, 500));
         }
         if (Bike.getInstance().isMeasTemp()) {
-            setSize(new Dimension(1000, 500));
+            setSize(new Dimension(1300, 500));
             createEngThermo();
             createExhThermo();
         } else {
@@ -254,10 +254,14 @@ public class MeasureDialog extends javax.swing.JDialog {
         } else {
             engThermo.setFrameDesign(FrameDesign.BLACK_METAL);
         }
-
+        
         engThermo.setNiceScale(true);
         engThermo.setLedVisible(false);
         engThermo.setLcdVisible(false);
+        
+        engThermo.setThresholdColor(ColorDef.ORANGE);
+        engThermo.setThresholdType(ThresholdType.ARROW);
+        engThermo.setThresholdVisible(true);
 
         engThermo.setMaxValue(150);
         engThermo.setMajorTickSpacing(10);
@@ -284,6 +288,10 @@ public class MeasureDialog extends javax.swing.JDialog {
         exhThermo.setNiceScale(true);
         exhThermo.setLedVisible(false);
         exhThermo.setLcdVisible(false);
+        
+        exhThermo.setThresholdColor(ColorDef.ORANGE);
+        exhThermo.setThresholdType(ThresholdType.ARROW);
+        exhThermo.setThresholdVisible(true);
 
         exhThermo.setMaxValue(150);
         exhThermo.setMajorTickSpacing(10);
