@@ -66,7 +66,7 @@ public class RequestAll extends Request {
         } else {
             status = Request.Status.ERROR;
         }
-        
+
         LOG.info("--> engTime: " + values[0] + " wheelTime: " + values[1] + " engTemp: " + values[2] + " exhTemp: " + values[3] + " time: " + values[4] + " crc: " + calcCRC(res));
 
     }

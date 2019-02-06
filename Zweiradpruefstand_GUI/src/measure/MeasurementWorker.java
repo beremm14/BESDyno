@@ -45,7 +45,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         } catch (InterruptedException ex) {
             LOG.warning(ex);
         }
-        
+
         if (bike.isMeasTemp()) {
             main.addPendingRequest(telegram.engine());
             try {
@@ -113,6 +113,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                     double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
                     double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
                     publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+
                 } else {
                     publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
                 }
@@ -123,7 +124,13 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
         if (bike.isMeasRpm()) {
             do {
-                publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
+                if (bike.isMeasTemp()) {
+                    double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                    double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                    publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                } else {
+                    publish(new DialData(Status.SHIFT_UP, measure(), config.getStartVelo(), config.getStartRpm()));
+                }
             } while (data.getPreList().get(data.getPreList().size() - 1).getEngRpm() >= config.getStartRpm());
         } else {
             do {
@@ -142,9 +149,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             int accepted = 0;
             do {
                 if (bike.isMeasTemp()) {
-                    double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
-                    double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
-                    publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm(), engTemp, fumeTemp));
+                    synchronized (data.getEngTempList()) {
+                        double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                        double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                        publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm(), engTemp, fumeTemp));
+                    }
                 } else {
                     publish(new DialData(Status.WAIT, measure(), config.getIdleVelo(), config.getIdleRpm()));
                 }
@@ -175,9 +184,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         if (bike.isMeasRpm()) {
             do {
                 if (bike.isMeasTemp()) {
-                    double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
-                    double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
-                    publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                    synchronized (data.getEngTempList()) {
+                        double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                        double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                        publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                    }
                 } else {
                     publish(new DialData(Status.READY, measure(), config.getStartVelo(), config.getStartRpm()));
                 }
@@ -201,9 +212,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 int stopCount = 0;
                 do {
                     if (bike.isMeasTemp()) {
-                        double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
-                        double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
-                        publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm(), engTemp, fumeTemp));
+                        synchronized (data.getEngTempList()) {
+                            double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                            double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                            publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm(), engTemp, fumeTemp));
+                        }
                     } else {
                         publish(new DialData(Status.MEASURE, measure(), config.getStopVelo(), config.getStopRpm()));
                     }
@@ -225,9 +238,11 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 int stopCount = 0;
                 do {
                     if (bike.isMeasTemp()) {
-                        double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
-                        double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
-                        publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                        synchronized (data.getEngTempList()) {
+                            double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
+                            double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);
+                            publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm(), engTemp, fumeTemp));
+                        }
                     } else {
                         publish(new DialData(Status.MEASURE, measure(), config.getStartVelo(), config.getStartRpm()));
                     }

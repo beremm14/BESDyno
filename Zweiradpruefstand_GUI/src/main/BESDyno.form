@@ -99,37 +99,6 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onStartSim"/>
               </Events>
             </MenuItem>
-            <Menu class="javax.swing.JMenu" name="jmenuStatus">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Fehlercode - Status LED"/>
-              </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="jmiYellow">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Gelb - Warnung"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onYellow"/>
-                  </Events>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="jmiRed">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Rot - Fehler"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onRed"/>
-                  </Events>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="jmiYellowRed">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Gelb &amp; Rot - Schwerwiegender Fehler"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onYellowRed"/>
-                  </Events>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="jmiEnvironment">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Umweltdaten aktualisieren"/>
@@ -322,6 +291,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onTestKill"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="jmiAll">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="ALL"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onTestAll"/>
                   </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jmiMeasure">

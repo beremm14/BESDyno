@@ -17,6 +17,7 @@ import gui.VehicleSetDialog;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
@@ -28,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -135,8 +138,10 @@ public class BESDyno extends javax.swing.JFrame {
 
     private BESDyno() {
         initComponents();
-
-        setTitle("BESDyno - Zweiradprüfstand");
+        
+        //Check for multi-platform!!!
+        //Works on: macOS, ?, ?
+        setTitle("🦅 BESDyno - Zweiradprüfstand 🦅");
         setLocationRelativeTo(null);
         setSize(new Dimension(1200, 750));
 
@@ -199,7 +204,9 @@ public class BESDyno extends javax.swing.JFrame {
             jcbmiSaveLoggedComm.setEnabled(true);
             jcbmiDebugLogging.setEnabled(true);
             jcbmiTestMode.setEnabled(true);
-            jmenuRequests.setEnabled(true);
+            if (connection) {
+                jmenuRequests.setEnabled(true);
+            }
         }
 
         if (activeWorker != null) {
@@ -423,48 +430,6 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-    //File-Methods
-//    private void save() throws IOException, Exception {
-//        JFileChooser chooser = new JFileChooser();
-//        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-//
-//        File home;
-//        File folder;
-//
-//        try {
-//            home = new File(System.getProperty("user.home"));
-//        } catch (Exception e) {
-//            home = null;
-//        }
-//
-//        if (home != null && home.exists()) {
-//            folder = new File(home + File.separator + "Bike-Files");
-//            if (!folder.exists()) {
-//                if (!folder.mkdir()) {
-//                    throw new Exception("Internal Error");
-//                }
-//            }
-//            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
-//        } else {
-//            file = new File(Bike.getInstance().getVehicleName() + ".bes");
-//        }
-//        chooser.setSelectedFile(file);
-//
-//        int rv = chooser.showSaveDialog(this);
-//        if (rv == JFileChooser.APPROVE_OPTION) {
-//            file = chooser.getSelectedFile();
-//            if (!file.getName().contains(".bes")) {
-//                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
-//            }
-//
-//            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-//                Bike.getInstance().writeFile(w);
-//            } catch (Exception ex) {
-//                LOG.severe(ex);
-//            }
-//        }
-//
-//    }
     // Saves the Communication Log
     public void saveComm() throws Exception {
         JFileChooser chooser = new JFileChooser();
@@ -538,45 +503,6 @@ public class BESDyno extends javax.swing.JFrame {
         }
     }
 
-//    private void open() throws FileNotFoundException, IOException, Exception {
-//        JFileChooser chooser = new JFileChooser();
-//        chooser.setFileFilter(new FileNameExtensionFilter("Bike-Datei (*.bes)", "bes"));
-//
-//        File home;
-//        File folder;
-//
-//        try {
-//            home = new File(System.getProperty("user.home"));
-//        } catch (Exception e) {
-//            home = null;
-//        }
-//
-//        if (home != null && home.exists()) {
-//            folder = new File(home + File.separator + "Bike-Files");
-//            if (!folder.exists()) {
-//                if (!folder.mkdir()) {
-//                    LOG.severe("Internal Error");
-//                }
-//            }
-//            file = new File(folder + File.separator + Bike.getInstance().getVehicleName() + ".bes");
-//        } else {
-//            file = new File(Bike.getInstance().getVehicleName() + ".bes");
-//        }
-//        chooser.setSelectedFile(file);
-//
-//        int rv = chooser.showOpenDialog(this);
-//        if (rv == JFileChooser.APPROVE_OPTION) {
-//            file = chooser.getSelectedFile();
-//            if (!file.getName().contains(".bes")) {
-//                userLogPane("Dies ist keine BES-Datei", LogLevel.WARNING);
-//            }
-//            try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-//                Bike.getInstance().readFile(r);
-//            } catch (Exception ex) {
-//                userLog(ex, "Fehler beim Einlesen der Datei", LogLevel.WARNING);
-//            }
-//        }
-//    }
     //Config
     private void loadConfig() throws IOException {
         File home;
@@ -731,8 +657,25 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
     }
+    
+    //Online-Manual
+    private void openURL(String url) {
+        URI uri = null;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException ex) {
+            LOG.warning(ex);
+        }
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(uri);
+            } catch (IOException ex) {
+                LOG.warning(ex);
+            }
+        }
+    }
+    
     //Getter
-
     public MyTelegram getTelegram() {
         return telegram;
     }
@@ -854,10 +797,6 @@ public class BESDyno extends javax.swing.JFrame {
         jmiQuit = new javax.swing.JMenuItem();
         jmenuSimulation = new javax.swing.JMenu();
         jmiStartSim = new javax.swing.JMenuItem();
-        jmenuStatus = new javax.swing.JMenu();
-        jmiYellow = new javax.swing.JMenuItem();
-        jmiRed = new javax.swing.JMenuItem();
-        jmiYellowRed = new javax.swing.JMenuItem();
         jmiEnvironment = new javax.swing.JMenuItem();
         jmiEngineTemp = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -883,6 +822,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiStart = new javax.swing.JMenuItem();
         jmiEngine = new javax.swing.JMenuItem();
         jmiKill = new javax.swing.JMenuItem();
+        jmiAll = new javax.swing.JMenuItem();
         jmiMeasure = new javax.swing.JMenuItem();
         jmiMeasureno = new javax.swing.JMenuItem();
         jmiFine = new javax.swing.JMenuItem();
@@ -1043,34 +983,6 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuSimulation.add(jmiStartSim);
-
-        jmenuStatus.setText("Fehlercode - Status LED");
-
-        jmiYellow.setText("Gelb - Warnung");
-        jmiYellow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onYellow(evt);
-            }
-        });
-        jmenuStatus.add(jmiYellow);
-
-        jmiRed.setText("Rot - Fehler");
-        jmiRed.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onRed(evt);
-            }
-        });
-        jmenuStatus.add(jmiRed);
-
-        jmiYellowRed.setText("Gelb & Rot - Schwerwiegender Fehler");
-        jmiYellowRed.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onYellowRed(evt);
-            }
-        });
-        jmenuStatus.add(jmiYellowRed);
-
-        jmenuSimulation.add(jmenuStatus);
 
         jmiEnvironment.setText("Umweltdaten aktualisieren");
         jmiEnvironment.addActionListener(new java.awt.event.ActionListener() {
@@ -1238,6 +1150,14 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuRequests.add(jmiKill);
+
+        jmiAll.setText("ALL");
+        jmiAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onTestAll(evt);
+            }
+        });
+        jmenuRequests.add(jmiAll);
 
         jmiMeasure.setText("MEASURE");
         jmiMeasure.addActionListener(new java.awt.event.ActionListener() {
@@ -1550,25 +1470,6 @@ public class BESDyno extends javax.swing.JFrame {
         addPendingRequest(telegram.maxProblems());
     }//GEN-LAST:event_onTestMaxProblems
 
-    private void onYellow(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onYellow
-        LOG.warning("User checked LED: WARNING");
-    }//GEN-LAST:event_onYellow
-
-    private void onRed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onRed
-        LOG.warning("User checked LED: SEVERE");
-    }//GEN-LAST:event_onRed
-
-    private void onYellowRed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onYellowRed
-        LOG.warning("User checked LED: MAXPROBLEMS");
-        JOptionPane.showMessageDialog(this,
-                "Wenn beide Kontrollleuchten (Gelb & Rot) leuchten ist ein schwerwiegender Fehler am Gerät oder im Programm aufgetreten...\n\n"
-                + "Starten Sie die Software neu und drücken Sie den Reset-Button am Gerät.\n\n"
-                + "Wenn der Fehler erneut oder öfters auftritt, starten Sie das Programm im Entwicklungsmodus\n"
-                + "und senden Sie nach erneuter Ausführung alle Dateien im Ordner 'Service_Files' an den Entwickler!",
-                "Gelbe & Rote LED: Schwerwiegender Fehler",
-                JOptionPane.WARNING_MESSAGE);
-    }//GEN-LAST:event_onYellowRed
-
     private void onTestKill(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestKill
         LOG.info("Test Communication: KILL");
         addPendingRequest(telegram.kill());
@@ -1630,6 +1531,11 @@ public class BESDyno extends javax.swing.JFrame {
         TestCSV csv = new TestCSV();
         csv.writeFiles();
     }//GEN-LAST:event_onSaveCSV
+
+    private void onTestAll(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTestAll
+        LOG.info("Test Communication: ALL");
+        addPendingRequest(telegram.all());
+    }//GEN-LAST:event_onTestAll
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -2165,8 +2071,8 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenu jmenuFile;
     private javax.swing.JMenu jmenuRequests;
     private javax.swing.JMenu jmenuSimulation;
-    private javax.swing.JMenu jmenuStatus;
     private javax.swing.JMenuItem jmiAbout;
+    private javax.swing.JMenuItem jmiAll;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JMenuItem jmiDisconnect;
     private javax.swing.JMenuItem jmiEngine;
@@ -2183,7 +2089,6 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiQuit;
-    private javax.swing.JMenuItem jmiRed;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;
     private javax.swing.JMenuItem jmiSaveCSV;
@@ -2195,8 +2100,6 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiStartSim;
     private javax.swing.JMenuItem jmiVersion;
     private javax.swing.JMenuItem jmiWarning;
-    private javax.swing.JMenuItem jmiYellow;
-    private javax.swing.JMenuItem jmiYellowRed;
     private javax.swing.JProgressBar jpbStatus;
     private javax.swing.JTextField jtfStatus;
     // End of variables declaration//GEN-END:variables
