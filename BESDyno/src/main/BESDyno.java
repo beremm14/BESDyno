@@ -28,6 +28,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -41,6 +42,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -1915,8 +1920,47 @@ public class BESDyno extends javax.swing.JFrame {
 
         try {
             Config.createInstance(new FileInputStream(getConfigFile()));
+        } catch (FileNotFoundException ex) {
+            final JsonObjectBuilder b = Json.createObjectBuilder();
+
+        b.add("Dark", false)
+                .add("Hysteresis Velo", 4)
+                .add("Hysteresis Rpm", 400)
+                .add("Hysteresis Time", 2500)
+                .add("Idle Velo", 4)
+                .add("Idle Rpm", 1800)
+                .add("Inertia", 3.7017)
+                .add("Period", 40)
+                .add("PNG Height", 1080)
+                .add("PNG Width", 1920)
+                .add("Power Correction Factor", 1)
+                .add("PS", true)
+                .add("Celcius", true)
+                .add("Start Velo", 4)
+                .add("Start Rpm", 2500)
+                .add("Stop Velo", 80)
+                .add("Stop Rpm", 9000)
+                .add("Torque Correction Factor", 1)
+                .add("Velocity", 1)
+                .add("Engine Max Temp", 95)
+                .add("Exhaust Max Temp", 500);
+
+        JsonObject obj = b.build();
+            try {
+                new BufferedWriter(new FileWriter(getConfigFile())).write(obj.toString());
+            } catch (Exception ex1) {
+                LOG.severe(ex1);
+            }
+
+                try {
+                    Config.createInstance(new FileInputStream(getConfigFile()));
+                    LOG.info("Config-File written: " + obj.toString());
+                } catch (Exception ex1) {
+                    LOG.severe(ex);
+                }
+            
         } catch (Exception ex) {
-            LOG.warning(ex);
+            LOG.severe(ex);
         }
 
         //Menu-Bar support for macOS
