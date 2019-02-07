@@ -1992,12 +1992,15 @@ public class BESDyno extends javax.swing.JFrame {
         } else if (System.getProperty("os.name").startsWith("Windows ")) {
             os = OS.WINDOWS;
             try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                /*
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("com.sun.java.swing.plaf.windows.WindowsLookAndFeel".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
                     }
-                }
+
+                }*/
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class
                         .getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -2017,12 +2020,14 @@ public class BESDyno extends javax.swing.JFrame {
         } else if (System.getProperty("os.name").startsWith("Linux")) {
             os = OS.LINUX;
             try {
+                /*
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
                     }
-                }
+                }*/
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class
                         .getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -2042,12 +2047,14 @@ public class BESDyno extends javax.swing.JFrame {
         } else {
             os = OS.OTHER;
             try {
+                /*
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
                     }
-                }
+                }*/
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(BESDyno.class
                         .getName()).log(java.util.logging.Level.SEVERE, null, ex);
