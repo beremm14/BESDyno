@@ -10,6 +10,108 @@
 <project name="BESDyno" default="default" basedir=".">
     <description>Builds, tests, and runs the project BESDyno.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <!--
+    <jar destfile="dist/BESDyno.jar">
+        <zipgroupfileset dir="lib" includes="*.jar" /> 
+        <manifest>
+            <attribute name="BESDyno" value="main.BESDyno" />
+        </manifest>
+    </jar>
+    -->
+<!--
+<target name="-post-jar">
+    
+    <jar jarfile="dist/BESDyno-withLibs.jar">
+      <zipfileset src="${BESDyno.jar}" excludes="META-INF/*" />
+      <manifest>
+        <attribute name="BESDyno" value="BESDyno"/>
+      </manifest>
+    </jar>
+    <jar jarfile="dist/BESDyno-withSteel.jar">
+      <zipfileset src="${BESDyno.jar}" excludes="META-INF/*" />
+      <zipfileset src="lib/SteelSeries-3.9.31.1.jar" excludes="META-INF/*" />
+      <manifest>
+        <attribute name="BESDyno" value="BESDyno"/>
+      </manifest>
+    </jar>
+    
+    <jar jarfile="dist/BESDyno-withJsonAPI.jar">
+      <zipfileset src="${BESDyno.jar}" excludes="META-INF/*" />
+      <zipfileset src="lib/javax.json-api-1.1.2.jar" excludes="META-INF/*" />
+      <manifest>
+        <attribute name="BESDyno" value="BESDyno"/>
+      </manifest>
+    </jar>
+    
+    <jar jarfile="dist/BESDyno-withJCommon.jar">
+      <zipfileset src="${BESDyno.jar}" excludes="META-INF/*" />
+      <zipfileset src="lib/jcommon-1.0.23.jar" excludes="META-INF/*" />
+      <manifest>
+        <attribute name="BESDyno" value="BESDyno"/>
+      </manifest>
+    </jar>
+    
+    <jar jarfile="dist/BESDyno-withJFreeChart.jar">
+      <zipfileset src="${BESDyno.jar}" excludes="META-INF/*" />
+      <zipfileset src="lib/jfreechart-1.0.13.jar" excludes="META-INF/*" />
+      <manifest>
+        <attribute name="BESDyno" value="BESDyno"/>
+      </manifest>
+    </jar>
+    
+    <jar jarfile="dist/BESDyno-withTrident.jar">
+      <zipfileset src="${BESDyno.jar}" excludes="META-INF/*" />
+      <zipfileset src="lib/trident.jar" excludes="META-INF/*" />
+      <manifest>
+        <attribute name="BESDyno" value="BESDyno"/>
+      </manifest>
+    </jar>
+    
+    <move file="dist/BESDyno-withJSSC.jar" tofile="dist/BESDyno_final.jar" />
+    <move file="dist/BESDyno-withSteel.jar" tofile="dist/BESDyno_final.jar" />
+    <move file="dist/BESDyno-withJsonAPI.jar" tofile="dist/BESDyno_final.jar" />
+    <move file="dist/BESDyno-withJCommon.jar" tofile="dist/BESDyno_final.jar" />
+    <move file="dist/BESDyno-withJFreeChart.jar" tofile="dist/BESDyno_final.jar" />
+    <move file="dist/BESDyno-withTrident.jar" tofile="dist/BESDyno_final.jar" />
+ </target>
+-->
+
+<target name="-post-jar">
+
+    <!-- Change the value to the name of the final jar without .jar -->
+    <property name="store.jar.name" value="BESDyno"/>
+
+    <!-- don't edit below this line -->
+    <property name="store.dir" value="dist"/>
+    <property name="temp.dir" value="temp"/>
+    <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
+
+    <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
+
+    <delete dir="${temp.dir}"/>
+    <mkdir dir="${temp.dir}"/>
+
+    <jar destfile="${temp.dir}/temp_final.jar" filesetmanifest="skip">
+        <zipgroupfileset dir="dist" includes="*.jar"/>
+        <zipgroupfileset dir="dist/lib" includes="*.jar"/>
+
+        <manifest>
+            <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+    </jar>
+
+    <delete dir="${store.dir}"/>
+
+    <zip destfile="${store.jar}">
+        <zipfileset src="${temp.dir}/temp_final.jar"
+        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+    </zip>
+
+    <delete dir="${temp.dir}"/>
+
+</target>
+
     <!--
 
     There exist several targets which are by default empty and which can be 
