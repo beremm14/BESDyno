@@ -1276,7 +1276,7 @@ public class BESDyno extends javax.swing.JFrame {
             LOG.warning(ex);
         }
         settings.setSwingValues(Config.getInstance());
-        settings.setAppearance(Config.getInstance().isDark());
+        settings.setAppearance(Config.getInstance().isDark(), os);
         if (port != null) {
             settings.writeDevice(port.getPortName());
         } else {
@@ -1293,7 +1293,7 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void onStartSim(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onStartSim
         if (connection) {
-            vehicle.setAppearance(Config.getInstance().isDark());
+            vehicle.setAppearance(Config.getInstance().isDark(), os);
             vehicle.setVisible(true);
 
             if (vehicle.isPressedOK()) {

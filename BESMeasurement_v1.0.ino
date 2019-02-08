@@ -37,8 +37,12 @@ uint8_t measCount;
 
 //RPM
 unsigned long dEngTime;
+unsigned long dEngHigh;
+unsigned long dEngLow;
 unsigned long dWheelTime;
-long refMicros;
+unsigned long dWheelHigh;
+unsigned long dWheelLow;
+unsigned long refMicros;
 
 //-Functions------------------------------------------------------------//
 
@@ -234,8 +238,13 @@ void setup() {
 
 //-Main---------------------------------------------------------------------//
 void loop() {
-  dEngTime = pulseInLong(engRPMPin, LOW, 40000) + pulseInLong(engRPMPin, HIGH, 40000);
-  dWheelTime = pulseInLong(rearRPMPin, LOW, 40000) + pulseInLong(rearRPMPin, HIGH, 40000);
+  dEngLow = pulseInLong(engRPMPin, LOW, 1000000);
+  dEngHigh = pulseInLong(engRPMPin, HIGH, 1000000);
+  dEngTime = dEngLow + dEngHigh;
+  
+  dWheelLow = pulseInLong(rearRPMPin, LOW, 1000000);
+  dWheelHigh = pulseInLong(rearRPMPin, HIGH, 1000000);
+  dWheelTime = dWheelLow + dWheelHigh;
 }
 
 

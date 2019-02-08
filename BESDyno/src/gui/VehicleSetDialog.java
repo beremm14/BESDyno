@@ -24,9 +24,6 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         initComponents();
         setTitle("Zweirad registrieren...");
         setSize(new Dimension(330, 315));
-        if (BESDyno.getInstance().getOs() == OS.LINUX) {
-            setSize(new Dimension(350, 330));
-        }
         setLocationRelativeTo(null);
         setResizable(false);
     }
@@ -37,7 +34,11 @@ public class VehicleSetDialog extends javax.swing.JDialog {
     }
 
     //Sets Appearance like at the Main-GUI
-    public void setAppearance(boolean dark) {
+    public void setAppearance(boolean dark, OS os) {
+        if (os == OS.LINUX) {
+            setSize(new Dimension(350, 330));
+        }
+        
         if (dark) {
             jPanButtons.setBackground(Color.darkGray);
             jPanControls.setBackground(Color.darkGray);

@@ -52,15 +52,12 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.warning(ex);
         }
         setSize(new Dimension(800, 500));
-        if (BESDyno.getInstance().getOs() == OS.LINUX) {
-            setSize(new Dimension(1000, 800));
-        }
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
-        
+
         lastVelocity = Config.getInstance().getVelocity();
-        
+
         jcbEnableInertiaEdit.setSelected(false);
         jtfInertia.setEnabled(false);
     }
@@ -74,7 +71,11 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
     }
 
-    public void setAppearance(boolean dark) {
+    public void setAppearance(boolean dark, OS os) {
+        if (os == OS.LINUX) {
+            setSize(new Dimension(1000, 800));
+        }
+
         if (dark) {
             jPanAppearance.setBackground(Color.darkGray);
             jPanButtons.setBackground(Color.darkGray);
@@ -136,9 +137,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setForeground(Color.white);
             jrbCelcius.setForeground(Color.white);
             jrbFahrenheit.setForeground(Color.white);
-            
+
             jcbEnableInertiaEdit.setForeground(Color.white);
-            
+
             jrbDaymode.setBackground(Color.darkGray);
             jrbNightmode.setBackground(Color.darkGray);
             jrbKW.setBackground(Color.darkGray);
@@ -148,7 +149,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setBackground(Color.darkGray);
             jrbCelcius.setBackground(Color.darkGray);
             jrbFahrenheit.setBackground(Color.darkGray);
-            
+
             jcbEnableInertiaEdit.setBackground(Color.darkGray);
 
             jLabelHysteresisKmh.setForeground(Color.white);
@@ -250,9 +251,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setForeground(Color.black);
             jrbCelcius.setForeground(Color.black);
             jrbFahrenheit.setForeground(Color.black);
-            
+
             jcbEnableInertiaEdit.setForeground(Color.black);
-            
+
             jrbDaymode.setBackground(Color.white);
             jrbNightmode.setBackground(Color.white);
             jrbKW.setBackground(Color.white);
@@ -262,7 +263,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setBackground(Color.white);
             jrbCelcius.setBackground(Color.white);
             jrbFahrenheit.setBackground(Color.white);
-            
+
             jcbEnableInertiaEdit.setBackground(Color.white);
 
             jLabelHysteresisKmh.setForeground(Color.black);
@@ -351,7 +352,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             return String.format("%d", Math.round((((double) value) - 32.0) * (5.0 / 9.0)));
         }
     }
-    
+
     public void changePeriodTime() {
         jtfPeriod.requestFocusInWindow();
     }
@@ -559,10 +560,10 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbNightmode.setSelected(c.isDark());
             jrbKW.setSelected(!c.isPs());
             jrbPS.setSelected(c.isPs());
-            
+
             jrbCelcius.setSelected(c.isCelcius());
             jrbFahrenheit.setSelected(!c.isCelcius());
-            
+
             if (c.isCelcius()) {
                 jLabelEngWarning2.setText("°C");
                 jLabelExhWarning2.setText("°C");
@@ -1515,11 +1516,11 @@ public class SettingsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jrbDaymodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbDaymodeActionPerformed
-        setAppearance(!jrbDaymode.isSelected());
+        setAppearance(!jrbDaymode.isSelected(), null);
     }//GEN-LAST:event_jrbDaymodeActionPerformed
 
     private void jrbNightmodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbNightmodeActionPerformed
-        setAppearance(jrbNightmode.isSelected());
+        setAppearance(jrbNightmode.isSelected(), null);
     }//GEN-LAST:event_jrbNightmodeActionPerformed
 
     private void jbutOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutOKActionPerformed
@@ -1588,7 +1589,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void jrbCelciusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbCelciusActionPerformed
         jLabelEngWarning2.setText("°C");
         jLabelExhWarning2.setText("°C");
-        
+
         jtfEngWarning.setText(convertTemperature(false, Integer.parseInt(jtfEngWarning.getText())));
         jtfExhWarning.setText(convertTemperature(false, Integer.parseInt(jtfExhWarning.getText())));
     }//GEN-LAST:event_jrbCelciusActionPerformed
@@ -1596,7 +1597,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void jrbFahrenheitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFahrenheitActionPerformed
         jLabelEngWarning2.setText("°F");
         jLabelExhWarning2.setText("°F");
-        
+
         jtfEngWarning.setText(convertTemperature(true, Integer.parseInt(jtfEngWarning.getText())));
         jtfExhWarning.setText(convertTemperature(true, Integer.parseInt(jtfExhWarning.getText())));
     }//GEN-LAST:event_jrbFahrenheitActionPerformed
