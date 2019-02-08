@@ -3,8 +3,10 @@ package gui;
 import data.Bike;
 import data.Config;
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JOptionPane;
 import main.BESDyno;
+import main.BESDyno.OS;
 
 /**
  *
@@ -21,6 +23,10 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setTitle("Zweirad registrieren...");
+        setSize(new Dimension(330, 315));
+        if (BESDyno.getInstance().getOs() == OS.LINUX) {
+            setSize(new Dimension(350, 330));
+        }
         setLocationRelativeTo(null);
         setResizable(false);
     }
@@ -50,6 +56,15 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jrbManual.setForeground(Color.white);
             jrbStartStop.setForeground(Color.white);
             jrbDrop.setForeground(Color.white);
+            
+            jcbEnableRPM.setBackground(Color.darkGray);
+            jcbEnableTemp.setBackground(Color.darkGray);
+            jrb2Stroke.setBackground(Color.darkGray);
+            jrb4Stroke.setBackground(Color.darkGray);
+            jrbAutomatic.setBackground(Color.darkGray);
+            jrbManual.setBackground(Color.darkGray);
+            jrbStartStop.setBackground(Color.darkGray);
+            jrbDrop.setBackground(Color.darkGray);
 
             jtfVehicleName.setBackground(Color.darkGray);
 
@@ -72,6 +87,15 @@ public class VehicleSetDialog extends javax.swing.JDialog {
             jrbManual.setForeground(Color.black);
             jrbStartStop.setForeground(Color.black);
             jrbDrop.setForeground(Color.black);
+            
+            jcbEnableRPM.setBackground(Color.white);
+            jcbEnableTemp.setBackground(Color.white);
+            jrb2Stroke.setBackground(Color.white);
+            jrb4Stroke.setBackground(Color.white);
+            jrbAutomatic.setBackground(Color.white);
+            jrbManual.setBackground(Color.white);
+            jrbStartStop.setBackground(Color.white);
+            jrbDrop.setBackground(Color.white);
 
             jtfVehicleName.setBackground(Color.white);
 

@@ -22,6 +22,8 @@ import javax.swing.JFileChooser;
 import logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import main.BESDyno;
+import main.BESDyno.OS;
 
 /**
  *
@@ -50,6 +52,9 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.warning(ex);
         }
         setSize(new Dimension(800, 500));
+        if (BESDyno.getInstance().getOs() == OS.LINUX) {
+            setSize(new Dimension(1000, 800));
+        }
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
@@ -133,6 +138,18 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbFahrenheit.setForeground(Color.white);
             
             jcbEnableInertiaEdit.setForeground(Color.white);
+            
+            jrbDaymode.setBackground(Color.darkGray);
+            jrbNightmode.setBackground(Color.darkGray);
+            jrbKW.setBackground(Color.darkGray);
+            jrbPS.setBackground(Color.darkGray);
+            jrbMPS.setBackground(Color.darkGray);
+            jrbKMH.setBackground(Color.darkGray);
+            jrbMIH.setBackground(Color.darkGray);
+            jrbCelcius.setBackground(Color.darkGray);
+            jrbFahrenheit.setBackground(Color.darkGray);
+            
+            jcbEnableInertiaEdit.setBackground(Color.darkGray);
 
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
@@ -235,6 +252,18 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbFahrenheit.setForeground(Color.black);
             
             jcbEnableInertiaEdit.setForeground(Color.black);
+            
+            jrbDaymode.setBackground(Color.white);
+            jrbNightmode.setBackground(Color.white);
+            jrbKW.setBackground(Color.white);
+            jrbPS.setBackground(Color.white);
+            jrbMPS.setBackground(Color.white);
+            jrbKMH.setBackground(Color.white);
+            jrbMIH.setBackground(Color.white);
+            jrbCelcius.setBackground(Color.white);
+            jrbFahrenheit.setBackground(Color.white);
+            
+            jcbEnableInertiaEdit.setBackground(Color.white);
 
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);
