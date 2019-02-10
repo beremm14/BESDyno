@@ -8,13 +8,6 @@
 ## Projekt
 Dieses Repository beinhaltet die Software für einen [Arduino](https://www.arduino.cc) UNO, an den die Sensoren des Prüfstands angeschlossen sind und das PC-Interface, das die vom Arduino empfangenen Daten auswertet und grafisch darstellt.
 
-## Aktuelle Versionen
-
-| Programm | Version | Funktion? |
-| -------- | ------- | --------- |
-| BESDyno | **v1.0_alpha** | Funktionsfähig, Messung der Schleppleistung noch nicht unterstützt |
-| BESMeasurement | **v1.0** | Voll funktionsfähig, mit den neuen Messmethoden (Periodendauer) ausgestattet. |
-
 ## Installation
 ### PC-Interface (BESDyno)
 Um das PC-Interface ausführen zu können, muss die [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) installiert werden. Wenn dies geschehen ist, kann das Programm einfach über BESDyno.jar gestartet werden, es sind keine weiteren Installationsschritte erforderlich.
