@@ -60,9 +60,16 @@ public class RequestStart extends Request {
         }
         
         // :Temperature#Pressure#Altitude;
-        String values[] = response.split("#");
+        String values[];
+        try {
+        values = response.split("#");
         values[2] = removeCRC(values[2]);
         LOG.debug("START-Response: Response-String splitted");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            LOG.severe(ex);
+            status = Status.ERROR;
+            return;
+        }
 
         if (values[0].isEmpty() || values[1].isEmpty() || values[2].isEmpty()) {
             LOG.warning("START Response maybe incomplete");

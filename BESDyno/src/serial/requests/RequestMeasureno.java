@@ -47,8 +47,15 @@ public class RequestMeasureno extends Request {
             response = response.replaceAll(";", "");
 
             // :rearCount#Time>crc;
-            String values[] = response.split("#");
-            values[1] = removeCRC(values[1]);
+            String values[];
+            try {
+                values = response.split("#");
+                values[1] = removeCRC(values[1]);
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                LOG.severe(ex);
+                status = Status.ERROR;
+                return;
+            }
 
             RawDatapoint dp = new RawDatapoint(values[0], values[1]);
             if (dp.getTime() > 0) {

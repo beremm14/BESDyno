@@ -47,8 +47,15 @@ public class RequestAll extends Request {
         response = response.replaceAll(";", "");
 
         // :engTime#rearTime#engTemp#fumeTemp#Time>crc;
-        String values[] = response.split("#");
-        values[4] = removeCRC(values[4]);
+        String values[];
+        try {
+            values = response.split("#");
+            values[4] = removeCRC(values[4]);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            LOG.severe(ex);
+            status = Status.ERROR;
+            return;
+        }
 
         RawDatapoint rdp;
         synchronized (Database.getInstance().getRawList()) {

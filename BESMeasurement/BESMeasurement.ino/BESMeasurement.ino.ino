@@ -42,7 +42,17 @@ unsigned long dEngLow;
 unsigned long dWheelTime;
 unsigned long dWheelHigh;
 unsigned long dWheelLow;
+
 unsigned long refMicros;
+
+boolean bufferEnable;
+unsigned long dEngTimeBuffer[8000];
+unsigned long dWheelTimeBuffer[8000];
+unsigned long timeBuffer[8000];
+
+unsigned int wheelIndex;
+unsigned int engIndex;
+unsigned int timeIndex;
 
 //-Functions------------------------------------------------------------//
 
@@ -204,6 +214,22 @@ void resetMeasurement() {
   refMicros = micros();
 }
 
+//Buffer
+unsigned long getDEngTime() {
+  unsigned long dTime = dEngTimeBuffer[0];
+  int i;
+
+  return dTime;
+}
+
+unsigned long getDWheelTime() {
+  return 0;
+}
+
+unsigned long getTime() {
+  return 0;
+}
+
 
 //-Setup-once called----------------------------------------------------------//
 void setup() {
@@ -227,10 +253,23 @@ void setup() {
   analogReference(EXTERNAL);
 
   resetMeasurement();
+  
   dEngTime = 0;
   dWheelTime = 0;
-  measCount = 9;
   
+  dEngLow = 0;
+  dEngHigh = 0;
+  dWheelHigh = 0;
+  dWheelLow = 0;
+
+  bufferEnable = false;
+  
+  engIndex = 0;
+  wheelIndex = 0;
+  timeIndex = 0;
+  
+  measCount = 9;
+
   attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
   attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
 }
@@ -238,13 +277,17 @@ void setup() {
 
 //-Main---------------------------------------------------------------------//
 void loop() {
-  dEngLow = pulseInLong(engRPMPin, LOW, 1000000);
-  dEngHigh = pulseInLong(engRPMPin, HIGH, 1000000);
+  dEngLow = pulseInLong(engRPMPin, LOW, 100000);
+  dEngHigh = pulseInLong(engRPMPin, HIGH, 100000);
   dEngTime = dEngLow + dEngHigh;
+
   
-  dWheelLow = pulseInLong(rearRPMPin, LOW, 1000000);
-  dWheelHigh = pulseInLong(rearRPMPin, HIGH, 1000000);
+  
+  dWheelLow = pulseInLong(rearRPMPin, LOW, 100000);
+  dWheelHigh = pulseInLong(rearRPMPin, HIGH, 100000);
   dWheelTime = dWheelLow + dWheelHigh;
+  
+  
 }
 
 
@@ -300,6 +343,7 @@ void serialEvent() {
         Serial.println(createTelegram("BMP-ERROR"));
       }
       Serial.flush();
+      bufferEnable = false;
       resetMeasurement();
 
     } else if (req == 'e') {
@@ -308,6 +352,7 @@ void serialEvent() {
       String thermos = String(engTemp) + '#' + String(exhTemp);
       Serial.println(createTelegram(thermos));
       Serial.flush();
+      bufferEnable = false;
 
     } else if (req == 'a') {
       measCount++;
@@ -374,6 +419,7 @@ void serialEvent() {
       setStatusFine();
       Serial.println(createTelegram("KILL"));
       Serial.flush();
+      bufferEnable = true;
       resetMeasurement();
       
     } else if (req == 'p') {

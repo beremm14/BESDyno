@@ -47,8 +47,16 @@ public class RequestMeasure extends Request {
         response = response.replaceAll(";", "");
 
         // :engCount#rearCount#Time>crc;
-        String values[] = response.split("#");
-        values[2] = removeCRC(values[2]);
+        String values[];
+        try {
+            values = response.split("#");
+            values[2] = removeCRC(values[2]);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            LOG.severe(ex);
+            status = Status.ERROR;
+            return;
+        }
+        
 
         RawDatapoint rdp;
         synchronized (Database.getInstance().getRawList()) {

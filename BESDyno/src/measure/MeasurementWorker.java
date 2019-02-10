@@ -3,6 +3,7 @@ package measure;
 import data.Bike;
 import data.Database;
 import data.Config;
+import data.Datapoint;
 import data.PreDatapoint;
 import data.DialData;
 import data.Environment;
@@ -107,7 +108,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //Lower than Start-Speed reached once -> hysteresis loop
     private Status manageShiftUp() throws Exception {
         //INIT -> time to get higher than Start-Speed
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             if (bike.isMeasRpm()) {
                 if (bike.isMeasTemp()) {
                     double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
@@ -206,6 +207,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageMeasure() throws Exception {
         //Clear all Lists for good Data ;)
         data.clearLists();
+        //data.addRawDP(new RawDatapoint(1, 1, 1));
+        //data.addPreDP(new PreDatapoint(1, 1, 1));
+        //data.addDP(new Datapoint(1, 1, 1));
 
         if (bike.isStartStopMethod()) {
             if (bike.isMeasRpm()) {

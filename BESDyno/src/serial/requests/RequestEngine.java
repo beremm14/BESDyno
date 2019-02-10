@@ -16,7 +16,7 @@ public class RequestEngine extends Request {
 
     private static final Logger LOG = Logger.getLogger(RequestEngine.class.getName());
     private static final CommunicationLogger COMLOG = CommunicationLogger.getInstance();
-    
+
     private String response;
 
     @Override
@@ -39,8 +39,15 @@ public class RequestEngine extends Request {
         response = response.replaceAll(";", "");
 
         // :EngineTemp#FumeTemp;
-        String values[] = response.split("#");
-        values[1] = removeCRC(values[1]);
+        String values[];
+        try {
+            values = response.split("#");
+            values[1] = removeCRC(values[1]);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            LOG.severe(ex);
+            status = Status.ERROR;
+            return;
+        }
         if (values[0].isEmpty() || values[1].isEmpty()) {
             LOG.warning("START Response maybe incomplete");
         }
@@ -48,9 +55,9 @@ public class RequestEngine extends Request {
         Environment.getInstance().setFumeTemp(Double.parseDouble(values[1]));
         LOG.info("engTemp = " + Environment.getInstance().getEngTempC()
                 + " fumeTemp = " + Environment.getInstance().getFumeTempC());
-        
+
         if ((Environment.getInstance().getEngTempC() <= 0 || Environment.getInstance().getFumeTempC() <= 0)
-             && checkCRC(res)) {
+                && checkCRC(res)) {
             status = Status.ERROR;
         } else {
             status = Status.DONE;
