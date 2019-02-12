@@ -45,15 +45,6 @@ unsigned long dWheelLow;
 
 unsigned long refMicros;
 
-boolean bufferEnable;
-unsigned long dEngTimeBuffer[8000];
-unsigned long dWheelTimeBuffer[8000];
-unsigned long timeBuffer[8000];
-
-unsigned int wheelIndex;
-unsigned int engIndex;
-unsigned int timeIndex;
-
 //-Functions------------------------------------------------------------//
 
 //CRC Table
@@ -214,23 +205,6 @@ void resetMeasurement() {
   refMicros = micros();
 }
 
-//Buffer
-unsigned long getDEngTime() {
-  unsigned long dTime = dEngTimeBuffer[0];
-  int i;
-
-  return dTime;
-}
-
-unsigned long getDWheelTime() {
-  return 0;
-}
-
-unsigned long getTime() {
-  return 0;
-}
-
-
 //-Setup-once called----------------------------------------------------------//
 void setup() {
   Serial.begin(57600, SERIAL_8N1);
@@ -261,12 +235,6 @@ void setup() {
   dEngHigh = 0;
   dWheelHigh = 0;
   dWheelLow = 0;
-
-  bufferEnable = false;
-  
-  engIndex = 0;
-  wheelIndex = 0;
-  timeIndex = 0;
   
   measCount = 9;
 
@@ -343,7 +311,6 @@ void serialEvent() {
         Serial.println(createTelegram("BMP-ERROR"));
       }
       Serial.flush();
-      bufferEnable = false;
       resetMeasurement();
 
     } else if (req == 'e') {
@@ -352,7 +319,6 @@ void serialEvent() {
       String thermos = String(engTemp) + '#' + String(exhTemp);
       Serial.println(createTelegram(thermos));
       Serial.flush();
-      bufferEnable = false;
 
     } else if (req == 'a') {
       measCount++;
@@ -370,7 +336,6 @@ void serialEvent() {
       String all = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(engTemp) + '#' + String(exhTemp) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(all));
       Serial.flush();
-      resetMeasurement();
       
     } else if (req == 'm') {
       if (dEngTime > 0 && dWheelTime > 0) {
@@ -382,7 +347,6 @@ void serialEvent() {
       String measure = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(measure));
       Serial.flush();
-      resetMeasurement();
 
     } else if (req == 'n') {
       if (dWheelTime > 0) {
@@ -393,7 +357,6 @@ void serialEvent() {
       String measureno = String(dWheelTime) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(measureno));
       Serial.flush();
-      resetMeasurement();
 
     } else if (req == 'f') {
       setStatusFine();
@@ -419,7 +382,6 @@ void serialEvent() {
       setStatusFine();
       Serial.println(createTelegram("KILL"));
       Serial.flush();
-      bufferEnable = true;
       resetMeasurement();
       
     } else if (req == 'p') {
@@ -427,7 +389,7 @@ void serialEvent() {
       Serial.println(createTelegram(String(progvers)));
       Serial.flush();
     } else if (req == 'd') {
-      setStatusWarning();
+      setNoStatus();
       readEnvironment();
       readThermos();
       Serial.println("Temperatur: " + String(envTemp));
@@ -439,7 +401,6 @@ void serialEvent() {
       Serial.println("D3 Walze:   " + String(dWheelTime));
       Serial.println("Zeit (µs):  " + String(micros()-refMicros) + "\n");
       Serial.flush();
-      resetMeasurement();
     }
   }
 }
