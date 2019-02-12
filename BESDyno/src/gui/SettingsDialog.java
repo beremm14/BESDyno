@@ -3,26 +3,21 @@ package gui;
 import data.Bike;
 import data.Config;
 import data.Config.Velocity;
-import development.CommunicationLogger;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import main.BESDyno;
 import main.BESDyno.OS;
 
 /**
@@ -46,11 +41,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     public SettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        try {
-            loadConfig();
-        } catch (Exception ex) {
-            LOG.warning(ex);
-        }
+        
         setSize(new Dimension(800, 500));
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
@@ -73,7 +64,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
     public void setAppearance(boolean dark, OS os) {
         if (os == OS.LINUX) {
-            setSize(new Dimension(1000, 800));
+            setSize(new Dimension(1000, 700));
         }
 
         if (dark) {
@@ -311,7 +302,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     public boolean isDark() {
         return jrbNightmode.isSelected();
     }
-
+    
     private String convertVelocity(Velocity from, Velocity to, int value) {
         switch (from) {
             case MIH:
@@ -356,7 +347,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     public void changePeriodTime() {
         jtfPeriod.requestFocusInWindow();
     }
-
+    
     //Sets the Config-File
     private void confirm(Config c, boolean save) {
 
@@ -377,26 +368,41 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         try {
             c.setHysteresisKmh(Integer.parseInt(jtfHysteresisKmh.getText()));
+            if (c.getHysteresisVelo() <= 0) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Hysterese Geschwindigkeit muss größer 0 sein...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfHysteresisKmh.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfHysteresisKmh.requestFocusInWindow();
         }
         try {
             c.setHysteresisRpm(Integer.parseInt(jtfHysteresisRpm.getText()));
+             if (c.getHysteresisRpm()<= 0) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Hysterese Drehzahl muss größer 0 sein...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfHysteresisRpm.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfHysteresisRpm.requestFocusInWindow();
         }
         try {
             c.setHysteresisTime(Integer.parseInt(jtfHysteresisTime.getText()));
+             if (c.getHysteresisTime() < 1000) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Hysterese Zeit ist " + c.getHysteresisTime() + ". Es wird eine Zeit von min. 1000ms empfohlen.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfHysteresisTime.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfHysteresisTime.requestFocusInWindow();
         }
         try {
@@ -409,109 +415,176 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setIdleRpm(Integer.parseInt(jtfIdleRpm.getText()));
+             if (c.getIdleRpm() <= 0) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Leerlaufdrehzahl zu klein!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfIdleRpm.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfIdleRpm.requestFocusInWindow();
         }
         try {
             c.setPeriod(Integer.parseInt(jtfPeriod.getText()));
+             if (c.getPeriod() <= 5) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Eine zu kleine Periodendauer wird den Computer überlasten... Min. 20ms werden empfohlen.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfPeriod.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfPeriod.requestFocusInWindow();
         }
         try {
             c.setPngHeight(Integer.parseInt(jtfPngY.getText()));
+             if (c.getPngHeight() < 480) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Bildhöhe muss min. 480px betragen...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfPngY.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfPngY.requestFocusInWindow();
         }
         try {
             c.setPngWidth(Integer.parseInt(jtfPngX.getText()));
+             if (c.getPngWidth() < 360) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Bildbreite muss min. 360px betragen...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfPngX.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfPngX.requestFocusInWindow();
         }
         try {
             c.setPowerCorr(Double.parseDouble(jtfPower.getText()));
+             if (c.getPowerCorr() <= 0) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Der Leistungskorrekturfaktor wird mit jedem Messpunkt multipliziert. Er darf nicht ≤0 sein", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfPower.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfPower.requestFocusInWindow();
         }
         try {
             c.setStartKmh(Integer.parseInt(jtfStartKmh.getText()));
+             if (c.getStartVelo() <= 0 || c.getStartVelo() < c.getIdleVelo()) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Startgeschwindigkeit darf nicht 0 oder kleiner als die Leerlaufgeschwindigkeit sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfStartKmh.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfStartKmh.requestFocusInWindow();
         }
         try {
             c.setStopVelo(Integer.parseInt(jtfStopKmh.getText()));
+             if (c.getStopVelo() <= 0 || c.getStopVelo() < c.getStartVelo()) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Stoppgeschwindigkeit darf nicht 0 oder kleiner als die Startgeschwindigkeit sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfStopKmh.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfStartKmh.requestFocusInWindow();
         }
         try {
             c.setStartRpm(Integer.parseInt(jtfStartRpm.getText()));
+             if (c.getStartRpm() <= 0 || c.getStartRpm() < c.getIdleRpm()) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Startdrehzahl darf nicht 0 oder kleiner als die Leerlaufdrehzahl sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfStartRpm.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfStartRpm.requestFocusInWindow();
         }
         try {
             c.setStopRpm(Integer.parseInt(jtfStopRpm.getText()));
+             if (c.getStopRpm() <= 0 || c.getStopRpm() < c.getStartRpm()) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Stoppdrehazhl darf nicht 0 oder kleiner als die Startdrehzahl sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfStopRpm.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfStartRpm.requestFocusInWindow();
         }
         try {
             c.setTorqueCorr(Integer.parseInt(jtfTorque.getText()));
+             if (c.getTorqueCorr() <= 0) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Der Drehmoment-Korrekturfaktor wird mit jedem Messpunkt multipliziert. Er darf nicht ≤0 sein", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfTorque.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfTorque.requestFocusInWindow();
         }
 
         try {
             c.setInertiaCorr(Double.parseDouble(jtfInertia.getText()));
+            if (c.getInertia() <= 0) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Bitte korrektes Trägheitsmoment eingeben...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfInertia.requestFocusInWindow();
+            } else if (c.getInertia() != 3.7017) {
+                JOptionPane.showMessageDialog(this, "Warnung: Anderes Trägheitsmoment als für das ursprüngliche System des BESDyno eingegeben...", "Warnung!", JOptionPane.WARNING_MESSAGE);
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfInertia.requestFocusInWindow();
         }
 
         try {
             c.setWarningEngTemp(Integer.parseInt(jtfEngWarning.getText()));
+            if (c.getWarningEngTemp() <= 30) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Achtung: System warnt vor Temperaturen, die höher als Ihre eingegebene sind. Ihre jetzige Konfiguration ist zu klein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfEngWarning.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfEngWarning.requestFocusInWindow();
         }
 
         try {
             c.setWarningExhTemp(Integer.parseInt(jtfExhWarning.getText()));
+            if (c.getWarningExhTemp() <= 100) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Achtung: System warnt vor Temperaturen, die höher als Ihre eingegebene sind. Ihre jetzige Konfiguration ist zu klein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfExhWarning.requestFocusInWindow();
+            }
         } catch (NumberFormatException e) {
             error = true;
             JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(System.err);
+            LOG.warning(e);
             jtfExhWarning.requestFocusInWindow();
         }
 

@@ -379,7 +379,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         this.status = status;
     }
 
-    public class CalculationThread extends Thread {
+    private class CalculationThread extends Thread {
 
         @Override
         public void run() {

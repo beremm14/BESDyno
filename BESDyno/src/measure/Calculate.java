@@ -7,7 +7,6 @@ import data.Datapoint;
 import data.Environment;
 import data.PreDatapoint;
 import data.RawDatapoint;
-import logging.Logger;
 
 /**
  *
@@ -76,12 +75,12 @@ public class Calculate {
         if (bike.isStartStopMethod()) {
 
             double lastOmega = 0;
-            double lastTime = 0;
+            double lastTime = data.getPreList().get(0).getTime() * 2;
 
             for (PreDatapoint pdp : data.getPreList()) {
                 double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
                 double dOmega = omega - lastOmega;
-                double alpha = dOmega / ((pdp.getTime() + lastTime) / 1000000.0);
+                double alpha = dOmega / ((pdp.getTime() - lastTime) / 1000000.0);
                 double wheelPower = omega * alpha * config.getInertia() * config.getPowerCorr();
 
                 if (wheelPower > 0 && dOmega > 0) {
@@ -91,9 +90,8 @@ public class Calculate {
                         data.addXYValues(dp, pdp);
                     }
                     lastOmega = omega;
-                } else {
-                    lastTime = pdp.getTime();
                 }
+                lastTime = pdp.getTime();
             }
 
             //Calculation within Schlepp-Power

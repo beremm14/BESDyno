@@ -42,7 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -97,13 +96,13 @@ public class BESDyno extends javax.swing.JFrame {
     private static final Logger LOGP;
 
     //JDialog-Objects
-    private AboutDialog about = new AboutDialog(this, false);
-    private HelpDialog help = new HelpDialog(this, false);
-    private VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
-    private SettingsDialog settings = new SettingsDialog(this, true);
-    private DevInfoPane infoPane = new DevInfoPane(this, false);
-    private LoggedCommPane commPane = new LoggedCommPane(this, false);
-    private ResultDialog result = new ResultDialog(this, true);
+    private final AboutDialog about = new AboutDialog(this, false);
+    private final HelpDialog help = new HelpDialog(this, false);
+    private final VehicleSetDialog vehicle = new VehicleSetDialog(this, true);
+    private final SettingsDialog settings = new SettingsDialog(this, true);
+    private final DevInfoPane infoPane = new DevInfoPane(this, false);
+    private final LoggedCommPane commPane = new LoggedCommPane(this, false);
+    private final ResultDialog result = new ResultDialog(this, true);
 
     private MeasureDialog measure;
 
@@ -111,7 +110,7 @@ public class BESDyno extends javax.swing.JFrame {
     private SwingWorker activeWorker;
     private MyTelegram telegram;
     private jssc.SerialPort port;
-    private JFreeChart chart;
+    private final JFreeChart chart;
 
     //Variables
     private static boolean devMode = false;
@@ -121,7 +120,7 @@ public class BESDyno extends javax.swing.JFrame {
     private boolean activity = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
-    private double reqArduVers = 1.0;
+    private final double reqArduVers = 1.0;
     private int timeouts = 0;
 
     //Communication
@@ -165,12 +164,6 @@ public class BESDyno extends javax.swing.JFrame {
         addLogFileHandler(devMode);
 
         refreshPorts();
-
-        try {
-            loadConfig();
-        } catch (IOException ex) {
-            userLogPane(ex, "Fehler bei Config-Datei! Bitte Einstellungen aufrufen und Prüfstand konfigurieren!", LogLevel.WARNING);
-        }
 
         refreshGui();
 
@@ -1921,6 +1914,7 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             Config.createInstance(new FileInputStream(getConfigFile()));
         } catch (FileNotFoundException ex) {
+            
             final JsonObjectBuilder b = Json.createObjectBuilder();
 
         b.add("Dark", false)
@@ -1933,7 +1927,7 @@ public class BESDyno extends javax.swing.JFrame {
                 .add("Period", 40)
                 .add("PNG Height", 1080)
                 .add("PNG Width", 1920)
-                .add("Power Correction Factor", 1)
+                .add("Power Correction Factor", 1.0)
                 .add("PS", true)
                 .add("Celcius", true)
                 .add("Start Velo", 4)
@@ -1946,8 +1940,8 @@ public class BESDyno extends javax.swing.JFrame {
                 .add("Exhaust Max Temp", 500);
 
         JsonObject obj = b.build();
-            try {
-                new BufferedWriter(new FileWriter(getConfigFile())).write(obj.toString());
+            try (BufferedWriter w = new BufferedWriter( new FileWriter(getConfigFile()))) {
+                w.write(obj.toString());
             } catch (Exception ex1) {
                 LOG.severe(ex1);
             }
@@ -1956,7 +1950,7 @@ public class BESDyno extends javax.swing.JFrame {
                     Config.createInstance(new FileInputStream(getConfigFile()));
                     LOG.info("Config-File written: " + obj.toString());
                 } catch (Exception ex1) {
-                    LOG.severe(ex);
+                    LOG.severe(ex1);
                 }
             
         } catch (Exception ex) {
