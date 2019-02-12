@@ -1,9 +1,12 @@
 # BESDyno (Zweiradprüfstand)
 
 ## Team
-* **Berger Emil**: Software
-* **Ehmann Julian**: Elektronik
-* **Sammer Daniel**: Maschinenbau
+
+| Diplomand | Aufgabenbereich | Betreuer |
+| --------- | --------------- | -------- |
+| [Emil Berger](https://github.com/beremm14) | Software | [DI Manfred Steiner](https://github.com/ManfredSteiner) |
+| [Julian Ehmann](https://github.com/ehmjum14) | Elektronik | DI Werner Harkam |
+| [Daniel Sammer](https://github.com/samdam14) | Mechanik | DI Dr. Gerhard Pretterhofer |
 
 ## Projekt
 Dieses Repository beinhaltet die Software für einen [Arduino](https://www.arduino.cc) UNO, an den die Sensoren des Prüfstands angeschlossen sind und das PC-Interface, das die vom Arduino empfangenen Daten auswertet und grafisch darstellt.
