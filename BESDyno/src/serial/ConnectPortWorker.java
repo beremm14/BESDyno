@@ -2,34 +2,37 @@ package serial;
 
 import javax.swing.SwingWorker;
 import logging.Logger;
-import jssc.SerialPort;
+import main.BESDyno;
+import main.BESDyno.OS;
 
 /**
  *
  * @author emil
  */
-public class ConnectPortWorker extends SwingWorker<Object, jssc.SerialPort> {
+public class ConnectPortWorker extends SwingWorker<RxTxManager, Object> {
 
     private static final Logger LOG = Logger.getLogger(ConnectPortWorker.class.getName());
 
     private final String port;
-    
 
     public ConnectPortWorker(String port) {
         this.port = port;
     }
 
     @Override
-    protected jssc.SerialPort doInBackground() throws Exception {
-        jssc.SerialPort serialPort = new jssc.SerialPort(port);
-        if (serialPort.openPort() == true) {
-            LOG.info("Connected");
-            serialPort.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-            LOG.info("Params set: Baudrate: " + SerialPort.BAUDRATE_57600 + " Databits: " + SerialPort.DATABITS_8 + " Stopbits: " + SerialPort.STOPBITS_1 + " Parity: NONE");
-            return serialPort;
-        } else {
-            throw new jssc.SerialPortException(port, "openPort", "return value false");
+    protected RxTxManager doInBackground() throws Exception {
+        RxTxManager manager = new RxTxManager();
+        manager.portFactory(BESDyno.getInstance().getOs() == OS.MACOS, port);
+        if (manager.getPort() instanceof gnu.io.SerialPort) {
+            LOG.info("macOS: Uses RXTX Library");
+        } else if (manager.getPort() instanceof jssc.SerialPort) {
+            LOG.info("Uses JSSC Library");
         }
+        manager.openPort();
+        LOG.info("Connected");
+        manager.setParams(57600, 8, 1, 0);
+        LOG.info("Params set: Baudrate: 57600, Databits: 8, Stopbits: 1, Parity: NONE");
+        return manager;
     }
 
 }

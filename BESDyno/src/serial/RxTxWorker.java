@@ -1,11 +1,12 @@
 package serial;
 
+import java.io.IOException;
 import serial.requests.Request;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TooManyListenersException;
 import logging.Logger;
 import javax.swing.SwingWorker;
-import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import serial.Response.ResponseStatus;
 import serial.requests.Request.Status;
@@ -20,7 +21,9 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     private static final Logger LOG = Logger.getLogger(RxTxWorker.class.getName());
 
-    private jssc.SerialPort port;
+    private jssc.SerialPort jsscPort;
+    private gnu.io.SerialPort rxtxPort;
+
     protected final List<Request> requestList = new LinkedList<>();
 
     private final Response response = new Response();
@@ -28,18 +31,26 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     public RxTxWorker() {
     }
 
-    public void setSerialPort(jssc.SerialPort port) throws SerialPortException {
-        this.port = port;
-        if (port != null) {
-            port.addEventListener((SerialPortEvent spe) -> {
-                try {
-                    handlePortEvent(spe);
-                } catch (InterruptedException ex) {
-                    LOG.severe(ex);
-                }
-            });
-        } else if (this.port != null) {
-            this.port.removeEventListener();
+    public void setSerialPort(RxTxManager manager) throws SerialPortException, TooManyListenersException {
+        if (manager.getPort() instanceof jssc.SerialPort) {
+            this.jsscPort = (jssc.SerialPort) manager.getPort();
+            if (manager.getPort() != null && manager != null) {
+                jsscPort.addEventListener((jssc.SerialPortEvent spe) -> {
+                    try {
+                        handleJSSCPortEvent(spe);
+                    } catch (InterruptedException ex) {
+                        LOG.severe(ex);
+                    }
+                });
+            }
+        } else if (manager.getPort() instanceof gnu.io.SerialPort) {
+            this.rxtxPort = (gnu.io.SerialPort) manager.getPort();
+            if (manager.getPort() != null) {
+                rxtxPort.addEventListener((gnu.io.SerialPortEvent spe) -> {
+                    handleRXTXPortEvent(spe);
+
+                });
+            }
         }
     }
 
@@ -48,13 +59,13 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
         LOG.debug("synchronized receivedFrame deleted");
     }
 
-    private void handlePortEvent(SerialPortEvent spe) throws InterruptedException {
+    private void handleJSSCPortEvent(jssc.SerialPortEvent spe) throws InterruptedException {
         if (spe.isRXCHAR()) {
             LOG.debug("SerialPort Event happened!!! :)");
             while (true) {
                 try {
-                    
-                    final byte[] b = port.readBytes(1);
+
+                    final byte[] b = jsscPort.readBytes(1);
                     if (b == null || b.length == 0) {
                         break;
                     }
@@ -77,6 +88,38 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 }
 
             }
+        }
+    }
+
+    private void handleRXTXPortEvent(gnu.io.SerialPortEvent spe) {
+        switch (spe.getEventType()) {
+            case gnu.io.SerialPortEvent.DATA_AVAILABLE:
+                LOG.debug("SerialPort Event happened!!! :)");
+                while (true) {
+                    try {
+                        final byte[] b = null;
+                        b[0] = (byte) rxtxPort.getInputStream().read();
+
+                        String s = new String(b);
+                        //String s = port.readString().trim();
+                        if (s.isEmpty()) {
+                            break;
+                        }
+                        synchronized (response) {
+                            response.getReceivedFrame().append(s);
+                            if (s.contains(";")) {
+                                response.notifyAll();
+                            }
+                            /*if (s.charAt(s.length()-1) == ';') {
+                            response.notifyAll();
+                        }*/
+                        }
+                    } catch (IOException ex) {
+                        LOG.warning(ex);
+                    }
+
+                }
+                break;
         }
     }
 
@@ -110,7 +153,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
                 req.setStatus(Status.WAITINGTOSEND);
 
-                req.sendRequest(port);
+                req.sendRequest(jsscPort);
                 response.setStartTime();
 
                 int timeoutMillis;
@@ -119,7 +162,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                 } else {
                     timeoutMillis = 1000;
                 }
-                
+
                 String res;
                 synchronized (response) {
                     do {
@@ -127,7 +170,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         LOG.debug("Waits for response: " + (System.currentTimeMillis() - response.getStartTime()) + "ms/" + timeoutMillis + "ms");
                     } while (response.getStartTime() + timeoutMillis > System.currentTimeMillis() && response.getReceivedFrame().length() == 0);
 
-                    if (response.getReceivedFrame().length() > 0 && response.getReceivedFrame().charAt(response.getReceivedFrame().length()-1) == ';') {
+                    if (response.getReceivedFrame().length() > 0 && response.getReceivedFrame().charAt(response.getReceivedFrame().length() - 1) == ';') {
                         response.setReturnValue(ResponseStatus.FINISHED);
                     } else if (response.getStartTime() + timeoutMillis < System.currentTimeMillis()) {
                         LOG.debug("Timeout!");
@@ -143,19 +186,21 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     }
                 }
 
-                if (null != response.getReturnValue()) switch (response.getReturnValue()) {
-                    case FINISHED:
-                        req.handleResponse(res);
-                        break;
-                    case TIMEOUT:
-                        LOG.debug("REQUEST-Status set: Timeout!");
-                        req.setStatus(Status.TIMEOUT);
-                        break;
-                    case ERROR:
-                        req.setStatus(Status.ERROR);
-                        break;
-                    default:
-                        break;
+                if (null != response.getReturnValue()) {
+                    switch (response.getReturnValue()) {
+                        case FINISHED:
+                            req.handleResponse(res);
+                            break;
+                        case TIMEOUT:
+                            LOG.debug("REQUEST-Status set: Timeout!");
+                            req.setStatus(Status.TIMEOUT);
+                            break;
+                        case ERROR:
+                            req.setStatus(Status.ERROR);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 publish(req);

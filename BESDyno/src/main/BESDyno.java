@@ -41,7 +41,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TooManyListenersException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -72,6 +76,7 @@ import org.jfree.ui.Layer;
 import org.jfree.ui.TextAnchor;
 import serial.ConnectPortWorker;
 import serial.DisconnectPortWorker;
+import serial.RxTxManager;
 import serial.requests.Request;
 import serial.requests.Request.Status;
 import serial.requests.RequestEngine;
@@ -109,7 +114,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Object-Variables
     private SwingWorker activeWorker;
     private MyTelegram telegram;
-    private jssc.SerialPort port;
+    private RxTxManager portManager;
     private final JFreeChart chart;
 
     //Variables
@@ -238,7 +243,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         //Wenn ein Port geöffnet wurde
-        if (port != null) {
+        if (portManager != null) {
             jbutDisconnect.setEnabled(true);
             jmiDisconnect.setEnabled(true);
             jcbSerialDevices.setEnabled(false);
@@ -733,8 +738,8 @@ public class BESDyno extends javax.swing.JFrame {
         return os;
     }
 
-    public jssc.SerialPort getPort() {
-        return port;
+    public RxTxManager getPort() {
+        return portManager;
     }
 
     public double getReqArduVers() {
@@ -754,8 +759,8 @@ public class BESDyno extends javax.swing.JFrame {
         this.connection = connection;
     }
 
-    public void setPort(jssc.SerialPort port) {
-        this.port = port;
+    public void setPort(RxTxManager portManager) {
+        this.portManager = portManager;
     }
 
     //Communication
@@ -1270,8 +1275,14 @@ public class BESDyno extends javax.swing.JFrame {
         }
         settings.setSwingValues(Config.getInstance());
         settings.setAppearance(Config.getInstance().isDark(), os);
-        if (port != null) {
-            settings.writeDevice(port.getPortName());
+        if (portManager != null) {
+            if (portManager.getPort() instanceof gnu.io.SerialPort) {
+                gnu.io.SerialPort port = (gnu.io.SerialPort) portManager.getPort();
+                settings.writeDevice(port.getName());
+            } else if (portManager.getPort() instanceof jssc.SerialPort) {
+                jssc.SerialPort port = (jssc.SerialPort) portManager.getPort();
+                settings.writeDevice(port.getPortName());
+            }
         } else {
             settings.writeDevice("Kein Prüfstand verbunden...");
         }
@@ -1347,8 +1358,14 @@ public class BESDyno extends javax.swing.JFrame {
         about.setAppearance(Config.getInstance().isDark());
         about.setOSIcon(os);
         about.setVisible(true);
-        if (port != null) {
-            about.writeDevice(port.getPortName());
+        if (portManager != null) {
+            if (portManager.getPort() instanceof gnu.io.SerialPort) {
+                gnu.io.SerialPort port = (gnu.io.SerialPort) portManager.getPort();
+                settings.writeDevice(port.getName());
+            } else if (portManager.getPort() instanceof jssc.SerialPort) {
+                jssc.SerialPort port = (jssc.SerialPort) portManager.getPort();
+                settings.writeDevice(port.getPortName());
+            }
         } else {
             about.writeDevice("Kein Prüfstand verbunden...");
         }
@@ -1549,14 +1566,14 @@ public class BESDyno extends javax.swing.JFrame {
         protected void done() {
             try {
                 secondTry = true;
-                port = (jssc.SerialPort) get(2, TimeUnit.SECONDS);
+                portManager = get(2, TimeUnit.SECONDS);
                 telegram = new MyTelegram();
-                telegram.setSerialPort(port);
+                telegram.setSerialPort(portManager);
                 LOG.info("setPort: RxTxWorker");
                 telegram.execute();
                 userLog("Warten Sie bitte, bis das Gerät bereit ist...", LogLevel.INFO);
                 addPendingRequest(telegram.init());
-            } catch (Exception e) {
+            } catch (InterruptedException | TooManyListenersException | ExecutionException | TimeoutException | SerialPortException e) {
                 userLog(e, "Gerät konnte nicht verbunden werden...", LogLevel.SEVERE);
             } finally {
                 activeWorker = null;
@@ -1572,8 +1589,8 @@ public class BESDyno extends javax.swing.JFrame {
         protected void done() {
             try {
                 connection = false;
-                port.closePort();
-                port = null;
+                portManager.closePort();
+                portManager = null;
             } catch (Throwable th) {
                 userLog(th, "Fehler beim Trennen des Geräts!", LogLevel.WARNING);
             } finally {
@@ -1581,6 +1598,8 @@ public class BESDyno extends javax.swing.JFrame {
                     try {
                         telegram.setSerialPort(null);
                     } catch (SerialPortException ex) {
+                        LOG.warning(ex);
+                    } catch (TooManyListenersException ex) {
                         LOG.warning(ex);
                     }
                     telegram = null;
@@ -1608,7 +1627,7 @@ public class BESDyno extends javax.swing.JFrame {
     public class MyTelegram extends Telegram {
 
         private void handleInitError() {
-            if (port != null) {
+            if (portManager != null) {
                 MyDisconnectPortWorker w = new MyDisconnectPortWorker();
                 w.execute();
                 activeWorker = w;
