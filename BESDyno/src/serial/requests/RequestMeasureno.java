@@ -56,11 +56,17 @@ public class RequestMeasureno extends Request {
                 status = Status.ERROR;
                 return;
             }
-
-            RawDatapoint dp = new RawDatapoint(values[0], values[1]);
-            if (dp.getTime() > 0) {
-                Database.getInstance().addRawDP(dp);
-                LOG.debug("MEASURENO: wheelCount: " + dp.getWheelTime() + " time: " + dp.getTime());
+            RawDatapoint rdp;
+            try {
+                rdp = new RawDatapoint(values[0], values[1]);
+            } catch (NumberFormatException ex) {
+                LOG.severe(ex);
+                status = Status.ERROR;
+                return;
+            }
+            if (rdp.getTime() > 0) {
+                Database.getInstance().addRawDP(rdp);
+                LOG.debug("MEASURENO: wheelCount: " + rdp.getWheelTime() + " time: " + rdp.getTime());
             } else {
                 LOG.warning("MEASURENO: Time = 0");
             }
@@ -68,7 +74,7 @@ public class RequestMeasureno extends Request {
             Database.getInstance().syncObj.notifyAll();
             LOG.debug("Measurement-syncObj notified");
 
-            if (checkCRC(res) && dp.getTime() > 0) {
+            if (checkCRC(res) && rdp.getTime() > 0) {
                 status = Status.DONE;
             } else {
                 status = Status.ERROR;

@@ -8,7 +8,7 @@ public class RawDatapoint {
     
     private final int engTime;   //µs (edge to edge)
     private final int wheelTime; //µs (edge to edge)
-    private final int time;       //µs (dt)
+    private final int time;      //µs (t since START or KILL)
 
     public RawDatapoint(String engCount, String wheelCount, String time) {
         this.engTime = Integer.parseInt(engCount);

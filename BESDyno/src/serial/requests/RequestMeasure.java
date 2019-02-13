@@ -60,7 +60,13 @@ public class RequestMeasure extends Request {
 
         RawDatapoint rdp;
         synchronized (Database.getInstance().getRawList()) {
+            try {
             rdp = new RawDatapoint(values[0], values[1], values[2]);
+            } catch (NumberFormatException ex) {
+                LOG.severe(ex);
+                status = Status.ERROR;
+                return;
+            }
             if (rdp.getTime() > 0) {
                 Database.getInstance().addRawDP(rdp);
             } else {

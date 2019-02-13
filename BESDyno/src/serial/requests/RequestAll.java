@@ -59,7 +59,13 @@ public class RequestAll extends Request {
 
         RawDatapoint rdp;
         synchronized (Database.getInstance().getRawList()) {
-            rdp = new RawDatapoint(values[0], values[1], values[4]);
+            try {
+                rdp = new RawDatapoint(values[0], values[1], values[4]);
+            } catch (NumberFormatException ex) {
+                LOG.severe(ex);
+                status = Status.ERROR;
+                return;
+            }
             if (rdp.getTime() > 0) {
                 Database.getInstance().addRawDP(rdp);
                 Database.getInstance().addTemperatures(values[2], values[3]);
