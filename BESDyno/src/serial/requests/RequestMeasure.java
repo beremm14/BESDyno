@@ -40,43 +40,49 @@ public class RequestMeasure extends Request {
     @Override
     public void handleResponse(String res) {
 
-        response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
-
-        String response = res.replaceAll(":", "");
-        response = response.replaceAll(";", "");
-
-        // :engCount#rearCount#Time>crc;
-        String values[];
         try {
-            values = response.split("#");
-            values[2] = removeCRC(values[2]);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            LOG.severe(ex);
-            status = Status.ERROR;
-            return;
-        }
-        
 
-        RawDatapoint rdp;
-        synchronized (Database.getInstance().getRawList()) {
+            response = res;
+            COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+
+            String response = res.replaceAll(":", "");
+            response = response.replaceAll(";", "");
+
+            // :engCount#rearCount#Time>crc;
+            String values[];
             try {
-            rdp = new RawDatapoint(values[0], values[1], values[2]);
-            } catch (NumberFormatException ex) {
+                values = response.split("#");
+                values[2] = removeCRC(values[2]);
+            } catch (ArrayIndexOutOfBoundsException ex) {
                 LOG.severe(ex);
                 status = Status.ERROR;
                 return;
             }
-            if (rdp.getTime() > 0) {
-                Database.getInstance().addRawDP(rdp);
-            } else {
-                LOG.warning("MEASURE: Time = 0");
-            }
-        }
 
-        if (checkCRC(res) && rdp.getTime() > 0) {
-            status = Status.DONE;
-        } else {
+            RawDatapoint rdp;
+            synchronized (Database.getInstance().getRawList()) {
+                try {
+                    rdp = new RawDatapoint(values[0], values[1], values[2]);
+                } catch (NumberFormatException ex) {
+                    LOG.severe(ex);
+                    status = Status.ERROR;
+                    return;
+                }
+                if (rdp.getTime() > 0) {
+                    Database.getInstance().addRawDP(rdp);
+                } else {
+                    LOG.warning("MEASURE: Time = 0");
+                }
+            }
+
+            if (checkCRC(res) && rdp.getTime() > 0) {
+                status = Status.DONE;
+            } else {
+                status = Status.ERROR;
+            }
+
+        } catch (Exception ex) {
+            LOG.severe(ex);
             status = Status.ERROR;
         }
 

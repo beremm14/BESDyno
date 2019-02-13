@@ -39,6 +39,8 @@ public class RequestMeasureno extends Request {
 
     @Override
     public void handleResponse(String res) {
+        try {
+        
         synchronized (Database.getInstance().syncObj) {
             response = res;
             COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
@@ -79,6 +81,9 @@ public class RequestMeasureno extends Request {
             } else {
                 status = Status.ERROR;
             }
+        }
+        } catch (Exception ex) {
+            LOG.severe(ex);
         }
     }
 

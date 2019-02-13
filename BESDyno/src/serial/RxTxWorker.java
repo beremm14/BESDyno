@@ -53,17 +53,24 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
             LOG.debug("SerialPort Event happened!!! :)");
             while (true) {
                 try {
+                    
                     final byte[] b = port.readBytes(1);
                     if (b == null || b.length == 0) {
                         break;
                     }
                     String s = new String(b).trim();
                     //String s = port.readString().trim();
+                    if (s.isEmpty()) {
+                        break;
+                    }
                     synchronized (response) {
                         response.getReceivedFrame().append(s);
-                        if (";".equals(s)) {
+                        if (s.contains(";")) {
                             response.notifyAll();
                         }
+                        /*if (s.charAt(s.length()-1) == ';') {
+                            response.notifyAll();
+                        }*/
                     }
                 } catch (SerialPortException ex) {
                     LOG.warning(ex);

@@ -207,9 +207,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageMeasure() throws Exception {
         //Clear all Lists for good Data ;)
         data.clearLists();
-        //data.addRawDP(new RawDatapoint(1, 1, 1));
-        //data.addPreDP(new PreDatapoint(1, 1, 1));
-        //data.addDP(new Datapoint(1, 1, 1));
+        data.addRawDP(new RawDatapoint(1, 1, 1));
+        data.addPreDP(new PreDatapoint(1, 1, 1));
+        data.addDP(new Datapoint(1, 1, 1));
 
         if (bike.isStartStopMethod()) {
             if (bike.isMeasRpm()) {

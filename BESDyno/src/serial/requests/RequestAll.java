@@ -39,6 +39,8 @@ public class RequestAll extends Request {
 
     @Override
     public void handleResponse(String res) {
+        
+        try {
 
         response = res;
         COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
@@ -81,6 +83,11 @@ public class RequestAll extends Request {
         }
 
         LOG.info("--> engTime: " + values[0] + " wheelTime: " + values[1] + " engTemp: " + values[2] + " exhTemp: " + values[3] + " time: " + values[4] + " crc: " + calcCRC(res));
+        
+        } catch (Exception ex) {
+            LOG.severe(ex);
+            status = Status.ERROR;
+        }
 
     }
 

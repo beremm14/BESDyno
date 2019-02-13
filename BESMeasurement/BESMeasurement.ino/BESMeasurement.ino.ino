@@ -36,10 +36,10 @@ float exhTemp;
 uint8_t measCount;
 
 //RPM
-unsigned static long dEngTime;
+unsigned long dEngTime;
 unsigned long dEngHigh;
 unsigned long dEngLow;
-unsigned static long dWheelTime;
+unsigned long dWheelTime;
 unsigned long dWheelHigh;
 unsigned long dWheelLow;
 
