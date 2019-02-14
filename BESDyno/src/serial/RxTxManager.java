@@ -20,7 +20,7 @@ public class RxTxManager {
 
     String portName;
 
-    public void portFactory(boolean mac, String port) throws PortInUseException, NoSuchPortException, Exception {
+    public void initPort(boolean mac, String port) throws PortInUseException, NoSuchPortException, Exception {
         this.init = true;
         this.mac = mac;
         this.portName = port;

@@ -22,7 +22,7 @@ public class ConnectPortWorker extends SwingWorker<RxTxManager, Object> {
     @Override
     protected RxTxManager doInBackground() throws Exception {
         RxTxManager manager = new RxTxManager();
-        manager.portFactory(BESDyno.getInstance().getOs() == OS.MACOS, port);
+        manager.initPort(BESDyno.getInstance().getOs() == OS.MACOS, port);
         if (manager.getPort() instanceof gnu.io.SerialPort) {
             LOG.info("macOS: Uses RXTX Library");
         } else if (manager.getPort() instanceof jssc.SerialPort) {

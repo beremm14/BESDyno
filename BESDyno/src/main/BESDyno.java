@@ -24,7 +24,9 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,8 +34,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,7 +54,10 @@ import java.util.TooManyListenersException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -150,9 +162,9 @@ public class BESDyno extends javax.swing.JFrame {
 
     private BESDyno() {
         initComponents();
-        
+
         setOSNativeKeyStroke();
-        
+
         //Check for multi-platform!!!
         //Works on: macOS, ?, ?
         setTitle("🦅 BESDyno - Zweiradprüfstand 🦅");
@@ -271,7 +283,7 @@ public class BESDyno extends javax.swing.JFrame {
     public enum OS {
         MACOS, LINUX, WINDOWS, OTHER
     };
-    
+
     private void setOSNativeKeyStroke() {
         if (os == OS.MACOS) {
             jmiSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_MASK));
@@ -673,14 +685,14 @@ public class BESDyno extends javax.swing.JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Comma Seperated Values (*.csv)", "csv");
         chooser.setFileFilter(filter);
-        
+
         int rv = chooser.showSaveDialog(this);
         if (rv == JFileChooser.APPROVE_OPTION) {
             file = chooser.getSelectedFile();
             if (!file.getName().endsWith(".csv")) {
                 file = new File(file.getPath() + ".csv");
             }
-            
+
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 for (int i = 0; i < Database.getInstance().getDataList().size() - 1; i++) {
                     w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getDataList().get(i).getPower()));
@@ -699,7 +711,7 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
     }
-    
+
     //Online-Manual
     private void openURL(String url) {
         URI uri = null;
@@ -716,7 +728,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
         }
     }
-    
+
     //Getter
     public MyTelegram getTelegram() {
         return telegram;
@@ -764,6 +776,42 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     //Communication
+    private static boolean readInRxTxComm() {
+        boolean returnValue = false;
+        File libFile = new File(System.getProperty("user.home") + "/.Bike/librxtxSerial.jnilib");
+        InputStream input;
+        FileOutputStream output = null;
+        input = BESDyno.class.getResourceAsStream("librxtxSerial.jnilib");
+        if (input != null) {
+            int read;
+            byte[] buffer = new byte[4096];
+            try {
+                output = new FileOutputStream(System.getProperty("user.home") + "/.Bike/librxtxSerial.jnilib");
+                while ((read = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, read);
+                }
+                output.close();
+                input.close();
+                returnValue = true;
+            } catch (Exception ex) {
+                try {
+                    output.close();
+                    if (libFile.exists()) {
+                        libFile.delete();
+                    }
+                } catch (Exception ex_out) {
+                    //Do nothing
+                }
+                try {
+                    input.close();
+                } catch (Exception ex_in) {
+                    //Do nothing
+                }
+            }
+        }
+        return returnValue;
+    }
+
     public void addPendingRequest(Request request) {
         try {
             LOG.debug(request.getReqMessage() + " added to pendingRequests");
@@ -1933,45 +1981,45 @@ public class BESDyno extends javax.swing.JFrame {
         try {
             Config.createInstance(new FileInputStream(getConfigFile()));
         } catch (FileNotFoundException ex) {
-            
+
             final JsonObjectBuilder b = Json.createObjectBuilder();
 
-        b.add("Dark", false)
-                .add("Hysteresis Velo", 4)
-                .add("Hysteresis Rpm", 400)
-                .add("Hysteresis Time", 2500)
-                .add("Idle Velo", 4)
-                .add("Idle Rpm", 1800)
-                .add("Inertia", 3.7017)
-                .add("Period", 40)
-                .add("PNG Height", 1080)
-                .add("PNG Width", 1920)
-                .add("Power Correction Factor", 1.0)
-                .add("PS", true)
-                .add("Celcius", true)
-                .add("Start Velo", 4)
-                .add("Start Rpm", 2500)
-                .add("Stop Velo", 80)
-                .add("Stop Rpm", 9000)
-                .add("Torque Correction Factor", 1)
-                .add("Velocity", 1)
-                .add("Engine Max Temp", 95)
-                .add("Exhaust Max Temp", 500);
+            b.add("Dark", false)
+                    .add("Hysteresis Velo", 4)
+                    .add("Hysteresis Rpm", 400)
+                    .add("Hysteresis Time", 2500)
+                    .add("Idle Velo", 4)
+                    .add("Idle Rpm", 1800)
+                    .add("Inertia", 3.7017)
+                    .add("Period", 40)
+                    .add("PNG Height", 1080)
+                    .add("PNG Width", 1920)
+                    .add("Power Correction Factor", 1.0)
+                    .add("PS", true)
+                    .add("Celcius", true)
+                    .add("Start Velo", 4)
+                    .add("Start Rpm", 2500)
+                    .add("Stop Velo", 80)
+                    .add("Stop Rpm", 9000)
+                    .add("Torque Correction Factor", 1)
+                    .add("Velocity", 1)
+                    .add("Engine Max Temp", 95)
+                    .add("Exhaust Max Temp", 500);
 
-        JsonObject obj = b.build();
-            try (BufferedWriter w = new BufferedWriter( new FileWriter(getConfigFile()))) {
+            JsonObject obj = b.build();
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(getConfigFile()))) {
                 w.write(obj.toString());
             } catch (Exception ex1) {
                 LOG.severe(ex1);
             }
 
-                try {
-                    Config.createInstance(new FileInputStream(getConfigFile()));
-                    LOG.info("Config-File written: " + obj.toString());
-                } catch (Exception ex1) {
-                    LOG.severe(ex1);
-                }
-            
+            try {
+                Config.createInstance(new FileInputStream(getConfigFile()));
+                LOG.info("Config-File written: " + obj.toString());
+            } catch (Exception ex1) {
+                LOG.severe(ex1);
+            }
+
         } catch (Exception ex) {
             LOG.severe(ex);
         }
@@ -1980,6 +2028,37 @@ public class BESDyno extends javax.swing.JFrame {
         if (System.getProperty("os.name").contains("Mac OS X")) {
             os = OS.MACOS;
             try {
+                if (readInRxTxComm()) {
+                    try {
+                        try {
+                            Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+                            fieldSysPath.setAccessible(true);
+                            fieldSysPath.set(null, null);
+                        } catch (NoSuchFieldException
+                                | SecurityException
+                                | IllegalArgumentException
+                                | IllegalAccessException ex) {
+                            ex.printStackTrace(System.err);
+                        }
+                        //System.load(System.getProperty("user.home") + "/.Bike/librxtxSerial.jnilib");
+                        System.setProperty("java.library.path", System.getProperty("user.home") + "/.Bike/");
+                        System.loadLibrary("rxtxSerial");
+
+                        /*
+                        sudo mkdir /var/lock
+                        sudo dscl . -append /groups/_uucp GroupMembership username 
+                        sudo chgrp uucp /var/lock 
+                        sudo chmod 775 /var/lock 
+                         */
+                        LOG.fine("RxTxComm Binary File for Mac implemented");
+                    } catch (Exception ex) {
+                        LOG.severe("Error at RxTxBinary File: Communication won't work!");
+                    }
+                } else {
+                    LOG.severe("Error at RxTxBinary File: Communication won't work!");
+
+                }
+
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
