@@ -23,6 +23,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     private jssc.SerialPort jsscPort;
     private gnu.io.SerialPort rxtxPort;
+    private Object port;
 
     protected final List<Request> requestList = new LinkedList<>();
 
@@ -31,10 +32,11 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     public RxTxWorker() {
     }
 
-    public void setSerialPort(RxTxManager manager) throws SerialPortException, TooManyListenersException {
+    public void setSerialPort(UARTManager manager) throws SerialPortException, TooManyListenersException {
+        this.port = manager.getPort();
         if (manager.getPort() instanceof jssc.SerialPort) {
             this.jsscPort = (jssc.SerialPort) manager.getPort();
-            if (manager.getPort() != null && manager != null) {
+            if (manager.getPort() != null) {
                 jsscPort.addEventListener((jssc.SerialPortEvent spe) -> {
                     try {
                         handleJSSCPortEvent(spe);
@@ -48,7 +50,6 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
             if (manager.getPort() != null) {
                 rxtxPort.addEventListener((gnu.io.SerialPortEvent spe) -> {
                     handleRXTXPortEvent(spe);
-
                 });
             }
         }
@@ -92,16 +93,17 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     }
 
     private void handleRXTXPortEvent(gnu.io.SerialPortEvent spe) {
-        switch (spe.getEventType()) {
-            case gnu.io.SerialPortEvent.DATA_AVAILABLE:
+        
+        //switch (spe.getEventType()) {
+            //case gnu.io.SerialPortEvent.DATA_AVAILABLE:
                 LOG.debug("SerialPort Event happened!!! :)");
                 while (true) {
                     try {
-                        final byte[] b = null;
-                        b[0] = (byte) rxtxPort.getInputStream().read();
+                        final byte b;
+                        b = (byte) rxtxPort.getInputStream().read();
 
-                        String s = new String(b);
-                        //String s = port.readString().trim();
+                        String s = new String(new byte[] {b}).trim();
+                        
                         if (s.isEmpty()) {
                             break;
                         }
@@ -119,8 +121,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     }
 
                 }
-                break;
-        }
+                //break;
+        //}
     }
 
     @Override
@@ -153,7 +155,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
                 req.setStatus(Status.WAITINGTOSEND);
 
-                req.sendRequest(jsscPort);
+                req.sendRequest(port);
                 response.setStartTime();
 
                 int timeoutMillis;

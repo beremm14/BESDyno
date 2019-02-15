@@ -3,6 +3,7 @@ package serial.requests;
 import development.CommunicationLogger;
 import development.LoggedRequest;
 import development.LoggedResponse;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import jssc.SerialPortException;
 import logging.Logger;
@@ -20,13 +21,20 @@ public class RequestStatusSevere extends Request {
     private String response;
 
     @Override
-    public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
+    public void sendRequest(Object port) throws CommunicationException, SerialPortException {
         if (status != Request.Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
         try {
-            port.writeBytes("v".getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
+            if (port instanceof jssc.SerialPort) {
+                jssc.SerialPort jsscPort = (jssc.SerialPort) port;
+                jsscPort.writeBytes("v".getBytes("UTF-8"));
+            } else if (port instanceof gnu.io.SerialPort) {
+                gnu.io.SerialPort rxtxPort = (gnu.io.SerialPort) port;
+                OutputStream os = rxtxPort.getOutputStream();
+                os.write('v');
+            }
+        } catch (Exception ex) {
             LOG.severe(ex);
         }
 

@@ -9,7 +9,7 @@ import gnu.io.PortInUseException;
  *
  * @author emil
  */
-public class RxTxManager {
+public class UARTManager {
 
     private boolean init;
     private boolean opened;

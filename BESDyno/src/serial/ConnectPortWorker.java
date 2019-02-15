@@ -9,7 +9,7 @@ import main.BESDyno.OS;
  *
  * @author emil
  */
-public class ConnectPortWorker extends SwingWorker<RxTxManager, Object> {
+public class ConnectPortWorker extends SwingWorker<UARTManager, Object> {
 
     private static final Logger LOG = Logger.getLogger(ConnectPortWorker.class.getName());
 
@@ -20,8 +20,8 @@ public class ConnectPortWorker extends SwingWorker<RxTxManager, Object> {
     }
 
     @Override
-    protected RxTxManager doInBackground() throws Exception {
-        RxTxManager manager = new RxTxManager();
+    protected UARTManager doInBackground() throws Exception {
+        UARTManager manager = new UARTManager();
         manager.initPort(BESDyno.getInstance().getOs() == OS.MACOS, port);
         if (manager.getPort() instanceof gnu.io.SerialPort) {
             LOG.info("macOS: Uses RXTX Library");

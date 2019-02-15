@@ -4,6 +4,7 @@ import data.Environment;
 import development.CommunicationLogger;
 import development.LoggedRequest;
 import development.LoggedResponse;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import logging.Logger;
 import jssc.SerialPortException;
@@ -21,16 +22,22 @@ public class RequestStart extends Request {
     private String response;
 
     @Override
-    public void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException {
+    public void sendRequest(Object port) throws CommunicationException, SerialPortException {
         if (status != Status.WAITINGTOSEND) {
             throw new CommunicationException("Request bereits gesendet");
         }
 
         LOG.debug("Request START will be sent");
         try {
-            port.writeBytes("s".getBytes("UTF-8"));
-            LOG.debug("Request START sent");
-        } catch (UnsupportedEncodingException ex) {
+            if (port instanceof jssc.SerialPort) {
+                jssc.SerialPort jsscPort = (jssc.SerialPort) port;
+                jsscPort.writeBytes("s".getBytes("UTF-8"));
+            } else if (port instanceof gnu.io.SerialPort) {
+                gnu.io.SerialPort rxtxPort = (gnu.io.SerialPort) port;
+                OutputStream os = rxtxPort.getOutputStream();
+                os.write('s');
+            }
+        } catch (Exception ex) {
             LOG.severe(ex);
         }
 

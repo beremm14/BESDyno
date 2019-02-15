@@ -88,7 +88,7 @@ import org.jfree.ui.Layer;
 import org.jfree.ui.TextAnchor;
 import serial.ConnectPortWorker;
 import serial.DisconnectPortWorker;
-import serial.RxTxManager;
+import serial.UARTManager;
 import serial.requests.Request;
 import serial.requests.Request.Status;
 import serial.requests.RequestEngine;
@@ -126,7 +126,7 @@ public class BESDyno extends javax.swing.JFrame {
     //Object-Variables
     private SwingWorker activeWorker;
     private MyTelegram telegram;
-    private RxTxManager portManager;
+    private UARTManager portManager;
     private final JFreeChart chart;
 
     //Variables
@@ -750,7 +750,7 @@ public class BESDyno extends javax.swing.JFrame {
         return os;
     }
 
-    public RxTxManager getPort() {
+    public UARTManager getPort() {
         return portManager;
     }
 
@@ -771,7 +771,7 @@ public class BESDyno extends javax.swing.JFrame {
         this.connection = connection;
     }
 
-    public void setPort(RxTxManager portManager) {
+    public void setPort(UARTManager portManager) {
         this.portManager = portManager;
     }
 

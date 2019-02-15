@@ -25,7 +25,7 @@ public abstract class Request {
         status = Status.WAITINGTOSEND;
     }
 
-    public abstract void sendRequest(jssc.SerialPort port) throws CommunicationException, SerialPortException;
+    public abstract void sendRequest(Object port) throws CommunicationException, SerialPortException;
 
     public abstract String getReqMessage();
 
