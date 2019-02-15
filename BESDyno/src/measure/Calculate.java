@@ -75,7 +75,7 @@ public class Calculate {
         if (bike.isStartStopMethod()) {
 
             double lastOmega = 0;
-            double lastTime = data.getPreList().get(0).getTime() * 2;
+            double lastTime = 0;
 
             for (PreDatapoint pdp : data.getPreList()) {
                 double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
