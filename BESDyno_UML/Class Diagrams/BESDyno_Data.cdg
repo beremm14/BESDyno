@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="BESDyno">
+  <ClassDiagramComponents>
+    <Class name="Calculate" package="measure" visibility="public" xPosition="558.0" yPosition="370.0">
+      <Fields>
+        <Field name="bike" type="Bike" visibility="private" isFinal="true"/>
+        <Field name="config" type="Config" visibility="private" isFinal="true"/>
+        <Field name="data" type="Database" visibility="private" isFinal="true"/>
+        <Field name="environment" type="Environment" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="calcRpm" returnType="PreDatapoint" visibility="public">
+          <Argument type="RawDatapoint" name="rdp"/>
+        </Method>
+        <Method name="calcWheelOnly" returnType="PreDatapoint" visibility="public">
+          <Argument type="RawDatapoint" name="rdp"/>
+        </Method>
+        <Method name="calcMps" returnType="double" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="calcKmh" returnType="double" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="calcMih" returnType="double" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="calcPower" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Environment" package="data" visibility="public" xPosition="946.0" yPosition="932.0">
+      <Fields>
+        <Field name="instance" type="Environment" visibility="private" isStatic="true"/>
+        <Field name="envTemp" type="double" visibility="private"/>
+        <Field name="engTemp" type="double" visibility="private"/>
+        <Field name="fumeTemp" type="double" visibility="private"/>
+        <Field name="airPress" type="double" visibility="private"/>
+        <Field name="altitude" type="double" visibility="private"/>
+        <Field name="normEnable" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="private"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="Environment" visibility="public" isStatic="true"/>
+        <Method name="getEnvTempC" returnType="double" visibility="public"/>
+        <Method name="getEngTempC" returnType="double" visibility="public"/>
+        <Method name="getFumeTempC" returnType="double" visibility="public"/>
+        <Method name="getEnvTempF" returnType="double" visibility="public"/>
+        <Method name="getEngTempF" returnType="double" visibility="public"/>
+        <Method name="getFumeTempF" returnType="double" visibility="public"/>
+        <Method name="getAirPress" returnType="double" visibility="public"/>
+        <Method name="getAltitude" returnType="double" visibility="public"/>
+        <Method name="isNormEnable" returnType="boolean" visibility="public"/>
+        <Method name="setEnvTemp" returnType="void" visibility="public">
+          <Argument type="double" name="envTemp"/>
+        </Method>
+        <Method name="setEngTemp" returnType="void" visibility="public">
+          <Argument type="double" name="engTemp"/>
+        </Method>
+        <Method name="setFumeTemp" returnType="void" visibility="public">
+          <Argument type="double" name="fumeTemp"/>
+        </Method>
+        <Method name="setAirPress" returnType="void" visibility="public">
+          <Argument type="double" name="airPress"/>
+        </Method>
+        <Method name="setAltitude" returnType="void" visibility="public">
+          <Argument type="double" name="altitude"/>
+        </Method>
+        <Method name="setNormEnable" returnType="void" visibility="public">
+          <Argument type="boolean" name="normEnable"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Bike" package="data" visibility="public" xPosition="533.0" yPosition="983.0">
+      <Fields>
+        <Field name="instance" type="Bike" visibility="private" isStatic="true"/>
+        <Field name="vehicleName" type="String" visibility="private"/>
+        <Field name="twoStroke" type="boolean" visibility="private"/>
+        <Field name="automatic" type="boolean" visibility="private"/>
+        <Field name="measRpm" type="boolean" visibility="private"/>
+        <Field name="startStopMethod" type="boolean" visibility="private"/>
+        <Field name="measTemp" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="private"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="Bike" visibility="public" isStatic="true"/>
+        <Method name="getVehicleName" returnType="String" visibility="public"/>
+        <Method name="isTwoStroke" returnType="boolean" visibility="public"/>
+        <Method name="isAutomatic" returnType="boolean" visibility="public"/>
+        <Method name="isMeasRpm" returnType="boolean" visibility="public"/>
+        <Method name="isMeasTemp" returnType="boolean" visibility="public"/>
+        <Method name="isStartStopMethod" returnType="boolean" visibility="public"/>
+        <Method name="setVehicleName" returnType="void" visibility="public">
+          <Argument type="String" name="vehicleName"/>
+        </Method>
+        <Method name="setTwoStroke" returnType="void" visibility="public">
+          <Argument type="boolean" name="twoStroke"/>
+        </Method>
+        <Method name="setAutomatic" returnType="void" visibility="public">
+          <Argument type="boolean" name="automatic"/>
+        </Method>
+        <Method name="setMeasRpm" returnType="void" visibility="public">
+          <Argument type="boolean" name="measRpm"/>
+        </Method>
+        <Method name="setStartStopMethode" returnType="void" visibility="public">
+          <Argument type="boolean" name="startStopMethod"/>
+        </Method>
+        <Method name="setMeasTemp" returnType="void" visibility="public">
+          <Argument type="boolean" name="measTemp"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="PreDatapoint" package="data" visibility="public" xPosition="18.0" yPosition="1494.0">
+      <Fields>
+        <Field name="engRpm" type="double" visibility="private" isFinal="true"/>
+        <Field name="wheelRpm" type="double" visibility="private" isFinal="true"/>
+        <Field name="time" type="double" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="double" name="engRpm"/>
+          <Argument type="double" name="wheelRpm"/>
+          <Argument type="double" name="time"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="double" name="wheelRpm"/>
+          <Argument type="double" name="time"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getEngRpm" returnType="double" visibility="public"/>
+        <Method name="getWheelRpm" returnType="double" visibility="public"/>
+        <Method name="getTime" returnType="double" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="RawDatapoint" package="data" visibility="public" xPosition="5.0" yPosition="13.0">
+      <Fields>
+        <Field name="engTime" type="int" visibility="private" isFinal="true"/>
+        <Field name="wheelTime" type="int" visibility="private" isFinal="true"/>
+        <Field name="time" type="int" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="engCount"/>
+          <Argument type="String" name="wheelCount"/>
+          <Argument type="String" name="time"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="int" name="engCount"/>
+          <Argument type="int" name="wheelCount"/>
+          <Argument type="int" name="time"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="String" name="wheelCount"/>
+          <Argument type="String" name="time"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="int" name="wheelCount"/>
+          <Argument type="int" name="time"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getEngTime" returnType="int" visibility="public"/>
+        <Method name="getWheelTime" returnType="int" visibility="public"/>
+        <Method name="getTime" returnType="int" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Datapoint" package="data" visibility="public" xPosition="432.0" yPosition="13.0">
+      <Fields>
+        <Field name="powerNoFilter" type="double" visibility="private" isFinal="true"/>
+        <Field name="power" type="double" visibility="private" isFinal="true"/>
+        <Field name="torque" type="double" visibility="private" isFinal="true"/>
+        <Field name="omega" type="double" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="double" name="wheelPower"/>
+          <Argument type="double" name="schleppPower"/>
+          <Argument type="double" name="omega"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="double" name="wheelPower"/>
+          <Argument type="double" name="omega"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getPower" returnType="double" visibility="public"/>
+        <Method name="getTorque" returnType="double" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Database" package="data" visibility="public" xPosition="5.0" yPosition="354.0">
+      <Fields>
+        <Field name="instance" type="Database" visibility="private" isStatic="true"/>
+        <Field name="seriesPower" type="XYSeries" visibility="private" isFinal="true"/>
+        <Field name="seriesTorque" type="XYSeries" visibility="private" isFinal="true"/>
+        <Field name="velList" type="List&lt;Double&gt;" visibility="private" isFinal="true"/>
+        <Field name="dataList" type="List&lt;Datapoint&gt;" visibility="private" isFinal="true"/>
+        <Field name="schleppPreList" type="List&lt;PreDatapoint&gt;" visibility="private" isFinal="true"/>
+        <Field name="schleppDataList" type="List&lt;Datapoint&gt;" visibility="private" isFinal="true"/>
+        <Field name="preList" type="List&lt;PreDatapoint&gt;" visibility="private" isFinal="true"/>
+        <Field name="rawList" type="List&lt;RawDatapoint&gt;" visibility="private" isFinal="true"/>
+        <Field name="engTempList" type="List&lt;Double&gt;" visibility="private" isFinal="true"/>
+        <Field name="fumeTempList" type="List&lt;Double&gt;" visibility="private" isFinal="true"/>
+        <Field name="bikePower" type="double" visibility="private"/>
+        <Field name="bikeVelo" type="double" visibility="private"/>
+        <Field name="bikeTorque" type="double" visibility="private"/>
+        <Field name="maxPowerIndex" type="int" visibility="private"/>
+        <Field name="maxVeloIndex" type="int" visibility="private"/>
+        <Field name="maxTorqueIndex" type="int" visibility="private"/>
+        <Field name="syncObj" type="Object" visibility="public" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="private"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="Database" visibility="public" isStatic="true"/>
+        <Method name="getVelList" returnType="List&lt;Double&gt;" visibility="public"/>
+        <Method name="getRawList" returnType="List&lt;RawDatapoint&gt;" visibility="public"/>
+        <Method name="getPreList" returnType="List&lt;PreDatapoint&gt;" visibility="public"/>
+        <Method name="getDataList" returnType="List&lt;Datapoint&gt;" visibility="public"/>
+        <Method name="getSchleppPreList" returnType="List&lt;PreDatapoint&gt;" visibility="public"/>
+        <Method name="getSchleppDataList" returnType="List&lt;Datapoint&gt;" visibility="public"/>
+        <Method name="getEngTempList" returnType="List&lt;Double&gt;" visibility="public"/>
+        <Method name="getFumeTempList" returnType="List&lt;Double&gt;" visibility="public"/>
+        <Method name="getBikePower" returnType="double" visibility="public"/>
+        <Method name="getBikePowerPS" returnType="double" visibility="public"/>
+        <Method name="getBikePowerKW" returnType="double" visibility="public"/>
+        <Method name="getBikeVelo" returnType="double" visibility="public"/>
+        <Method name="getBikeTorque" returnType="double" visibility="public"/>
+        <Method name="getSeriesPower" returnType="XYSeries" visibility="public"/>
+        <Method name="getSeriesTorque" returnType="XYSeries" visibility="public"/>
+        <Method name="getMaxPowerIndex" returnType="int" visibility="public"/>
+        <Method name="getMaxVeloIndex" returnType="int" visibility="public"/>
+        <Method name="getMaxTorqueIndex" returnType="int" visibility="public"/>
+        <Method name="getSyncObj" returnType="Object" visibility="public"/>
+        <Method name="setBikePower" returnType="void" visibility="public">
+          <Argument type="double" name="bikePower"/>
+        </Method>
+        <Method name="setBikeVelo" returnType="void" visibility="public">
+          <Argument type="double" name="bikeVelo"/>
+        </Method>
+        <Method name="setBikeTorque" returnType="void" visibility="public">
+          <Argument type="double" name="bikeTorque"/>
+        </Method>
+        <Method name="setMaxPowerIndex" returnType="void" visibility="public">
+          <Argument type="int" name="maxPowerIndex"/>
+        </Method>
+        <Method name="setMaxVeloIndex" returnType="void" visibility="public">
+          <Argument type="int" name="maxVeloIndex"/>
+        </Method>
+        <Method name="setMaxTorqueIndex" returnType="void" visibility="public">
+          <Argument type="int" name="maxTorqueIndex"/>
+        </Method>
+        <Method name="addRawDP" returnType="boolean" visibility="public">
+          <Argument type="RawDatapoint" name="rdp"/>
+        </Method>
+        <Method name="addPreDP" returnType="boolean" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="addPreSchlepp" returnType="boolean" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="addSchleppDP" returnType="boolean" visibility="public">
+          <Argument type="Datapoint" name="dp"/>
+        </Method>
+        <Method name="addDP" returnType="boolean" visibility="public">
+          <Argument type="Datapoint" name="dp"/>
+        </Method>
+        <Method name="addVel" returnType="boolean" visibility="public">
+          <Argument type="Double" name="v"/>
+        </Method>
+        <Method name="addTemperatures" returnType="boolean" visibility="public">
+          <Argument type="String" name="engTemp"/>
+          <Argument type="String" name="fumeTemp"/>
+        </Method>
+        <Method name="addTemperatures" returnType="boolean" visibility="public">
+          <Argument type="double" name="engTemp"/>
+          <Argument type="double" name="fumeTemp"/>
+        </Method>
+        <Method name="addXYValues" returnType="void" visibility="public">
+          <Argument type="Datapoint" name="dp"/>
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="rmFirstDP" returnType="void" visibility="public"/>
+        <Method name="rmFirstPDP" returnType="void" visibility="public"/>
+        <Method name="rmFirstRDP" returnType="void" visibility="public"/>
+        <Method name="clearLists" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Config" package="data" visibility="public" xPosition="938.0" yPosition="13.0">
+      <Fields>
+        <Field name="instance" type="Config" visibility="private" isStatic="true"/>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="ps" type="boolean" visibility="private"/>
+        <Field name="celcius" type="boolean" visibility="private"/>
+        <Field name="pngHeight" type="int" visibility="private"/>
+        <Field name="pngWidth" type="int" visibility="private"/>
+        <Field name="powerCorr" type="double" visibility="private"/>
+        <Field name="torqueCorr" type="int" visibility="private"/>
+        <Field name="inertiaCorr" type="double" visibility="private"/>
+        <Field name="dark" type="boolean" visibility="private"/>
+        <Field name="period" type="int" visibility="private"/>
+        <Field name="hysteresisTime" type="int" visibility="private"/>
+        <Field name="idleVelo" type="int" visibility="private"/>
+        <Field name="hysteresisVelo" type="int" visibility="private"/>
+        <Field name="startVelo" type="int" visibility="private"/>
+        <Field name="stopVelo" type="int" visibility="private"/>
+        <Field name="idleRpm" type="int" visibility="private"/>
+        <Field name="hysteresisRpm" type="int" visibility="private"/>
+        <Field name="startRpm" type="int" visibility="private"/>
+        <Field name="stopRpm" type="int" visibility="private"/>
+        <Field name="warningEngTemp" type="int" visibility="private"/>
+        <Field name="warningExhTemp" type="int" visibility="private"/>
+        <Field name="arduinoVersion" type="double" visibility="private"/>
+        <Field name="velocity" type="Velocity" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="getInstance" returnType="Config" visibility="public" isStatic="true"/>
+        <Method name="createInstance" returnType="Config" visibility="public" isStatic="true">
+          <Argument type="InputStream" name="fis"/>
+        </Method>
+        <Method name="writeVelocity" returnType="int" visibility="public"/>
+        <Method name="readVelocity" returnType="Velocity" visibility="public">
+          <Argument type="int" name="velocity"/>
+        </Method>
+        <Method name="createConfig" returnType="void" visibility="public">
+          <Argument type="BufferedWriter" name="w"/>
+        </Method>
+        <Method name="writeJson" returnType="void" visibility="public">
+          <Argument type="BufferedWriter" name="w"/>
+        </Method>
+        <Method name="readJson" returnType="void" visibility="public">
+          <Argument type="InputStream" name="fis"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <UseRelation source="data.Database" target="data.Database" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="schleppDataList" source="data.Database" target="data.Datapoint" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Datapoint&gt;"/>
+    <HasRelation name="data" source="measure.Calculate" target="data.Database" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="instance" source="data.Bike" target="data.Bike" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="bike" source="measure.Calculate" target="data.Bike" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="data.Config" target="data.Config" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="environment" source="measure.Calculate" target="data.Environment" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="schleppPreList" source="data.Database" target="data.PreDatapoint" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;PreDatapoint&gt;"/>
+    <HasRelation name="dataList" source="data.Database" target="data.Datapoint" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Datapoint&gt;"/>
+    <UseRelation source="data.Environment" target="data.Environment" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="instance" source="data.Database" target="data.Database" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="rawList" source="data.Database" target="data.RawDatapoint" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;RawDatapoint&gt;"/>
+    <HasRelation name="config" source="measure.Calculate" target="data.Config" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="instance" source="data.Config" target="data.Config" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="instance" source="data.Environment" target="data.Environment" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation name="" source="data.RawDatapoint" target="measure.Calculate" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="data.Bike" target="data.Bike" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="data.Database" target="data.Datapoint" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="preList" source="data.Database" target="data.PreDatapoint" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;PreDatapoint&gt;"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="BESDyno">
+  <ClassDiagramComponents>
+    <Class name="Calculate" package="measure" visibility="public" xPosition="17.0" yPosition="26.0">
+      <Fields>
+        <Field name="bike" type="Bike" visibility="private" isFinal="true"/>
+        <Field name="config" type="Config" visibility="private" isFinal="true"/>
+        <Field name="data" type="Database" visibility="private" isFinal="true"/>
+        <Field name="environment" type="Environment" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="calcRpm" returnType="PreDatapoint" visibility="public">
+          <Argument type="RawDatapoint" name="rdp"/>
+        </Method>
+        <Method name="calcWheelOnly" returnType="PreDatapoint" visibility="public">
+          <Argument type="RawDatapoint" name="rdp"/>
+        </Method>
+        <Method name="calcMps" returnType="double" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="calcKmh" returnType="double" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="calcMih" returnType="double" visibility="public">
+          <Argument type="PreDatapoint" name="pdp"/>
+        </Method>
+        <Method name="calcPower" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="MeasurementWorker" package="measure" visibility="public" xPosition="60.0" yPosition="353.0">
+      <Fields>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="main" type="BESDyno" visibility="private" isFinal="true"/>
+        <Field name="bike" type="Bike" visibility="private" isFinal="true"/>
+        <Field name="calc" type="Calculate" visibility="private" isFinal="true"/>
+        <Field name="config" type="Config" visibility="private" isFinal="true"/>
+        <Field name="data" type="Database" visibility="private" isFinal="true"/>
+        <Field name="environment" type="Environment" visibility="private" isFinal="true"/>
+        <Field name="telegram" type="MyTelegram" visibility="private" isFinal="true"/>
+        <Field name="calcThread" type="CalculationThread" visibility="private"/>
+        <Field name="status" type="Status" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="doInBackground" returnType="Object" visibility="protected"/>
+        <Method name="manageShiftUp" returnType="Status" visibility="private"/>
+        <Method name="manageWait" returnType="Status" visibility="private">
+          <Argument type="int" name="hysCount"/>
+        </Method>
+        <Method name="manageReady" returnType="Status" visibility="private"/>
+        <Method name="manageMeasure" returnType="Status" visibility="private"/>
+        <Method name="manageFinish" returnType="void" visibility="private"/>
+        <Method name="measure" returnType="PreDatapoint" visibility="public"/>
+        <Method name="measureno" returnType="double" visibility="public"/>
+        <Method name="getStatus" returnType="Status" visibility="public"/>
+        <Method name="setStatus" returnType="void" visibility="public">
+          <Argument type="Status" name="status"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Response" package="serial" visibility="public" xPosition="377.0" yPosition="34.0">
+      <Fields>
+        <Field name="receivedFrame" type="StringBuilder" visibility="private" isFinal="true"/>
+        <Field name="startTime" type="long" visibility="private"/>
+        <Field name="returnValue" type="ResponseStatus" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="getReceivedFrame" returnType="StringBuilder" visibility="public"/>
+        <Method name="getStartTime" returnType="long" visibility="public"/>
+        <Method name="getReturnValue" returnType="ResponseStatus" visibility="public"/>
+        <Method name="setReturnValue" returnType="void" visibility="public">
+          <Argument type="ResponseStatus" name="returnValue"/>
+        </Method>
+        <Method name="setStartTime" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="UARTManager" package="serial" visibility="public" xPosition="794.0" yPosition="34.0">
+      <Fields>
+        <Field name="init" type="boolean" visibility="private"/>
+        <Field name="opened" type="boolean" visibility="private"/>
+        <Field name="mac" type="boolean" visibility="private"/>
+        <Field name="JSSC" type="jssc.SerialPort" visibility="private"/>
+        <Field name="RXTX" type="gnu.io.SerialPort" visibility="private"/>
+        <Field name="portName" type="String" visibility="package"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initPort" returnType="void" visibility="public">
+          <Argument type="boolean" name="mac"/>
+          <Argument type="String" name="port"/>
+        </Method>
+        <Method name="openPort" returnType="void" visibility="public"/>
+        <Method name="setParams" returnType="void" visibility="public">
+          <Argument type="int" name="baudrate"/>
+          <Argument type="int" name="databits"/>
+          <Argument type="int" name="stopbits"/>
+          <Argument type="int" name="parity"/>
+        </Method>
+        <Method name="closePort" returnType="void" visibility="public"/>
+        <Method name="getPort" returnType="Object" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ConnectPortWorker" package="serial" visibility="public" xPosition="886.0" yPosition="421.0">
+      <Fields>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="port" type="String" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="port"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="doInBackground" returnType="UARTManager" visibility="protected"/>
+      </Methods>
+    </Class>
+    <Class name="DisconnectPortWorker" package="serial" visibility="public" xPosition="81.0" yPosition="882.0">
+      <Fields>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="telegram" type="MyTelegram" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="doInBackground" returnType="Object" visibility="protected"/>
+      </Methods>
+    </Class>
+    <Class name="Telegram" package="serial" visibility="public" xPosition="382.0" yPosition="780.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="retryTimeoutRequest" returnType="Request" visibility="public">
+          <Argument type="Request" name="request"/>
+        </Method>
+        <Method name="retryErrorRequest" returnType="Request" visibility="public">
+          <Argument type="Request" name="request"/>
+        </Method>
+        <Method name="init" returnType="Request" visibility="public"/>
+        <Method name="start" returnType="Request" visibility="public"/>
+        <Method name="engine" returnType="Request" visibility="public"/>
+        <Method name="all" returnType="Request" visibility="public"/>
+        <Method name="measure" returnType="Request" visibility="public"/>
+        <Method name="measureno" returnType="Request" visibility="public"/>
+        <Method name="fine" returnType="Request" visibility="public"/>
+        <Method name="warning" returnType="Request" visibility="public"/>
+        <Method name="severe" returnType="Request" visibility="public"/>
+        <Method name="maxProblems" returnType="Request" visibility="public"/>
+        <Method name="kill" returnType="Request" visibility="public"/>
+        <Method name="version" returnType="Request" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Request" package="serial.requests" visibility="public" isAbstract="true" xPosition="823.0" yPosition="680.0">
+      <Fields>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="status" type="Status" visibility="protected"/>
+        <Field name="secondTryAllowed" type="boolean" visibility="protected"/>
+        <Field name="timeOutComp" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="sendRequest" returnType="void" visibility="public" isAbstract="true">
+          <Argument type="Object" name="port"/>
+        </Method>
+        <Method name="getReqMessage" returnType="String" visibility="public" isAbstract="true"/>
+        <Method name="getReqName" returnType="String" visibility="public" isAbstract="true"/>
+        <Method name="handleResponse" returnType="void" visibility="public" isAbstract="true">
+          <Argument type="String" name="res"/>
+        </Method>
+        <Method name="getResponse" returnType="String" visibility="public" isAbstract="true"/>
+        <Method name="getStatus" returnType="Status" visibility="public"/>
+        <Method name="timeOutIsComp" returnType="boolean" visibility="public"/>
+        <Method name="secondTryAllowed" returnType="boolean" visibility="public"/>
+        <Method name="setStatus" returnType="void" visibility="public">
+          <Argument type="Status" name="status"/>
+        </Method>
+        <Method name="setSecondTryAllowed" returnType="void" visibility="public">
+          <Argument type="boolean" name="secondTryAllowed"/>
+        </Method>
+        <Method name="setTimeOutComp" returnType="void" visibility="public">
+          <Argument type="boolean" name="timeOutComp"/>
+        </Method>
+        <Method name="checkCRC" returnType="boolean" visibility="protected">
+          <Argument type="String" name="res"/>
+        </Method>
+        <Method name="removeCRC" returnType="String" visibility="protected">
+          <Argument type="String" name="s"/>
+        </Method>
+        <Method name="calcCRC" returnType="long" visibility="protected">
+          <Argument type="String" name="res"/>
+        </Method>
+        <Method name="getSentCRC" returnType="long" visibility="protected">
+          <Argument type="String" name="res"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="RxTxWorker" package="serial" visibility="public" xPosition="364.0" yPosition="353.0">
+      <Fields>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="jsscPort" type="jssc.SerialPort" visibility="private"/>
+        <Field name="rxtxPort" type="gnu.io.SerialPort" visibility="private"/>
+        <Field name="port" type="Object" visibility="private"/>
+        <Field name="requestList" type="List&lt;Request&gt;" visibility="protected" isFinal="true"/>
+        <Field name="response" type="Response" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="setSerialPort" returnType="void" visibility="public">
+          <Argument type="UARTManager" name="manager"/>
+        </Method>
+        <Method name="clearReceivedFrames" returnType="void" visibility="public"/>
+        <Method name="handleJSSCPortEvent" returnType="void" visibility="private">
+          <Argument type="jssc.SerialPortEvent" name="spe"/>
+        </Method>
+        <Method name="handleRXTXPortEvent" returnType="void" visibility="private">
+          <Argument type="gnu.io.SerialPortEvent" name="spe"/>
+        </Method>
+        <Method name="doInBackground" returnType="Object" visibility="protected"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <UseRelation source="serial.Telegram" target="serial.requests.Request" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="response" source="serial.RxTxWorker" target="serial.Response" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="serial.Telegram" target="serial.RxTxWorker"/>
+    <HasRelation name="requestList" source="serial.RxTxWorker" target="serial.requests.Request" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Request&gt;"/>
+    <UseRelation source="serial.ConnectPortWorker" target="serial.UARTManager" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="serial.RxTxWorker" target="serial.UARTManager" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="serial.Response" target="serial.Response" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="calc" source="measure.MeasurementWorker" target="measure.Calculate" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

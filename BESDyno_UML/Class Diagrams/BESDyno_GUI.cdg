@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="BESDyno">
+  <ClassDiagramComponents>
+    <Class name="AboutDialog" package="gui" visibility="public" xPosition="867.0" yPosition="1859.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="java.awt.Frame" name="parent"/>
+          <Argument type="boolean" name="modal"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="openURL" returnType="void" visibility="private">
+          <Argument type="String" name="url"/>
+        </Method>
+        <Method name="writeVersion" returnType="void" visibility="private"/>
+        <Method name="writeDevice" returnType="void" visibility="public">
+          <Argument type="String" name="dn"/>
+        </Method>
+        <Method name="setAppearance" returnType="void" visibility="public">
+          <Argument type="boolean" name="dark"/>
+        </Method>
+        <Method name="setOSIcon" returnType="void" visibility="public">
+          <Argument type="OS" name="os"/>
+        </Method>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="onSourceLink" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="SettingsDialog" package="gui" visibility="public" xPosition="867.0" yPosition="9.0">
+      <Fields>
+        <Field name="pressedOK" type="boolean" visibility="private"/>
+        <Field name="lastVelocity" type="Velocity" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="java.awt.Frame" name="parent"/>
+          <Argument type="boolean" name="modal"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="writeDevice" returnType="void" visibility="public">
+          <Argument type="String" name="dn"/>
+        </Method>
+        <Method name="setAppearance" returnType="void" visibility="public">
+          <Argument type="boolean" name="dark"/>
+          <Argument type="OS" name="os"/>
+        </Method>
+        <Method name="isPressedOK" returnType="boolean" visibility="public"/>
+        <Method name="isDark" returnType="boolean" visibility="public"/>
+        <Method name="convertVelocity" returnType="String" visibility="private">
+          <Argument type="Velocity" name="from"/>
+          <Argument type="Velocity" name="to"/>
+          <Argument type="int" name="value"/>
+        </Method>
+        <Method name="convertTemperature" returnType="String" visibility="private">
+          <Argument type="boolean" name="toFahrenheit"/>
+          <Argument type="int" name="value"/>
+        </Method>
+        <Method name="changePeriodTime" returnType="void" visibility="public"/>
+        <Method name="confirm" returnType="void" visibility="private">
+          <Argument type="Config" name="c"/>
+          <Argument type="boolean" name="save"/>
+        </Method>
+        <Method name="setSwingValues" returnType="void" visibility="public">
+          <Argument type="Config" name="c"/>
+        </Method>
+        <Method name="loadConfig" returnType="void" visibility="private"/>
+        <Method name="saveConfig" returnType="void" visibility="public">
+          <Argument type="Config" name="config"/>
+        </Method>
+        <Method name="loadBikeConfig" returnType="void" visibility="public"/>
+        <Method name="saveBikeConfig" returnType="void" visibility="public">
+          <Argument type="Config" name="config"/>
+        </Method>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="jrbDaymodeActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jrbNightmodeActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jbutOKActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jbutCancelActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jrbMPSActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jrbKMHActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jrbMIHActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onLoad" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onSave" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jrbCelciusActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jrbFahrenheitActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jcbEnableInertiaEditActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="VehicleSetDialog" package="gui" visibility="public" xPosition="867.0" yPosition="1530.0">
+      <Fields>
+        <Field name="pressedOK" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="java.awt.Frame" name="parent"/>
+          <Argument type="boolean" name="modal"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="isPressedOK" returnType="boolean" visibility="public"/>
+        <Method name="setAppearance" returnType="void" visibility="public">
+          <Argument type="boolean" name="dark"/>
+          <Argument type="OS" name="os"/>
+        </Method>
+        <Method name="confirm" returnType="void" visibility="private"/>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="jbutStartActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jbutCancelActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jcbEnableTempActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ResultDialog" package="gui" visibility="public" xPosition="10.0" yPosition="9.0">
+      <Fields>
+        <Field name="config" type="Config" visibility="private" isFinal="true"/>
+        <Field name="power" type="double" visibility="private"/>
+        <Field name="velocity" type="double" visibility="private"/>
+        <Field name="torque" type="double" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="java.awt.Frame" name="parent"/>
+          <Argument type="boolean" name="modal"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="setValues" returnType="void" visibility="public"/>
+        <Method name="setAppearance" returnType="void" visibility="public">
+          <Argument type="boolean" name="dark"/>
+        </Method>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="jbutOkActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="MeasureDialog" package="gui" visibility="public" xPosition="854.0" yPosition="822.0">
+      <Fields>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="finished" type="boolean" visibility="private"/>
+        <Field name="veloGauge" type="Radial" visibility="private" isFinal="true"/>
+        <Field name="rpmGauge" type="Radial" visibility="private" isFinal="true"/>
+        <Field name="engThermo" type="Linear" visibility="private" isFinal="true"/>
+        <Field name="exhThermo" type="Linear" visibility="private" isFinal="true"/>
+        <Field name="count" type="int" visibility="private"/>
+        <Field name="warning" type="boolean" visibility="private"/>
+        <Field name="worker" type="MyMeasurementWorker" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="java.awt.Frame" name="parent"/>
+          <Argument type="boolean" name="modal"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="handleMeasurementChain" returnType="void" visibility="private"/>
+        <Method name="updateGaugeValue" returnType="void" visibility="private">
+          <Argument type="Radial" name="gauge"/>
+          <Argument type="double" name="value"/>
+          <Argument type="double" name="ref"/>
+          <Argument type="Color" name="colour"/>
+        </Method>
+        <Method name="updateThermoValue" returnType="void" visibility="private">
+          <Argument type="Linear" name="thermo"/>
+          <Argument type="double" name="value"/>
+          <Argument type="double" name="max"/>
+          <Argument type="Color" name="colour"/>
+        </Method>
+        <Method name="updateColour" returnType="Color" visibility="private">
+          <Argument type="Status" name="status"/>
+        </Method>
+        <Method name="createVelocityGauge" returnType="void" visibility="private">
+          <Argument type="double" name="maxValue"/>
+          <Argument type="String" name="unit"/>
+        </Method>
+        <Method name="createRPMGauge" returnType="void" visibility="private"/>
+        <Method name="createEngThermo" returnType="void" visibility="private"/>
+        <Method name="createExhThermo" returnType="void" visibility="private"/>
+        <Method name="convertToFahrenheit" returnType="double" visibility="private">
+          <Argument type="double" name="celcius"/>
+        </Method>
+        <Method name="setWarningAppearance" returnType="void" visibility="private"/>
+        <Method name="setAppearance" returnType="void" visibility="public">
+          <Argument type="boolean" name="dark"/>
+        </Method>
+        <Method name="isFinished" returnType="boolean" visibility="public"/>
+        <Method name="handleCanceling" returnType="void" visibility="private"/>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="jbutFinishActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jbutCancelActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="BESDyno" package="main" visibility="public" xPosition="10.0" yPosition="295.0">
+      <Fields>
+        <Field name="instance" type="BESDyno" visibility="private" isStatic="true"/>
+        <Field name="LOG" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="LOGP" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="about" type="AboutDialog" visibility="private" isFinal="true"/>
+        <Field name="help" type="HelpDialog" visibility="private" isFinal="true"/>
+        <Field name="vehicle" type="VehicleSetDialog" visibility="private" isFinal="true"/>
+        <Field name="settings" type="SettingsDialog" visibility="private" isFinal="true"/>
+        <Field name="infoPane" type="DevInfoPane" visibility="private" isFinal="true"/>
+        <Field name="commPane" type="LoggedCommPane" visibility="private" isFinal="true"/>
+        <Field name="result" type="ResultDialog" visibility="private" isFinal="true"/>
+        <Field name="measure" type="MeasureDialog" visibility="private"/>
+        <Field name="activeWorker" type="SwingWorker" visibility="private"/>
+        <Field name="telegram" type="MyTelegram" visibility="private"/>
+        <Field name="portManager" type="UARTManager" visibility="private"/>
+        <Field name="chart" type="JFreeChart" visibility="private" isFinal="true"/>
+        <Field name="devMode" type="boolean" visibility="private" isStatic="true"/>
+        <Field name="testMode" type="boolean" visibility="private"/>
+        <Field name="os" type="OS" visibility="private" isStatic="true"/>
+        <Field name="connection" type="boolean" visibility="private"/>
+        <Field name="activity" type="boolean" visibility="private"/>
+        <Field name="secondTry" type="boolean" visibility="private"/>
+        <Field name="measurementFinished" type="boolean" visibility="private"/>
+        <Field name="reqArduVers" type="double" visibility="private" isFinal="true"/>
+        <Field name="timeouts" type="int" visibility="private"/>
+        <Field name="pendingRequests" type="List&lt;Request&gt;" visibility="public" isFinal="true"/>
+        <Field name="syncObj" type="Object" visibility="private" isFinal="true"/>
+        <Field name="lc" type="LineChart" visibility="private" isFinal="true"/>
+        <Field name="chartPanel" type="ChartPanel" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="private"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="BESDyno" visibility="public" isStatic="true"/>
+        <Method name="refreshGui" returnType="void" visibility="private"/>
+        <Method name="setOSNativeKeyStroke" returnType="void" visibility="private"/>
+        <Method name="userLog" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+          <Argument type="LogLevel" name="level"/>
+        </Method>
+        <Method name="userLog" returnType="void" visibility="public">
+          <Argument type="Throwable" name="th"/>
+          <Argument type="String" name="msg"/>
+          <Argument type="LogLevel" name="level"/>
+        </Method>
+        <Method name="userLogPane" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+          <Argument type="LogLevel" name="level"/>
+        </Method>
+        <Method name="userLogPane" returnType="void" visibility="public">
+          <Argument type="Throwable" name="th"/>
+          <Argument type="String" name="msg"/>
+          <Argument type="LogLevel" name="level"/>
+        </Method>
+        <Method name="refreshPorts" returnType="void" visibility="private"/>
+        <Method name="setAppearance" returnType="void" visibility="private">
+          <Argument type="boolean" name="dark"/>
+        </Method>
+        <Method name="getSalutation" returnType="String" visibility="private"/>
+        <Method name="saveComm" returnType="void" visibility="public"/>
+        <Method name="saveCommAuto" returnType="void" visibility="public" isStatic="true"/>
+        <Method name="loadConfig" returnType="void" visibility="private"/>
+        <Method name="getConfigFile" returnType="File" visibility="private" isStatic="true"/>
+        <Method name="addLogFileHandler" returnType="void" visibility="private">
+          <Argument type="boolean" name="enabled"/>
+        </Method>
+        <Method name="exportChart" returnType="void" visibility="private"/>
+        <Method name="saveCSVData" returnType="void" visibility="private"/>
+        <Method name="openURL" returnType="void" visibility="private">
+          <Argument type="String" name="url"/>
+        </Method>
+        <Method name="getTelegram" returnType="MyTelegram" visibility="public"/>
+        <Method name="isDark" returnType="boolean" visibility="public"/>
+        <Method name="isDevMode" returnType="boolean" visibility="public" isStatic="true"/>
+        <Method name="isTestMode" returnType="boolean" visibility="public"/>
+        <Method name="getOs" returnType="OS" visibility="public"/>
+        <Method name="getPort" returnType="UARTManager" visibility="public"/>
+        <Method name="getReqArduVers" returnType="double" visibility="public"/>
+        <Method name="hasConnection" returnType="boolean" visibility="public"/>
+        <Method name="getSettingsDialog" returnType="SettingsDialog" visibility="public"/>
+        <Method name="setConnection" returnType="void" visibility="public">
+          <Argument type="boolean" name="connection"/>
+        </Method>
+        <Method name="setPort" returnType="void" visibility="public">
+          <Argument type="UARTManager" name="portManager"/>
+        </Method>
+        <Method name="readInRxTxComm" returnType="boolean" visibility="private" isStatic="true"/>
+        <Method name="addPendingRequest" returnType="void" visibility="public">
+          <Argument type="Request" name="request"/>
+        </Method>
+        <Method name="removePendingRequest" returnType="boolean" visibility="public">
+          <Argument type="Request" name="request"/>
+        </Method>
+        <Method name="showPendingRequests" returnType="void" visibility="public"/>
+        <Method name="showLoggedComm" returnType="void" visibility="public"/>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="onSave" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onPrint" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onSettings" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onStartSim" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onRefresh" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onConnect" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onDisconnect" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onAbout" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onButConnect" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onButDisconnect" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onButRefresh" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onHelp" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onButStartSim" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onDark" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onExport" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onSaveLoggedComm" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="toggleDevMode" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onShowPendingRequests" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onShowLoggedComm" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestInit" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestStart" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestEngine" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestMeasure" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestMeasureNo" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestFine" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestWarning" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestSevere" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestMaxProblems" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestKill" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="toggleDebugLogging" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestVersion" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onEnvironment" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onEngineTemp" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="toggleTestMode" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onSaveCSV" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="onTestAll" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="vehicle" source="main.BESDyno" target="gui.VehicleSetDialog" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="VehicleSetDialog"/>
+    <UseRelation source="main.BESDyno" target="main.BESDyno" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="instance" source="main.BESDyno" target="main.BESDyno" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="measure" source="main.BESDyno" target="gui.MeasureDialog" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="settings" source="main.BESDyno" target="gui.SettingsDialog" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="SettingsDialog"/>
+    <HasRelation name="result" source="main.BESDyno" target="gui.ResultDialog" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="main.BESDyno" target="gui.SettingsDialog" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
