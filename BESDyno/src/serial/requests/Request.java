@@ -63,8 +63,13 @@ public abstract class Request {
         CRC32 crc = new CRC32();
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
-
-        String toCheck[] = response.split(">");
+        
+        String toCheck[] = null;
+        try {
+        toCheck = response.split(">");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            LOG.severe(ex);
+        }
 
         byte[] b = toCheck[0].trim().getBytes();
         crc.update(b);
