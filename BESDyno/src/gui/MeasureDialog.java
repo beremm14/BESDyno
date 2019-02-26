@@ -358,6 +358,7 @@ public class MeasureDialog extends javax.swing.JDialog {
         int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (answ == JOptionPane.YES_OPTION) {
             worker.cancel(true);
+            worker = null;
             finished = false;
             dispose();
         }

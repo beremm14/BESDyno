@@ -72,7 +72,6 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         break;
                     }
                     String s = new String(b).trim();
-                    //String s = port.readString().trim();
                     if (s.isEmpty()) {
                         break;
                     }
@@ -81,9 +80,6 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         if (s.contains(";")) {
                             response.notifyAll();
                         }
-                        /*if (s.charAt(s.length()-1) == ';') {
-                            response.notifyAll();
-                        }*/
                     }
                 } catch (SerialPortException ex) {
                     LOG.warning(ex);
@@ -113,14 +109,10 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                             if (s.contains(";")) {
                                 response.notifyAll();
                             }
-                            /*if (s.charAt(s.length()-1) == ';') {
-                            response.notifyAll();
-                        }*/
                         }
                     } catch (IOException ex) {
                         LOG.warning(ex);
                     }
-
                 }
                 break;
         }

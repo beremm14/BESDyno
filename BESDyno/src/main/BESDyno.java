@@ -1644,10 +1644,8 @@ public class BESDyno extends javax.swing.JFrame {
             } finally {
                 if (telegram != null) {
                     try {
-                        telegram.setSerialPort(null);
-                    } catch (SerialPortException ex) {
-                        LOG.warning(ex);
-                    } catch (TooManyListenersException ex) {
+                        telegram.setSerialPort(new UARTManager());
+                    } catch (SerialPortException | TooManyListenersException ex) {
                         LOG.warning(ex);
                     }
                     telegram = null;
@@ -1828,8 +1826,8 @@ public class BESDyno extends javax.swing.JFrame {
 
         private XYSeries seriesTorque = new XYSeries("Drehmoment");
         private XYSeries seriesPower = new XYSeries("Leistung");
-        private XYSeriesCollection datasetPower = new XYSeriesCollection();
-        private XYSeriesCollection datasetTorque = new XYSeriesCollection();
+        private final XYSeriesCollection datasetPower = new XYSeriesCollection();
+        private final XYSeriesCollection datasetTorque = new XYSeriesCollection();
 
         public JFreeChart initChart() {
             JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart(bike.getVehicleName(),

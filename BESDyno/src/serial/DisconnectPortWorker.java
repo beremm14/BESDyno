@@ -17,7 +17,6 @@ public class DisconnectPortWorker extends SwingWorker<Object, Throwable> {
 
     @Override
     protected Object doInBackground() throws Exception {
-        telegram.setSerialPort(null);
         if (!telegram.cancel(true)) {
             LOG.warning("Fehler beim Beenden: SwingWorker -> RxTxWorker -> TelegramWorker -> MyTelegramWorker...");
         }
