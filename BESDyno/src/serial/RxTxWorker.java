@@ -48,6 +48,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
         } else if (manager.getPort() instanceof gnu.io.SerialPort) {
             this.rxtxPort = (gnu.io.SerialPort) manager.getPort();
             if (manager.getPort() != null) {
+                rxtxPort.notifyOnDataAvailable(true);
                 rxtxPort.addEventListener((gnu.io.SerialPortEvent spe) -> {
                     handleRXTXPortEvent(spe);
                 });
@@ -93,17 +94,17 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     }
 
     private void handleRXTXPortEvent(gnu.io.SerialPortEvent spe) {
-        
-        //switch (spe.getEventType()) {
-            //case gnu.io.SerialPortEvent.DATA_AVAILABLE:
+
+        switch (spe.getEventType()) {
+            case gnu.io.SerialPortEvent.DATA_AVAILABLE:
                 LOG.debug("SerialPort Event happened!!! :)");
                 while (true) {
                     try {
                         final byte b;
                         b = (byte) rxtxPort.getInputStream().read();
 
-                        String s = new String(new byte[] {b}).trim();
-                        
+                        String s = new String(new byte[]{b}).trim();
+
                         if (s.isEmpty()) {
                             break;
                         }
@@ -121,8 +122,8 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                     }
 
                 }
-                //break;
-        //}
+                break;
+        }
     }
 
     @Override

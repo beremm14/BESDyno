@@ -59,6 +59,13 @@ public class TestCSV {
             LOG.warning(ex);
         }
         
+        //Filtered RawDatapoint
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("FilteredRawDatapoint")))) {
+            writeFDP(w);
+        } catch (Exception ex) {
+            LOG.warning(ex);
+        }
+        
         //Velocity
         try (BufferedWriter w = new BufferedWriter(new FileWriter(createFile("Velocity")))) {
             writeVel(w);
@@ -114,6 +121,18 @@ public class TestCSV {
     private void writeRDP(BufferedWriter w) throws IOException {
         //engCounts;wheelCounts;time
         for (RawDatapoint rdp : data.getRawList()) {
+            w.write(rdp.getEngTime() + "");
+            w.write(",");
+            w.write(rdp.getWheelTime() + "");
+            w.write(",");
+            w.write(rdp.getTime() + "");
+            w.newLine();
+        }
+    }
+    
+    private void writeFDP(BufferedWriter w) throws IOException {
+        //engCounts;wheelCounts;time
+        for (RawDatapoint rdp : data.getFilteredList()) {
             w.write(rdp.getEngTime() + "");
             w.write(",");
             w.write(rdp.getWheelTime() + "");
