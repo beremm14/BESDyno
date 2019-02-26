@@ -2061,7 +2061,7 @@ public class BESDyno extends javax.swing.JFrame {
 
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
-                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Zweiradprüfstand");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "BESDyno");
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {

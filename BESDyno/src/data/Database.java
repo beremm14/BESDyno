@@ -44,6 +44,9 @@ public class Database {
 
     //Pre-Calculated List
     private final List<PreDatapoint> preList = new ArrayList<>();
+    
+    //Filtered uncalculated List
+    private List<RawDatapoint> filteredList = new LinkedList<>();
 
     //Uncalculated List
     private final List<RawDatapoint> rawList = new ArrayList<>();
@@ -75,6 +78,10 @@ public class Database {
 
     public List<RawDatapoint> getRawList() {
         return rawList;
+    }
+    
+    public List<RawDatapoint> getFilteredList() {
+        return filteredList;
     }
 
     public List<PreDatapoint> getPreList() {
@@ -146,6 +153,10 @@ public class Database {
     }
 
     //Setter
+    public void setFilteredList(List<RawDatapoint> filteredList) {
+        this.filteredList = filteredList;
+    }
+    
     public void setBikePower(double bikePower) {
         this.bikePower = bikePower;
     }
@@ -173,6 +184,10 @@ public class Database {
     //List-Methods
     public boolean addRawDP(RawDatapoint rdp) {
         return rawList.add(rdp);
+    }
+    
+    public boolean addFilterRDP(RawDatapoint rdp) {
+        return filteredList.add(rdp);
     }
 
     public boolean addPreDP(PreDatapoint pdp) {

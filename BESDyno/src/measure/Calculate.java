@@ -18,6 +18,17 @@ public class Calculate {
     private final Config config = Config.getInstance();
     private final Database data = Database.getInstance();
     private final Environment environment = Environment.getInstance();
+    
+    private void filterData() {
+        final FilterRawData filter = new FilterRawData(3, data.getRawList());
+        
+        data.setFilteredList(filter.compute());
+        
+        for (RawDatapoint rdp : data.getFilteredList()) {
+            data.getPreList().removeAll(data.getPreList());
+            data.addPreDP(calcRpm(rdp));
+        }
+    }
 
     //Calculates One Point
     public PreDatapoint calcRpm(RawDatapoint rdp) {
@@ -32,7 +43,7 @@ public class Calculate {
         if (Double.isInfinite(wheelRpm)) {
             wheelRpm = 0;
         }
-        
+
         if (Bike.getInstance().isTwoStroke()) {
             engRpm = 60000000.0 / engTime;
         } else {
@@ -70,6 +81,7 @@ public class Calculate {
     }
 
     public void calcPower() {
+        filterData();
 
         //Calculation without Schlepp-Power
         if (bike.isStartStopMethod()) {
@@ -161,7 +173,7 @@ public class Calculate {
                 data.setBikeVelo(maxVelocity * 3.6);
                 break;
         }
-        
+
         if (bike.isMeasTemp()) {
             double maxEngTemp = data.getEngTempList().get(0);
             for (Double engTemp : data.getEngTempList()) {
@@ -169,14 +181,14 @@ public class Calculate {
                     maxEngTemp = engTemp;
                 }
             }
-            
+
             double maxFumeTemp = data.getFumeTempList().get(0);
             for (Double fumeTemp : data.getFumeTempList()) {
                 if (fumeTemp > maxFumeTemp) {
                     maxFumeTemp = fumeTemp;
                 }
             }
-            
+
             environment.setEngTemp(maxEngTemp);
             environment.setFumeTemp(maxFumeTemp);
         }
