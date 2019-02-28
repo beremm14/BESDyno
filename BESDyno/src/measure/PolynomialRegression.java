@@ -1,6 +1,7 @@
 package measure;
 
 import data.RawDatapoint;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
@@ -12,7 +13,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 public class PolynomialRegression {
     
     private final List<RawDatapoint> rawList;
-    private List<RawDatapoint> rawFilteredList;
+    private final List<RawDatapoint> rawFilteredList = new LinkedList<>();
 
     public PolynomialRegression(List<RawDatapoint> rawList) {
         this.rawList = rawList;
