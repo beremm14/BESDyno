@@ -246,6 +246,10 @@ public class Database {
     public void rmFirstRDP() {
         rawList.remove(0);
     }
+    
+    public void rmAllPDPs() {
+        preList.removeAll(preList);
+    }
 
     public void clearLists() {
         rawList.removeAll(rawList);

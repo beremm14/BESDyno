@@ -20,12 +20,11 @@ public class Calculate {
     private final Environment environment = Environment.getInstance();
     
     private void filterData() {
-        final FilterRawData filter = new FilterRawData(3, data.getRawList());
+        final PolynomialRegression regression = new PolynomialRegression(data.getRawList());
+        data.setFilteredList(regression.filterRawData());
         
-        data.setFilteredList(filter.compute());
-        
+        data.rmAllPDPs();
         for (RawDatapoint rdp : data.getFilteredList()) {
-            data.getPreList().removeAll(data.getPreList());
             data.addPreDP(calcRpm(rdp));
         }
     }

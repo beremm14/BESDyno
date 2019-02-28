@@ -108,7 +108,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //Lower than Start-Speed reached once -> hysteresis loop
     private Status manageShiftUp() throws Exception {
         //INIT -> time to get higher than Start-Speed
-        for (int i = 0; i < 100; i++) {
+        int shiftTime = config.getHysteresisTime() / config.getPeriod();
+        for (int i = 0; i < shiftTime; i++) {
             if (bike.isMeasRpm()) {
                 if (bike.isMeasTemp()) {
                     double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
@@ -207,9 +208,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageMeasure() throws Exception {
         //Clear all Lists for good Data ;)
         data.clearLists();
-        data.addRawDP(new RawDatapoint(1, 1, 1));
-        data.addPreDP(new PreDatapoint(1, 1, 1));
-        data.addDP(new Datapoint(1, 1, 1));
 
         if (bike.isStartStopMethod()) {
             if (bike.isMeasRpm()) {
