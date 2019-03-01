@@ -28,8 +28,8 @@ public class PolynomialRegression {
             WeightedObservedPoints wheelObs = new WeightedObservedPoints();
 
             for (RawDatapoint rdp : rawList) {
-                engObs.add(rdp.getTime(), rdp.getEngTime());
-                wheelObs.add(rdp.getTime(), rdp.getWheelTime());
+                engObs.add(((double)rdp.getTime())/1000000.0, rdp.getEngTime());
+                wheelObs.add(((double)rdp.getTime())/1000000.0, rdp.getWheelTime());
             }
 
             final PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
@@ -40,8 +40,8 @@ public class PolynomialRegression {
             LOG.fine(String.format("Regression  Wheel: a = %.2f, b = %.2f, c = %.2f", wheelCoef[0], wheelCoef[1], wheelCoef[2]));
 
             for (RawDatapoint rdp : rawList) {
-                double newEngTime = engCoef[0] * Math.pow(rdp.getTime(), 2) + engCoef[1] * rdp.getTime() + engCoef[2];
-                double newWheelTime = wheelCoef[0] * Math.pow(rdp.getTime(), 2) + wheelCoef[1] * rdp.getTime() + wheelCoef[2];
+                double newEngTime = engCoef[0] * Math.pow(((double)rdp.getTime())/1000000.0, 2) + engCoef[1] * ((double)rdp.getTime())/1000000.0 + engCoef[2];
+                double newWheelTime = wheelCoef[0] * Math.pow(((double)rdp.getTime())/1000000.0, 2) + wheelCoef[1] * ((double)rdp.getTime())/1000000.0 + wheelCoef[2];
 
                 rawFilteredList.add(new RawDatapoint((int) Math.round(newEngTime), (int) Math.round(newWheelTime), rdp.getTime()));
             }
