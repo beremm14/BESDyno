@@ -14,7 +14,7 @@ public class ElectronicDialog extends javax.swing.JDialog {
     public ElectronicDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setSize(new Dimension(2000, 600));
+        setSize(new Dimension(1200, 600));
         setResizable(false);
     }
 
@@ -27,27 +27,28 @@ public class ElectronicDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanCircuit = new javax.swing.JPanel();
-        jLabelCircuit = new javax.swing.JLabel();
+        jPanInfo = new javax.swing.JPanel();
+        jLabelInfo = new javax.swing.JLabel();
         jPanJuli = new javax.swing.JPanel();
         jLabelJuli = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridLayout());
 
-        jPanCircuit.setLayout(new java.awt.BorderLayout());
+        jPanInfo.setBackground(new java.awt.Color(255, 255, 255));
+        jPanInfo.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jPanInfo.setLayout(new java.awt.GridLayout());
 
-        jLabelCircuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/Schematic.png"))); // NOI18N
-        jPanCircuit.add(jLabelCircuit, java.awt.BorderLayout.CENTER);
+        jLabelInfo.setText("<html>\n<center>\n<h1>Julian Ehmann</h1>\n<p><b>Elektronik</b></p><br></br>\n<p>- Sensorik</p><br></br>\n<p>- Logikschaltungen</p><br></br>\n<p>- PCB-Design</p><br></br>\n<p>- Aufbauten</p><br></br>\n</center>\n</html>");
+        jPanInfo.add(jLabelInfo);
 
-        getContentPane().add(jPanCircuit);
+        getContentPane().add(jPanInfo, java.awt.BorderLayout.WEST);
 
         jPanJuli.setLayout(new java.awt.BorderLayout());
 
         jLabelJuli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/Werbung.JPG"))); // NOI18N
         jPanJuli.add(jLabelJuli, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(jPanJuli);
+        getContentPane().add(jPanJuli, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -110,9 +111,9 @@ public class ElectronicDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabelCircuit;
+    private javax.swing.JLabel jLabelInfo;
     private javax.swing.JLabel jLabelJuli;
-    private javax.swing.JPanel jPanCircuit;
+    private javax.swing.JPanel jPanInfo;
     private javax.swing.JPanel jPanJuli;
     // End of variables declaration//GEN-END:variables
 }
