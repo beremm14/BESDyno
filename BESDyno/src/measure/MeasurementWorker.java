@@ -209,6 +209,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageMeasure() throws Exception {
         //Clear all Lists for good Data ;)
         data.clearLists();
+        data.addFilterRDP(new RawDatapoint(0, 0, 0));
 
         if (bike.isStartStopMethod()) {
             if (bike.isMeasRpm()) {
@@ -268,6 +269,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Calculates Power -> end of measurement
     private void manageFinish() {
+        data.rmFirstRDP();
         calcThread = new CalculationThread();
         calcThread.start();
         try {
