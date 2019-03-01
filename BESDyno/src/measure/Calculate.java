@@ -80,7 +80,7 @@ public class Calculate {
     }
 
     public void calcPower() {
-        filterData();
+        //filterData();
 
         //Calculation without Schlepp-Power
         if (bike.isStartStopMethod()) {
