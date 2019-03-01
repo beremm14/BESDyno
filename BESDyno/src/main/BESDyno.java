@@ -9,6 +9,7 @@ import development.TestCSV;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
 import gui.AboutDialog;
+import gui.ElectronicDialog;
 import gui.HelpDialog;
 import gui.MeasureDialog;
 import gui.ResultDialog;
@@ -120,6 +121,7 @@ public class BESDyno extends javax.swing.JFrame {
     private final DevInfoPane infoPane = new DevInfoPane(this, false);
     private final LoggedCommPane commPane = new LoggedCommPane(this, false);
     private final ResultDialog result = new ResultDialog(this, true);
+    private final ElectronicDialog electronic = new ElectronicDialog(this, false);
 
     private MeasureDialog measure;
 
@@ -919,6 +921,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiMaxProblems = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1291,6 +1294,14 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuAbout.add(jmiAbout);
 
+        jMenuItem1.setText("Elektroniker");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onElectronic(evt);
+            }
+        });
+        jmenuAbout.add(jMenuItem1);
+
         jmiHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         jmiHelp.setText("Hilfe");
         jmiHelp.addActionListener(new java.awt.event.ActionListener() {
@@ -1603,6 +1614,10 @@ public class BESDyno extends javax.swing.JFrame {
         LOG.info("Test Communication: ALL");
         addPendingRequest(telegram.all());
     }//GEN-LAST:event_onTestAll
+
+    private void onElectronic(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onElectronic
+        electronic.setVisible(true);
+    }//GEN-LAST:event_onElectronic
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -2190,6 +2205,7 @@ public class BESDyno extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelDevice;
     private javax.swing.JMenuBar jMenuBar;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanChart;
     private javax.swing.JPanel jPanStatus;
     private javax.swing.JPanel jPanTools;

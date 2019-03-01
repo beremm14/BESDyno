@@ -3,7 +3,6 @@ package measure;
 import data.Bike;
 import data.Database;
 import data.Config;
-import data.Datapoint;
 import data.PreDatapoint;
 import data.DialData;
 import data.Environment;
@@ -111,6 +110,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
         int shiftTime = config.getHysteresisTime() / config.getPeriod();
         for (int i = 0; i < shiftTime; i++) {
             if (bike.isMeasRpm()) {
+                main.addPendingRequest(telegram.all());
+                Thread.sleep(config.getPeriod());
                 if (bike.isMeasTemp()) {
                     double engTemp = data.getEngTempList().get(data.getEngTempList().size() - 1);
                     double fumeTemp = data.getFumeTempList().get(data.getFumeTempList().size() - 1);

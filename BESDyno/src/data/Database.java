@@ -1,5 +1,6 @@
 package data;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Database {
 
     //Velocity (m/s or km/h or mi/h)
     private final List<Double> velList = new ArrayList<>();
-
+    
     //Calculated List
     private final List<Datapoint> dataList = new LinkedList<>();
 
