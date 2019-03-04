@@ -1,6 +1,5 @@
 package data;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,16 +40,15 @@ public class Database {
 
     //Schlepp-Lists for Drop-RPM
     private final List<PreDatapoint> schleppPreList = new LinkedList<>();
+    private final List<PreDatapoint> schleppFilteredPreList = new LinkedList<>();
     private final List<Datapoint> schleppDataList = new LinkedList<>();
 
     //Pre-Calculated List
     private final List<PreDatapoint> preList = new ArrayList<>();
-    
-    //Filtered uncalculated List
-    private List<RawDatapoint> filteredList = new LinkedList<>();
+    private List<PreDatapoint> filteredPreList = new LinkedList<>();
 
-    //Uncalculated List
     private final List<RawDatapoint> rawList = new ArrayList<>();
+    private List<RawDatapoint> filteredRawList = new LinkedList<>();
     
     //Continous Temperature Measurement
     private final List<Double> engTempList = new ArrayList<>();
@@ -82,11 +80,19 @@ public class Database {
     }
     
     public List<RawDatapoint> getFilteredList() {
-        return filteredList;
+        return filteredRawList;
     }
 
+    public List<PreDatapoint> getPreOrFilteredList() {
+        return filteredPreList.isEmpty() ? preList : filteredPreList;
+    }
+    
     public List<PreDatapoint> getPreList() {
         return preList;
+    }
+    
+    public List<PreDatapoint> getFilteredPreList() {
+        return filteredPreList;
     }
 
     public List<Datapoint> getDataList() {
@@ -154,8 +160,12 @@ public class Database {
     }
 
     //Setter
-    public void setFilteredList(List<RawDatapoint> filteredList) {
-        this.filteredList = filteredList;
+    public void setFilteredRawList(List<RawDatapoint> filteredRawList) {
+        this.filteredRawList = filteredRawList;
+    }
+    
+    public void setFilteredPreList(List<PreDatapoint> filteredPreList) {
+        this.filteredPreList = filteredPreList;
     }
     
     public void setBikePower(double bikePower) {
@@ -188,7 +198,7 @@ public class Database {
     }
     
     public boolean addFilterRDP(RawDatapoint rdp) {
-        return filteredList.add(rdp);
+        return filteredRawList.add(rdp);
     }
 
     public boolean addPreDP(PreDatapoint pdp) {

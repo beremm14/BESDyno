@@ -108,7 +108,7 @@ public class TestCSV {
 
     private void writePDP(BufferedWriter w) throws IOException {
         //engRpm,wheelRpm,time
-        for (PreDatapoint pdp : data.getPreList()) {
+        for (PreDatapoint pdp : data.getPreOrFilteredList()) {
             w.write(String.format("%.2fU/min", pdp.getEngRpm()));
             w.write(",");
             w.write(String.format("%.2fU/min", pdp.getWheelRpm()));

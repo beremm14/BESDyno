@@ -19,9 +19,9 @@ public class Calculate {
     private final Database data = Database.getInstance();
     private final Environment environment = Environment.getInstance();
     
-    private void filterData() {
+    private void filterPolynomial() {
         final PolynomialRegression regression = new PolynomialRegression(data.getRawList());
-        data.setFilteredList(regression.filterRawData());
+        data.setFilteredRawList(regression.filterRawData());
         
         data.rmAllPDPs();
         for (RawDatapoint rdp : data.getFilteredList()) {
@@ -88,7 +88,7 @@ public class Calculate {
             double lastOmega = 0;
             double lastTime = 0;
 
-            for (PreDatapoint pdp : data.getPreList()) {
+            for (PreDatapoint pdp : data.getPreOrFilteredList()) {
                 double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
                 double dOmega = omega - lastOmega;
                 double alpha = dOmega / ((pdp.getTime() - lastTime) / 1000000.0);
@@ -111,7 +111,7 @@ public class Calculate {
             double lastOmega = 0;
             double lastSchleppOmega = 0;
 
-            for (PreDatapoint pdp : data.getPreList()) {
+            for (PreDatapoint pdp : data.getPreOrFilteredList()) {
                 double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
                 double dOmega = omega - lastOmega;
                 double alpha = dOmega / (pdp.getTime() / 1000000.0);
@@ -155,8 +155,8 @@ public class Calculate {
         data.setBikeTorque(maxTorque);
 
         //Velocity
-        double maxVelocity = calcMps(data.getPreList().get(0));
-        for (PreDatapoint pdp : data.getPreList()) {
+        double maxVelocity = calcMps(data.getPreOrFilteredList().get(0));
+        for (PreDatapoint pdp : data.getPreOrFilteredList()) {
             if (calcMps(pdp) > maxVelocity) {
                 maxVelocity = calcMps(pdp);
             }

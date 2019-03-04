@@ -701,9 +701,9 @@ public class BESDyno extends javax.swing.JFrame {
                     w.write(',');
                     w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getDataList().get(i).getTorque()));
                     w.write(',');
-                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getPreList().get(i).getEngRpm()));
+                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getPreOrFilteredList().get(i).getEngRpm()));
                     w.write(',');
-                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getPreList().get(i).getWheelRpm()));
+                    w.write(String.format(Locale.UK, "%.2f", Database.getInstance().getPreOrFilteredList().get(i).getWheelRpm()));
                     w.newLine();
                 }
                 LOG.fine("CSV-Datei saved: " + file.getPath());
