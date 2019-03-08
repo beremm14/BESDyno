@@ -34,7 +34,7 @@ public class Database {
 
     //Velocity (m/s or km/h or mi/h)
     private final List<Double> velList = new ArrayList<>();
-    
+
     //Calculated List
     private final List<Datapoint> dataList = new LinkedList<>();
 
@@ -49,7 +49,7 @@ public class Database {
 
     private final List<RawDatapoint> rawList = new ArrayList<>();
     private List<RawDatapoint> filteredRawList = new LinkedList<>();
-    
+
     //Continous Temperature Measurement
     private final List<Double> engTempList = new ArrayList<>();
     private final List<Double> fumeTempList = new ArrayList<>();
@@ -78,7 +78,7 @@ public class Database {
     public List<RawDatapoint> getRawList() {
         return rawList;
     }
-    
+
     public List<RawDatapoint> getFilteredList() {
         return filteredRawList;
     }
@@ -86,11 +86,11 @@ public class Database {
     public List<PreDatapoint> getPreOrFilteredList() {
         return filteredPreList.isEmpty() ? preList : filteredPreList;
     }
-    
+
     public List<PreDatapoint> getPreList() {
         return preList;
     }
-    
+
     public List<PreDatapoint> getFilteredPreList() {
         return filteredPreList;
     }
@@ -114,15 +114,15 @@ public class Database {
     public List<Double> getFumeTempList() {
         return fumeTempList;
     }
-    
+
     public double getBikePower() {
         return bikePower;
     }
-    
+
     public double getBikePowerPS() {
         return bikePower * 1000.0 * 1.36;
     }
-    
+
     public double getBikePowerKW() {
         return bikePower * 1000.0;
     }
@@ -163,11 +163,11 @@ public class Database {
     public void setFilteredRawList(List<RawDatapoint> filteredRawList) {
         this.filteredRawList = filteredRawList;
     }
-    
+
     public void setFilteredPreList(List<PreDatapoint> filteredPreList) {
         this.filteredPreList = filteredPreList;
     }
-    
+
     public void setBikePower(double bikePower) {
         this.bikePower = bikePower;
     }
@@ -196,7 +196,7 @@ public class Database {
     public boolean addRawDP(RawDatapoint rdp) {
         return rawList.add(rdp);
     }
-    
+
     public boolean addFilterRDP(RawDatapoint rdp) {
         return filteredRawList.add(rdp);
     }
@@ -220,11 +220,11 @@ public class Database {
     public boolean addVel(Double v) {
         return velList.add(v);
     }
-    
+
     public boolean addTemperatures(String engTemp, String fumeTemp) {
         return engTempList.add(Double.parseDouble(engTemp)) && fumeTempList.add(Double.parseDouble(fumeTemp));
     }
-    
+
     public boolean addTemperatures(double engTemp, double fumeTemp) {
         return engTempList.add(engTemp) && fumeTempList.add(fumeTemp);
     }
@@ -232,10 +232,10 @@ public class Database {
     public void addXYValues(Datapoint dp, PreDatapoint pdp) {
         double power;
         if (Config.getInstance().isPs()) {
-                power = (dp.getPower() / 1000) * 1.36;
-            } else {
-                power = (dp.getPower() / 1000);
-            }
+            power = (dp.getPower() / 1000) * 1.36;
+        } else {
+            power = (dp.getPower() / 1000);
+        }
         if (Bike.getInstance().isMeasRpm()) {
             seriesPower.add(pdp.getEngRpm(), power);
             seriesTorque.add(pdp.getEngRpm(), dp.getTorque());
@@ -246,18 +246,24 @@ public class Database {
 
     }
 
-    public void rmFirstDP() {
-        dataList.remove(0);
+    public void rmFirstDP(int n) {
+        for (int i = 0; i < n; i++) {
+            dataList.remove(0);
+        }
     }
-    
-    public void rmFirstPDP() {
-        preList.remove(0);
+
+    public void rmFirstPDP(int n) {
+        for (int i = 0; i < n; i++) {
+            preList.remove(0);
+        }
     }
-    
-    public void rmFirstRDP() {
-        rawList.remove(0);
+
+    public void rmFirstRDP(int n) {
+        for (int i = 0; i < n; i++) {
+            rawList.remove(0);
+        }
     }
-    
+
     public void rmAllPDPs() {
         preList.removeAll(preList);
     }

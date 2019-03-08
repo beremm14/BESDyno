@@ -82,6 +82,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanLoad.setBackground(Color.darkGray);
             jPanConfirm.setBackground(Color.darkGray);
             jPanTemp.setBackground(Color.darkGray);
+            jPanFilter.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setBackground(Color.darkGray);
             jtfHysteresisRpm.setBackground(Color.darkGray);
@@ -100,6 +101,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStopRpm.setBackground(Color.darkGray);
             jtfEngWarning.setBackground(Color.darkGray);
             jtfExhWarning.setBackground(Color.darkGray);
+            jtfOrder.setBackground(Color.darkGray);
+            jtfSmoothing.setBackground(Color.darkGray);
 
             jtfHysteresisKmh.setForeground(Color.white);
             jtfHysteresisRpm.setForeground(Color.white);
@@ -118,6 +121,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStopRpm.setForeground(Color.white);
             jtfEngWarning.setForeground(Color.white);
             jtfExhWarning.setForeground(Color.white);
+            jtfOrder.setForeground(Color.white);
+            jtfSmoothing.setForeground(Color.white);
 
             jrbDaymode.setForeground(Color.white);
             jrbNightmode.setForeground(Color.white);
@@ -178,6 +183,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelEngWarning2.setForeground(Color.white);
             jLabelExhWarning.setForeground(Color.white);
             jLabelExhWarning2.setForeground(Color.white);
+            jLabelOrder.setForeground(Color.white);
+            jLabelSmoothing.setForeground(Color.white);
         } else {
             jPanAppearance.setBackground(Color.white);
             jPanButtons.setBackground(Color.white);
@@ -193,6 +200,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             jPanLoad.setBackground(Color.white);
             jPanConfirm.setBackground(Color.white);
             jPanTemp.setBackground(Color.white);
+            jPanFilter.setBackground(Color.white);
 
             jtfInertia.setBackground(Color.white);
             jtfInertia.setForeground(Color.black);
@@ -214,6 +222,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStopRpm.setBackground(Color.white);
             jtfEngWarning.setBackground(Color.white);
             jtfExhWarning.setBackground(Color.white);
+            jtfOrder.setBackground(Color.white);
+            jtfSmoothing.setBackground(Color.white);
 
             jtfHysteresisKmh.setForeground(Color.black);
             jtfHysteresisRpm.setForeground(Color.black);
@@ -232,6 +242,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfStopRpm.setForeground(Color.black);
             jtfEngWarning.setForeground(Color.black);
             jtfExhWarning.setForeground(Color.black);
+            jtfOrder.setForeground(Color.black);
+            jtfSmoothing.setForeground(Color.black);
 
             jrbDaymode.setForeground(Color.black);
             jrbNightmode.setForeground(Color.black);
@@ -292,6 +304,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jLabelEngWarning2.setForeground(Color.black);
             jLabelExhWarning.setForeground(Color.black);
             jLabelExhWarning2.setForeground(Color.black);
+            jLabelOrder.setForeground(Color.black);
+            jLabelSmoothing.setForeground(Color.black);
         }
     }
 
@@ -587,6 +601,34 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.warning(e);
             jtfExhWarning.requestFocusInWindow();
         }
+        
+        try {
+            c.setOrder(Integer.parseInt(jtfOrder.getText()));
+            if (c.getOrder() < 0 || c.getOrder() > 10) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Geben Sie bitte einen Grad zwischen 1 und 5 ein!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfOrder.requestFocusInWindow();
+            }
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine ganzzahlige Werte eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            LOG.warning(e);
+            jtfOrder.requestFocusInWindow();
+        }
+        
+        try {
+            c.setSmoothing(Double.parseDouble(jtfSmoothing.getText()));
+            if (c.getSmoothing() < 0 || c.getSmoothing() > 1) {
+                error = true;
+                JOptionPane.showMessageDialog(this, "Geben Sie bitte einen Multiplikator zwischen 0 und 1 ein!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+                jtfSmoothing.requestFocusInWindow();
+            }
+        } catch (NumberFormatException e) {
+            error = true;
+            JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen und eine rationale Zahl eingeben!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
+            LOG.warning(e);
+            jtfSmoothing.requestFocusInWindow();
+        }
 
         if (!error) {
             try {
@@ -628,6 +670,8 @@ public class SettingsDialog extends javax.swing.JDialog {
             jtfTorque.setText(String.format("%d", c.getTorqueCorr()));
             jtfEngWarning.setText(String.format("%d", c.getWarningEngTemp()));
             jtfExhWarning.setText(String.format("%d", c.getWarningExhTemp()));
+            jtfOrder.setText(String.format("%d", c.getOrder()));
+            jtfSmoothing.setText(String.format(Locale.UK, "%.2f", c.getSmoothing()));
 
             jrbDaymode.setSelected(!c.isDark());
             jrbNightmode.setSelected(c.isDark());
@@ -676,6 +720,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Fehler in der Konfigurationsdatei!", "Config-Error", JOptionPane.ERROR_MESSAGE);
+            LOG.warning(ex);
         }
     }
 
@@ -899,6 +944,11 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfExhWarning = new javax.swing.JTextField();
         jLabelExhWarning2 = new javax.swing.JLabel();
         jLabelHelp = new javax.swing.JLabel();
+        jPanFilter = new javax.swing.JPanel();
+        jLabelOrder = new javax.swing.JLabel();
+        jtfOrder = new javax.swing.JTextField();
+        jLabelSmoothing = new javax.swing.JLabel();
+        jtfSmoothing = new javax.swing.JTextField();
         jPanButtons = new javax.swing.JPanel();
         jPanLoad = new javax.swing.JPanel();
         jbutLoad = new javax.swing.JButton();
@@ -1490,6 +1540,38 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 3;
         jPanEast.add(jLabelHelp, gridBagConstraints);
 
+        jPanFilter.setBackground(new java.awt.Color(255, 255, 255));
+        jPanFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Filter", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red)); // NOI18N
+        jPanFilter.setLayout(new java.awt.GridBagLayout());
+
+        jLabelOrder.setText("Grad des Filters");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanFilter.add(jLabelOrder, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanFilter.add(jtfOrder, gridBagConstraints);
+
+        jLabelSmoothing.setText("Multiplikator");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanFilter.add(jLabelSmoothing, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanFilter.add(jtfSmoothing, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanEast.add(jPanFilter, gridBagConstraints);
+
         jPanMain.add(jPanEast);
 
         getContentPane().add(jPanMain, java.awt.BorderLayout.CENTER);
@@ -1762,11 +1844,13 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelIdleRpm2;
     private javax.swing.JLabel jLabelInertia;
     private javax.swing.JLabel jLabelInertia2;
+    private javax.swing.JLabel jLabelOrder;
     private javax.swing.JLabel jLabelPeriod;
     private javax.swing.JLabel jLabelPeriod2;
     private javax.swing.JLabel jLabelPngX;
     private javax.swing.JLabel jLabelPngY;
     private javax.swing.JLabel jLabelPower;
+    private javax.swing.JLabel jLabelSmoothing;
     private javax.swing.JLabel jLabelStartKmh;
     private javax.swing.JLabel jLabelStartKmh2;
     private javax.swing.JLabel jLabelStartRpm;
@@ -1782,6 +1866,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanCorr;
     private javax.swing.JPanel jPanDevice;
     private javax.swing.JPanel jPanEast;
+    private javax.swing.JPanel jPanFilter;
     private javax.swing.JPanel jPanLoad;
     private javax.swing.JPanel jPanMain;
     private javax.swing.JPanel jPanPNG;
@@ -1816,10 +1901,12 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jtfIdleKmh;
     private javax.swing.JTextField jtfIdleRpm;
     private javax.swing.JTextField jtfInertia;
+    private javax.swing.JTextField jtfOrder;
     private javax.swing.JTextField jtfPeriod;
     private javax.swing.JTextField jtfPngX;
     private javax.swing.JTextField jtfPngY;
     private javax.swing.JTextField jtfPower;
+    private javax.swing.JTextField jtfSmoothing;
     private javax.swing.JTextField jtfStartKmh;
     private javax.swing.JTextField jtfStartRpm;
     private javax.swing.JTextField jtfStopKmh;

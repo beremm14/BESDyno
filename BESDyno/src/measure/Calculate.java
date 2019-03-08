@@ -80,7 +80,12 @@ public class Calculate {
     }
 
     public void calcPower() {
-        //filterData();
+        Filter filter = new Filter(data.getRawList());
+        filter.compute(config.getOrder(), config.getSmoothing());
+        data.setFilteredPreList(filter.getFilteredPreList());
+        data.setFilteredRawList(filter.getFilteredRawList());
+        
+        data.rmFirstPDP(5);
 
         //Calculation without Schlepp-Power
         if (bike.isStartStopMethod()) {
@@ -138,7 +143,7 @@ public class Calculate {
         }
 
         //Evaluation of Maximum-Values
-        data.rmFirstDP();
+        data.rmFirstDP(1);
 
         //Torque and Power
         double maxTorque = data.getDataList().get(0).getTorque();

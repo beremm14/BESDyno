@@ -46,6 +46,9 @@ public class Config {
     private int warningEngTemp;
     private int warningExhTemp;
     
+    private int order;
+    private double smoothing;
+    
     private double arduinoVersion = 0;
     
     private Velocity velocity;
@@ -173,6 +176,14 @@ public class Config {
         return warningEngTemp;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public double getSmoothing() {
+        return smoothing;
+    }
+
     //Setter
     public void setPs(boolean ps) {
         this.ps = ps;
@@ -274,7 +285,14 @@ public class Config {
         this.warningExhTemp = warningExhTemp;
     }
 
-    
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public void setSmoothing(double smoothing) {
+        this.smoothing = smoothing;
+    }
+
     public int writeVelocity() {
         switch(velocity) {
             case MPS: return 0;
@@ -315,6 +333,8 @@ public class Config {
         setStopRpm(9000);
         setWarningEngTemp(95);
         setWarningExhTemp(500);
+        setOrder(1);
+        setSmoothing(0.3);
         writeJson(w);
     }
 
@@ -342,7 +362,9 @@ public class Config {
                 .add("Torque Correction Factor", torqueCorr)
                 .add("Velocity", writeVelocity())
                 .add("Engine Max Temp", warningEngTemp)
-                .add("Exhaust Max Temp", warningExhTemp);
+                .add("Exhaust Max Temp", warningExhTemp)
+                .add("Order", order)
+                .add("Smoothing", smoothing);
 
         JsonObject obj = b.build();
         w.write(obj.toString());
@@ -377,6 +399,8 @@ public class Config {
         velocity = readVelocity(json.getInt("Velocity"));
         warningEngTemp = json.getInt("Engine Max Temp");
         warningExhTemp = json.getInt("Exhaust Max Temp");
+        order = json.getInt("Order");
+        smoothing = json.getJsonNumber("Smoothing").doubleValue();
     }
 
 }

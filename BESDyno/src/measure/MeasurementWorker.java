@@ -269,7 +269,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Calculates Power -> end of measurement
     private void manageFinish() {
-        data.rmFirstRDP();
+        data.rmFirstRDP(2);
         calcThread = new CalculationThread();
         calcThread.start();
         try {
