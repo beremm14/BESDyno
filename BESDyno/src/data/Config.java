@@ -49,6 +49,9 @@ public class Config {
     private int order;
     private double smoothing;
     
+    private boolean average;
+    private boolean poly;
+    
     private double arduinoVersion = 0;
     
     private Velocity velocity;
@@ -184,6 +187,14 @@ public class Config {
         return smoothing;
     }
 
+    public boolean isAverage() {
+        return average;
+    }
+
+    public boolean isPoly() {
+        return poly;
+    }
+
     //Setter
     public void setPs(boolean ps) {
         this.ps = ps;
@@ -293,6 +304,14 @@ public class Config {
         this.smoothing = smoothing;
     }
 
+    public void setAverage(boolean average) {
+        this.average = average;
+    }
+
+    public void setPoly(boolean poly) {
+        this.poly = poly;
+    }
+
     public int writeVelocity() {
         switch(velocity) {
             case MPS: return 0;
@@ -335,6 +354,8 @@ public class Config {
         setWarningExhTemp(500);
         setOrder(1);
         setSmoothing(0.3);
+        setAverage(false);
+        setPoly(false);
         writeJson(w);
     }
 
@@ -364,7 +385,9 @@ public class Config {
                 .add("Engine Max Temp", warningEngTemp)
                 .add("Exhaust Max Temp", warningExhTemp)
                 .add("Order", order)
-                .add("Smoothing", smoothing);
+                .add("Smoothing", smoothing)
+                .add("Average", average)
+                .add("Poly", poly);
 
         JsonObject obj = b.build();
         w.write(obj.toString());
@@ -401,6 +424,8 @@ public class Config {
         warningExhTemp = json.getInt("Exhaust Max Temp");
         order = json.getInt("Order");
         smoothing = json.getJsonNumber("Smoothing").doubleValue();
+        average = json.getBoolean("Average");
+        poly = json.getBoolean("Poly");
     }
 
 }

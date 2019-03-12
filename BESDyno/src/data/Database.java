@@ -204,6 +204,10 @@ public class Database {
     public boolean addPreDP(PreDatapoint pdp) {
         return preList.add(pdp);
     }
+    
+    public boolean addFilterPDP(PreDatapoint pdp) {
+        return filteredPreList.add(pdp);
+    }
 
     public boolean addPreSchlepp(PreDatapoint pdp) {
         return schleppPreList.add(pdp);

@@ -41,7 +41,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     public SettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+
         setSize(new Dimension(800, 500));
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
@@ -133,8 +133,11 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setForeground(Color.white);
             jrbCelcius.setForeground(Color.white);
             jrbFahrenheit.setForeground(Color.white);
+            jrbAverage.setForeground(Color.white);
+            jrbPoly.setForeground(Color.white);
 
             jcbEnableInertiaEdit.setForeground(Color.white);
+            jcbFilter.setForeground(Color.white);
 
             jrbDaymode.setBackground(Color.darkGray);
             jrbNightmode.setBackground(Color.darkGray);
@@ -145,8 +148,11 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setBackground(Color.darkGray);
             jrbCelcius.setBackground(Color.darkGray);
             jrbFahrenheit.setBackground(Color.darkGray);
+            jrbPoly.setBackground(Color.darkGray);
+            jrbAverage.setBackground(Color.darkGray);
 
             jcbEnableInertiaEdit.setBackground(Color.darkGray);
+            jcbFilter.setBackground(Color.darkGray);
 
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
@@ -254,8 +260,11 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setForeground(Color.black);
             jrbCelcius.setForeground(Color.black);
             jrbFahrenheit.setForeground(Color.black);
-
+            jrbAverage.setForeground(Color.black);
+            jrbPoly.setForeground(Color.black);
+            
             jcbEnableInertiaEdit.setForeground(Color.black);
+            jcbFilter.setForeground(Color.black);
 
             jrbDaymode.setBackground(Color.white);
             jrbNightmode.setBackground(Color.white);
@@ -266,8 +275,11 @@ public class SettingsDialog extends javax.swing.JDialog {
             jrbMIH.setBackground(Color.white);
             jrbCelcius.setBackground(Color.white);
             jrbFahrenheit.setBackground(Color.white);
+            jrbAverage.setBackground(Color.white);
+            jrbPoly.setBackground(Color.black);
 
             jcbEnableInertiaEdit.setBackground(Color.white);
+            jcbFilter.setBackground(Color.white);
 
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);
@@ -316,7 +328,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     public boolean isDark() {
         return jrbNightmode.isSelected();
     }
-    
+
     private String convertVelocity(Velocity from, Velocity to, int value) {
         switch (from) {
             case MIH:
@@ -361,7 +373,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     public void changePeriodTime() {
         jtfPeriod.requestFocusInWindow();
     }
-    
+
     //Sets the Config-File
     private void confirm(Config c, boolean save) {
 
@@ -370,6 +382,13 @@ public class SettingsDialog extends javax.swing.JDialog {
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
         c.setCelcius(jrbCelcius.isSelected());
+        if (jcbFilter.isSelected()) {
+            c.setAverage(jrbAverage.isSelected());
+            c.setPoly(jrbPoly.isSelected());
+        } else {
+            c.setAverage(false);
+            c.setPoly(false);
+        }
         if (jrbKMH.isSelected()) {
             c.setVelocity(Config.Velocity.KMH);
         } else if (jrbMPS.isSelected()) {
@@ -395,7 +414,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setHysteresisRpm(Integer.parseInt(jtfHysteresisRpm.getText()));
-             if (c.getHysteresisRpm()<= 0) {
+            if (c.getHysteresisRpm() <= 0) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Hysterese Drehzahl muss größer 0 sein...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfHysteresisRpm.requestFocusInWindow();
@@ -408,7 +427,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setHysteresisTime(Integer.parseInt(jtfHysteresisTime.getText()));
-             if (c.getHysteresisTime() < 1000) {
+            if (c.getHysteresisTime() < 1000) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Hysterese Zeit ist " + c.getHysteresisTime() + ". Es wird eine Zeit von min. 1000ms empfohlen.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfHysteresisTime.requestFocusInWindow();
@@ -429,7 +448,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setIdleRpm(Integer.parseInt(jtfIdleRpm.getText()));
-             if (c.getIdleRpm() <= 0) {
+            if (c.getIdleRpm() <= 0) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Leerlaufdrehzahl zu klein!", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfIdleRpm.requestFocusInWindow();
@@ -442,7 +461,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setPeriod(Integer.parseInt(jtfPeriod.getText()));
-             if (c.getPeriod() <= 5) {
+            if (c.getPeriod() <= 5) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Eine zu kleine Periodendauer wird den Computer überlasten... Min. 20ms werden empfohlen.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfPeriod.requestFocusInWindow();
@@ -455,7 +474,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setPngHeight(Integer.parseInt(jtfPngY.getText()));
-             if (c.getPngHeight() < 480) {
+            if (c.getPngHeight() < 480) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Bildhöhe muss min. 480px betragen...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfPngY.requestFocusInWindow();
@@ -468,7 +487,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setPngWidth(Integer.parseInt(jtfPngX.getText()));
-             if (c.getPngWidth() < 360) {
+            if (c.getPngWidth() < 360) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Bildbreite muss min. 360px betragen...", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfPngX.requestFocusInWindow();
@@ -481,7 +500,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setPowerCorr(Double.parseDouble(jtfPower.getText()));
-             if (c.getPowerCorr() <= 0) {
+            if (c.getPowerCorr() <= 0) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Der Leistungskorrekturfaktor wird mit jedem Messpunkt multipliziert. Er darf nicht ≤0 sein", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfPower.requestFocusInWindow();
@@ -494,7 +513,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setStartKmh(Integer.parseInt(jtfStartKmh.getText()));
-             if (c.getStartVelo() <= 0 || c.getStartVelo() < c.getIdleVelo()) {
+            if (c.getStartVelo() <= 0 || c.getStartVelo() < c.getIdleVelo()) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Startgeschwindigkeit darf nicht 0 oder kleiner als die Leerlaufgeschwindigkeit sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfStartKmh.requestFocusInWindow();
@@ -507,7 +526,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setStopVelo(Integer.parseInt(jtfStopKmh.getText()));
-             if (c.getStopVelo() <= 0 || c.getStopVelo() < c.getStartVelo()) {
+            if (c.getStopVelo() <= 0 || c.getStopVelo() < c.getStartVelo()) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Stoppgeschwindigkeit darf nicht 0 oder kleiner als die Startgeschwindigkeit sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfStopKmh.requestFocusInWindow();
@@ -520,7 +539,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setStartRpm(Integer.parseInt(jtfStartRpm.getText()));
-             if (c.getStartRpm() <= 0 || c.getStartRpm() < c.getIdleRpm()) {
+            if (c.getStartRpm() <= 0 || c.getStartRpm() < c.getIdleRpm()) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Startdrehzahl darf nicht 0 oder kleiner als die Leerlaufdrehzahl sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfStartRpm.requestFocusInWindow();
@@ -533,7 +552,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setStopRpm(Integer.parseInt(jtfStopRpm.getText()));
-             if (c.getStopRpm() <= 0 || c.getStopRpm() < c.getStartRpm()) {
+            if (c.getStopRpm() <= 0 || c.getStopRpm() < c.getStartRpm()) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Stoppdrehazhl darf nicht 0 oder kleiner als die Startdrehzahl sein.", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfStopRpm.requestFocusInWindow();
@@ -546,7 +565,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
         try {
             c.setTorqueCorr(Integer.parseInt(jtfTorque.getText()));
-             if (c.getTorqueCorr() <= 0) {
+            if (c.getTorqueCorr() <= 0) {
                 error = true;
                 JOptionPane.showMessageDialog(this, "Der Drehmoment-Korrekturfaktor wird mit jedem Messpunkt multipliziert. Er darf nicht ≤0 sein", "Eingabefehler!", JOptionPane.ERROR_MESSAGE);
                 jtfTorque.requestFocusInWindow();
@@ -601,7 +620,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.warning(e);
             jtfExhWarning.requestFocusInWindow();
         }
-        
+
         try {
             c.setOrder(Integer.parseInt(jtfOrder.getText()));
             if (c.getOrder() < 0 || c.getOrder() > 10) {
@@ -615,7 +634,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             LOG.warning(e);
             jtfOrder.requestFocusInWindow();
         }
-        
+
         try {
             c.setSmoothing(Double.parseDouble(jtfSmoothing.getText()));
             if (c.getSmoothing() < 0 || c.getSmoothing() > 1) {
@@ -680,6 +699,17 @@ public class SettingsDialog extends javax.swing.JDialog {
 
             jrbCelcius.setSelected(c.isCelcius());
             jrbFahrenheit.setSelected(!c.isCelcius());
+
+            if (!c.isAverage() && !c.isPoly()) {
+                jcbFilter.setSelected(false);
+                jrbAverage.setSelected(false);
+                jrbPoly.setSelected(false);
+                jrbAverage.setEnabled(false);
+                jrbPoly.setEnabled(false);
+            } else {
+                jrbAverage.setSelected(c.isAverage());
+                jrbPoly.setSelected(c.isPoly());
+            }
 
             if (c.isCelcius()) {
                 jLabelEngWarning2.setText("°C");
@@ -876,6 +906,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jbgPower = new javax.swing.ButtonGroup();
         jbgVelocity = new javax.swing.ButtonGroup();
         jbgTemperature = new javax.swing.ButtonGroup();
+        jbgFilter = new javax.swing.ButtonGroup();
         jPanMain = new javax.swing.JPanel();
         jPanWest = new javax.swing.JPanel();
         jPanAppearance = new javax.swing.JPanel();
@@ -949,6 +980,9 @@ public class SettingsDialog extends javax.swing.JDialog {
         jtfOrder = new javax.swing.JTextField();
         jLabelSmoothing = new javax.swing.JLabel();
         jtfSmoothing = new javax.swing.JTextField();
+        jcbFilter = new javax.swing.JCheckBox();
+        jrbPoly = new javax.swing.JRadioButton();
+        jrbAverage = new javax.swing.JRadioButton();
         jPanButtons = new javax.swing.JPanel();
         jPanLoad = new javax.swing.JPanel();
         jbutLoad = new javax.swing.JButton();
@@ -1568,6 +1602,43 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.weighty = 1.0;
         jPanFilter.add(jtfSmoothing, gridBagConstraints);
 
+        jcbFilter.setText("Weiterer Filter");
+        jcbFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbFilterActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanFilter.add(jcbFilter, gridBagConstraints);
+
+        jbgFilter.add(jrbPoly);
+        jrbPoly.setText("Näherungs-Polynom");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanFilter.add(jrbPoly, gridBagConstraints);
+
+        jbgFilter.add(jrbAverage);
+        jrbAverage.setText("Gleitender Mittelwert");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanFilter.add(jrbAverage, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanEast.add(jPanFilter, gridBagConstraints);
@@ -1765,6 +1836,18 @@ public class SettingsDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jcbEnableInertiaEditActionPerformed
 
+    private void jcbFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbFilterActionPerformed
+        if (jcbFilter.isSelected()) {
+            jrbPoly.setEnabled(true);
+            jrbAverage.setEnabled(true);
+        } else {
+            jrbPoly.setEnabled(false);
+            jrbAverage.setEnabled(false);
+            jrbPoly.setSelected(false);
+            jrbAverage.setSelected(false);
+        }
+    }//GEN-LAST:event_jcbFilterActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1876,6 +1959,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanVelocity;
     private javax.swing.JPanel jPanWest;
     private javax.swing.ButtonGroup jbgAppearance;
+    private javax.swing.ButtonGroup jbgFilter;
     private javax.swing.ButtonGroup jbgPower;
     private javax.swing.ButtonGroup jbgTemperature;
     private javax.swing.ButtonGroup jbgVelocity;
@@ -1884,6 +1968,8 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JButton jbutOK;
     private javax.swing.JButton jbutSave;
     private javax.swing.JCheckBox jcbEnableInertiaEdit;
+    private javax.swing.JCheckBox jcbFilter;
+    private javax.swing.JRadioButton jrbAverage;
     private javax.swing.JRadioButton jrbCelcius;
     private javax.swing.JRadioButton jrbDaymode;
     private javax.swing.JRadioButton jrbFahrenheit;
@@ -1893,6 +1979,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton jrbMPS;
     private javax.swing.JRadioButton jrbNightmode;
     private javax.swing.JRadioButton jrbPS;
+    private javax.swing.JRadioButton jrbPoly;
     private javax.swing.JTextField jtfEngWarning;
     private javax.swing.JTextField jtfExhWarning;
     private javax.swing.JTextField jtfHysteresisKmh;

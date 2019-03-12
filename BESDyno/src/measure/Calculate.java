@@ -18,14 +18,27 @@ public class Calculate {
     private final Config config = Config.getInstance();
     private final Database data = Database.getInstance();
     private final Environment environment = Environment.getInstance();
-    
-    private void filterPolynomial() {
-        final PolynomialRegression regression = new PolynomialRegression(data.getRawList());
-        data.setFilteredRawList(regression.filterRawData());
-        
-        data.rmAllPDPs();
-        for (RawDatapoint rdp : data.getFilteredList()) {
-            data.addPreDP(calcRpm(rdp));
+
+    private void filterData() {
+        Filter filter = new Filter(data.getRawList());
+        filter.compute(config.getOrder(), config.getSmoothing());
+        data.setFilteredPreList(filter.getFilteredPreList());
+        data.setFilteredRawList(filter.getFilteredRawList());
+
+        if (config.isPoly()) {
+            PolynomialRegression regression = new PolynomialRegression(data.getRawList());
+            data.setFilteredRawList(regression.filterRawData());
+
+            for (RawDatapoint rdp : data.getFilteredList()) {
+                data.addFilterPDP(calcRpm(rdp));
+            }
+        } else if (config.isAverage()) {
+            MovingAverage moving = new MovingAverage(3, data.getRawList());
+            data.setFilteredRawList(moving.compute());
+
+            for (RawDatapoint rdp : data.getFilteredList()) {
+                data.addFilterPDP(calcRpm(rdp));
+            }
         }
     }
 
@@ -80,11 +93,8 @@ public class Calculate {
     }
 
     public void calcPower() {
-        Filter filter = new Filter(data.getRawList());
-        filter.compute(config.getOrder(), config.getSmoothing());
-        data.setFilteredPreList(filter.getFilteredPreList());
-        data.setFilteredRawList(filter.getFilteredRawList());
-        
+        filterData();
+
         data.rmFirstPDP(5);
 
         //Calculation without Schlepp-Power
