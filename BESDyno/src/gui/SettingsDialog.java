@@ -42,7 +42,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        setSize(new Dimension(800, 500));
+        setSize(new Dimension(800, 650));
         setResizable(false);
         setTitle("Einstellungen - Konfiguration");
         setLocationRelativeTo(null);
