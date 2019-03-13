@@ -33,6 +33,8 @@ float envAlt;
 //Thermos
 float engTemp;
 float exhTemp;
+float u_eng;
+float u_exh;
 uint8_t measCount;
 
 //RPM
@@ -109,11 +111,11 @@ boolean readEnvironment () {
 
 void readThermos() {
   //ENGINE
-  float u_eng = (analogRead(A0) * 4.94) / 1024;
+  u_eng = (analogRead(A0) * 4.5) / 1024;
   engTemp = (u_eng - 1.248) / 0.005;
 
   //EXHAUST
-  float u_exh = (analogRead(A1) * 4.94) / 1024;
+  u_exh = (analogRead(A1) * 4.5) / 1024;
   exhTemp = (u_exh - 1.248) / 0.005;
 
   if (engTemp <= 0 || exhTemp <= 0) {
@@ -396,7 +398,9 @@ void serialEvent() {
       Serial.println("Luftdruck:  " + String(envPress));
       Serial.println("Höhenmeter: " + String(envAlt));
       Serial.println("A0 Motor:   " + String(engTemp));
+      Serial.println("A0 U_Eng:   " + String(u_eng));
       Serial.println("A1 Abgas:   " + String(exhTemp));
+      Serial.println("A1 U_Exh:   " + String(u_exh));
       Serial.println("D2 Motor:   " + String(dEngTime));
       Serial.println("D3 Walze:   " + String(dWheelTime));
       Serial.println("Zeit (µs):  " + String(micros()-refMicros) + "\n");
