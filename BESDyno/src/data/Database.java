@@ -36,7 +36,7 @@ public class Database {
     private final List<Double> velList = new ArrayList<>();
 
     //Calculated List
-    private final List<Datapoint> dataList = new LinkedList<>();
+    private List<Datapoint> dataList = new LinkedList<>();
 
     //Schlepp-Lists for Drop-RPM
     private final List<PreDatapoint> schleppPreList = new LinkedList<>();
@@ -44,10 +44,10 @@ public class Database {
     private final List<Datapoint> schleppDataList = new LinkedList<>();
 
     //Pre-Calculated List
-    private final List<PreDatapoint> preList = new ArrayList<>();
+    private List<PreDatapoint> preList = new ArrayList<>();
     private List<PreDatapoint> filteredPreList = new LinkedList<>();
 
-    private final List<RawDatapoint> rawList = new ArrayList<>();
+    private List<RawDatapoint> rawList = new ArrayList<>();
     private List<RawDatapoint> filteredRawList = new LinkedList<>();
 
     //Continous Temperature Measurement
@@ -160,6 +160,18 @@ public class Database {
     }
 
     //Setter
+    public void setRawList(List<RawDatapoint> rawList) {
+        this.rawList = rawList;
+    }
+    
+    public void setPreList(List<PreDatapoint> preList) {
+        this.preList = preList;
+    }
+    
+    public void setDataList(List<Datapoint> dataList) {
+        this.dataList = dataList;
+    }
+    
     public void setFilteredRawList(List<RawDatapoint> filteredRawList) {
         this.filteredRawList = filteredRawList;
     }
@@ -236,9 +248,9 @@ public class Database {
     public void addXYValues(Datapoint dp, PreDatapoint pdp) {
         double power;
         if (Config.getInstance().isPs()) {
-            power = (dp.getPower() / 1000) * 1.36;
+            power = (dp.getPower() / 1000.0) * 1.36;
         } else {
-            power = (dp.getPower() / 1000);
+            power = (dp.getPower() / 1000.0);
         }
         if (Bike.getInstance().isMeasRpm()) {
             seriesPower.add(pdp.getEngRpm(), power);
@@ -247,7 +259,22 @@ public class Database {
             seriesPower.add(pdp.getWheelRpm(), power);
             seriesTorque.add(pdp.getWheelRpm(), dp.getTorque());
         }
-
+    }
+    
+    public void addXYValuesAgain(Datapoint dp, int index) {
+        double power;
+        if (Config.getInstance().isPs()) {
+            power = (dp.getPower() / 1000.0) * 1.36;
+        } else {
+            power = (dp.getPower() / 1000.0);
+        }
+        if (Bike.getInstance().isMeasRpm()) {
+            seriesPower.add(filteredPreList.get(index).getEngRpm(), power);
+            seriesTorque.add(filteredPreList.get(index).getWheelRpm(), dp.getTorque());
+        } else {
+            seriesPower.add(filteredPreList.get(index).getEngRpm(), power);
+            seriesTorque.add(filteredPreList.get(index).getWheelRpm(), dp.getTorque());
+        }
     }
 
     public void rmFirstDP(int n) {
@@ -279,6 +306,13 @@ public class Database {
         schleppDataList.removeAll(schleppDataList);
         dataList.removeAll(dataList);
         velList.removeAll(velList);
+        seriesPower.clear();
+        seriesTorque.clear();
+    }
+    
+    public void killChart() {
+        seriesPower.clear();
+        seriesTorque.clear();
     }
 
 }

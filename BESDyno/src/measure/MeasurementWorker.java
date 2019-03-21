@@ -299,7 +299,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             }
             RawDatapoint rdp = data.getRawList().get(data.getRawList().size() - 1);
 
-            pdp = calc.calcRpm(rdp);
+            pdp = calc.calcOneRpm(rdp);
         }
 
         if (bike.isStartStopMethod()) {
@@ -394,7 +394,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 }
             }
             LOG.info("Calculation Thread started...");
-            calc.calcPower();
+            calc.calcPower(data.getRawList(), data.getPreList(), true);
             if (main.isTestMode()) {
                 TestCSV csv = new TestCSV();
                 csv.writeFiles();

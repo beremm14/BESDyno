@@ -1,6 +1,7 @@
 package main;
 
 import data.Bike;
+import data.CSV;
 import data.Config;
 import data.Database;
 import data.Environment;
@@ -25,9 +26,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,14 +35,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -55,10 +49,7 @@ import java.util.TooManyListenersException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
-import java.util.zip.ZipEntry;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -74,6 +65,7 @@ import jssc.SerialPortException;
 import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
+import measure.EWMA;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -212,6 +204,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutRefresh.setEnabled(false);
         jmiEnvironment.setEnabled(false);
         jmiEngineTemp.setEnabled(false);
+        jmiFilter.setEnabled(false);
 
         //Development Tools
         jmiShowPendingRequests.setEnabled(false);
@@ -275,9 +268,10 @@ public class BESDyno extends javax.swing.JFrame {
         }
 
         if (measurementFinished) {
-            jmiSave.setEnabled(false);
-            jmiExport.setEnabled(false);
-            jmiPrint.setEnabled(false);
+            jmiSave.setEnabled(true);
+            jmiExport.setEnabled(true);
+            jmiPrint.setEnabled(true);
+            jmiFilter.setEnabled(true);
         }
     }
 
@@ -288,11 +282,13 @@ public class BESDyno extends javax.swing.JFrame {
 
     private void setOSNativeKeyStroke() {
         if (os == OS.MACOS) {
+            jmiOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.META_MASK));
             jmiSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_MASK));
             jmiExport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.META_MASK));
             jmiPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.META_MASK));
             jmiSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.META_MASK));
             jmiStartSim.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_MASK));
+            jmiFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_MASK));
             jmiRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.META_MASK));
             jmiConnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_MASK));
             jmiDisconnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.META_MASK));
@@ -303,11 +299,13 @@ public class BESDyno extends javax.swing.JFrame {
             jmiAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.META_MASK));
             jmiHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         } else {
+            jmiOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
             jmiSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
             jmiExport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
             jmiPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
             jmiSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_MASK));
             jmiStartSim.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
+            jmiFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK));
             jmiRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
             jmiConnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK));
             jmiDisconnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_MASK));
@@ -714,6 +712,28 @@ public class BESDyno extends javax.swing.JFrame {
 
     }
 
+    private void openCSVData() throws IOException {
+        File file;
+
+        vehicle.setAppearance(Config.getInstance().isDark(), os);
+        vehicle.setVisible(true);
+
+        if (vehicle.isPressedOK()) {
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Comma Seperated Values (*.csv)", "csv");
+            chooser.setFileFilter(filter);
+
+            int rv = chooser.showOpenDialog(this);
+            if (rv == JFileChooser.APPROVE_OPTION) {
+                file = chooser.getSelectedFile();
+                CSV csv = new CSV(file);
+                csv.readCSVFiles();
+                csv.calcChart();
+                lc.updateChartValues();
+            }
+        }
+    }
+
     //Online-Manual
     private void openURL(String url) {
         URI uri = null;
@@ -729,6 +749,13 @@ public class BESDyno extends javax.swing.JFrame {
                 LOG.warning(ex);
             }
         }
+    }
+    
+    //Filter after Measurement
+    private void filterData() {
+        EWMA ewma = new EWMA(Database.getInstance().getRawList());
+        ewma.filterAfterMeasurement(Database.getInstance().getDataList(), Config.getInstance().getSmoothing());
+        lc.updateChartValues();
     }
 
     //Getter
@@ -879,6 +906,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutRefresh = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jmenuFile = new javax.swing.JMenu();
+        jmiOpen = new javax.swing.JMenuItem();
         jmiSave = new javax.swing.JMenuItem();
         jmiExport = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -887,6 +915,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSettings = new javax.swing.JMenuItem();
         jmenuSimulation = new javax.swing.JMenu();
         jmiStartSim = new javax.swing.JMenuItem();
+        jmiFilter = new javax.swing.JMenuItem();
         jmiEnvironment = new javax.swing.JMenuItem();
         jmiEngineTemp = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -1006,6 +1035,16 @@ public class BESDyno extends javax.swing.JFrame {
 
         jmenuFile.setText("Datei");
 
+        jmiOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.META_MASK));
+        jmiOpen.setText("Öffnen");
+        jmiOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onOpen(evt);
+            }
+        });
+        jmenuFile.add(jmiOpen);
+
+        jmiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.META_MASK));
         jmiSave.setText("Speichern");
         jmiSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1055,6 +1094,15 @@ public class BESDyno extends javax.swing.JFrame {
             }
         });
         jmenuSimulation.add(jmiStartSim);
+
+        jmiFilter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.META_MASK));
+        jmiFilter.setText("Daten filtern");
+        jmiFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onFilter(evt);
+            }
+        });
+        jmenuSimulation.add(jmiFilter);
 
         jmiEnvironment.setText("Umweltdaten aktualisieren");
         jmiEnvironment.addActionListener(new java.awt.event.ActionListener() {
@@ -1618,6 +1666,20 @@ public class BESDyno extends javax.swing.JFrame {
     private void onElectronic(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onElectronic
         electronic.setVisible(true);
     }//GEN-LAST:event_onElectronic
+
+    private void onOpen(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onOpen
+        try {
+            openCSVData();
+            measurementFinished = true;
+        } catch (IOException ex) {
+            userLog("Fehler beim Öffnen der Datei", LogLevel.WARNING);
+        }
+        refreshGui();
+    }//GEN-LAST:event_onOpen
+
+    private void onFilter(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onFilter
+        filterData();
+    }//GEN-LAST:event_onFilter
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -2240,6 +2302,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiEngineTemp;
     private javax.swing.JMenuItem jmiEnvironment;
     private javax.swing.JMenuItem jmiExport;
+    private javax.swing.JMenuItem jmiFilter;
     private javax.swing.JMenuItem jmiFine;
     private javax.swing.JMenuItem jmiHelp;
     private javax.swing.JMenuItem jmiInit;
@@ -2247,6 +2310,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiMaxProblems;
     private javax.swing.JMenuItem jmiMeasure;
     private javax.swing.JMenuItem jmiMeasureno;
+    private javax.swing.JMenuItem jmiOpen;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;

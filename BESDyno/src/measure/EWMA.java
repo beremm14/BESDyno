@@ -2,6 +2,7 @@ package measure;
 
 import data.Bike;
 import data.Database;
+import data.Datapoint;
 import data.PreDatapoint;
 import data.RawDatapoint;
 import java.util.ArrayList;
@@ -13,9 +14,9 @@ import logging.Logger;
  *
  * @author emil
  */
-public class Filter {
+public class EWMA {
 
-    private static final Logger LOG = Logger.getLogger(Filter.class.getName());
+    private static final Logger LOG = Logger.getLogger(EWMA.class.getName());
 
     private final List<RawDatapoint> rawList;
 
@@ -23,7 +24,7 @@ public class Filter {
     private final List<PreDatapoint> preList = new ArrayList<>();
     private final List<PreDatapoint> filteredPreList = new LinkedList<>();
 
-    public Filter(List<RawDatapoint> rawList) {
+    public EWMA(List<RawDatapoint> rawList) {
         this.rawList = rawList;
     }
 
@@ -87,6 +88,19 @@ public class Filter {
         filterValuesOrder(smoothing, order);
         calcPreList();
         fillDatabase();
+    }
+    
+    public void filterAfterMeasurement(List<Datapoint> unFiltered, double smoothing) {
+        Database.getInstance().killChart();
+        List<Datapoint> filtered = new LinkedList<>();
+        for (int i = 0; i < unFiltered.size() - 2; i++) {
+            double power = (1 - smoothing) * unFiltered.get(i).getPower() + smoothing * unFiltered.get(i+1).getPower();
+            double torque = (1 - smoothing) * unFiltered.get(i).getTorque()+ smoothing * unFiltered.get(i+1).getTorque();
+            Datapoint dp = new Datapoint(power, torque, unFiltered.get(i).getOmega(), true);
+            filtered.add(dp);
+            Database.getInstance().addXYValuesAgain(dp, i);
+            Database.getInstance().setDataList(filtered);
+        }
     }
 
     public List<RawDatapoint> getRawList() {

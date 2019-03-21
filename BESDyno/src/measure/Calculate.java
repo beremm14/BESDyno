@@ -7,6 +7,8 @@ import data.Datapoint;
 import data.Environment;
 import data.PreDatapoint;
 import data.RawDatapoint;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -19,8 +21,8 @@ public class Calculate {
     private final Database data = Database.getInstance();
     private final Environment environment = Environment.getInstance();
 
-    private void filterData() {
-        Filter filter = new Filter(data.getRawList());
+    private void filterData(List<RawDatapoint> rawList) {
+        EWMA filter = new EWMA(rawList);
         filter.compute(config.getOrder(), config.getSmoothing());
         data.setFilteredPreList(filter.getFilteredPreList());
         data.setFilteredRawList(filter.getFilteredRawList());
@@ -30,20 +32,20 @@ public class Calculate {
             data.setFilteredRawList(regression.filterRawData());
 
             for (RawDatapoint rdp : data.getFilteredList()) {
-                data.addFilterPDP(calcRpm(rdp));
+                data.addFilterPDP(calcOneRpm(rdp));
             }
         } else if (config.isAverage()) {
             MovingAverage moving = new MovingAverage(3, data.getRawList());
             data.setFilteredRawList(moving.compute());
 
             for (RawDatapoint rdp : data.getFilteredList()) {
-                data.addFilterPDP(calcRpm(rdp));
+                data.addFilterPDP(calcOneRpm(rdp));
             }
         }
     }
 
     //Calculates One Point
-    public PreDatapoint calcRpm(RawDatapoint rdp) {
+    public PreDatapoint calcOneRpm(RawDatapoint rdp) {
         double engTime = (double) rdp.getEngTime();
         double wheelTime = (double) rdp.getWheelTime();
 
@@ -91,9 +93,27 @@ public class Calculate {
     public double calcMih(PreDatapoint pdp) {
         return calcMps(pdp) * 2.2369362920544;
     }
+    
+    public List<PreDatapoint> calcPreList(List<RawDatapoint> rawList) {
+        List<PreDatapoint> preList = new LinkedList<>();
+        for (RawDatapoint rdp : rawList) {
+            preList.add(calcOneRpm(rdp));
+        }
+        return preList;
+    }
 
-    public void calcPower() {
-        filterData();
+    public void calcPower(List<RawDatapoint> rawList, List<PreDatapoint> preList, boolean filter) {
+        if (filter) {
+            filterData(rawList);
+        }
+        
+        if (rawList != data.getRawList()) {
+            data.setRawList(rawList);
+        }
+        
+        if (preList != data.getPreList()) {
+            data.setPreList(preList);
+        }
 
         data.rmFirstPDP(5);
 
