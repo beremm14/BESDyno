@@ -7,12 +7,15 @@ import data.RawDatapoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import logging.Logger;
 
 /**
  *
  * @author emil
  */
 public class Filter {
+
+    private static final Logger LOG = Logger.getLogger(Filter.class.getName());
 
     private final List<RawDatapoint> rawList;
 
@@ -32,7 +35,7 @@ public class Filter {
             filteredRawList.add(new RawDatapoint((int) Math.round(engTime), (int) Math.round(wheelTime), rawList.get(i).getTime()));
         }
     }
-    
+
     private PreDatapoint calcRpm(RawDatapoint rdp) {
         double engTime = (double) rdp.getEngTime();
         double wheelTime = (double) rdp.getWheelTime();
@@ -63,18 +66,23 @@ public class Filter {
             filterValues(smoothing);
         }
     }
-    
+
     private void calcPreList() {
         for (RawDatapoint rdp : rawList) {
-            filteredPreList.add(calcRpm(rdp));
+            PreDatapoint pdp = calcRpm(rdp);
+            if (pdp.getTime() == 0 || pdp.getEngRpm() > 30000 || pdp.getWheelRpm() > 3300) {
+                LOG.warning("Wrong data..." + pdp.toString());
+            } else {
+                filteredPreList.add(pdp);
+            }
         }
     }
-    
+
     private void fillDatabase() {
         Database.getInstance().setFilteredRawList(filteredRawList);
         Database.getInstance().setFilteredPreList(filteredPreList);
     }
-    
+
     public void compute(int order, double smoothing) {
         filterValuesOrder(smoothing, order);
         calcPreList();
