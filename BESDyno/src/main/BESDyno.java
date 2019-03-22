@@ -93,6 +93,10 @@ import serial.requests.RequestStart;
 import serial.requests.RequestVersion;
 import serial.Telegram;
 import serial.requests.RequestAll;
+import serial.requests.RequestContinousStart;
+import serial.requests.RequestContinousStop;
+import serial.requests.RequestTempDisable;
+import serial.requests.RequestTempEnable;
 
 /**
  *
@@ -1410,6 +1414,12 @@ public class BESDyno extends javax.swing.JFrame {
             if (vehicle.isPressedOK()) {
                 userLog("Start der Simulation", LogLevel.INFO);
                 activity = true;
+                
+                if (Bike.getInstance().isMeasTemp() && Config.getInstance().isContinous()) {
+                    addPendingRequest(telegram.tempEnable());
+                } else if (!Bike.getInstance().isMeasTemp() && Config.getInstance().isContinous()) {
+                    addPendingRequest(telegram.tempDisable());
+                }
 
                 measure = new MeasureDialog(this, true);
                 measure.setAppearance(Config.getInstance().isDark());
@@ -1884,6 +1894,26 @@ public class BESDyno extends javax.swing.JFrame {
                     }
                     activity = false;
                     refreshGui();
+                } else if ( r instanceof RequestContinousStart) {
+                    if (r.getStatus() == Status.DONE) {
+                        userLog("Kontinuierliche Messung beginnt...", LogLevel.FINE);
+                    } else if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("CONTINOUS START returns ERROR: " + r.getResponse());
+                    }
+                } else if (r instanceof RequestContinousStop) {
+                    if (r.getStatus() == Status.DONE) {
+                        userLog("Kontinuierliche Messung beendet.", LogLevel.FINE);
+                    } else if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("CONTINOUS STOP return ERROR: " + r.getResponse());
+                    }
+                } else if (r instanceof RequestTempEnable) {
+                    if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("TEMPERATURE ENABLE returns ERROR: " + r.getResponse());
+                    }
+                } else if (r instanceof RequestTempDisable) {
+                    if (r.getStatus() == Status.ERROR) {
+                        LOG.warning("TEMPERATURE DISABLE returns ERROR: " + r.getResponse());
+                    }
                 }
             }
         }

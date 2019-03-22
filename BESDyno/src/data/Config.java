@@ -52,6 +52,8 @@ public class Config {
     private boolean average;
     private boolean poly;
     
+    private boolean continous;
+    
     private double arduinoVersion = 0;
     
     private Velocity velocity;
@@ -195,6 +197,10 @@ public class Config {
         return poly;
     }
 
+    public boolean isContinous() {
+        return continous;
+    }
+
     //Setter
     public void setPs(boolean ps) {
         this.ps = ps;
@@ -312,6 +318,10 @@ public class Config {
         this.poly = poly;
     }
 
+    public void setContinous(boolean continous) {
+        this.continous = continous;
+    }
+
     public int writeVelocity() {
         switch(velocity) {
             case MPS: return 0;
@@ -356,6 +366,7 @@ public class Config {
         setSmoothing(0.3);
         setAverage(false);
         setPoly(false);
+        setContinous(true);
         writeJson(w);
     }
 
@@ -387,7 +398,8 @@ public class Config {
                 .add("Order", order)
                 .add("Smoothing", smoothing)
                 .add("Average", average)
-                .add("Poly", poly);
+                .add("Poly", poly)
+                .add("Continous", continous);
 
         JsonObject obj = b.build();
         w.write(obj.toString());
@@ -426,6 +438,7 @@ public class Config {
         smoothing = json.getJsonNumber("Smoothing").doubleValue();
         average = json.getBoolean("Average");
         poly = json.getBoolean("Poly");
+        continous = json.getBoolean("Continous");
     }
 
 }

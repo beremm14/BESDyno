@@ -382,6 +382,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
         c.setCelcius(jrbCelcius.isSelected());
+        c.setCelcius(jcbContinous.isSelected());
         if (jcbFilter.isSelected()) {
             c.setAverage(jrbAverage.isSelected());
             c.setPoly(jrbPoly.isSelected());
@@ -699,6 +700,8 @@ public class SettingsDialog extends javax.swing.JDialog {
 
             jrbCelcius.setSelected(c.isCelcius());
             jrbFahrenheit.setSelected(!c.isCelcius());
+            
+            jcbContinous.setSelected(c.isContinous());
 
             if (!c.isAverage() && !c.isPoly()) {
                 jcbFilter.setSelected(false);
@@ -974,6 +977,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabelExhWarning = new javax.swing.JLabel();
         jtfExhWarning = new javax.swing.JTextField();
         jLabelExhWarning2 = new javax.swing.JLabel();
+        jcbContinous = new javax.swing.JCheckBox();
         jLabelHelp = new javax.swing.JLabel();
         jPanFilter = new javax.swing.JPanel();
         jLabelOrder = new javax.swing.JLabel();
@@ -1279,7 +1283,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanEast.add(jPanPNG, gridBagConstraints);
 
         jPanSerial.setBackground(new java.awt.Color(255, 255, 255));
-        jPanSerial.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kommunikation", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(255, 0, 0))); // NOI18N
+        jPanSerial.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kommunikation", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), java.awt.Color.red), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1))); // NOI18N
         jPanSerial.setMinimumSize(new java.awt.Dimension(350, 232));
         jPanSerial.setPreferredSize(new java.awt.Dimension(330, 232));
         jPanSerial.setLayout(new java.awt.GridBagLayout());
@@ -1558,13 +1562,21 @@ public class SettingsDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         jPanSerial.add(jLabelExhWarning2, gridBagConstraints);
 
+        jcbContinous.setText("Kontinuierliche Messung");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanSerial.add(jcbContinous, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.weighty = 2.0;
         jPanEast.add(jPanSerial, gridBagConstraints);
 
         jLabelHelp.setFont(new java.awt.Font("Lucida Grande", 2, 11)); // NOI18N
@@ -1967,6 +1979,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JButton jbutLoad;
     private javax.swing.JButton jbutOK;
     private javax.swing.JButton jbutSave;
+    private javax.swing.JCheckBox jcbContinous;
     private javax.swing.JCheckBox jcbEnableInertiaEdit;
     private javax.swing.JCheckBox jcbFilter;
     private javax.swing.JRadioButton jrbAverage;

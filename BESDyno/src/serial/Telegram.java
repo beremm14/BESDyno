@@ -177,4 +177,52 @@ public class Telegram extends RxTxWorker {
         }
     }
     
+    public Request conStart() {
+        synchronized (requestList) {
+            final Request request = new RequestContinousStart();
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
+            return request;
+        }
+    }
+    
+    public Request conStop() {
+        synchronized (requestList) {
+            final Request request = new RequestContinousStop();
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
+            return request;
+        }
+    }
+    
+    public Request tempEnable() {
+        synchronized (requestList) {
+            final Request request = new RequestTempEnable();
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
+            return request;
+        }
+    }
+    
+    public Request tempDisable() {
+        synchronized (requestList) {
+            final Request request = new RequestTempDisable();
+            request.setStatus(Request.Status.WAITINGTOSEND);
+            requestList.add(request);
+            requestList.notifyAll();
+            request.setTimeOutComp(true);
+            request.setSecondTryAllowed(true);
+            return request;
+        }
+    }
+    
 }

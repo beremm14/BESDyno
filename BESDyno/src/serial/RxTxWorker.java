@@ -1,5 +1,6 @@
 package serial;
 
+import data.Config;
 import java.io.IOException;
 import serial.requests.Request;
 import java.util.LinkedList;
@@ -28,6 +29,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     protected final List<Request> requestList = new LinkedList<>();
 
     private final Response response = new Response();
+    private final StringBuilder continous = new StringBuilder();
 
     public RxTxWorker() {
     }
@@ -64,43 +66,42 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     private void handleJSSCPortEvent(jssc.SerialPortEvent spe) throws InterruptedException {
         if (spe.isRXCHAR()) {
             LOG.debug("SerialPort Event happened!!! :)");
-            while (true) {
-                try {
 
-                    final byte[] b = jsscPort.readBytes(1);
-                    if (b == null || b.length == 0) {
-                        break;
-                    }
-                    String s = new String(b).trim();
-                    if (s.isEmpty()) {
-                        break;
-                    }
-                    synchronized (response) {
-                        response.getReceivedFrame().append(s);
-                        if (s.contains(";")) {
-                            response.notifyAll();
-                        }
-                    }
-                } catch (SerialPortException ex) {
-                    LOG.warning(ex);
-                }
-
-            }
-        }
-    }
-
-    private void handleRXTXPortEvent(gnu.io.SerialPortEvent spe) {
-
-        switch (spe.getEventType()) {
-            case gnu.io.SerialPortEvent.DATA_AVAILABLE:
-                LOG.debug("SerialPort Event happened!!! :)");
+            if (Config.getInstance().isContinous()) {
                 while (true) {
                     try {
-                        final byte b;
-                        b = (byte) rxtxPort.getInputStream().read();
+                        final byte[] b = jsscPort.readBytes(1);
+                        String s = new String(b).trim();
+                        if (s.isEmpty()) {
+                            break;
+                        }
+                        if (b == null || b.length == 0) {
+                            break;
+                        }
+                        if (continous.length() == 0) {
+                            if (s.contains(":")) {
+                                continous.append(s);
+                            }
+                        } else {
+                            if (s.contains(";")) {
+                                continous.append(s);
+                                break;
+                            }
+                        }
+                    } catch (SerialPortException ex) {
+                        LOG.warning(ex);
+                    }
+                }
 
-                        String s = new String(new byte[]{b}).trim();
+            } else {
+                while (true) {
+                    try {
 
+                        final byte[] b = jsscPort.readBytes(1);
+                        if (b == null || b.length == 0) {
+                            break;
+                        }
+                        String s = new String(b).trim();
                         if (s.isEmpty()) {
                             break;
                         }
@@ -110,11 +111,69 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                                 response.notifyAll();
                             }
                         }
-                    } catch (IOException ex) {
+                    } catch (SerialPortException ex) {
                         LOG.warning(ex);
                     }
+
                 }
-                break;
+            }
+        }
+    }
+
+    private void handleRXTXPortEvent(gnu.io.SerialPortEvent spe) {
+
+        switch (spe.getEventType()) {
+            case gnu.io.SerialPortEvent.DATA_AVAILABLE:
+                LOG.debug("SerialPort Event happened!!! :)");
+
+                if (Config.getInstance().isContinous()) {
+                    while (true) {
+                        try {
+                            final byte b;
+                            b = (byte) rxtxPort.getInputStream().read();
+
+                            String s = new String(new byte[]{b}).trim();
+                            if (s.isEmpty()) {
+                                break;
+                            }
+                            if (continous.length() == 0) {
+                                if (s.contains(":")) {
+                                    continous.append(s);
+                                }
+                            } else {
+                                if (s.contains(";")) {
+                                    continous.append(s);
+                                    break;
+                                }
+                            }
+                        } catch (IOException ex) {
+                            LOG.warning(ex);
+                        }
+                    }
+
+                } else {
+                    while (true) {
+                        try {
+                            final byte b;
+                            b = (byte) rxtxPort.getInputStream().read();
+
+                            String s = new String(new byte[]{b}).trim();
+
+                            if (s.isEmpty()) {
+                                break;
+                            }
+                            synchronized (response) {
+                                response.getReceivedFrame().append(s);
+                                if (s.contains(";")) {
+                                    response.notifyAll();
+                                }
+                            }
+                        } catch (IOException ex) {
+                            LOG.warning(ex);
+                        }
+                    }
+                    break;
+                }
         }
     }
 
