@@ -51,7 +51,7 @@ public class RequestMeasureno extends Request {
         
         synchronized (Database.getInstance().syncObj) {
             response = res;
-            COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+            COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
 
             String response = res.replaceAll(":", "");
             response = response.replaceAll(";", "");
@@ -60,7 +60,7 @@ public class RequestMeasureno extends Request {
             String values[];
             try {
                 values = response.split("#");
-                values[1] = removeCRC(values[1]);
+                values[1] = crc.removeCRC(values[1]);
             } catch (ArrayIndexOutOfBoundsException ex) {
                 LOG.severe(ex);
                 status = Status.ERROR;
@@ -84,7 +84,7 @@ public class RequestMeasureno extends Request {
             Database.getInstance().syncObj.notifyAll();
             LOG.debug("Measurement-syncObj notified");
 
-            if (checkCRC(res) && rdp.getTime() > 0) {
+            if (crc.checkCRC(res) && rdp.getTime() > 0) {
                 status = Status.DONE;
             } else {
                 status = Status.ERROR;

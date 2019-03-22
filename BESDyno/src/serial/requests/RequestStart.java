@@ -52,14 +52,14 @@ public class RequestStart extends Request {
     public void handleResponse(String res) {
         LOG.debug("START-Response: " + res);
         response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+        COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
         LOG.debug("START-Response " + res + " logged");
 
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
         LOG.debug("START-Response: : and ; replaced");
 
-        if (removeCRC(response).equals("BMP-ERROR")) {
+        if (crc.removeCRC(response).equals("BMP-ERROR")) {
             LOG.severe("ERROR at START: BMP180");
             Environment.getInstance().setNormEnable(false);
             status = Status.ERROR;
@@ -70,7 +70,7 @@ public class RequestStart extends Request {
         String values[];
         try {
         values = response.split("#");
-        values[2] = removeCRC(values[2]);
+        values[2] = crc.removeCRC(values[2]);
         LOG.debug("START-Response: Response-String splitted");
         } catch (ArrayIndexOutOfBoundsException ex) {
             LOG.severe(ex);
@@ -90,7 +90,7 @@ public class RequestStart extends Request {
                 + " envPress = " + Environment.getInstance().getAirPress()
                 + " envAltitude = " + Environment.getInstance().getAltitude());
 
-        if (Environment.getInstance().getAirPress() > 0 && checkCRC(res)) {
+        if (Environment.getInstance().getAirPress() > 0 && crc.checkCRC(res)) {
             status = Status.DONE;
             Environment.getInstance().setNormEnable(true);
         } else {

@@ -56,6 +56,10 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             data.addTemperatures(environment.getEngTempC(), environment.getFumeTempC());
         }
 
+        if (config.isContinous()) {
+            main.addPendingRequest(telegram.conStart());
+        }
+
         if (bike.isAutomatic()) {
             status = Status.WAIT;
         } else {
@@ -269,6 +273,9 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     //Calculates Power -> end of measurement
     private void manageFinish() {
+        if (config.isContinous()) {
+            main.addPendingRequest(telegram.conStop());
+        }
         data.rmFirstRDP(2);
         calcThread = new CalculationThread();
         calcThread.start();
@@ -284,12 +291,15 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     public PreDatapoint measure() throws Exception {
         PreDatapoint pdp;
 
-        if (bike.isMeasTemp()) {
-            main.addPendingRequest(telegram.all());
+        if (!config.isContinous()) {
+            if (bike.isMeasTemp()) {
+                main.addPendingRequest(telegram.all());
+            } else {
+                main.addPendingRequest(telegram.measure());
+            }
         } else {
-            main.addPendingRequest(telegram.measure());
+            
         }
-
         Thread.sleep(config.getPeriod());
 
         synchronized (data.getRawList()) {

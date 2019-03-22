@@ -47,9 +47,9 @@ public class RequestKill extends Request {
     @Override
     public void handleResponse(String res) {
         response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+        COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
 
-        if (checkCRC(res) && res.equals(":KILL>" + calcCRC(res) + ';')) {
+        if (crc.checkCRC(res) && res.equals(":KILL>" + crc.calcCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

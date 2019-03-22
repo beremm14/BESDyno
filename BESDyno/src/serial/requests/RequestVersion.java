@@ -47,13 +47,13 @@ public class RequestVersion extends Request {
     @Override
     public void handleResponse(String res) {
         response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+        COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
         
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
-        Config.getInstance().setArduinoVersion(Double.parseDouble(removeCRC(response)));
+        Config.getInstance().setArduinoVersion(Double.parseDouble(crc.removeCRC(response)));
 
-        if (checkCRC(res) && Config.getInstance().getArduinoVersion() >= BESDyno.getInstance().getReqArduVers()) {
+        if (crc.checkCRC(res) && Config.getInstance().getArduinoVersion() >= BESDyno.getInstance().getReqArduVers()) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

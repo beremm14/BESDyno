@@ -45,7 +45,7 @@ public class RequestEngine extends Request {
     @Override
     public void handleResponse(String res) {
         response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+        COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
 
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
@@ -54,7 +54,7 @@ public class RequestEngine extends Request {
         String values[];
         try {
             values = response.split("#");
-            values[1] = removeCRC(values[1]);
+            values[1] = crc.removeCRC(values[1]);
         } catch (ArrayIndexOutOfBoundsException ex) {
             LOG.severe(ex);
             status = Status.ERROR;
@@ -69,7 +69,7 @@ public class RequestEngine extends Request {
                 + " fumeTemp = " + Environment.getInstance().getFumeTempC());
 
         if ((Environment.getInstance().getEngTempC() <= 0 || Environment.getInstance().getFumeTempC() <= 0)
-                && checkCRC(res)) {
+                && crc.checkCRC(res)) {
             status = Status.ERROR;
         } else {
             status = Status.DONE;

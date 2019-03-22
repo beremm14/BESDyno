@@ -60,10 +60,10 @@ public class RequestInit extends Request {
         response = res;
         LOG.debug("INIT-Response: " + res);
         
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+        COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
         LOG.debug("INIT-Response " + res + " logged");
 
-        if (checkCRC(res) && res.equals(":BESDyno>" + calcCRC(res) + ';')) {
+        if (crc.checkCRC(res) && res.equals(":BESDyno>" + crc.calcCRC(res) + ';')) {
             status = Status.DONE;
         } else {
             status = Status.ERROR;

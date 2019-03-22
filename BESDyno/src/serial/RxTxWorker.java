@@ -30,9 +30,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     private final Response response = new Response();
     private final StringBuilder continous = new StringBuilder();
-
-    public RxTxWorker() {
-    }
+    private final ContinousMeasurement cMeasure = new ContinousMeasurement();
 
     public void setSerialPort(UARTManager manager) throws SerialPortException, TooManyListenersException {
         this.port = manager.getPort();
@@ -85,6 +83,9 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         } else {
                             if (s.contains(";")) {
                                 continous.append(s);
+                                synchronized (cMeasure.getResList()) {
+                                    cMeasure.add(continous.toString());
+                                }
                                 break;
                             }
                         }
@@ -143,6 +144,9 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                             } else {
                                 if (s.contains(";")) {
                                     continous.append(s);
+                                    synchronized (cMeasure.getResList()) {
+                                        cMeasure.add(continous.toString());
+                                    }
                                     break;
                                 }
                             }
@@ -181,6 +185,10 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     protected Object doInBackground() throws Exception {
         try {
             LOG.info("RxTxWorker started");
+            if (Config.getInstance().isContinous()) {
+                cMeasure.run();
+                while (!isCancelled());
+            }
             while (!isCancelled()) {
 
                 synchronized (response.getReceivedFrame()) {

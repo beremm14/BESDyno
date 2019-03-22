@@ -53,7 +53,7 @@ public class RequestAll extends Request {
         try {
 
         response = res;
-        COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+        COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
 
         String response = res.replaceAll(":", "");
         response = response.replaceAll(";", "");
@@ -62,7 +62,7 @@ public class RequestAll extends Request {
         String values[];
         try {
             values = response.split("#");
-            values[4] = removeCRC(values[4]);
+            values[4] = crc.removeCRC(values[4]);
         } catch (ArrayIndexOutOfBoundsException ex) {
             LOG.severe(ex);
             status = Status.ERROR;
@@ -86,13 +86,13 @@ public class RequestAll extends Request {
             }
         }
 
-        if (checkCRC(res) && rdp.getTime() > 0) {
+        if (crc.checkCRC(res) && rdp.getTime() > 0) {
             status = Request.Status.DONE;
         } else {
             status = Request.Status.ERROR;
         }
 
-        LOG.info("--> engTime: " + values[0] + " wheelTime: " + values[1] + " engTemp: " + values[2] + " exhTemp: " + values[3] + " time: " + values[4] + " crc: " + calcCRC(res));
+        LOG.info("--> engTime: " + values[0] + " wheelTime: " + values[1] + " engTemp: " + values[2] + " exhTemp: " + values[3] + " time: " + values[4] + " crc: " + crc.calcCRC(res));
         
         } catch (Exception ex) {
             LOG.severe(ex);

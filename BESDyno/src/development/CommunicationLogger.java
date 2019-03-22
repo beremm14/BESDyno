@@ -23,7 +23,7 @@ public class CommunicationLogger {
         return instance;
     }
     
-    private CommunicationLogger() {
+    public CommunicationLogger() {
     }
     
     public void addReq(LoggedRequest lr) {

@@ -264,19 +264,14 @@ public class VehicleSetDialog extends javax.swing.JDialog {
 
         jcbEnableRPM.setSelected(true);
         jcbEnableRPM.setText("Motordrehzahl messen");
+        jcbEnableRPM.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanRPM.add(jcbEnableRPM, gridBagConstraints);
 
-        jcbEnableTemp.setSelected(true);
         jcbEnableTemp.setText("Motor- & Abgastemperaturen messen");
-        jcbEnableTemp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcbEnableTempActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -383,15 +378,6 @@ public class VehicleSetDialog extends javax.swing.JDialog {
         pressedOK = false;
         dispose();
     }//GEN-LAST:event_jbutCancelActionPerformed
-
-    private void jcbEnableTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbEnableTempActionPerformed
-        if (jcbEnableTemp.isSelected()) {
-            jcbEnableRPM.setSelected(true);
-            jcbEnableRPM.setEnabled(false);
-        } else {
-            jcbEnableRPM.setEnabled(true);
-        }
-    }//GEN-LAST:event_jcbEnableTempActionPerformed
 
     /**
      * @param args the command line arguments

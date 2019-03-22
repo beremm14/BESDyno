@@ -51,7 +51,7 @@ public class RequestMeasure extends Request {
         try {
 
             response = res;
-            COMLOG.addRes(new LoggedResponse(removeCRC(res), getSentCRC(res), calcCRC(res)));
+            COMLOG.addRes(new LoggedResponse(crc.removeCRC(res), crc.getSentCRC(res), crc.calcCRC(res)));
 
             String response = res.replaceAll(":", "");
             response = response.replaceAll(";", "");
@@ -60,7 +60,7 @@ public class RequestMeasure extends Request {
             String values[];
             try {
                 values = response.split("#");
-                values[2] = removeCRC(values[2]);
+                values[2] = crc.removeCRC(values[2]);
             } catch (ArrayIndexOutOfBoundsException ex) {
                 LOG.severe(ex);
                 status = Status.ERROR;
@@ -83,7 +83,7 @@ public class RequestMeasure extends Request {
                 }
             }
 
-            if (checkCRC(res) && rdp.getTime() > 0) {
+            if (crc.checkCRC(res) && rdp.getTime() > 0) {
                 status = Status.DONE;
             } else {
                 status = Status.ERROR;
