@@ -41,11 +41,17 @@ uint8_t measCount;
 unsigned long dEngTime;
 unsigned long dEngHigh;
 unsigned long dEngLow;
+unsigned long lastEngTime;
 unsigned long dWheelTime;
 unsigned long dWheelHigh;
 unsigned long dWheelLow;
+unsigned long lastWheelTime;
 
 unsigned long refMicros;
+
+//Measurement
+boolean continous;
+boolean temp;
 
 //-Functions------------------------------------------------------------//
 
@@ -232,6 +238,9 @@ void setup() {
   
   dEngTime = 0;
   dWheelTime = 0;
+
+  lastEngTime = 0;
+  lastWheelTime = 0;
   
   dEngLow = 0;
   dEngHigh = 0;
@@ -239,6 +248,9 @@ void setup() {
   dWheelLow = 0;
   
   measCount = 9;
+
+  continous = false;
+  temp = false;
 
   attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
   attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
@@ -257,7 +269,22 @@ void loop() {
   dWheelHigh = pulseInLong(rearRPMPin, HIGH, 100000);
   dWheelTime = dWheelLow + dWheelHigh;
   
-  
+  if (continous) {
+    if (temp) {
+      if (measCount == 9) {
+        readThermos();
+        measCount = 0;
+      }
+      measCount++;
+      String meas = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(engTemp) + '#' + String(exhTemp) + '#' + String(micros()-refMicros);
+      Serial.println(createTelegram(meas));
+      Serial.flush();
+    } else {
+      String meas = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(micros()-refMicros);
+      Serial.println(createTelegram(meas));
+      Serial.flush();
+    }
+  }
 }
 
 
@@ -404,6 +431,22 @@ void serialEvent() {
       Serial.println("D2 Motor:   " + String(dEngTime));
       Serial.println("D3 Walze:   " + String(dWheelTime));
       Serial.println("Zeit (µs):  " + String(micros()-refMicros) + "\n");
+      Serial.flush();
+    } else if (req == 'c') {
+      continous = true;
+      Serial.println(createTelegram("CS"));
+      Serial.flush();
+    } else if (req == 'z') {
+      continous = false;
+      Serial.println(createTelegram("CT"));
+      Serial.flush();
+    } else if (req == 't') {
+      temp = true;
+      Serial.println(createTelegram("TE"));
+      Serial.flush();
+    } else if (req == 'u') {
+      temp = false;
+      Serial.println(createTelegram("TD"));
       Serial.flush();
     }
   }
