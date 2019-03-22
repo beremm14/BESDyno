@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import main.BESDyno;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
+import serial.MeasurementListener;
 
 /**
  *
@@ -36,6 +37,8 @@ public class MeasureDialog extends javax.swing.JDialog {
     private static final Logger LOG = Logger.getLogger(MeasureDialog.class.getName());
 
     private boolean finished = false;
+    
+    private final MeasurementListener listener = MeasurementListener.getInstance();
 
     private final Radial veloGauge = new Radial();
     private final Radial rpmGauge = new Radial();
@@ -357,6 +360,9 @@ public class MeasureDialog extends javax.swing.JDialog {
     private void handleCanceling() {
         int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (answ == JOptionPane.YES_OPTION) {
+            listener.stopListening();
+            BESDyno.getInstance().setListening(false);
+            BESDyno.getInstance().addPendingRequest(BESDyno.getInstance().getTelegram().conStop());
             worker.cancel(true);
             worker = null;
             finished = false;
@@ -503,6 +509,12 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private void jbutFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutFinishActionPerformed
         finished = true;
+        listener.stopListening();
+        BESDyno.getInstance().addPendingRequest(BESDyno.getInstance().getTelegram().conStop());
+        BESDyno.getInstance().setListening(false);
+        if (!worker.isCancelled()) {
+            worker.cancel(true);
+        }
         dispose();
     }//GEN-LAST:event_jbutFinishActionPerformed
 

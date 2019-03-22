@@ -12,6 +12,7 @@ import logging.Logger;
 import javax.swing.SwingWorker;
 import main.BESDyno;
 import main.BESDyno.MyTelegram;
+import serial.MeasurementListener;
 
 /**
  *
@@ -25,6 +26,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private final Bike bike = Bike.getInstance();
     private final Calculate calc = new Calculate();
     private final Config config = Config.getInstance();
+    private final MeasurementListener listener = MeasurementListener.getInstance();
     private final Database data = Database.getInstance();
     private final Environment environment = Environment.getInstance();
     private final MyTelegram telegram = BESDyno.getInstance().getTelegram();
@@ -39,7 +41,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
 
     @Override
     protected Object doInBackground() {
-        main.addPendingRequest(telegram.start());
+        /*main.addPendingRequest(telegram.start());
         try {
             Thread.sleep(config.getPeriod());
         } catch (InterruptedException ex) {
@@ -54,10 +56,17 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 LOG.warning(ex);
             }
             data.addTemperatures(environment.getEngTempC(), environment.getFumeTempC());
-        }
+        }*/
 
         if (config.isContinous()) {
             main.addPendingRequest(telegram.conStart());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                LOG.warning(ex);
+            }
+            main.setListening(true);
+            listener.start();
         }
 
         if (bike.isAutomatic()) {
@@ -104,6 +113,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 LOG.severe(ex);
             }
         }
+        
+        LOG.info("MeasurementWorker ended...");
         return null;
     }
 
@@ -274,6 +285,8 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     //Calculates Power -> end of measurement
     private void manageFinish() {
         if (config.isContinous()) {
+            listener.stopListening();
+            main.setListening(false);
             main.addPendingRequest(telegram.conStop());
         }
         data.rmFirstRDP(2);

@@ -52,7 +52,6 @@ unsigned long refMicros;
 //Measurement
 boolean continous;
 boolean temp;
-long conTime;
 
 //-Functions------------------------------------------------------------//
 
@@ -252,7 +251,6 @@ void setup() {
 
   continous = false;
   temp = false;
-  conTime = 0;
 
   attachInterrupt(digitalPinToInterrupt(engRPMPin), engISR, RISING);
   attachInterrupt(digitalPinToInterrupt(rearRPMPin), rearISR, RISING);
@@ -270,8 +268,6 @@ void loop() {
   dWheelLow = pulseInLong(rearRPMPin, LOW, 100000);
   dWheelHigh = pulseInLong(rearRPMPin, HIGH, 100000);
   dWheelTime = dWheelLow + dWheelHigh;
-
-  conTime += (micros()-refMicros);
   
   if (continous) {
     if (temp) {
@@ -280,10 +276,13 @@ void loop() {
         measCount = 0;
       }
       measCount++;
-      String meas = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(engTemp) + '#' + String(exhTemp) + '#' + String(conTime);
+      String meas = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(engTemp) + '#' + String(exhTemp) + '#' + String(micros()-refMicros);
       Serial.println(createTelegram(meas));
+      Serial.flush();
     } else {
-      String meas = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(conTime);
+      String meas = String(dEngTime) + '#' + String(dWheelTime) + '#' + String(micros()-refMicros);
+      Serial.println(createTelegram(meas));
+      Serial.flush();
     }
   }
 }
@@ -435,12 +434,20 @@ void serialEvent() {
       Serial.flush();
     } else if (req == 'c') {
       continous = true;
+      Serial.println(createTelegram("CS"));
+      Serial.flush();
     } else if (req == 'z') {
       continous = false;
+      Serial.println(createTelegram("CT"));
+      Serial.flush();
     } else if (req == 't') {
       temp = true;
+      Serial.println(createTelegram("TE"));
+      Serial.flush();
     } else if (req == 'u') {
       temp = false;
+      Serial.println(createTelegram("TD"));
+      Serial.flush();
     }
   }
 }

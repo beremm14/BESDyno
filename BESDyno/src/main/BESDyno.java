@@ -133,6 +133,7 @@ public class BESDyno extends javax.swing.JFrame {
     private static OS os = OS.OTHER;
     private boolean connection = false;
     private boolean activity = false;
+    private boolean portListening = false;
     private boolean secondTry = true;
     private boolean measurementFinished = false;
     private final double reqArduVers = 1.0;
@@ -794,6 +795,10 @@ public class BESDyno extends javax.swing.JFrame {
     public boolean hasConnection() {
         return connection;
     }
+    
+    public boolean isListening() {
+        return portListening;
+    }
 
     public SettingsDialog getSettingsDialog() {
         return settings;
@@ -806,6 +811,10 @@ public class BESDyno extends javax.swing.JFrame {
 
     public void setPort(UARTManager portManager) {
         this.portManager = portManager;
+    }
+    
+    public void setListening(boolean measurement) {
+        this.portListening = measurement;
     }
 
     //Communication

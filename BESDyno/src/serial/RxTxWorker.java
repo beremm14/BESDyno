@@ -9,6 +9,7 @@ import java.util.TooManyListenersException;
 import logging.Logger;
 import javax.swing.SwingWorker;
 import jssc.SerialPortException;
+import main.BESDyno;
 import serial.Response.ResponseStatus;
 import serial.requests.Request.Status;
 import serial.requests.RequestInit;
@@ -30,7 +31,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
 
     private final Response response = new Response();
     private final StringBuilder continous = new StringBuilder();
-    private final ContinousMeasurement cMeasure = new ContinousMeasurement();
+    private final MeasurementListener listener = MeasurementListener.getInstance();
 
     public void setSerialPort(UARTManager manager) throws SerialPortException, TooManyListenersException {
         this.port = manager.getPort();
@@ -65,7 +66,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
         if (spe.isRXCHAR()) {
             LOG.debug("SerialPort Event happened!!! :)");
 
-            if (Config.getInstance().isContinous()) {
+            if (Config.getInstance().isContinous() && BESDyno.getInstance().isListening()) {
                 while (true) {
                     try {
                         final byte[] b = jsscPort.readBytes(1);
@@ -78,14 +79,19 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                         }
                         if (continous.length() == 0) {
                             if (s.contains(":")) {
+                                LOG.debug("Continous Frame starts");
                                 continous.append(s);
                             }
                         } else {
+                            continous.append(s);
                             if (s.contains(";")) {
-                                continous.append(s);
-                                synchronized (cMeasure.getResList()) {
-                                    cMeasure.add(continous.toString());
+                                LOG.debug("Continous Frame ends");
+                                synchronized (listener.getResList()) {
+                                    listener.add(continous.toString());
+                                    listener.getResList().notifyAll();
+                                    LOG.debug("Continous Frame added to List: " + continous.toString());
                                 }
+                                continous.delete(0, continous.length());
                                 break;
                             }
                         }
@@ -127,7 +133,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
             case gnu.io.SerialPortEvent.DATA_AVAILABLE:
                 LOG.debug("SerialPort Event happened!!! :)");
 
-                if (Config.getInstance().isContinous()) {
+                if (Config.getInstance().isContinous() && BESDyno.getInstance().isListening()) {
                     while (true) {
                         try {
                             final byte b;
@@ -139,14 +145,19 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
                             }
                             if (continous.length() == 0) {
                                 if (s.contains(":")) {
+                                    LOG.debug("Continous Frame starts");
                                     continous.append(s);
                                 }
                             } else {
+                                continous.append(s);
                                 if (s.contains(";")) {
-                                    continous.append(s);
-                                    synchronized (cMeasure.getResList()) {
-                                        cMeasure.add(continous.toString());
+                                    LOG.debug("Continous Frame ends");
+                                    synchronized (listener.getResList()) {
+                                        listener.add(continous.toString());
+                                        listener.getResList().notifyAll();
+                                        LOG.debug("Continous Frame added to List: " + continous.toString());
                                     }
+                                    continous.delete(0, continous.length());
                                     break;
                                 }
                             }
@@ -185,11 +196,7 @@ public class RxTxWorker extends SwingWorker<Object, Request> {
     protected Object doInBackground() throws Exception {
         try {
             LOG.info("RxTxWorker started");
-            if (Config.getInstance().isContinous()) {
-                cMeasure.run();
-                while (!isCancelled());
-            }
-            while (!isCancelled()) {
+            while (!isCancelled() && !BESDyno.getInstance().isListening()) {
 
                 synchronized (response.getReceivedFrame()) {
                     response.getReceivedFrame().delete(0, response.getReceivedFrame().length());
