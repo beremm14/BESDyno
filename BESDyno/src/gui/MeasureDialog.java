@@ -26,7 +26,6 @@ import javax.swing.JOptionPane;
 import main.BESDyno;
 import measure.MeasurementWorker;
 import measure.MeasurementWorker.Status;
-import serial.MeasurementListener;
 
 /**
  *
@@ -38,7 +37,6 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private boolean finished = false;
     
-    private final MeasurementListener listener = MeasurementListener.getInstance();
 
     private final Radial veloGauge = new Radial();
     private final Radial rpmGauge = new Radial();
@@ -360,7 +358,6 @@ public class MeasureDialog extends javax.swing.JDialog {
     private void handleCanceling() {
         int answ = JOptionPane.showConfirmDialog(this, "Möchten Sie die Messung abbrechen?", "Abbruch der Messung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (answ == JOptionPane.YES_OPTION) {
-            listener.stopListening();
             BESDyno.getInstance().setListening(false);
             BESDyno.getInstance().addPendingRequest(BESDyno.getInstance().getTelegram().conStop());
             worker.cancel(true);
@@ -509,7 +506,6 @@ public class MeasureDialog extends javax.swing.JDialog {
 
     private void jbutFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutFinishActionPerformed
         finished = true;
-        listener.stopListening();
         BESDyno.getInstance().addPendingRequest(BESDyno.getInstance().getTelegram().conStop());
         BESDyno.getInstance().setListening(false);
         if (!worker.isCancelled()) {
@@ -571,9 +567,9 @@ public class MeasureDialog extends javax.swing.JDialog {
                             jLabelDo.setText("Gas geben und in den letzten Gang schalten...");
                         } else {
                             if (Bike.getInstance().isMeasRpm()) {
-                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen (oranger Pfeil)!");
+                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartRpm() + " U/min gelangen!");
                             } else {
-                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen (oranger Pfeil)!");
+                                jLabelDo.setText("Fortsetzen: UNTER " + Config.getInstance().getStartVelo() + " " + Config.getInstance().getVeloUnit() + " gelangen!");
                             }
                         }
                         break;

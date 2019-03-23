@@ -138,6 +138,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
             jcbEnableInertiaEdit.setForeground(Color.white);
             jcbFilter.setForeground(Color.white);
+            jcbContinous.setForeground(Color.white);
 
             jrbDaymode.setBackground(Color.darkGray);
             jrbNightmode.setBackground(Color.darkGray);
@@ -153,6 +154,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
             jcbEnableInertiaEdit.setBackground(Color.darkGray);
             jcbFilter.setBackground(Color.darkGray);
+            jcbContinous.setBackground(Color.darkGray);
 
             jLabelHysteresisKmh.setForeground(Color.white);
             jLabelHysteresisKmh2.setForeground(Color.white);
@@ -265,6 +267,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             
             jcbEnableInertiaEdit.setForeground(Color.black);
             jcbFilter.setForeground(Color.black);
+            jcbContinous.setForeground(Color.black);
 
             jrbDaymode.setBackground(Color.white);
             jrbNightmode.setBackground(Color.white);
@@ -280,6 +283,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
             jcbEnableInertiaEdit.setBackground(Color.white);
             jcbFilter.setBackground(Color.white);
+            jcbContinous.setBackground(Color.black);
 
             jLabelHysteresisKmh.setForeground(Color.black);
             jLabelHysteresisKmh2.setForeground(Color.black);

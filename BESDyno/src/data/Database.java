@@ -120,11 +120,11 @@ public class Database {
     }
 
     public double getBikePowerPS() {
-        return bikePower * 1000.0 * 1.36;
+        return bikePower / 1000.0 * 1.36;
     }
 
     public double getBikePowerKW() {
-        return bikePower * 1000.0;
+        return bikePower / 1000.0;
     }
 
     public double getBikeVelo() {
@@ -301,6 +301,16 @@ public class Database {
 
     public void clearLists() {
         rawList.removeAll(rawList);
+        preList.removeAll(preList);
+        schleppPreList.removeAll(schleppPreList);
+        schleppDataList.removeAll(schleppDataList);
+        dataList.removeAll(dataList);
+        velList.removeAll(velList);
+        seriesPower.clear();
+        seriesTorque.clear();
+    }
+    
+    public void clearListsExRaw() {
         preList.removeAll(preList);
         schleppPreList.removeAll(schleppPreList);
         schleppDataList.removeAll(schleppDataList);

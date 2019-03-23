@@ -1906,21 +1906,27 @@ public class BESDyno extends javax.swing.JFrame {
                 } else if ( r instanceof RequestContinousStart) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Kontinuierliche Messung beginnt...", LogLevel.FINE);
+                        portListening = true;
                     } else if (r.getStatus() == Status.ERROR) {
                         LOG.warning("CONTINOUS START returns ERROR: " + r.getResponse());
                     }
                 } else if (r instanceof RequestContinousStop) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Kontinuierliche Messung beendet.", LogLevel.FINE);
+                        portListening = false;
                     } else if (r.getStatus() == Status.ERROR) {
                         LOG.warning("CONTINOUS STOP return ERROR: " + r.getResponse());
                     }
                 } else if (r instanceof RequestTempEnable) {
-                    if (r.getStatus() == Status.ERROR) {
+                    if (r.getStatus() == Status.DONE) {
+                        addPendingRequest(telegram.conStart());
+                    }else if (r.getStatus() == Status.ERROR) {
                         LOG.warning("TEMPERATURE ENABLE returns ERROR: " + r.getResponse());
                     }
                 } else if (r instanceof RequestTempDisable) {
-                    if (r.getStatus() == Status.ERROR) {
+                    if (r.getStatus() == Status.DONE) {
+                        addPendingRequest(telegram.conStart());
+                    }else if (r.getStatus() == Status.ERROR) {
                         LOG.warning("TEMPERATURE DISABLE returns ERROR: " + r.getResponse());
                     }
                 }
@@ -2047,6 +2053,7 @@ public class BESDyno extends javax.swing.JFrame {
             chart.addSubtitle(eco);
             chart.addSubtitle(eng);
             chart.addSubtitle(val);
+            chart.setTitle(bike.getVehicleName());
 
             String strMaxPower = String.format("Maximale Leistung: %.2f %s ", bikePower, config.getPowerUnit());
             String strMaxTorque = String.format("Maximales Drehmoment: %.2f Nm", data.getBikeTorque());

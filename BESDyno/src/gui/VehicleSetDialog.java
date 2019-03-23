@@ -245,6 +245,7 @@ public class VehicleSetDialog extends javax.swing.JDialog {
 
         bgMethod.add(jrbDrop);
         jrbDrop.setText("Drop-RPM (ohne Enddrehzahl)");
+        jrbDrop.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
