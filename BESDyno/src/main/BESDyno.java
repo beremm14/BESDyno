@@ -15,6 +15,7 @@ import gui.HelpDialog;
 import gui.MeasureDialog;
 import gui.ResultDialog;
 import gui.SettingsDialog;
+import gui.TrainerDialog;
 import gui.VehicleSetDialog;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -49,7 +50,6 @@ import java.util.TooManyListenersException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -118,8 +118,9 @@ public class BESDyno extends javax.swing.JFrame {
     private final LoggedCommPane commPane = new LoggedCommPane(this, false);
     private final ResultDialog result = new ResultDialog(this, true);
     private final ElectronicDialog electronic = new ElectronicDialog(this, false);
-
+    
     private MeasureDialog measure;
+    private TrainerDialog trainer;
 
     //Object-Variables
     private SwingWorker activeWorker;
@@ -164,9 +165,12 @@ public class BESDyno extends javax.swing.JFrame {
 
         setOSNativeKeyStroke();
 
-        //Check for multi-platform!!!
-        //Works on: macOS, ?, ?
-        setTitle("🦅 BESDyno - Zweiradprüfstand 🦅");
+        if (os == OS.MACOS || os == OS.WINDOWS) {
+            setTitle("🦅 BESDyno - Motorradprüfstand 🦅");
+        } else {
+            setTitle("BESDyno - Motorradprüfstand");
+        }
+        
         setLocationRelativeTo(null);
         setSize(new Dimension(1200, 750));
 
@@ -937,6 +941,8 @@ public class BESDyno extends javax.swing.JFrame {
         jmiDisconnect = new javax.swing.JMenuItem();
         jmenuAppearance = new javax.swing.JMenu();
         jcbmiDarkMode = new javax.swing.JCheckBoxMenuItem();
+        jmiExtras = new javax.swing.JMenu();
+        jmiTrainer = new javax.swing.JMenuItem();
         jmenuDeveloper = new javax.swing.JMenu();
         jcbmiDevMode = new javax.swing.JCheckBoxMenuItem();
         jcbmiDebugLogging = new javax.swing.JCheckBoxMenuItem();
@@ -963,7 +969,7 @@ public class BESDyno extends javax.swing.JFrame {
         jmiMaxProblems = new javax.swing.JMenuItem();
         jmenuAbout = new javax.swing.JMenu();
         jmiAbout = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jmiElectronic = new javax.swing.JMenuItem();
         jmiHelp = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1177,6 +1183,18 @@ public class BESDyno extends javax.swing.JFrame {
 
         jMenuBar.add(jmenuAppearance);
 
+        jmiExtras.setText("Extras");
+
+        jmiTrainer.setText("BESTrainer - Home-Trainer");
+        jmiTrainer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onTrainer(evt);
+            }
+        });
+        jmiExtras.add(jmiTrainer);
+
+        jMenuBar.add(jmiExtras);
+
         jmenuDeveloper.setText("Entwicklungstools");
         jmenuDeveloper.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1355,13 +1373,13 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuAbout.add(jmiAbout);
 
-        jMenuItem1.setText("Elektroniker");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jmiElectronic.setText("Elektroniker");
+        jmiElectronic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 onElectronic(evt);
             }
         });
-        jmenuAbout.add(jMenuItem1);
+        jmenuAbout.add(jmiElectronic);
 
         jmiHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         jmiHelp.setText("Hilfe");
@@ -1700,6 +1718,12 @@ public class BESDyno extends javax.swing.JFrame {
         filterData();
     }//GEN-LAST:event_onFilter
 
+    private void onTrainer(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTrainer
+        trainer = new TrainerDialog(this, true);
+        trainer.setAppearance(Config.getInstance().isDark());
+        trainer.setVisible(true);
+    }//GEN-LAST:event_onTrainer
+
     private class MyConnectPortWorker extends ConnectPortWorker {
 
         public MyConnectPortWorker(String port) {
@@ -1953,15 +1977,15 @@ public class BESDyno extends javax.swing.JFrame {
 
         public JFreeChart initChart() {
             JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart(bike.getVehicleName(),
-                    "Motordrehzahl [U/min]",
-                    "Leistung [" + config.getPowerUnit() + "]",
+                    "Motordrehzahl / U/min",
+                    "Leistung / " + config.getPowerUnit(),
                     datasetPower,
                     PlotOrientation.VERTICAL,
                     true,
                     true,
                     false);
 
-            ValueAxis torqueAxis = new NumberAxis("Drehmoment [Nm]");
+            ValueAxis torqueAxis = new NumberAxis("Drehmoment / Nm");
             torqueAxis.setLabelFont(chart.getXYPlot().getDomainAxis().getLabelFont());
 
             seriesPower.setKey("Leistung");
@@ -2059,8 +2083,9 @@ public class BESDyno extends javax.swing.JFrame {
             String strMaxTorque = String.format("Maximales Drehmoment: %.2f Nm", data.getBikeTorque());
             maxPowerMarker.setLabel(strMaxPower);
             maxTorqueMarker.setLabel(strMaxTorque);
-            chart.getXYPlot().getRangeAxis().setLabel("Leistung [" + config.getPowerUnit() + "]");
+            chart.getXYPlot().getRangeAxis().setLabel("Leistung / " + config.getPowerUnit());
             seriesPower.setKey("Leistung");
+            seriesTorque.setKey("Drehmoment");
 
             chart.fireChartChanged();
         }
@@ -2078,9 +2103,9 @@ public class BESDyno extends javax.swing.JFrame {
             datasetTorque.addSeries(seriesTorque);
 
             if (bike.isMeasRpm()) {
-                chart.getXYPlot().getDomainAxis().setLabel("Motordrehzahl [U/min]");
+                chart.getXYPlot().getDomainAxis().setLabel("Motordrehzahl / U/min");
             } else {
-                chart.getXYPlot().getDomainAxis().setLabel("Walzendrehzahl [U/min]");
+                chart.getXYPlot().getDomainAxis().setLabel("Walzendrehzahl / U/min");
             }
 
             updateChartLabels();
@@ -2313,7 +2338,6 @@ public class BESDyno extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelDevice;
     private javax.swing.JMenuBar jMenuBar;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanChart;
     private javax.swing.JPanel jPanStatus;
     private javax.swing.JPanel jPanTools;
@@ -2344,10 +2368,12 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiAll;
     private javax.swing.JMenuItem jmiConnect;
     private javax.swing.JMenuItem jmiDisconnect;
+    private javax.swing.JMenuItem jmiElectronic;
     private javax.swing.JMenuItem jmiEngine;
     private javax.swing.JMenuItem jmiEngineTemp;
     private javax.swing.JMenuItem jmiEnvironment;
     private javax.swing.JMenuItem jmiExport;
+    private javax.swing.JMenu jmiExtras;
     private javax.swing.JMenuItem jmiFilter;
     private javax.swing.JMenuItem jmiFine;
     private javax.swing.JMenuItem jmiHelp;
@@ -2367,6 +2393,7 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiShowPendingRequests;
     private javax.swing.JMenuItem jmiStart;
     private javax.swing.JMenuItem jmiStartSim;
+    private javax.swing.JMenuItem jmiTrainer;
     private javax.swing.JMenuItem jmiVersion;
     private javax.swing.JMenuItem jmiWarning;
     private javax.swing.JProgressBar jpbStatus;

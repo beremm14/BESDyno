@@ -220,7 +220,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jLabelTitle.setFont(new java.awt.Font("Lucida Grande", 0, 48)); // NOI18N
         jLabelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTitle.setText("BESDyno - Zweiradprüfstand");
+        jLabelTitle.setText("BESDyno - Motorradprüfstand");
         jLabelTitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 15, 15, 15));
         jPanHeader.add(jLabelTitle, java.awt.BorderLayout.PAGE_START);
 
@@ -238,7 +238,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jLabelWarning.setBackground(new java.awt.Color(255, 255, 255));
         jLabelWarning.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Der/Die Nutzer/in des Prüfstandes erhält eine lebenslange Lizenz zur Benutzung der Software. <br> Alle Rechte an der Software verbleiben bei Berger Emil. <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
+        jLabelWarning.setText("<html> <left> Die Nutzung des Prüfstandes geschieht auf eigene Gefahr! <br> Die Diplomanden übernehmen keine Haftung für eventuell entstandene Sach- oder Personenschäden. <br> Für die Software gilt die MIT Licence: © Emil Berger <br> Alle Rechte der Elektronik verbleiben bei Ehmann Julian.");
         jLabelWarning.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Warnung", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14), new java.awt.Color(255, 0, 0))); // NOI18N
         jPanInfo.add(jLabelWarning);
 
