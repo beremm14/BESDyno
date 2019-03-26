@@ -2201,6 +2201,7 @@ public class BESDyno extends javax.swing.JFrame {
             envTemp.setUnitString(config.getTempUnit());
 
             envTemp.setNiceScale(true);
+            envTemp.setLedVisible(false);
 
             if (config.isCelcius()) {
                 envTemp.setMinValue(-30);
@@ -2225,6 +2226,7 @@ public class BESDyno extends javax.swing.JFrame {
             envPress.setUnitString("hPa");
 
             envPress.setNiceScale(true);
+            envPress.setLedVisible(false);
 
             envPress.setMinValue(900);
             envPress.setMaxValue(1100);
@@ -2250,7 +2252,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
             envTemp.setUnitString(config.getTempUnit());
             envTemp.setValueAnimated(temp);
-            envPress.setValueAnimated(environment.getAirPress());
+            envPress.setValueAnimated(environment.getAirPress() / 100.0);
             altitude.setValueAnimated(environment.getAltitude());
         }
 

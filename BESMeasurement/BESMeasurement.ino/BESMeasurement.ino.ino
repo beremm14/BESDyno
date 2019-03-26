@@ -259,14 +259,14 @@ void setup() {
 
 //-Main---------------------------------------------------------------------//
 void loop() {
-  dEngLow = pulseInLong(engRPMPin, LOW, 100000);
-  dEngHigh = pulseInLong(engRPMPin, HIGH, 100000);
+  dEngLow = pulseInLong(engRPMPin, LOW, 10000);
+  dEngHigh = pulseInLong(engRPMPin, HIGH, 10000);
   dEngTime = dEngLow + dEngHigh;
 
   
   
-  dWheelLow = pulseInLong(rearRPMPin, LOW, 100000);
-  dWheelHigh = pulseInLong(rearRPMPin, HIGH, 100000);
+  dWheelLow = pulseInLong(rearRPMPin, LOW, 10000);
+  dWheelHigh = pulseInLong(rearRPMPin, HIGH, 10000);
   dWheelTime = dWheelLow + dWheelHigh;
   
   if (continous) {
