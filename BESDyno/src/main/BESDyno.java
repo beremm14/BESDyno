@@ -9,6 +9,10 @@ import development.CommunicationLogger;
 import development.TestCSV;
 import development.gui.DevInfoPane;
 import development.gui.LoggedCommPane;
+import eu.hansolo.steelseries.extras.Altimeter;
+import eu.hansolo.steelseries.gauges.Radial;
+import eu.hansolo.steelseries.tools.TicklabelOrientation;
+import eu.hansolo.steelseries.tools.TickmarkType;
 import gui.AboutDialog;
 import gui.ElectronicDialog;
 import gui.HelpDialog;
@@ -118,7 +122,7 @@ public class BESDyno extends javax.swing.JFrame {
     private final LoggedCommPane commPane = new LoggedCommPane(this, false);
     private final ResultDialog result = new ResultDialog(this, true);
     private final ElectronicDialog electronic = new ElectronicDialog(this, false);
-    
+
     private MeasureDialog measure;
     private TrainerDialog trainer;
 
@@ -144,7 +148,8 @@ public class BESDyno extends javax.swing.JFrame {
     public final List<Request> pendingRequests = new LinkedList<>();
     private final Object syncObj = new Object();
 
-    //LineChart
+    //Chart & Gauges
+    private final EnvironmentGraphic eg = new EnvironmentGraphic();
     private final LineChart lc = new LineChart();
     private ChartPanel chartPanel;
 
@@ -170,9 +175,9 @@ public class BESDyno extends javax.swing.JFrame {
         } else {
             setTitle("BESDyno - Motorradprüfstand");
         }
-        
+
         setLocationRelativeTo(null);
-        setSize(new Dimension(1200, 750));
+        setSize(new Dimension(1450, 750));
 
         jtfStatus.setEditable(false);
 
@@ -192,6 +197,7 @@ public class BESDyno extends javax.swing.JFrame {
         jcbmiDarkMode.setState(Config.getInstance().isDark());
         userLog(getSalutation() + "Bitte verbinden Sie Ihr Gerät...", LogLevel.INFO);
 
+        eg.initGraphs();
         chart = lc.initChart();
     }
 
@@ -455,7 +461,13 @@ public class BESDyno extends javax.swing.JFrame {
         if (dark) {
             userLog("Dark-Mode aktiviert", LogLevel.INFO);
             setBackground(Color.darkGray);
+            jPanSurface.setBackground(Color.darkGray);
+            jPanEnvironment.setBackground(Color.darkGray);
             jPanChart.setBackground(Color.darkGray);
+            jPanTemp.setBackground(Color.darkGray);
+            jPanPress.setBackground(Color.darkGray);
+            jPanAlt.setBackground(Color.darkGray);
+
             jPanStatus.setBackground(Color.darkGray);
             jPanTools.setBackground(Color.darkGray);
 
@@ -466,7 +478,13 @@ public class BESDyno extends javax.swing.JFrame {
         } else {
             userLog("Dark-Mode deaktiviert", LogLevel.INFO);
             setBackground(Color.white);
+            jPanSurface.setBackground(Color.white);
+            jPanEnvironment.setBackground(Color.white);
             jPanChart.setBackground(Color.white);
+            jPanTemp.setBackground(Color.white);
+            jPanPress.setBackground(Color.white);
+            jPanAlt.setBackground(Color.white);
+
             jPanStatus.setBackground(Color.white);
             jPanTools.setBackground(Color.white);
 
@@ -759,7 +777,7 @@ public class BESDyno extends javax.swing.JFrame {
             }
         }
     }
-    
+
     //Filter after Measurement
     private void filterData() {
         EWMA ewma = new EWMA(Database.getInstance().getRawList());
@@ -799,7 +817,7 @@ public class BESDyno extends javax.swing.JFrame {
     public boolean hasConnection() {
         return connection;
     }
-    
+
     public boolean isListening() {
         return portListening;
     }
@@ -816,7 +834,7 @@ public class BESDyno extends javax.swing.JFrame {
     public void setPort(UARTManager portManager) {
         this.portManager = portManager;
     }
-    
+
     public void setListening(boolean measurement) {
         this.portListening = measurement;
     }
@@ -910,7 +928,12 @@ public class BESDyno extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jSlider = new javax.swing.JSlider();
+        jPanSurface = new javax.swing.JPanel();
         jPanChart = new javax.swing.JPanel();
+        jPanEnvironment = new javax.swing.JPanel();
+        jPanTemp = new javax.swing.JPanel();
+        jPanPress = new javax.swing.JPanel();
+        jPanAlt = new javax.swing.JPanel();
         jPanStatus = new javax.swing.JPanel();
         jtfStatus = new javax.swing.JTextField();
         jpbStatus = new javax.swing.JProgressBar();
@@ -975,9 +998,41 @@ public class BESDyno extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
+        jPanSurface.setBackground(new java.awt.Color(255, 255, 255));
+        jPanSurface.setLayout(new java.awt.GridBagLayout());
+
         jPanChart.setBackground(new java.awt.Color(255, 255, 255));
-        jPanChart.setLayout(new java.awt.GridLayout(1, 0));
-        getContentPane().add(jPanChart, java.awt.BorderLayout.CENTER);
+        jPanChart.setLayout(new java.awt.GridLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanSurface.add(jPanChart, gridBagConstraints);
+
+        jPanEnvironment.setBackground(new java.awt.Color(255, 255, 255));
+        jPanEnvironment.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jPanEnvironment.setLayout(new java.awt.GridLayout(3, 1));
+
+        jPanTemp.setBackground(new java.awt.Color(255, 255, 255));
+        jPanTemp.setPreferredSize(new java.awt.Dimension(200, 200));
+        jPanTemp.setLayout(new java.awt.GridLayout());
+        jPanEnvironment.add(jPanTemp);
+
+        jPanPress.setBackground(new java.awt.Color(255, 255, 255));
+        jPanPress.setPreferredSize(new java.awt.Dimension(200, 200));
+        jPanPress.setLayout(new java.awt.GridLayout());
+        jPanEnvironment.add(jPanPress);
+
+        jPanAlt.setBackground(new java.awt.Color(255, 255, 255));
+        jPanAlt.setPreferredSize(new java.awt.Dimension(200, 200));
+        jPanAlt.setLayout(new java.awt.GridLayout());
+        jPanEnvironment.add(jPanAlt);
+
+        jPanSurface.add(jPanEnvironment, new java.awt.GridBagConstraints());
+
+        getContentPane().add(jPanSurface, java.awt.BorderLayout.CENTER);
 
         jPanStatus.setBackground(new java.awt.Color(255, 255, 255));
         jPanStatus.setLayout(new java.awt.GridBagLayout());
@@ -1429,6 +1484,7 @@ public class BESDyno extends javax.swing.JFrame {
         if (settings.isPressedOK()) {
             jcbmiDarkMode.setState(Config.getInstance().isDark());
             setAppearance(Config.getInstance().isDark());
+            eg.update();
             userLog("Einstellungen gespeichert", LogLevel.INFO);
         }
     }//GEN-LAST:event_onSettings
@@ -1441,7 +1497,7 @@ public class BESDyno extends javax.swing.JFrame {
             if (vehicle.isPressedOK()) {
                 userLog("Start der Simulation", LogLevel.INFO);
                 activity = true;
-                
+
                 if (Bike.getInstance().isMeasTemp() && Config.getInstance().isContinous()) {
                     addPendingRequest(telegram.tempEnable());
                 } else if (!Bike.getInstance().isMeasTemp() && Config.getInstance().isContinous()) {
@@ -1864,6 +1920,7 @@ public class BESDyno extends javax.swing.JFrame {
 
                 } else if (r instanceof RequestStart) {
                     if (r.getStatus() == Status.DONE) {
+                        eg.update();
                         userLog("Messung der Umweltdaten abgeschlossen.", LogLevel.FINE);
                     } else if (r.getStatus() == Status.ERROR) {
                         userLog("Umweltdaten möglicherweise fehlerhaft oder unvollständig...", LogLevel.WARNING);
@@ -1914,6 +1971,7 @@ public class BESDyno extends javax.swing.JFrame {
                         userLog("Gerät ist einsatzbereit!", LogLevel.FINE);
                         LOG.info("Arduino-Version: " + Config.getInstance().getArduinoVersion());
                         connection = true;
+                        addPendingRequest(telegram.start());
                         addPendingRequest(telegram.fine());
                     } else if (r.getStatus() == Status.ERROR) {
                         if (Config.getInstance().getArduinoVersion() >= reqArduVers) {
@@ -1927,7 +1985,7 @@ public class BESDyno extends javax.swing.JFrame {
                     }
                     activity = false;
                     refreshGui();
-                } else if ( r instanceof RequestContinousStart) {
+                } else if (r instanceof RequestContinousStart) {
                     if (r.getStatus() == Status.DONE) {
                         userLog("Kontinuierliche Messung beginnt...", LogLevel.FINE);
                         portListening = true;
@@ -1944,13 +2002,13 @@ public class BESDyno extends javax.swing.JFrame {
                 } else if (r instanceof RequestTempEnable) {
                     if (r.getStatus() == Status.DONE) {
                         addPendingRequest(telegram.conStart());
-                    }else if (r.getStatus() == Status.ERROR) {
+                    } else if (r.getStatus() == Status.ERROR) {
                         LOG.warning("TEMPERATURE ENABLE returns ERROR: " + r.getResponse());
                     }
                 } else if (r instanceof RequestTempDisable) {
                     if (r.getStatus() == Status.DONE) {
                         addPendingRequest(telegram.conStart());
-                    }else if (r.getStatus() == Status.ERROR) {
+                    } else if (r.getStatus() == Status.ERROR) {
                         LOG.warning("TEMPERATURE DISABLE returns ERROR: " + r.getResponse());
                     }
                 }
@@ -2111,7 +2169,89 @@ public class BESDyno extends javax.swing.JFrame {
             updateChartLabels();
 
             chart.fireChartChanged();
+            eg.update();
+        }
 
+    }
+
+    private class EnvironmentGraphic {
+
+        private final Config config = Config.getInstance();
+        private final Environment environment = Environment.getInstance();
+
+        private final Radial envTemp = new Radial();
+        private final Radial envPress = new Radial();
+        private final Altimeter altitude = new Altimeter();
+
+        public void initGraphs() {
+            jPanTemp.setSize(new Dimension(200, 200));
+            jPanPress.setSize(new Dimension(200, 200));
+            jPanAlt.setSize(new Dimension(200, 200));
+
+            initEnvTemp();
+            initEnvPress();
+
+            jPanTemp.add(envTemp);
+            jPanPress.add(envPress);
+            jPanAlt.add(altitude);
+        }
+
+        private void initEnvTemp() {
+            envTemp.setTitle("Temperatur");
+            envTemp.setUnitString(config.getTempUnit());
+
+            envTemp.setNiceScale(true);
+
+            if (config.isCelcius()) {
+                envTemp.setMinValue(-30);
+                envTemp.setMaxValue(60);
+                envTemp.setMinorTickSpacing(5);
+                envTemp.setMajorTickSpacing(10);
+            } else {
+                envTemp.setMinValue(-20);
+                envTemp.setMaxValue(140);
+                envTemp.setMinorTickSpacing(10);
+                envTemp.setMajorTickSpacing(40);
+            }
+            envTemp.setMinorTickSpacing(5);
+            envTemp.setMajorTickSpacing(10);
+            envTemp.setMajorTickmarkType(TickmarkType.TRIANGLE);
+            envTemp.setTickmarkColor(Color.ORANGE);
+            envTemp.setTicklabelOrientation(TicklabelOrientation.HORIZONTAL);
+        }
+
+        private void initEnvPress() {
+            envPress.setTitle("Luftdruck");
+            envPress.setUnitString("hPa");
+
+            envPress.setNiceScale(true);
+
+            envPress.setMinValue(900);
+            envPress.setMaxValue(1100);
+            envPress.setMinorTickSpacing(10);
+            envPress.setMajorTickSpacing(20);
+            envPress.setMajorTickmarkType(TickmarkType.TRIANGLE);
+            envPress.setTickmarkColor(Color.ORANGE);
+            envPress.setTicklabelOrientation(TicklabelOrientation.HORIZONTAL);
+        }
+
+        public void update() {
+            double temp = config.isCelcius() ? environment.getEnvTempC() : environment.getEnvTempF();
+            if (config.isCelcius()) {
+                envTemp.setMinValue(-30);
+                envTemp.setMaxValue(60);
+                envTemp.setMinorTickSpacing(5);
+                envTemp.setMajorTickSpacing(10);
+            } else {
+                envTemp.setMinValue(-20);
+                envTemp.setMaxValue(140);
+                envTemp.setMinorTickSpacing(10);
+                envTemp.setMajorTickSpacing(40);
+            }
+            envTemp.setUnitString(config.getTempUnit());
+            envTemp.setValueAnimated(temp);
+            envPress.setValueAnimated(environment.getAirPress());
+            altitude.setValueAnimated(environment.getAltitude());
         }
 
     }
@@ -2338,8 +2478,13 @@ public class BESDyno extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelDevice;
     private javax.swing.JMenuBar jMenuBar;
+    private javax.swing.JPanel jPanAlt;
     private javax.swing.JPanel jPanChart;
+    private javax.swing.JPanel jPanEnvironment;
+    private javax.swing.JPanel jPanPress;
     private javax.swing.JPanel jPanStatus;
+    private javax.swing.JPanel jPanSurface;
+    private javax.swing.JPanel jPanTemp;
     private javax.swing.JPanel jPanTools;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;

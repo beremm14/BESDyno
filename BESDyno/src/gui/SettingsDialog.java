@@ -386,7 +386,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         c.setDark(jrbNightmode.isSelected());
         c.setPs(jrbPS.isSelected());
         c.setCelcius(jrbCelcius.isSelected());
-        c.setCelcius(jcbContinous.isSelected());
+        c.setContinous(jcbContinous.isSelected());
         if (jcbFilter.isSelected()) {
             c.setAverage(jrbAverage.isSelected());
             c.setPoly(jrbPoly.isSelected());
