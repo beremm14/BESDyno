@@ -224,7 +224,6 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
     private Status manageMeasure() throws Exception {
         //Clear all Lists for good Data ;)
         data.clearLists();
-        data.addFilterRDP(new RawDatapoint(0, 0, 0));
 
         if (bike.isStartStopMethod()) {
             if (bike.isMeasRpm()) {
@@ -290,6 +289,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
             main.addPendingRequest(telegram.conStop());
         }
         data.rmFirstRDP(2);
+        data.clearListsExRaw();
         calcThread = new CalculationThread();
         calcThread.start();
         try {

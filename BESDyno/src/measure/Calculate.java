@@ -9,12 +9,15 @@ import data.PreDatapoint;
 import data.RawDatapoint;
 import java.util.LinkedList;
 import java.util.List;
+import logging.Logger;
 
 /**
  *
  * @author emil
  */
 public class Calculate {
+
+  private static final Logger LOG = Logger.getLogger(Calculate.class.getName());
 
     private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
@@ -114,8 +117,11 @@ public class Calculate {
         if (preList != data.getPreList()) {
             data.setPreList(preList);
         }
-
-        data.rmFirstPDP(5);
+        try {
+          data.rmFirstPDP(5);
+        } catch (Exception ex) {
+          LOG.warning(ex);
+        }
 
         //Calculation without Schlepp-Power
         if (bike.isStartStopMethod()) {
