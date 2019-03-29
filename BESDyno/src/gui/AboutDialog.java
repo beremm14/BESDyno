@@ -154,7 +154,7 @@ public class AboutDialog extends javax.swing.JDialog {
     public void setOSIcon(OS os) {
         switch (os) {
             case MACOS:
-                jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/mac50.png")));
+                //jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/mac50.png")));
                 break;
             case LINUX:
                 jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/linux50.png")));

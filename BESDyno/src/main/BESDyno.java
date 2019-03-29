@@ -1557,18 +1557,18 @@ public class BESDyno extends javax.swing.JFrame {
     private void onAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onAbout
         about.setAppearance(Config.getInstance().isDark());
         about.setOSIcon(os);
-        about.setVisible(true);
         if (portManager != null) {
             if (portManager.getPort() instanceof gnu.io.SerialPort) {
                 gnu.io.SerialPort port = (gnu.io.SerialPort) portManager.getPort();
-                settings.writeDevice(port.getName());
+                about.writeDevice(port.getName());
             } else if (portManager.getPort() instanceof jssc.SerialPort) {
                 jssc.SerialPort port = (jssc.SerialPort) portManager.getPort();
-                settings.writeDevice(port.getPortName());
+                about.writeDevice(port.getPortName());
             }
         } else {
-            about.writeDevice("Kein Prüfstand verbunden...");
+            settings.writeDevice("Kein Prüfstand verbunden...");
         }
+        about.setVisible(true);
     }//GEN-LAST:event_onAbout
 
     private void onButConnect(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onButConnect

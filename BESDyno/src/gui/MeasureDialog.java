@@ -576,9 +576,9 @@ public class MeasureDialog extends javax.swing.JDialog {
                     case WAIT:
                         jPanStatusColour.setBackground(Color.ORANGE);
                         if (Bike.getInstance().isMeasRpm()) {
-                            jLabelDo.setText("Initialisieren... Drehzahl UNTER " + Config.getInstance().getIdleRpm() + " U/min halten, ±" + Config.getInstance().getHysteresisRpm() + " U/min");
+                            jLabelDo.setText("Initialisieren... Drehzahl UM " + Config.getInstance().getIdleRpm() + " U/min halten, ±" + Config.getInstance().getHysteresisRpm() + " U/min");
                         } else {
-                            jLabelDo.setText("Initialisieren... Drehzahl UNTER " + Config.getInstance().getIdleVelo() + " "
+                            jLabelDo.setText("Initialisieren... Drehzahl UM " + Config.getInstance().getIdleVelo() + " "
                                     + Config.getInstance().getVeloUnit() + " halten, ±" + Config.getInstance().getHysteresisVelo() + " " + Config.getInstance().getVeloUnit());
                         }
                         break;
