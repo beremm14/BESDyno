@@ -54,7 +54,7 @@ public class AboutDialog extends javax.swing.JDialog {
     }
 
     private void writeVersion() {
-        jLabelVersion.setText("BES Dyno v1.0 alpha");
+        jLabelVersion.setText("BES Dyno v1.0 alpha (commit bfb9721)");
         jLabelOsName.setText(System.getProperty("os.name"));
         jLabelOsVersion.setText(System.getProperty("os.version"));
         jLabelVmName.setText(System.getProperty("java.vm.name"));
@@ -67,7 +67,7 @@ public class AboutDialog extends javax.swing.JDialog {
     public void writeDevice(String dn) {
         jLabelDevice.setText(dn);
         if (Config.getInstance().getArduinoVersion() > 0) {
-            jLabelArduino.setText(String.format(Locale.UK, "BES Measurement v%.1f", Config.getInstance().getArduinoVersion()));
+            jLabelArduino.setText(String.format(Locale.UK, "BES Measurement v%.1f", Config.getInstance().getArduinoVersion()) + " (commit 467bfcf)");
         }
     }
 
