@@ -154,7 +154,7 @@ public class AboutDialog extends javax.swing.JDialog {
     public void setOSIcon(OS os) {
         switch (os) {
             case MACOS:
-                //jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/mac50.png")));
+                jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/mac50.png")));
                 break;
             case LINUX:
                 jLabelOS.setIcon(new ImageIcon(getClass().getResource("/icons/linux50.png")));
@@ -212,6 +212,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabelAuthor = new javax.swing.JLabel();
         jLabelMade = new javax.swing.JLabel();
         jbutSourceLink = new javax.swing.JButton();
+        jbutLicence = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -415,11 +416,25 @@ public class AboutDialog extends javax.swing.JDialog {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        jPanCopyright.add(jbutSourceLink, gridBagConstraints);
+
+        jbutLicence.setText("Lizenz");
+        jbutLicence.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutLicenceActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        jPanCopyright.add(jbutSourceLink, gridBagConstraints);
+        gridBagConstraints.ipadx = 1;
+        jPanCopyright.add(jbutLicence, gridBagConstraints);
 
         jPanAuthor.add(jPanCopyright, java.awt.BorderLayout.PAGE_END);
 
@@ -431,6 +446,10 @@ public class AboutDialog extends javax.swing.JDialog {
     private void onSourceLink(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSourceLink
         openURL("https://github.com/beremm14/Zweiradpruefstand");
     }//GEN-LAST:event_onSourceLink
+
+    private void jbutLicenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutLicenceActionPerformed
+        openURL("https://github.com/beremm14/BESDyno/blob/master/LICENSE");
+    }//GEN-LAST:event_jbutLicenceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -527,6 +546,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanRuntime;
     private javax.swing.JPanel jPanSysInfo;
     private javax.swing.JPanel jPanVersion;
+    private javax.swing.JButton jbutLicence;
     private javax.swing.JButton jbutSourceLink;
     // End of variables declaration//GEN-END:variables
 }
