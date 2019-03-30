@@ -17,7 +17,7 @@ import logging.Logger;
  */
 public class Calculate {
 
-  private static final Logger LOG = Logger.getLogger(Calculate.class.getName());
+    private static final Logger LOG = Logger.getLogger(Calculate.class.getName());
 
     private final Bike bike = Bike.getInstance();
     private final Config config = Config.getInstance();
@@ -31,7 +31,7 @@ public class Calculate {
         data.setFilteredRawList(filter.getFilteredRawList());
 
         if (config.isPoly()) {
-            PolynomialRegression regression = new PolynomialRegression(data.getRawList());
+            PolynomialRegression regression = new PolynomialRegression(data.getRawList(), 6);
             data.setFilteredRawList(regression.filterRawData());
 
             for (RawDatapoint rdp : data.getFilteredList()) {
@@ -96,7 +96,7 @@ public class Calculate {
     public double calcMih(PreDatapoint pdp) {
         return calcMps(pdp) * 2.2369362920544;
     }
-    
+
     public List<PreDatapoint> calcPreList(List<RawDatapoint> rawList) {
         List<PreDatapoint> preList = new LinkedList<>();
         for (RawDatapoint rdp : rawList) {
@@ -105,22 +105,24 @@ public class Calculate {
         return preList;
     }
 
-    public void calcPower(List<RawDatapoint> rawList, List<PreDatapoint> preList, boolean filter) {
+    public void calcPower(List<RawDatapoint> rawList, List<PreDatapoint> preList, boolean filter, boolean rmData) {
         if (filter) {
             filterData(rawList);
         }
-        
+
         if (rawList != data.getRawList()) {
             data.setRawList(rawList);
         }
-        
+
         if (preList != data.getPreList()) {
             data.setPreList(preList);
         }
-        try {
-          data.rmFirstPDP(5);
-        } catch (Exception ex) {
-          LOG.warning(ex);
+        if (rmData) {
+            try {
+                data.rmFirstPDP(5);
+            } catch (Exception ex) {
+                LOG.warning(ex);
+            }
         }
 
         //Calculation without Schlepp-Power
@@ -134,11 +136,12 @@ public class Calculate {
                 double dOmega = omega - lastOmega;
                 double alpha = dOmega / ((pdp.getTime() - lastTime) / 1000000.0);
                 double wheelPower = omega * alpha * config.getInertia() * config.getPowerCorr();
+                double engOmega = (2. * Math.PI / 60.) * pdp.getEngRpm();
 
                 if (wheelPower > 0 && dOmega > 0) {
-                    Datapoint dp = new Datapoint(wheelPower, omega);
+                    Datapoint dp = new Datapoint(wheelPower, engOmega);
                     data.addDP(dp);
-                    if (pdp.getEngRpm() > config.getStartRpm() && pdp.getEngRpm() < config.getStopRpm()) {
+                    if (pdp.getEngRpm() > config.getStartRpm() && pdp.getEngRpm() < config.getStopRpm() && dp.getPower() > 0) {
                         data.addXYValues(dp, pdp);
                     }
                     lastOmega = omega;
@@ -153,11 +156,11 @@ public class Calculate {
             double lastSchleppOmega = 0;
 
             for (PreDatapoint pdp : data.getPreOrFilteredList()) {
-                double omega = (2 * Math.PI / 60) * pdp.getWheelRpm();
+                double omega = (2.0 * Math.PI / 60.0) * pdp.getWheelRpm();
                 double dOmega = omega - lastOmega;
                 double alpha = dOmega / (pdp.getTime() / 1000000.0);
                 double wheelPower = omega * alpha * config.getInertia();
-
+                
                 double schleppPower = 0;
                 for (PreDatapoint schleppPDP : data.getSchleppPreList()) {
                     double schleppOmega = (2 * Math.PI / 60) * schleppPDP.getWheelRpm();
@@ -180,7 +183,11 @@ public class Calculate {
 
         //Evaluation of Maximum-Values
         data.rmFirstDP(1);
-
+        evaluateMaxValues();
+        
+    }
+    
+    public void evaluateMaxValues() {
         //Torque and Power
         double maxTorque = data.getDataList().get(0).getTorque();
         double maxPower = data.getDataList().get(0).getPower();

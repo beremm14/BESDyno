@@ -1,5 +1,7 @@
 package measure;
 
+import data.Database;
+import data.PreDatapoint;
 import data.RawDatapoint;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +50,20 @@ public class MovingAverage {
 
     private int getNextWheelTime() {
         return (int) Math.round(wheelSum / period);
+    }
+    
+    public void filterAfterMeasurement() {
+        List<RawDatapoint> rdpList = compute();
+        Calculate calc = new Calculate();
+        
+        Database.getInstance().clearLists();
+        List<PreDatapoint> pdpList = calc.calcPreList(rdpList);
+        Database.getInstance().clearLists();
+        Database.getInstance().setRawList(rawList);
+        Database.getInstance().setFilteredRawList(rdpList);
+        Database.getInstance().setFilteredPreList(pdpList);
+        Database.getInstance().setPreList(pdpList);
+        calc.calcPower(rdpList, pdpList, false, false);
     }
 
     public List<RawDatapoint> compute() {

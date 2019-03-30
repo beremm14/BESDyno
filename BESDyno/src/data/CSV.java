@@ -39,7 +39,7 @@ public class CSV {
     public void calcChart() {
         data.clearLists();
         Calculate calc = new Calculate();
-        calc.calcPower(rdpList, calc.calcPreList(rdpList), filter);
+        calc.calcPower(rdpList, calc.calcPreList(rdpList), filter, false);
     }
     
 }

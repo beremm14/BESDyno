@@ -70,6 +70,8 @@ import logging.LogBackgroundHandler;
 import logging.LogOutputStreamHandler;
 import logging.Logger;
 import measure.EWMA;
+import measure.MovingAverage;
+import measure.PolynomialRegression;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -219,7 +221,7 @@ public class BESDyno extends javax.swing.JFrame {
         jbutRefresh.setEnabled(false);
         jmiEnvironment.setEnabled(false);
         jmiEngineTemp.setEnabled(false);
-        jmiFilter.setEnabled(false);
+        jmiEwma.setEnabled(false);
 
         //Development Tools
         jmiShowPendingRequests.setEnabled(false);
@@ -286,7 +288,7 @@ public class BESDyno extends javax.swing.JFrame {
             jmiSave.setEnabled(true);
             jmiExport.setEnabled(true);
             jmiPrint.setEnabled(true);
-            jmiFilter.setEnabled(true);
+            jmiEwma.setEnabled(true);
         }
     }
 
@@ -303,7 +305,9 @@ public class BESDyno extends javax.swing.JFrame {
             jmiPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.META_MASK));
             jmiSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.META_MASK));
             jmiStartSim.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_MASK));
-            jmiFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_MASK));
+            jmiMovingAverage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_MASK));
+            jmiEwma.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_MASK | InputEvent.SHIFT_MASK));
+            jmiPolyReg.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_MASK | InputEvent.ALT_MASK));
             jmiRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.META_MASK));
             jmiConnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_MASK));
             jmiDisconnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.META_MASK));
@@ -320,7 +324,9 @@ public class BESDyno extends javax.swing.JFrame {
             jmiPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
             jmiSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_MASK));
             jmiStartSim.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
-            jmiFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK));
+            jmiMovingAverage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK));
+            jmiEwma.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+            jmiPolyReg.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
             jmiRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
             jmiConnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK));
             jmiDisconnect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_MASK));
@@ -779,9 +785,21 @@ public class BESDyno extends javax.swing.JFrame {
     }
 
     //Filter after Measurement
-    private void filterData() {
+    private void filterDataEwma() {
         EWMA ewma = new EWMA(Database.getInstance().getRawList());
-        ewma.filterAfterMeasurement(Database.getInstance().getDataList(), Config.getInstance().getSmoothing());
+        ewma.filterPowerAfterMeasurement(Database.getInstance().getDataList(), Config.getInstance().getSmoothing());
+        lc.updateChartValues();
+    }
+    
+    private void filterDataMovingAverage() {
+        MovingAverage ma = new MovingAverage(3, Database.getInstance().getRawList());
+        ma.filterAfterMeasurement();
+        lc.updateChartValues();
+    }
+    
+    private void filterDataPolyReg() {
+        PolynomialRegression pr = new PolynomialRegression(Database.getInstance().getRawList(), 4);
+        pr.filterAfterMeasurement();
         lc.updateChartValues();
     }
 
@@ -955,7 +973,9 @@ public class BESDyno extends javax.swing.JFrame {
         jmiSettings = new javax.swing.JMenuItem();
         jmenuSimulation = new javax.swing.JMenu();
         jmiStartSim = new javax.swing.JMenuItem();
-        jmiFilter = new javax.swing.JMenuItem();
+        jmiMovingAverage = new javax.swing.JMenuItem();
+        jmiEwma = new javax.swing.JMenuItem();
+        jmiPolyReg = new javax.swing.JMenuItem();
         jmiEnvironment = new javax.swing.JMenuItem();
         jmiEngineTemp = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -1002,7 +1022,7 @@ public class BESDyno extends javax.swing.JFrame {
         jPanSurface.setLayout(new java.awt.GridBagLayout());
 
         jPanChart.setBackground(new java.awt.Color(255, 255, 255));
-        jPanChart.setLayout(new java.awt.GridLayout());
+        jPanChart.setLayout(new java.awt.GridLayout(1, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -1017,17 +1037,17 @@ public class BESDyno extends javax.swing.JFrame {
 
         jPanTemp.setBackground(new java.awt.Color(255, 255, 255));
         jPanTemp.setPreferredSize(new java.awt.Dimension(200, 200));
-        jPanTemp.setLayout(new java.awt.GridLayout());
+        jPanTemp.setLayout(new java.awt.GridLayout(1, 0));
         jPanEnvironment.add(jPanTemp);
 
         jPanPress.setBackground(new java.awt.Color(255, 255, 255));
         jPanPress.setPreferredSize(new java.awt.Dimension(200, 200));
-        jPanPress.setLayout(new java.awt.GridLayout());
+        jPanPress.setLayout(new java.awt.GridLayout(1, 0));
         jPanEnvironment.add(jPanPress);
 
         jPanAlt.setBackground(new java.awt.Color(255, 255, 255));
         jPanAlt.setPreferredSize(new java.awt.Dimension(200, 200));
-        jPanAlt.setLayout(new java.awt.GridLayout());
+        jPanAlt.setLayout(new java.awt.GridLayout(1, 0));
         jPanEnvironment.add(jPanAlt);
 
         jPanSurface.add(jPanEnvironment, new java.awt.GridBagConstraints());
@@ -1169,14 +1189,32 @@ public class BESDyno extends javax.swing.JFrame {
         });
         jmenuSimulation.add(jmiStartSim);
 
-        jmiFilter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.META_MASK));
-        jmiFilter.setText("Daten filtern");
-        jmiFilter.addActionListener(new java.awt.event.ActionListener() {
+        jmiMovingAverage.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.META_MASK));
+        jmiMovingAverage.setText("Gleitenden Mittelwert anwenden");
+        jmiMovingAverage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                onFilter(evt);
+                onMovingAverage(evt);
             }
         });
-        jmenuSimulation.add(jmiFilter);
+        jmenuSimulation.add(jmiMovingAverage);
+
+        jmiEwma.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        jmiEwma.setText("EWMA Filter anwenden");
+        jmiEwma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onEwma(evt);
+            }
+        });
+        jmenuSimulation.add(jmiEwma);
+
+        jmiPolyReg.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.META_MASK));
+        jmiPolyReg.setText("Polynomischen Filter anwenden");
+        jmiPolyReg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onPolyReg(evt);
+            }
+        });
+        jmenuSimulation.add(jmiPolyReg);
 
         jmiEnvironment.setText("Umweltdaten aktualisieren");
         jmiEnvironment.addActionListener(new java.awt.event.ActionListener() {
@@ -1770,15 +1808,23 @@ public class BESDyno extends javax.swing.JFrame {
         refreshGui();
     }//GEN-LAST:event_onOpen
 
-    private void onFilter(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onFilter
-        filterData();
-    }//GEN-LAST:event_onFilter
+    private void onEwma(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onEwma
+        filterDataEwma();
+    }//GEN-LAST:event_onEwma
 
     private void onTrainer(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onTrainer
         trainer = new TrainerDialog(this, true);
         trainer.setAppearance(Config.getInstance().isDark());
         trainer.setVisible(true);
     }//GEN-LAST:event_onTrainer
+
+    private void onMovingAverage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onMovingAverage
+        filterDataMovingAverage();
+    }//GEN-LAST:event_onMovingAverage
+
+    private void onPolyReg(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onPolyReg
+        filterDataPolyReg();
+    }//GEN-LAST:event_onPolyReg
 
     private class MyConnectPortWorker extends ConnectPortWorker {
 
@@ -2519,9 +2565,9 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiEngine;
     private javax.swing.JMenuItem jmiEngineTemp;
     private javax.swing.JMenuItem jmiEnvironment;
+    private javax.swing.JMenuItem jmiEwma;
     private javax.swing.JMenuItem jmiExport;
     private javax.swing.JMenu jmiExtras;
-    private javax.swing.JMenuItem jmiFilter;
     private javax.swing.JMenuItem jmiFine;
     private javax.swing.JMenuItem jmiHelp;
     private javax.swing.JMenuItem jmiInit;
@@ -2529,7 +2575,9 @@ public class BESDyno extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiMaxProblems;
     private javax.swing.JMenuItem jmiMeasure;
     private javax.swing.JMenuItem jmiMeasureno;
+    private javax.swing.JMenuItem jmiMovingAverage;
     private javax.swing.JMenuItem jmiOpen;
+    private javax.swing.JMenuItem jmiPolyReg;
     private javax.swing.JMenuItem jmiPrint;
     private javax.swing.JMenuItem jmiRefresh;
     private javax.swing.JMenuItem jmiSave;

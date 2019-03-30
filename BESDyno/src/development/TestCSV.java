@@ -34,7 +34,7 @@ public class TestCSV {
     
     public TestCSV() {
         this.date = Calendar.getInstance().getTime();
-        calc.calcPower(data.getRawList(), data.getPreList(), true);
+        calc.calcPower(data.getRawList(), data.getPreList(), true, false);
     }
     
     public void writeFiles() {

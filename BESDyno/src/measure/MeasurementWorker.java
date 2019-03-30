@@ -417,7 +417,7 @@ public class MeasurementWorker extends SwingWorker<Object, DialData> {
                 }
             }
             LOG.info("Calculation Thread started...");
-            calc.calcPower(data.getRawList(), data.getPreList(), true);
+            calc.calcPower(data.getRawList(), data.getPreList(), true, true);
             if (main.isTestMode()) {
                 TestCSV csv = new TestCSV();
                 csv.writeFiles();

@@ -270,9 +270,9 @@ public class Database {
         }
         if (Bike.getInstance().isMeasRpm()) {
             seriesPower.add(filteredPreList.get(index).getEngRpm(), power);
-            seriesTorque.add(filteredPreList.get(index).getWheelRpm(), dp.getTorque());
+            seriesTorque.add(filteredPreList.get(index).getEngRpm(), dp.getTorque());
         } else {
-            seriesPower.add(filteredPreList.get(index).getEngRpm(), power);
+            seriesPower.add(filteredPreList.get(index).getWheelRpm(), power);
             seriesTorque.add(filteredPreList.get(index).getWheelRpm(), dp.getTorque());
         }
     }
@@ -323,6 +323,10 @@ public class Database {
     public void killChart() {
         seriesPower.clear();
         seriesTorque.clear();
+    }
+
+    public void rmDP(Datapoint dp) {
+        dataList.remove(dp);
     }
 
 }

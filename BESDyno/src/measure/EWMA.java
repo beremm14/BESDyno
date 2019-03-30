@@ -89,18 +89,51 @@ public class EWMA {
         calcPreList();
         fillDatabase();
     }
-    
-    public void filterAfterMeasurement(List<Datapoint> unFiltered, double smoothing) {
+
+    public void filterAfterMeasurement(List<RawDatapoint> unFiltered, double smoothing) {
+        Database.getInstance().killChart();
+        List<RawDatapoint> filtered = new LinkedList<>();
+        Calculate calc = new Calculate();
+        for (int i = 0; i < unFiltered.size() - 1; i++) {
+            try {
+                double engine = (1 - smoothing) * unFiltered.get(i).getEngTime() + smoothing * unFiltered.get(i + 1).getEngTime();
+                double wheel = (1 - smoothing) * unFiltered.get(i).getWheelTime() + smoothing * unFiltered.get(i + 1).getWheelTime();
+                RawDatapoint rdp = new RawDatapoint((int) Math.round(engine), (int) Math.round(wheel), unFiltered.get(i).getTime());
+                filtered.add(rdp);
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                filtered.add(unFiltered.get(unFiltered.size() - 1));
+            }
+        }
+        List<PreDatapoint> pdpList = calc.calcPreList(filtered);
+        Database.getInstance().clearLists();
+        Database.getInstance().setRawList(filtered);
+        Database.getInstance().setFilteredRawList(filtered);
+        Database.getInstance().setFilteredPreList(pdpList);
+        Database.getInstance().setPreList(pdpList);
+        calc.calcPower(filtered, pdpList, false, false);
+        Database.getInstance().rmFirstDP(2);
+        for (Datapoint dp : Database.getInstance().getDataList()) {
+            if (dp.getPower() <= 0 || dp.getTorque() <= 0) {
+                Database.getInstance().rmDP(dp);
+            }
+        }
+    }
+
+    public void filterPowerAfterMeasurement(List<Datapoint> unFiltered, double smoothing) {
         Database.getInstance().killChart();
         List<Datapoint> filtered = new LinkedList<>();
-        for (int i = 0; i < unFiltered.size() - 2; i++) {
-            double power = (1 - smoothing) * unFiltered.get(i).getPower() + smoothing * unFiltered.get(i+1).getPower();
-            double torque = (1 - smoothing) * unFiltered.get(i).getTorque()+ smoothing * unFiltered.get(i+1).getTorque();
-            Datapoint dp = new Datapoint(power, torque, unFiltered.get(i).getOmega(), true);
-            filtered.add(dp);
-            Database.getInstance().addXYValuesAgain(dp, i);
-            Database.getInstance().setDataList(filtered);
+        filtered.add(unFiltered.get(0));
+        Database.getInstance().addXYValuesAgain(unFiltered.get(0), 0);
+        for (int i = 1; i < unFiltered.size(); i++) {
+                double power = (1 - smoothing) * unFiltered.get(i-1).getPower() + smoothing * unFiltered.get(i).getPower();
+                double omega = (1 - smoothing) * unFiltered.get(i-1).getOmega() + smoothing * unFiltered.get(i).getOmega();
+                Datapoint dp = new Datapoint(power, omega);
+                filtered.add(dp);
+                Database.getInstance().addXYValuesAgain(dp, i);
         }
+        Database.getInstance().setDataList(filtered);
+        Calculate calc = new Calculate();
+        calc.evaluateMaxValues();
     }
 
     public List<RawDatapoint> getRawList() {
