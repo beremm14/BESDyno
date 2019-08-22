@@ -1,5 +1,8 @@
 package main;
 
+import com.apple.eawt.AboutHandler;
+import com.apple.eawt.AppEvent;
+import com.apple.eawt.Application;
 import com.apple.eawt.FullScreenUtilities;
 import data.Bike;
 import data.CSV;
@@ -175,6 +178,14 @@ public class BESDyno extends javax.swing.JFrame {
 
         if (os == OS.MACOS) {
             FullScreenUtilities.setWindowCanFullScreen(this, true);
+            Application macApp = Application.getApplication();
+            macApp.setAboutHandler(new AboutHandler() {
+                @Override
+                public void handleAbout(AppEvent.AboutEvent ae) {
+                    AboutDialog dialog = new AboutDialog(null, true);
+                    dialog.setVisible(true);
+                }
+            });
         }
         
         if (os == OS.MACOS || os == OS.WINDOWS) {
