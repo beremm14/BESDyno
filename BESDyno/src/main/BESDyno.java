@@ -1,5 +1,6 @@
 package main;
 
+import com.apple.eawt.FullScreenUtilities;
 import data.Bike;
 import data.CSV;
 import data.Config;
@@ -172,6 +173,10 @@ public class BESDyno extends javax.swing.JFrame {
 
         setOSNativeKeyStroke();
 
+        if (os == OS.MACOS) {
+            FullScreenUtilities.setWindowCanFullScreen(this, true);
+        }
+        
         if (os == OS.MACOS || os == OS.WINDOWS) {
             setTitle("🦅 BESDyno - Motorradprüfstand 🦅");
         } else {
